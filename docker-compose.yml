@@ -1,0 +1,31 @@
+version: "3.3"
+
+services:
+  web:
+    build: ./backend
+    restart: always
+    environment:
+      JDBC_URL: jdbc:mysql://db:3306/fpsa-proto-app-db
+      JDBC_USER: "fpsa-proto-db-user"
+      JDBC_PASS: "testing"
+    ports:
+      - "8080:8080"
+    links:
+      - db
+
+  db:
+    image: mysql:8.0.15
+    restart: always
+    environment:
+      MYSQL_DATABASE: "fpsa-proto-app-db"
+      MYSQL_USER: "fpsa-proto-db-user"
+      MYSQL_PASSWORD: "testing"
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - fpsa-proto-app-db:/var/lib/mysql
+volumes:
+  fpsa-proto-app-db:
