@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { TestString } from '../../models';
 import { FpsaProtoAppState } from '../../fpsa-proto-app-store';
 import { getData } from '../../selectors';
+import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
+import { DataActions } from '../../actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +23,12 @@ export class HomeComponent {
   ) {
     this.data$ = this.store.pipe(select(getData));
   }
+
+  public onAddData(data: string): void {
+    if (data !== undefined) {
+      this.store.dispatch(DataActions.createNewData({ data }));
+    }
+  }
 }
 
 @NgModule({
@@ -31,7 +39,8 @@ export class HomeComponent {
     HomeComponent
   ],
   imports: [
-    CommonModule,
+    AddDataFormModule,
+    CommonModule
   ]
 })
 export class HomeModule {}

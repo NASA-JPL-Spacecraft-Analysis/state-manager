@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface TestStringDao {
     List<TestString> getTestStrings();
+    void postNewData(String data);
 }

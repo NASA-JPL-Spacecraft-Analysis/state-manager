@@ -22,9 +22,6 @@ public class DatabaseUtil {
             dataSource.setAcquireIncrement(5);
             dataSource.setMaxPoolSize(20);
             dataSource.setMaxStatements(100);
-
-            dataSource.setTestConnectionOnCheckout(true);
-            dataSource.setPreferredTestQuery(" SELECT 1 ");
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }

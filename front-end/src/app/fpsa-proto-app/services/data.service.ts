@@ -13,6 +13,13 @@ import { DataActions } from '../actions';
 export class DataService {
   constructor(private http: HttpClient) {}
 
+  public createNewData(data: string): Observable<Array<TestString>> {
+    return this.http.post<Array<TestString>>(
+      'http://localhost:8080/fpsa-proto-app/api/v1/data',
+      data
+    );
+  }
+
   public getData(): Observable<Action> {
     return this.getDataHttp().pipe(
       map(
@@ -25,7 +32,6 @@ export class DataService {
   }
 
   private getDataHttp(): Observable<Array<TestString>> {
-    console.log('here');
     return this.http.get<Array<TestString>>('http://localhost:8080/fpsa-proto-app/api/v1/test');
   }
 }

@@ -16,5 +16,9 @@ export const reducer = createReducer(
   on(DataActions.setData, (state, action) => ({
     ...state,
     data: action.data
+  })),
+  on(DataActions.createTestStringSuccess, (state, action) => ({
+    ...state,
+    data: action.data
   }))
 );

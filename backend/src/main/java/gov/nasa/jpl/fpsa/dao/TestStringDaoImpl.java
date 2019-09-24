@@ -30,4 +30,17 @@ public class TestStringDaoImpl implements TestStringDao {
 
         return testStrings;
     }
+
+    @Override
+    public void postNewData(String data) {
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(TestStringQueries.POST_NEW_DATA)) {
+
+            preparedStatement.setString(1, data);
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

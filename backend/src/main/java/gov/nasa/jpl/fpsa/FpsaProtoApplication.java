@@ -1,6 +1,5 @@
 package gov.nasa.jpl.fpsa;
 
-import gov.nasa.jpl.fpsa.util.DatabaseUtil;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
@@ -10,7 +9,5 @@ public class FpsaProtoApplication extends ResourceConfig {
     public FpsaProtoApplication() {
         register(CorsFilter.class);
         register(FpsaProtoResource.class);
-
-        DatabaseUtil.getDataSource();
     }
 }
