@@ -1,0 +1,37 @@
+import { InjectionToken } from '@angular/core';
+import { ActionReducerMap, Action, MetaReducer, ActionReducer } from '@ngrx/store';
+import * as fromRouter from '@ngrx/router-store';
+
+import { environment } from 'src/environments/environment';
+
+export interface AppState {
+  router: fromRouter.RouterReducerState;
+}
+
+export const ROOT_REDUCERS = new InjectionToken<
+  ActionReducerMap<AppState, Action>
+>('Root reducers token', {
+  factory: () => ({
+    router: fromRouter.routerReducer,
+  }),
+});
+
+export function logger(
+  reducer: ActionReducer<AppState>,
+): ActionReducer<AppState> {
+  return (state: AppState, action: any): AppState => {
+    const result = reducer(state, action);
+
+    console.groupCollapsed(action.type);
+    console.log('prev state', state);
+    console.log('action', action);
+    console.log('next state', result);
+    console.groupEnd();
+
+    return result;
+  };
+}
+
+export const metaReducers: MetaReducer<AppState>[] = !environment.production
+  ? [logger]
+  : [];

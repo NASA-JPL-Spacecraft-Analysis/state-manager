@@ -1,0 +1,7 @@
+<h2>FPSA Proto App</h2>
+
+<div *ngIf="(data$ | async) as data">
+  <span *ngFor="let item of data">
+    {{item.id}} - {{item.data}}
+  </span>
+</div>

@@ -1,8 +1,16 @@
-import { Component } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { StoreModule } from '@ngrx/store';
+import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
+import { EffectsModule } from '@ngrx/effects';
+
+import { RouterEffects } from '../libs/ngrx-router';
 
 import { AppRoutingModule } from './app-routing.module';
+import { environment } from './../environments/environment';
+import { NavEffects } from './fpsa-proto-app/effects/nav.effects';
+import { metaReducers, ROOT_REDUCERS } from './app-store';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +26,27 @@ export class AppComponent {
     AppComponent
   ],
   imports: [
+    AppRoutingModule,
     BrowserModule,
-    AppRoutingModule
+    HttpClientModule,
+    EffectsModule.forRoot([
+      NavEffects,
+      RouterEffects
+    ]),
+    StoreModule.forRoot(ROOT_REDUCERS, {
+      metaReducers,
+      runtimeChecks: {
+        strictActionImmutability: !environment.production,
+        strictActionSerializability: false,
+        strictStateImmutability: !environment.production,
+        strictStateSerializability: false,
+      }
+    }),
+    StoreRouterConnectingModule.forRoot({
+      routerState: RouterState.Minimal
+    })
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ]
 })
 export class AppModule {}
