@@ -1,6 +1,6 @@
-package gov.nasa.jpl.fpsa.dao;
+package gov.nasa.jpl.fspa.dao;
 
-import gov.nasas.jpl.fpsa.model.TestString;
+import gov.nasa.jpl.fspa.model.TestString;
 
 import java.util.List;
 

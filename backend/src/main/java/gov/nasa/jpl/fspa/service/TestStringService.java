@@ -1,6 +1,6 @@
-package gov.nasa.jpl.fpsa.service;
+package gov.nasa.jpl.fspa.service;
 
-import gov.nasas.jpl.fpsa.model.TestString;
+import gov.nasa.jpl.fspa.model.TestString;
 
 import java.util.List;
 

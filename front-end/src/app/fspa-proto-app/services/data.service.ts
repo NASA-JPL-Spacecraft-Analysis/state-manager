@@ -15,7 +15,7 @@ export class DataService {
 
   public createNewData(data: string): Observable<Array<TestString>> {
     return this.http.post<Array<TestString>>(
-      'http://localhost:8080/fpsa-proto-app/api/v1/data',
+      'http://localhost:8080/fspa-proto-app/api/v1/data',
       data
     );
   }
@@ -32,6 +32,6 @@ export class DataService {
   }
 
   private getDataHttp(): Observable<Array<TestString>> {
-    return this.http.get<Array<TestString>>('http://localhost:8080/fpsa-proto-app/api/v1/test');
+    return this.http.get<Array<TestString>>('http://localhost:8080/fspa-proto-app/api/v1/test');
   }
 }

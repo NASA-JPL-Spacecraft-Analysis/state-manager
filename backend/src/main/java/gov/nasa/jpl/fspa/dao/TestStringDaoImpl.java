@@ -1,7 +1,7 @@
-package gov.nasa.jpl.fpsa.dao;
+package gov.nasa.jpl.fspa.dao;
 
-import gov.nasa.jpl.fpsa.util.DatabaseUtil;
-import gov.nasas.jpl.fpsa.model.TestString;
+import gov.nasa.jpl.fspa.util.DatabaseUtil;
+import gov.nasa.jpl.fspa.model.TestString;
 
 import java.sql.*;
 import java.util.ArrayList;

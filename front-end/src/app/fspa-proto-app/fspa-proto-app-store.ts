@@ -7,8 +7,8 @@ export interface State {
   data: fromData.DataState;
 }
 
-export interface FpsaProtoAppState extends fromRoot.AppState {
-  fpsaProtoApp: State;
+export interface FspaProtoAppState extends fromRoot.AppState {
+  fspaProtoApp: State;
 }
 
 export function reducers(state: State | undefined, action: Action) {

@@ -1,4 +1,4 @@
-# FPSA Proto App
+# FSPA Proto App
 
 This prototype app was written with Angular (TypeScript), NGRX, Jersey (Java), Docker, and MySQL.
 
@@ -16,7 +16,7 @@ To be able to run the application you need the following software installed:
 2. If this is your first time running the app, you'll need to setup the database.  Connect to the now running MySQL server, and execute `database-setup.sql`.
 3. Next we need to build and deploy the `.war` file to our running Tomcat server, so navigate to the `backend` directory and run `. deploy.sh`. 
 4. Navigate to the `front-end` folder, and run `npm install` to install all the dependencies the front-end application needs.
-5. Finally, run `ng serve` and the front-end application will be running at `http://localhost:4200/fpsa-proto-app`.  This serves the front-end, so it needs to continue running as well.
+5. Finally, run `ng serve` and the front-end application will be running at `http://localhost:4200/fspa-proto-app`.  This serves the front-end, so it needs to continue running as well.
 
 
 ## Running after initial setup

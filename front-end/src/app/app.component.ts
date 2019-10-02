@@ -9,7 +9,7 @@ import { RouterEffects } from '../libs/ngrx-router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { environment } from './../environments/environment';
-import { NavEffects } from './fpsa-proto-app/effects/nav.effects';
+import { NavEffects } from './fspa-proto-app/effects/nav.effects';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
 
 @Component({

@@ -1,4 +1,4 @@
-package gov.nasa.jpl.fpsa;
+package gov.nasa.jpl.fspa;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;

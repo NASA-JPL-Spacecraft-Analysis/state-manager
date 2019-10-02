@@ -1,4 +1,4 @@
-package gov.nasas.jpl.fpsa.model;
+package gov.nasa.jpl.fspa.model;
 
 public class TestString {
     private Integer id;

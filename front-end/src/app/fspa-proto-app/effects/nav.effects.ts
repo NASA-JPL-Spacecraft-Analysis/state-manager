@@ -4,7 +4,7 @@ import { Store, Action } from '@ngrx/store';
 import { withLatestFrom, switchMap, map } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
-import { FpsaProtoAppState } from '../fpsa-proto-app-store';
+import { FspaProtoAppState } from '../fspa-proto-app-store';
 import { DataService } from '../services/data.service';
 import { ofRoute } from 'src/libs/ngrx-router';
 
@@ -13,7 +13,7 @@ export class NavEffects {
   constructor(
     private actions: Actions,
     private dataService: DataService,
-    private store: Store<FpsaProtoAppState>
+    private store: Store<FspaProtoAppState>
   ) {}
 
   public navRoot = createEffect(() =>

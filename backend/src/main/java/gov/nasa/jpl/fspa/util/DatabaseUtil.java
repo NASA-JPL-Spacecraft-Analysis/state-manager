@@ -1,4 +1,4 @@
-package gov.nasa.jpl.fpsa.util;
+package gov.nasa.jpl.fspa.util;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 

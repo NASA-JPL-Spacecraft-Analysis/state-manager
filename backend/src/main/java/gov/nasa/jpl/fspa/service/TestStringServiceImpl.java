@@ -1,8 +1,8 @@
-package gov.nasa.jpl.fpsa.service;
+package gov.nasa.jpl.fspa.service;
 
-import gov.nasa.jpl.fpsa.dao.TestStringDao;
-import gov.nasa.jpl.fpsa.dao.TestStringDaoImpl;
-import gov.nasas.jpl.fpsa.model.TestString;
+import gov.nasa.jpl.fspa.dao.TestStringDao;
+import gov.nasa.jpl.fspa.dao.TestStringDaoImpl;
+import gov.nasa.jpl.fspa.model.TestString;
 
 import java.util.List;
 

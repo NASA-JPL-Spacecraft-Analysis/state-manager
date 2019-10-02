@@ -1,4 +1,4 @@
-package gov.nasa.jpl.fpsa.dao;
+package gov.nasa.jpl.fspa.dao;
 
 public class TestStringQueries {
     public static String TEST_STRINGS = " select * from test_strings ";

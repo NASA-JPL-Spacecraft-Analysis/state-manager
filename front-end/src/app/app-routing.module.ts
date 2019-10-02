@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./fpsa-proto-app/fpsa-proto.module').then(m => m.FpsaProtoAppModule),
+    loadChildren: () => import('./fspa-proto-app/fspa-proto.module').then(m => m.FspaProtoAppModule),
   }
 ];
 

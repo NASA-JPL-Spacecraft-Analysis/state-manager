@@ -1,8 +1,8 @@
-package gov.nasa.jpl.fpsa;
+package gov.nasa.jpl.fspa;
 
-import gov.nasa.jpl.fpsa.service.TestStringService;
-import gov.nasa.jpl.fpsa.service.TestStringServiceImpl;
-import gov.nasas.jpl.fpsa.model.TestString;
+import gov.nasa.jpl.fspa.service.TestStringService;
+import gov.nasa.jpl.fspa.service.TestStringServiceImpl;
+import gov.nasa.jpl.fspa.model.TestString;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -10,10 +10,10 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("v1/")
-public class FpsaProtoResource {
+public class FspaProtoResource {
     private final TestStringService testStringService;
 
-    public FpsaProtoResource() {
+    public FspaProtoResource() {
         testStringService = new TestStringServiceImpl();
     }
 

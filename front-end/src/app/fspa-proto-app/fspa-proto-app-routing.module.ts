@@ -23,4 +23,4 @@ export const routes: Routes = [
     RouterModule.forChild(routes)
   ],
 })
-export class FpsaProtoAppRoutingModule {}
+export class FspaProtoAppRoutingModule {}
