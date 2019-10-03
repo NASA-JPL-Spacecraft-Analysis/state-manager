@@ -13,11 +13,11 @@ export const initialState: DataState = {
 
 export const reducer = createReducer(
   initialState,
-  on(DataActions.setData, (state, action) => ({
+  on(DataActions.createTestStringSuccess, (state, action) => ({
     ...state,
     data: action.data
   })),
-  on(DataActions.createTestStringSuccess, (state, action) => ({
+  on(DataActions.setData, (state, action) => ({
     ...state,
     data: action.data
   }))
