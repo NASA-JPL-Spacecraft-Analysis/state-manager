@@ -9,11 +9,7 @@ export class MockDataService implements DataServiceInterface {
   public createNewData(data: string): Observable<TestString[]> {
     return new Observable((observer: Observer<TestString[]>) => {
       observer.next([
-        ...getMockTestStrings(),
-        {
-          id: 3,
-          data
-        }
+        ...getMockTestStrings()
       ]);
 
       observer.complete();

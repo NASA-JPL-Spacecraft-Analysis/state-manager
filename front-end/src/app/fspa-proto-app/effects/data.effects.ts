@@ -22,7 +22,6 @@ export class DataEffects {
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
       switchMap(({ action, state }) => {
-        console.log(action);
         return this.dataService.createNewData(
           action.data
         ).pipe(
@@ -38,7 +37,7 @@ export class DataEffects {
               DataActions.createTestStringFailure({ error })
             ]
           )
-        )
+        );
       })
     )
   );
