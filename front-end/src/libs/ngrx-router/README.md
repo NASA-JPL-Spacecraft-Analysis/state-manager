@@ -1,0 +1,3 @@
+Copied from https://github.jpl.nasa.gov/MPS/aerie, some of the newest features weren't available in the latest NPM version.
+
+Needs to be updated in NPM but the project is dead...
