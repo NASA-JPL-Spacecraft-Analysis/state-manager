@@ -1,0 +1,9 @@
+<mat-form-field>
+  <mat-select [(ngModel)]="selected">
+    <mat-option *ngFor="let item of items" [value]="item.data">
+      {{item.data}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<p>Selected string: {{selected}}</p>

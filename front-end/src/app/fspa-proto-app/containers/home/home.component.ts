@@ -8,6 +8,7 @@ import { FspaProtoAppState } from '../../fspa-proto-app-store';
 import { getData } from '../../selectors';
 import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
 import { DataActions } from '../../actions';
+import { DataDisplayModule } from '../../components/data-display/data-display.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +17,7 @@ import { DataActions } from '../../actions';
   templateUrl: 'home.component.html'
 })
 export class HomeComponent {
-  public data$: Observable<Array<TestString>>;
+  public data$: Observable<TestString[]>;
 
   constructor(
     private store: Store<FspaProtoAppState>
@@ -40,6 +41,7 @@ export class HomeComponent {
   ],
   imports: [
     AddDataFormModule,
+    DataDisplayModule,
     CommonModule
   ]
 })
