@@ -1,5 +1,7 @@
 <div class="add-data-form-container">
-  <input type="text" [(ngModel)]="newData" />
+  <mat-form-field class="input-form">
+    <input matInput type="text" [(ngModel)]="newData" />
+  </mat-form-field>
 
-  <button (click)="onDataAdd(newData)">Add Data</button>
+  <button mat-raised-button color="primary" (click)="onDataAdd(newData)">Add Data</button>
 </div>

@@ -4,9 +4,6 @@
   (addData)="onAddData($event)">
 </add-data-form>
 
-<div *ngIf="(data$ | async) as data">
-  <span *ngFor="let item of data">
-    {{item.id}} - {{item.data}}
-    <br />
-  </span>
-</div>
+<data-display
+  [items]="data$ | async">
+</data-display>

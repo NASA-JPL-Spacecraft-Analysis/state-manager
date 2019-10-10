@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { environment } from './../environments/environment';
 import { NavEffects } from './fspa-proto-app/effects/nav.effects';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-root',
@@ -44,7 +45,8 @@ export class AppComponent {
     }),
     StoreRouterConnectingModule.forRoot({
       routerState: RouterState.Minimal
-    })
+    }),
+    NoopAnimationsModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
