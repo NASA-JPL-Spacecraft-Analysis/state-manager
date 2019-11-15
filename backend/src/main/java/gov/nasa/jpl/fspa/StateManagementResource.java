@@ -10,10 +10,10 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("v1/")
-public class FspaProtoResource {
+public class StateManagementResource {
     private final TestStringService testStringService;
 
-    public FspaProtoResource() {
+    public StateManagementResource() {
         testStringService = new TestStringServiceImpl();
     }
 

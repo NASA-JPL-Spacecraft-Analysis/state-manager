@@ -1,6 +1,4 @@
-# FSPA Proto App
-
-This prototype app was written with Angular (TypeScript), NGRX, Jersey (Java), Docker, and MySQL.
+# State Management Pilot
 
 ## Requirements
 

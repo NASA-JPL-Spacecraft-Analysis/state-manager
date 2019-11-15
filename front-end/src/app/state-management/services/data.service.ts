@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { TestString } from './../models';
+import { TestString } from '../models';
 import { map, catchError } from 'rxjs/operators';
 import { DataActions } from '../actions';
 import { DataServiceInterface } from './data.service.interface';
@@ -16,7 +16,7 @@ export class DataService implements DataServiceInterface {
 
   public createNewData(data: string): Observable<TestString[]> {
     return this.http.post<TestString[]>(
-      'http://localhost:8080/fspa-proto-app/api/v1/data',
+      'http://localhost:8080/state-management/api/v1/data',
       data
     );
   }
@@ -33,6 +33,6 @@ export class DataService implements DataServiceInterface {
   }
 
   private getDataHttp(): Observable<TestString[]> {
-    return this.http.get<Array<TestString>>('http://localhost:8080/fspa-proto-app/api/v1/test');
+    return this.http.get<Array<TestString>>('http://localhost:8080/state-management/api/v1/test');
   }
 }

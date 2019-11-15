@@ -6,7 +6,7 @@ import { hot, cold } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
 
 import { DataEffects } from './data.effects';
-import { reducers } from '../fspa-proto-app-store';
+import { reducers } from '../state-management-app-store';
 import { DataService } from '../services/data.service';
 import { MockDataService, getMockTestStrings } from '../services/mock-data.service';
 import { DataActions } from '../actions';
@@ -25,7 +25,7 @@ describe('DataEffects', () => {
       imports: [
         HttpClientModule,
         StoreModule.forRoot(ROOT_REDUCERS),
-        StoreModule.forFeature('fspaProtoApp', reducers)
+        StoreModule.forFeature('stateManagementApp', reducers)
       ],
       providers: [
         DataEffects,

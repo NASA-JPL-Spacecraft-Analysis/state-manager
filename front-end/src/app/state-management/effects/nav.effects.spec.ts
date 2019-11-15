@@ -9,7 +9,7 @@ import { RouterNavigation } from 'src/libs/ngrx-router';
 
 import { NavEffects } from './nav.effects';
 import { ROOT_REDUCERS } from 'src/app/app-store';
-import { reducers } from '../fspa-proto-app-store';
+import { reducers } from '../state-management-app-store';
 import { DataService } from '../services/data.service';
 import { MockDataService, getMockTestStrings } from '../services/mock-data.service';
 import { DataActions } from '../actions';
@@ -32,7 +32,7 @@ describe('NavEffects', () => {
       imports: [
         HttpClientModule,
         StoreModule.forRoot(ROOT_REDUCERS),
-        StoreModule.forFeature('fspaProtoApp', reducers)
+        StoreModule.forFeature('stateManagementApp', reducers)
       ],
       providers: [
         NavEffects,

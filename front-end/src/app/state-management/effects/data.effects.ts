@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
 import { DataService } from '../services/data.service';
-import { FspaProtoAppState } from '../fspa-proto-app-store';
+import { StateManagementAppState } from '../state-management-app-store';
 import { DataActions } from '../actions';
 import { TestString } from '../models';
 
@@ -13,7 +13,7 @@ export class DataEffects {
   constructor(
     private actions: Actions,
     private dataService: DataService,
-    private store: Store<FspaProtoAppState>
+    private store: Store<StateManagementAppState>
   ) {}
 
   public createNewData = createEffect(() =>

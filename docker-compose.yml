@@ -5,8 +5,8 @@ services:
     build: ./backend
     restart: always
     environment:
-      JDBC_URL: jdbc:mysql://db:3306/fspa-proto-app-db
-      JDBC_USER: "fspa-proto-db-user"
+      JDBC_URL: jdbc:mysql://db:3306/state-management-pilot-db
+      JDBC_USER: "state-management-pilot-db-user"
       JDBC_PASS: "testing"
     ports:
       - "8080:8080"
@@ -17,8 +17,8 @@ services:
     image: mysql:8.0.15
     restart: always
     environment:
-      MYSQL_DATABASE: "fspa-proto-app-db"
-      MYSQL_USER: "fspa-proto-db-user"
+      MYSQL_DATABASE: "state-management-pilot-app-db"
+      MYSQL_USER: "state-management-pilot-db-user"
       MYSQL_PASSWORD: "testing"
       MYSQL_RANDOM_ROOT_PASSWORD: 1
     ports:
@@ -26,6 +26,6 @@ services:
     expose:
       - "3306"
     volumes:
-      - fspa-proto-app-db:/var/lib/mysql
+      - state-management-pilot-db:/var/lib/mysql
 volumes:
-  fspa-proto-app-db:
+  state-management-pilot-db:

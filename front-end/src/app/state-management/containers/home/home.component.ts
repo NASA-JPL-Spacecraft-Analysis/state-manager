@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { TestString } from '../../models';
-import { FspaProtoAppState } from '../../fspa-proto-app-store';
+import { StateManagementAppState } from '../../state-management-app-store';
 import { getData } from '../../selectors';
 import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
 import { DataActions } from '../../actions';
@@ -20,7 +20,7 @@ export class HomeComponent {
   public data$: Observable<TestString[]>;
 
   constructor(
-    private store: Store<FspaProtoAppState>
+    private store: Store<StateManagementAppState>
   ) {
     this.data$ = this.store.pipe(select(getData));
   }

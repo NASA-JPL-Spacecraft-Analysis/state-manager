@@ -5,9 +5,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 import javax.ws.rs.ApplicationPath;
 
 @ApplicationPath("api")
-public class FspaProtoApplication extends ResourceConfig {
-    public FspaProtoApplication() {
+public class StateManagementApplication extends ResourceConfig {
+    public StateManagementApplication() {
         register(CorsFilter.class);
-        register(FspaProtoResource.class);
+        register(StateManagementResource.class);
     }
 }

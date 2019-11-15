@@ -1,9 +1,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-import { State } from '../fspa-proto-app-store';
-import { DataState } from './../reducers/data.reducer';
+import { State } from '../state-management-app-store';
+import { DataState } from '../reducers/data.reducer';
 
-const featureSelector = createFeatureSelector<State>('fspaProtoApp');
+const featureSelector = createFeatureSelector<State>('stateManagementApp');
 
 export const getDataState = createSelector(
   featureSelector,

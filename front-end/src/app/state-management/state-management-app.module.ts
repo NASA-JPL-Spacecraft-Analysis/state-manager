@@ -3,8 +3,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { FspaProtoAppRoutingModule } from './fspa-proto-app-routing.module';
-import { reducers } from './fspa-proto-app-store';
+import { StateManagementAppRoutingModule } from './state-management-app-routing.module';
+import { reducers } from './state-management-app-store';
 import { HomeModule } from './containers';
 import { DataEffects } from './effects';
 
@@ -14,9 +14,9 @@ import { DataEffects } from './effects';
     EffectsModule.forRoot([
       DataEffects
     ]),
-    FspaProtoAppRoutingModule,
-    StoreModule.forFeature('fspaProtoApp', reducers),
+    StateManagementAppRoutingModule,
+    StoreModule.forFeature('stateManagementApp', reducers),
     HomeModule
   ]
 })
-export class FspaProtoAppModule {}
+export class StateManagementAppModule {}
