@@ -4,6 +4,6 @@ import { Action } from '@ngrx/store';
 import { StateVariable } from '../models';
 
 export interface StateManagementServiceInterface {
-  createNewStateVariable(stateVariable: StateVariable): Observable<StateVariable[]>;
-  getStateVariables(): Observable<Action>;
+  createNewStateVariable(baseUrl: string, stateVariable: StateVariable): Observable<StateVariable[]>;
+  getStateVariables(baseUrl: string): Observable<Action>;
 }

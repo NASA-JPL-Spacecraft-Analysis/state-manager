@@ -14,15 +14,15 @@ import { StateManagementServiceInterface } from './state-management.service.inte
 export class StateManagementService implements StateManagementServiceInterface {
   constructor(private http: HttpClient) {}
 
-  public createNewStateVariable(stateVariable: StateVariable): Observable<StateVariable[]> {
+  public createNewStateVariable(baseUrl: string, stateVariable: StateVariable): Observable<StateVariable[]> {
     return this.http.post<StateVariable[]>(
-      'http://localhost:8080/state-management/api/v1/state-variable',
+      baseUrl + '/state-variable',
       stateVariable
     );
   }
 
-  public getStateVariables(): Observable<Action> {
-    return this.http.get<StateVariable[]>('http://localhost:8080/state-management/api/v1/state-variable').pipe(
+  public getStateVariables(baseUrl: string): Observable<Action> {
+    return this.http.get<StateVariable[]>(baseUrl + '/state-variable').pipe(
       map(
         stateVariables => StateVariableActions.setStateVariables({ stateVariables })
       ),

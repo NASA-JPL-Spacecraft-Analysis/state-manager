@@ -23,6 +23,7 @@ export class DataEffects {
       map(([action, state]) => ({ action, state })),
       switchMap(({ action, state }) => {
         return this.stateManagementService.createNewStateVariable(
+          state.config.app.baseUrl,
           action.stateVariable
         ).pipe(
           switchMap(
