@@ -6,7 +6,7 @@ import { forkJoin } from 'rxjs';
 
 import { StateManagementAppState } from '../state-management-app-store';
 import { StateManagementService } from '../services/state-management.service';
-import { ofRoute } from 'src/libs/ngrx-router';
+import { ofRoute } from '../functions/router';
 
 @Injectable()
 export class NavEffects {
