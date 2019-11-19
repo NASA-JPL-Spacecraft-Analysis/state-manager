@@ -5,9 +5,9 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { hot, cold } from 'jasmine-marbles';
 import { Observable, of } from 'rxjs';
 
-import { DataEffects } from './data.effects';
+import { DataEffects } from './state-variable.effects';
 import { reducers } from '../state-management-app-store';
-import { DataService } from '../services/data.service';
+import { DataService } from '../services/state-management.service';
 import { MockDataService, getMockTestStrings } from '../services/mock-data.service';
 import { DataActions } from '../actions';
 import { TestString } from '../models';

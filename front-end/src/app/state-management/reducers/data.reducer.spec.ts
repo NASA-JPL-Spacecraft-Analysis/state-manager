@@ -1,4 +1,4 @@
-import { initialState, reducer } from './data.reducer';
+import { initialState, reducer } from './state-management.reducer';
 import { DataActions } from '../actions';
 import { TestString } from '../models';
 import { getMockTestStrings } from '../services/mock-data.service';

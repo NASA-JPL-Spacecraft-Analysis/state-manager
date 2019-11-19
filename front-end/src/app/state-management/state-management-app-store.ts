@@ -1,10 +1,10 @@
 import { Action, combineReducers } from '@ngrx/store';
 
 import * as fromRoot from '../app-store';
-import * as fromData from './reducers/data.reducer';
+import * as fromData from './reducers/state-management.reducer';
 
 export interface State {
-  data: fromData.DataState;
+  data: fromData.StateManagementState;
 }
 
 export interface StateManagementAppState extends fromRoot.AppState {

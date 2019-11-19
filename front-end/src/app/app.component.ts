@@ -48,7 +48,11 @@ export class AppComponent {
     }),
     NoopAnimationsModule
   ],
-  providers: [],
-  bootstrap: [ AppComponent ]
+  providers: [
+
+  ],
+  bootstrap: [
+    AppComponent
+  ],
 })
 export class AppModule {}

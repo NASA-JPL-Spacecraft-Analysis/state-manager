@@ -1,2 +1,2 @@
-export * from './data.effects';
+export * from './state-variable.effects';
 export * from './nav.effects';

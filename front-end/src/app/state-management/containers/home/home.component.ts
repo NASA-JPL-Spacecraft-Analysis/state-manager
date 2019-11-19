@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { TestString } from '../../models';
+import { StateVariable } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
-import { getData } from '../../selectors';
+import { getStateVariables } from '../../selectors';
 import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
-import { DataActions } from '../../actions';
+import { StateVariableActions } from '../../actions';
 import { DataDisplayModule } from '../../components/data-display/data-display.component';
 
 @Component({
@@ -17,17 +17,17 @@ import { DataDisplayModule } from '../../components/data-display/data-display.co
   templateUrl: 'home.component.html'
 })
 export class HomeComponent {
-  public data$: Observable<TestString[]>;
+  public stateVariables$: Observable<StateVariable[]>;
 
   constructor(
     private store: Store<StateManagementAppState>
   ) {
-    this.data$ = this.store.pipe(select(getData));
+    this.stateVariables$ = this.store.pipe(select(getStateVariables));
   }
 
-  public onAddData(data: string): void {
-    if (data !== undefined) {
-      this.store.dispatch(DataActions.createNewData({ data }));
+  public onModifyData(stateVariable: StateVariable): void {
+    if (stateVariable !== undefined) {
+      this.store.dispatch(StateVariableActions.modifyStateVariable({ stateVariable }));
     }
   }
 }

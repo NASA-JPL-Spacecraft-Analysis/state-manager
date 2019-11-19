@@ -1,3 +1,3 @@
-import * as DataActions from './data.actions';
+import * as StateVariableActions from './state-variable.actions';
 
-export { DataActions };
+export { StateVariableActions };

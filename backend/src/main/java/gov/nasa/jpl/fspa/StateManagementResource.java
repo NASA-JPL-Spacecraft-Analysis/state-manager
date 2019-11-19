@@ -1,8 +1,8 @@
 package gov.nasa.jpl.fspa;
 
-import gov.nasa.jpl.fspa.service.TestStringService;
-import gov.nasa.jpl.fspa.service.TestStringServiceImpl;
-import gov.nasa.jpl.fspa.model.TestString;
+import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.service.StateVariableService;
+import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -11,35 +11,35 @@ import java.util.List;
 
 @Path("v1/")
 public class StateManagementResource {
-    private final TestStringService testStringService;
+    private final StateVariableService stateVariableService;
 
     public StateManagementResource() {
-        testStringService = new TestStringServiceImpl();
+        stateVariableService = new StateVariableServiceImpl();
     }
 
     @GET
-    @Path("/test")
+    @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
     public Response test() {
-        List<TestString> testStrings = testStringService.getTestStrings();
+        List<StateVariable> stateVariables = stateVariableService.getStateVariables();
 
-        if (testStrings.isEmpty()) {
+        if (stateVariables.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.OK).entity(testStrings).build();
+        return Response.status(Response.Status.OK).entity(stateVariables).build();
     }
 
     @POST
-    @Path("/data")
+    @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response data(String data) {
-        List<TestString> testStrings = testStringService.postNewData(data);
+    public Response data(StateVariable stateVariable) {
+        List<StateVariable> stateVariables = stateVariableService.postStateVariable(stateVariable);
 
-        if (testStrings.isEmpty()) {
+        if (stateVariables.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.OK).entity(testStrings).build();
+        return Response.status(Response.Status.OK).entity(stateVariables).build();
     }
 }

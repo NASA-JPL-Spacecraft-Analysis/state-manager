@@ -7,6 +7,7 @@ import { StateManagementAppRoutingModule } from './state-management-app-routing.
 import { reducers } from './state-management-app-store';
 import { HomeModule } from './containers';
 import { DataEffects } from './effects';
+import { DataDialogComponent } from './components/data-dialog/data-dialog.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,9 @@ import { DataEffects } from './effects';
     StateManagementAppRoutingModule,
     StoreModule.forFeature('stateManagementApp', reducers),
     HomeModule
+  ],
+  entryComponents: [
+    DataDialogComponent
   ]
 })
 export class StateManagementAppModule {}

@@ -3,38 +3,38 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
-import { DataService } from '../services/data.service';
+import { StateManagementService } from '../services/state-management.service';
 import { StateManagementAppState } from '../state-management-app-store';
-import { DataActions } from '../actions';
-import { TestString } from '../models';
+import { StateVariableActions } from '../actions';
+import { StateVariable } from '../models';
 
 @Injectable()
 export class DataEffects {
   constructor(
     private actions: Actions,
-    private dataService: DataService,
+    private stateManagementService: StateManagementService,
     private store: Store<StateManagementAppState>
   ) {}
 
-  public createNewData = createEffect(() =>
+  public modifyStateVariable = createEffect(() =>
     this.actions.pipe(
-      ofType(DataActions.createNewData),
+      ofType(StateVariableActions.modifyStateVariable),
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
       switchMap(({ action, state }) => {
-        return this.dataService.createNewData(
-          action.data
+        return this.stateManagementService.createNewStateVariable(
+          action.stateVariable
         ).pipe(
           switchMap(
-            (data: Array<TestString>) => [
-              DataActions.createTestStringSuccess({
-                data
+            (stateVariables: StateVariable[]) => [
+              StateVariableActions.createStateVariableSuccess({
+                stateVariables
               })
             ]
           ),
           catchError(
             (error: Error) => [
-              DataActions.createTestStringFailure({ error })
+              StateVariableActions.createStateVariableFailure({ error })
             ]
           )
         );

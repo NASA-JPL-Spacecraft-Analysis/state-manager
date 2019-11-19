@@ -5,25 +5,25 @@ import { withLatestFrom, switchMap, map } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
 import { StateManagementAppState } from '../state-management-app-store';
-import { DataService } from '../services/data.service';
+import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from 'src/libs/ngrx-router';
 
 @Injectable()
 export class NavEffects {
   constructor(
     private actions: Actions,
-    private dataService: DataService,
+    private stateManagementService: StateManagementService,
     private store: Store<StateManagementAppState>
   ) {}
 
   public navRoot = createEffect(() =>
     this.actions.pipe(
-      ofRoute('test'),
+      ofRoute('states'),
       withLatestFrom(this.store),
       map(([_, state]) => state),
       switchMap(state =>
         forkJoin([
-          this.dataService.getData()
+          this.stateManagementService.getStateVariables()
         ]),
       ),
       switchMap((actions: Action[]) => [

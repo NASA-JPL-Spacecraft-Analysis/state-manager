@@ -12,7 +12,7 @@ import { ROOT_REDUCERS } from 'src/app/app-store';
 import { reducers } from '../state-management-app-store';
 import { DataService } from '../services/data.service';
 import { MockDataService, getMockTestStrings } from '../services/mock-data.service';
-import { DataActions } from '../actions';
+import { StateVariableActions } from '../actions';
 import { TestString } from '../models';
 
 describe('NavEffects', () => {

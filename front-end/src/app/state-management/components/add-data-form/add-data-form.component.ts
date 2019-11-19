@@ -2,8 +2,12 @@ import { Component, ChangeDetectionStrategy, NgModule, EventEmitter, Output } fr
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+
+import { DataDialogModule, DataDialogComponent } from '../data-dialog/data-dialog.component';
+import { StateVariable } from '../../models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,19 +16,26 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: 'add-data-form.component.html'
 })
 export class AddDataFormComponent {
-  @Output() public addData: EventEmitter<string>;
+  @Output() public modifyData: EventEmitter<StateVariable> = new EventEmitter<StateVariable>();
 
-  public newData: string;
+  constructor(public dialog: MatDialog) {}
 
-  constructor() {
-    this.addData = new EventEmitter<string>();
+  public onCreate(): void {
+    const dialogRef = this.dialog.open(DataDialogComponent, {
+      width: '400px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (result: StateVariable) => {
+        this.modifyData.emit(result);
+      }
+    );
   }
 
-  public onDataAdd(data: string): void {
-    this.addData.emit(data);
+  // TODO: Handle editing an item
+  public onEdit(): void {
 
-    // Clear out the field after emitting.
-    this.newData = undefined;
   }
 }
 
@@ -36,9 +47,11 @@ export class AddDataFormComponent {
     AddDataFormComponent
   ],
   imports: [
+    DataDialogModule,
     CommonModule,
     FormsModule,
     MatButtonModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatInputModule
   ]

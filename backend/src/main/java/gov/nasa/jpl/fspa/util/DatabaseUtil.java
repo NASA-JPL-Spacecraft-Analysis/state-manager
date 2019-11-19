@@ -17,11 +17,14 @@ public class DatabaseUtil {
             dataSource.setUser(System.getenv("JDBC_USER"));
             dataSource.setPassword(System.getenv("JDBC_PASS"));
 
-            dataSource.setInitialPoolSize(5);
-            dataSource.setMinPoolSize(5);
-            dataSource.setAcquireIncrement(5);
+            dataSource.setMinPoolSize(3);
             dataSource.setMaxPoolSize(20);
+            dataSource.setAcquireIncrement(1);
+            dataSource.setTestConnectionOnCheckin(true);
+            dataSource.setIdleConnectionTestPeriod(300);
+            dataSource.setMaxIdleTimeExcessConnections(240);
             dataSource.setMaxStatements(100);
+            dataSource.setInitialPoolSize(5);
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }

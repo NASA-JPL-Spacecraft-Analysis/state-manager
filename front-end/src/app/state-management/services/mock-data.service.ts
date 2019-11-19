@@ -2,10 +2,11 @@ import { Action } from '@ngrx/store';
 import { Observable, Observer } from 'rxjs';
 
 import { TestString } from '../models';
-import { DataServiceInterface } from './data.service.interface';
-import { DataActions } from '../actions';
+import { StateManagementServiceInterface } from './state-management.service.interface';
+import { StateVariableActions } from '../actions';
 
-export class MockDataService implements DataServiceInterface {
+/*
+export class MockStateManagementServiceService implements StateManagementServiceInterface {
   public createNewData(data: string): Observable<TestString[]> {
     return new Observable((observer: Observer<TestString[]>) => {
       observer.next([
@@ -43,3 +44,4 @@ export function getMockTestStrings(): TestString[] {
     }
   ];
 }
+*/

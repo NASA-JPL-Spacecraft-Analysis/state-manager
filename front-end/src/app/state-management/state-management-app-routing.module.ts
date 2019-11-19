@@ -7,11 +7,11 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'test'
+    redirectTo: 'states'
   },
   {
     component: HomeComponent,
-    path: 'test'
+    path: 'states'
   },
 ];
 

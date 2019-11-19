@@ -12,14 +12,8 @@ import { TestString } from '../../models';
   styleUrls: [ 'data-display.component.css' ],
   templateUrl: 'data-display.component.html'
 })
-export class DataDisplayComponent implements OnInit {
+export class DataDisplayComponent {
   @Input() public items: TestString[];
-
-  public selected: string;
-
-  public ngOnInit(): void {
-    console.log(this.items);
-  }
 }
 
 @NgModule({
