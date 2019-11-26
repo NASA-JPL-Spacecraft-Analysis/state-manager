@@ -15,9 +15,10 @@ export class StateVariableTableComponent {
 
   public displayedColumns: string[] = [
     'identifier',
-    'source',
+    'name',
     'type',
     'units',
+    'source',
     'description'
   ];
 }

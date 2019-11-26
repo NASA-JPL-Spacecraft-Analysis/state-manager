@@ -21,9 +21,10 @@ public class StateVariableDaoImpl implements StateVariableDao {
 
                 stateVariable.setId(Integer.valueOf(resultSet.getString("id")));
                 stateVariable.setIdentifier(resultSet.getString("identifier"));
-                stateVariable.setSource(resultSet.getString("source"));
+                stateVariable.setName(resultSet.getString("name"));
                 stateVariable.setType(resultSet.getString("type"));
                 stateVariable.setUnits(resultSet.getString("units"));
+                stateVariable.setSource(resultSet.getString("source"));
                 stateVariable.setDescription(resultSet.getString("description"));
 
                 stateVariables.add(stateVariable);
@@ -40,17 +41,21 @@ public class StateVariableDaoImpl implements StateVariableDao {
         int id = -1;
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.POST_STATE_VARIABLE)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.POST_STATE_VARIABLE,
+                     Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, stateVariable.getIdentifier());
-            preparedStatement.setString(2, stateVariable.getSource());
+            preparedStatement.setString(2, stateVariable.getName());
             preparedStatement.setString(3, stateVariable.getType());
             preparedStatement.setString(4, stateVariable.getUnits());
-            preparedStatement.setString(5, stateVariable.getDescription());
+            preparedStatement.setString(5, stateVariable.getSource());
+            preparedStatement.setString(6, stateVariable.getDescription());
 
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+            resultSet.next();
 
             id = resultSet.getInt(1);
         } catch (Exception e) {

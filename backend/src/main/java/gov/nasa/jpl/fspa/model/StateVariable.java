@@ -3,9 +3,10 @@ package gov.nasa.jpl.fspa.model;
 public class StateVariable {
     private Integer id;
     private String identifier;
-    private String source; // enum?
+    private String name;
     private String type; // enum?
     private String units; // enum?
+    private String source; // enum?
     private String description;
 
     public Integer getId() {
@@ -24,12 +25,12 @@ public class StateVariable {
         this.identifier = identifier;
     }
 
-    public String getSource() {
-        return source;
+    public String getName() {
+        return name;
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {
@@ -46,6 +47,14 @@ public class StateVariable {
 
     public void setUnits(String units) {
         this.units = units;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getDescription() {

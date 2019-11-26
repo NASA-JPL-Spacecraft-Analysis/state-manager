@@ -17,7 +17,7 @@ services:
     image: mysql:8.0.15
     restart: always
     environment:
-      MYSQL_DATABASE: "state-management-app-db"
+      MYSQL_DATABASE: "state-management-db"
       MYSQL_USER: "state-management-db-user"
       MYSQL_PASSWORD: "testing"
       MYSQL_RANDOM_ROOT_PASSWORD: 1
