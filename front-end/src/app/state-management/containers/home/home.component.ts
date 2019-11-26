@@ -8,7 +8,7 @@ import { StateManagementAppState } from '../../state-management-app-store';
 import { getStateVariables } from '../../selectors';
 import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
 import { StateVariableActions } from '../../actions';
-import { DataDisplayModule } from '../../components/data-display/data-display.component';
+import { StateVariableTableModule } from '../../components/state-variable-table/state-variable-table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,7 +41,7 @@ export class HomeComponent {
   ],
   imports: [
     AddDataFormModule,
-    DataDisplayModule,
+    StateVariableTableModule,
     CommonModule
   ]
 })
