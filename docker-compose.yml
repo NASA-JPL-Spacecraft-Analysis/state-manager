@@ -5,27 +5,8 @@ services:
     build: ./backend
     restart: always
     environment:
-      JDBC_URL: jdbc:mysql://db:3306/state-management-db
+      JDBC_URL: jdbc:mysql://host.docker.internal:3306/state-management-db
       JDBC_USER: "state-management-db-user"
       JDBC_PASS: "testing"
     ports:
       - "8080:8080"
-    links:
-      - db
-
-  db:
-    image: mysql:8.0.15
-    restart: always
-    environment:
-      MYSQL_DATABASE: "state-management-db"
-      MYSQL_USER: "state-management-db-user"
-      MYSQL_PASSWORD: "testing"
-      MYSQL_RANDOM_ROOT_PASSWORD: 1
-    ports:
-      - "3306:3306"
-    expose:
-      - "3306"
-    volumes:
-      - state-management-db:/var/lib/mysql
-volumes:
-  state-management-db:

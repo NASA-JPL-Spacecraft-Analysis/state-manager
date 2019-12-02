@@ -1,5 +1,5 @@
 CREATE TABLE `state_variables` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `identifier` varchar(45) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `type` varchar(45) DEFAULT NULL,
