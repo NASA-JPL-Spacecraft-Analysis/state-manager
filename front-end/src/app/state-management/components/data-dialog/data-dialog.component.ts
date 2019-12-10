@@ -1,5 +1,5 @@
 import { Component, NgModule, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,16 +14,24 @@ import { StateVariable } from '../../models';
   styleUrls: [ 'data-dialog.component.css' ]
 })
 export class DataDialogComponent implements OnInit {
-  constructor(public dialogRef: MatDialogRef<DataDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public stateVariable: StateVariable) {}
+  constructor(
+    public dialogRef: MatDialogRef<DataDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { stateVariable: StateVariable }
+  ) {}
 
+  public form: FormGroup;
   public title = '';
+  public stateVariable: StateVariable;
 
   public ngOnInit(): void {
-    if (Object.keys(this.stateVariable).length === 0) {
+    if (Object.keys(this.data).length === 0) {
       this.title = 'Create State';
     } else {
       this.title = 'Edit State';
+
+      this.stateVariable = {
+        ...this.data.stateVariable
+      };
     }
   }
 

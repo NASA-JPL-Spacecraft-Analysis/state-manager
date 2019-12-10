@@ -1,6 +1,7 @@
 import { NgModule, Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { select, Store } from '@ngrx/store';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
 import { StateVariable } from '../../models';
@@ -9,6 +10,7 @@ import { getStateVariables } from '../../selectors';
 import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
 import { StateVariableActions } from '../../actions';
 import { StateVariableTableModule } from '../../components/state-variable-table/state-variable-table.component';
+import { DataDialogComponent, DataDialogModule } from '../../components/data-dialog/data-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,14 +22,42 @@ export class HomeComponent {
   public stateVariables$: Observable<StateVariable[]>;
 
   constructor(
+    public dialog: MatDialog,
     private store: Store<StateManagementAppState>
   ) {
     this.stateVariables$ = this.store.pipe(select(getStateVariables));
   }
 
-  public onModifyData(stateVariable: StateVariable): void {
+  /**
+   * Called on creation or edit of a state variable.
+   * @param stateVariable The state variable that we're creating or modifing.
+   */
+  public onModifyStateVariable(stateVariable?: StateVariable): void {
+    const dialogRef = this.dialog.open(DataDialogComponent, {
+      width: '400px',
+      data: {
+        stateVariable
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(
+      (modifiedStateVariable: StateVariable) => {
+        this.modifyData(modifiedStateVariable);
+      }
+    );
+  }
+
+  public modifyData(stateVariable: StateVariable): void {
     if (stateVariable !== undefined) {
-      this.store.dispatch(StateVariableActions.modifyStateVariable({ stateVariable }));
+      if (stateVariable.id == null) {
+        this.store.dispatch(StateVariableActions.createStateVariable({
+          stateVariable
+        }));
+      } else {
+        this.store.dispatch(StateVariableActions.createStateVariable({
+          stateVariable
+        }));
+      }
     }
   }
 }
@@ -41,6 +71,7 @@ export class HomeComponent {
   ],
   imports: [
     AddDataFormModule,
+    DataDialogModule,
     StateVariableTableModule,
     CommonModule
   ]

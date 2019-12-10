@@ -2,8 +2,8 @@ import { createAction, props } from '@ngrx/store';
 
 import { StateVariable } from '../models';
 
-export const modifyStateVariable = createAction(
-  '[state variable] modify_state_variable',
+export const createStateVariable = createAction(
+  '[state variable] create_state_variable',
   props<{ stateVariable: StateVariable }>()
 );
 
@@ -14,6 +14,21 @@ export const createStateVariableFailure = createAction(
 
 export const createStateVariableSuccess = createAction(
   '[state variable] create_state_variable_success',
+  props<{ stateVariables: StateVariable[] }>()
+);
+
+export const editStateVariable = createAction(
+  '[state variable] edit_state_variable',
+  props<{ stateVariable: StateVariable }>()
+);
+
+export const editStateVariableFailure = createAction(
+  '[state variable] edit_state_variable_failure',
+  props<{ error: Error }>()
+);
+
+export const editStateVariableSuccess = createAction(
+  '[state variable] edit_state_variable_success',
   props<{ stateVariables: StateVariable[] }>()
 );
 
