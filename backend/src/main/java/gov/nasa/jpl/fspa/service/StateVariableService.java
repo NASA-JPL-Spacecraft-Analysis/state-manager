@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface StateVariableService {
     List<StateVariable> getStateVariables();
-    List<StateVariable> postStateVariable(StateVariable stateVariable);
+    List<StateVariable> modifyStateVariable(StateVariable stateVariable);
 }

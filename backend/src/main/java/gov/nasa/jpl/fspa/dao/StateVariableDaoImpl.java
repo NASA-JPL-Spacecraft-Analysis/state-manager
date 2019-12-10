@@ -37,11 +37,20 @@ public class StateVariableDaoImpl implements StateVariableDao {
     }
 
     @Override
-    public int postStateVariable(StateVariable stateVariable) {
+    public int saveStateVariable(StateVariable stateVariable) {
         int id = -1;
+        String query;
+
+        if (stateVariable.getId() == null) {
+            // Create a state variable.
+            query = StateVariableQueries.POST_STATE_VARIABLE;
+        } else {
+            // Edit a state variable.
+            query = StateVariableQueries.PUT_STATE_VARIABLE;
+        }
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.POST_STATE_VARIABLE,
+             PreparedStatement preparedStatement = connection.prepareStatement(query,
                      Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, stateVariable.getIdentifier());
@@ -51,13 +60,22 @@ public class StateVariableDaoImpl implements StateVariableDao {
             preparedStatement.setString(5, stateVariable.getSource());
             preparedStatement.setString(6, stateVariable.getDescription());
 
+            // If we're editing our state variable, we need to set the id.
+            if (stateVariable.getId() != null) {
+                preparedStatement.setInt(7, stateVariable.getId());
+            }
+
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
-            resultSet.next();
+            if (stateVariable.getId() != null) {
+                id = stateVariable.getId();
+            } else {
+                resultSet.next();
 
-            id = resultSet.getInt(1);
+                id = resultSet.getInt(1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

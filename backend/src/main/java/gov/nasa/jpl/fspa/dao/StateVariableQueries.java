@@ -7,4 +7,14 @@ public class StateVariableQueries {
                                                " (identifier, name, type, units, source, description) " +
                                                " values " +
                                                " (?, ?, ?, ?, ?, ?) ";
+
+    public static String PUT_STATE_VARIABLE = " update state_variables " +
+                                              " set " +
+                                              " identifier = ?, " +
+                                              " name = ?, " +
+                                              " type = ?, " +
+                                              " units = ?, " +
+                                              " source = ?, " +
+                                              " description = ? " +
+                                              " where id = ? ";
 }

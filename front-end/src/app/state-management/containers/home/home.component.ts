@@ -54,7 +54,7 @@ export class HomeComponent {
           stateVariable
         }));
       } else {
-        this.store.dispatch(StateVariableActions.createStateVariable({
+        this.store.dispatch(StateVariableActions.editStateVariable({
           stateVariable
         }));
       }
