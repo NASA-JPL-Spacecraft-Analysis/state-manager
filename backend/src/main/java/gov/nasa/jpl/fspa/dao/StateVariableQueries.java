@@ -17,4 +17,6 @@ public class StateVariableQueries {
                                               " source = ?, " +
                                               " description = ? " +
                                               " where id = ? ";
+
+    public static String GET_IDENTIFIERS = " select identifier from state_variables ";
 }

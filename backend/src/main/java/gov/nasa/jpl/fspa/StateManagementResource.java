@@ -30,6 +30,19 @@ public class StateManagementResource {
         return Response.status(Response.Status.OK).entity(stateVariables).build();
     }
 
+    @GET
+    @Path("/state-identifiers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIdentifiers() {
+        List<String> identifiers = stateVariableService.getIdentifiers();
+
+        if (identifiers.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(identifiers).build();
+    }
+
     @POST
     @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)

@@ -7,4 +7,6 @@ import java.util.List;
 public interface StateVariableDao {
     List<StateVariable> getStateVariables();
     int saveStateVariable(StateVariable stateVariable);
+
+    List<String> getIdentifiers();
 }

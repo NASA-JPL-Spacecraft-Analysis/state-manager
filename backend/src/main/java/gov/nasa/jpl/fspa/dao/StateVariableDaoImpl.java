@@ -82,4 +82,24 @@ public class StateVariableDaoImpl implements StateVariableDao {
 
         return id;
     }
+
+    @Override
+    public List<String> getIdentifiers() {
+        List<String> identifiers = new ArrayList<>();
+
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement statement = connection.prepareStatement(StateVariableQueries.GET_STATE_VARIABLES);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String identifier = resultSet.getString("identifier");
+
+                identifiers.add(identifier);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return identifiers;
+    }
 }

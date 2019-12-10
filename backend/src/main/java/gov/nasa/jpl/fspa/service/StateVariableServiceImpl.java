@@ -30,4 +30,9 @@ public class StateVariableServiceImpl implements StateVariableService {
 
         return new ArrayList<>();
     }
+
+    @Override
+    public List<String> getIdentifiers() {
+        return stateVariableDao.getIdentifiers();
+    }
 }
