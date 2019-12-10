@@ -1,0 +1,10 @@
+package gov.nasa.jpl.fspa.service;
+
+import gov.nasa.jpl.fspa.model.StateVariable;
+
+import java.util.List;
+
+public interface StateVariableService {
+    List<StateVariable> getStateVariables();
+    List<StateVariable> postStateVariable(StateVariable stateVariable);
+}

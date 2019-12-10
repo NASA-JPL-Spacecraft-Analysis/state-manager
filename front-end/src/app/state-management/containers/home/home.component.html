@@ -1,0 +1,9 @@
+<h2>State Management App</h2>
+
+<add-data-form
+  (modifyData)="onModifyData($event)">
+</add-data-form>
+
+<state-variable-table
+  [stateVariables]="stateVariables$ | async">
+</state-variable-table>

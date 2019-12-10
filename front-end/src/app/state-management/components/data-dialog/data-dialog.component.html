@@ -1,0 +1,59 @@
+<h1 mat-dialog-title>{{title}}</h1>
+
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <input matInput
+      placeholder="Identifier"
+      type="text"
+      [(ngModel)]="stateVariable.identifier"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <input matInput
+      placeholder="Name"
+      type="text"
+      [(ngModel)]="stateVariable.name"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <input matInput
+      placeholder="Type"
+      type="text"
+      [(ngModel)]="stateVariable.type"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <input matInput
+      placeholder="Units"
+      type="text"
+      [(ngModel)]="stateVariable.units"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <input matInput
+      placeholder="Source"
+      type="text"
+      [(ngModel)]="stateVariable.source"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <textarea matInput
+      placeholder="Description"
+      [(ngModel)]="stateVariable.description"></textarea>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="stateVariable">Save</button>
+</div>

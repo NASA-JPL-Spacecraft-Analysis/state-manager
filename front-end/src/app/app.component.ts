@@ -5,11 +5,9 @@ import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { RouterEffects } from '../libs/ngrx-router';
-
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
-import { NavEffects } from './fspa-proto-app/effects/nav.effects';
+import { NavEffects } from './state-management/effects/nav.effects';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -31,8 +29,7 @@ export class AppComponent {
     BrowserModule,
     HttpClientModule,
     EffectsModule.forRoot([
-      NavEffects,
-      RouterEffects
+      NavEffects
     ]),
     StoreModule.forRoot(ROOT_REDUCERS, {
       metaReducers,
@@ -44,11 +41,16 @@ export class AppComponent {
       }
     }),
     StoreRouterConnectingModule.forRoot({
-      routerState: RouterState.Minimal
+      routerState: RouterState.Minimal,
+      serializer: RouterSerializer
     }),
     NoopAnimationsModule
   ],
-  providers: [],
-  bootstrap: [ AppComponent ]
+  providers: [
+
+  ],
+  bootstrap: [
+    AppComponent
+  ],
 })
 export class AppModule {}
