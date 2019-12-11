@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{title}}</h1>
 
-<div mat-dialog-content *ngIf="identifiers !== null">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div mat-dialog-content *ngIf="identifiers !== null">
     <mat-form-field appearance="fill">
       <input matInput
         placeholder="Identifier"
@@ -12,9 +12,10 @@
       />
 
       <mat-icon matSuffix
+        #duplicateTooltip
         [ngClass]="identifierIcon"
         matTooltip="Info about the action"
-        matTooltipPosition="right"
+        matTooltipPosition="above"
         [matTooltip]="tooltip">{{identifierIcon}}</mat-icon>
     </mat-form-field>
 
@@ -59,10 +60,11 @@
         placeholder="Description"
         formControlName="description"></textarea>
     </mat-form-field>
-  </form>
-</div>
+  </div>
 
-<div mat-dialog-actions>
-  <button mat-raised-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Submit</button>
-</div>
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Submit</button>
+  </div>
+</form>
+

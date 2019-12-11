@@ -1,4 +1,4 @@
-import { Component, NgModule, Inject, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, NgModule, Inject, OnInit, ChangeDetectionStrategy, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -8,7 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -24,10 +24,10 @@ import { StateVariableActions } from '../../actions';
   styleUrls: [ 'data-dialog.component.css' ]
 })
 export class DataDialogComponent implements OnDestroy, OnInit {
+  @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
+
   public identifiers: Map<string, boolean>;
   public title = '';
-  public stateVariable: StateVariable;
-  public isIdentifierUnique: boolean;
   public oldIdentifier: string;
   public identifierIcon: string;
   public form: FormGroup;
@@ -58,11 +58,13 @@ export class DataDialogComponent implements OnDestroy, OnInit {
       }
     );
 
+    let stateVariable: StateVariable;
+
     if (this.data.stateVariable === undefined) {
       // On a create setup a new state variable.
       this.title = 'Create State';
 
-      this.stateVariable = {
+      stateVariable = {
         id: undefined,
         identifier: '',
         name: '',
@@ -75,21 +77,22 @@ export class DataDialogComponent implements OnDestroy, OnInit {
       // On an edit copy our existing state variable to be modified.
       this.title = 'Edit State';
 
-      this.stateVariable = {
+      stateVariable = {
         ...this.data.stateVariable
       };
 
       // Keep track of our previous identifier so we can still save if it doesn't change.
-      this.oldIdentifier = this.stateVariable.identifier;
+      this.oldIdentifier = stateVariable.identifier;
     }
 
     this.form = new FormGroup({
-      identifier: new FormControl(this.stateVariable.identifier, [ Validators.required ]),
-      name: new FormControl(this.stateVariable.name, [ Validators.required ]),
-      type: new FormControl(this.stateVariable.type, [ Validators.required ]),
-      units: new FormControl(this.stateVariable.units, [ Validators.required ]),
-      source: new FormControl(this.stateVariable.source, [ Validators.required ]),
-      description: new FormControl(this.stateVariable.description),
+      id: new FormControl(stateVariable.id),
+      identifier: new FormControl(stateVariable.identifier, [ Validators.required ]),
+      name: new FormControl(stateVariable.name, [ Validators.required ]),
+      type: new FormControl(stateVariable.type, [ Validators.required ]),
+      units: new FormControl(stateVariable.units, [ Validators.required ]),
+      source: new FormControl(stateVariable.source, [ Validators.required ]),
+      description: new FormControl(stateVariable.description),
     });
   }
 
@@ -98,10 +101,17 @@ export class DataDialogComponent implements OnDestroy, OnInit {
     this.ngUnsubscribe.complete();
   }
 
+  /**
+   * Called when the user submits the form.
+   * When the user submits, we check:
+   * 1) That our identifier is unique (when trimmed)
+   */
   public onSubmit(): void {
-    // TODO: Add some saving logic.
-    if (this.identifierIcon === 'clear') {
-      this.dialogRef.close(this.stateVariable);
+    if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
+      this.dialogRef.close(this.form.value);
+    } else {
+      // Show the duplicate tooltip.
+      this.duplicateTooltip.show();
     }
   }
 
@@ -112,15 +122,11 @@ export class DataDialogComponent implements OnDestroy, OnInit {
   /**
    * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
    * if the identifier isn't empty.
-   * Every identifier is unqiue so we need to check:
-   * 1) That we have a unique identifier
-   * 2) AND that we're not flagging an edited identifier on it's own value.
    * @param identifier The current identifier.
    */
   public onIdentifierChange(identifier: string): void {
     if (identifier.length > 0) {
-      if (this.identifiers.get(identifier)
-          && (!this.oldIdentifier || identifier !== this.oldIdentifier)) {
+      if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
         this.tooltip = 'Your identifier is a duplicate';
       } else {
@@ -132,6 +138,22 @@ export class DataDialogComponent implements OnDestroy, OnInit {
       this.identifierIcon = null;
       this.tooltip = null;
     }
+  }
+
+  /**
+   * Checks to see if an identifier is duplicate by:
+   * 1) That we have some identifiers then
+   * 2) That we have a unique identifier
+   * 3) AND that we're not flagging an edited identifier on it's own value
+   * @param identifier The current identifier.
+   */
+  private isIdentifierDuplicate(identifier: string): boolean {
+    if (this.identifiers.size > 0) {
+      return this.identifiers.get(identifier)
+          && (!this.oldIdentifier || identifier !== this.oldIdentifier);
+    }
+
+    return false;
   }
 }
 

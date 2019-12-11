@@ -26,8 +26,10 @@ export const reducer = createReducer(
   on(StateVariableActions.setIdentifiers, (state, action) => {
     const identifiers = new Map<string, boolean>();
 
-    for (const identifier of action.identifiers) {
-      identifiers.set(identifier, true);
+    if (action.identifiers) {
+      for (const identifier of action.identifiers) {
+        identifiers.set(identifier, true);
+      }
     }
 
     return {
