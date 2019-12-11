@@ -1,6 +1,6 @@
 import { Component, NgModule, Inject, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Store, select } from '@ngrx/store';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -29,6 +30,8 @@ export class DataDialogComponent implements OnDestroy, OnInit {
   public isIdentifierUnique: boolean;
   public oldIdentifier: string;
   public identifierIcon: string;
+  public form: FormGroup;
+  public tooltip: string;
 
   private ngUnsubscribe: Subject<{}> = new Subject();
 
@@ -56,6 +59,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
     );
 
     if (this.data.stateVariable === undefined) {
+      // On a create setup a new state variable.
       this.title = 'Create State';
 
       this.stateVariable = {
@@ -68,6 +72,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
         description: ''
       };
     } else {
+      // On an edit copy our existing state variable to be modified.
       this.title = 'Edit State';
 
       this.stateVariable = {
@@ -77,6 +82,15 @@ export class DataDialogComponent implements OnDestroy, OnInit {
       // Keep track of our previous identifier so we can still save if it doesn't change.
       this.oldIdentifier = this.stateVariable.identifier;
     }
+
+    this.form = new FormGroup({
+      identifier: new FormControl(this.stateVariable.identifier, [ Validators.required ]),
+      name: new FormControl(this.stateVariable.name, [ Validators.required ]),
+      type: new FormControl(this.stateVariable.type, [ Validators.required ]),
+      units: new FormControl(this.stateVariable.units, [ Validators.required ]),
+      source: new FormControl(this.stateVariable.source, [ Validators.required ]),
+      description: new FormControl(this.stateVariable.description),
+    });
   }
 
   public ngOnDestroy(): void {
@@ -84,21 +98,39 @@ export class DataDialogComponent implements OnDestroy, OnInit {
     this.ngUnsubscribe.complete();
   }
 
-  public onSave(): void {
-    // Add some saving logic.
-    this.dialogRef.close(this.stateVariable);
+  public onSubmit(): void {
+    // TODO: Add some saving logic.
+    if (this.identifierIcon === 'clear') {
+      this.dialogRef.close(this.stateVariable);
+    }
   }
 
   public onCancel(): void {
     this.dialogRef.close();
   }
 
+  /**
+   * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
+   * if the identifier isn't empty.
+   * Every identifier is unqiue so we need to check:
+   * 1) That we have a unique identifier
+   * 2) AND that we're not flagging an edited identifier on it's own value.
+   * @param identifier The current identifier.
+   */
   public onIdentifierChange(identifier: string): void {
-    if (this.identifiers.get(identifier)
-        && this.stateVariable.identifier !== this.oldIdentifier) {
-      this.identifierIcon = 'clear';
+    if (identifier.length > 0) {
+      if (this.identifiers.get(identifier)
+          && (!this.oldIdentifier || identifier !== this.oldIdentifier)) {
+        this.identifierIcon = 'clear';
+        this.tooltip = 'Your identifier is a duplicate';
+      } else {
+        this.identifierIcon = 'done';
+        this.tooltip = 'Your identifier is unique';
+      }
     } else {
-      this.identifierIcon = 'done';
+      // Reset everything when the user clears the field.
+      this.identifierIcon = null;
+      this.tooltip = null;
     }
   }
 }
@@ -113,11 +145,13 @@ export class DataDialogComponent implements OnDestroy, OnInit {
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
-    MatInputModule
+    MatInputModule,
+    MatTooltipModule
   ]
 })
 export class DataDialogModule {}

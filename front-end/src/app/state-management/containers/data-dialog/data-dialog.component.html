@@ -1,63 +1,68 @@
 <h1 mat-dialog-title>{{title}}</h1>
 
 <div mat-dialog-content *ngIf="identifiers !== null">
-  {{isIdentifierUnique}}
-  <mat-form-field appearance="fill">
-    <input matInput
-      placeholder="Identifier"
-      type="text"
-      [(ngModel)]="stateVariable.identifier"
-      (ngModelChange)="onIdentifierChange($event)"
-      required
-    />
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <input matInput
+        placeholder="Identifier"
+        type="text"
+        formControlName="identifier"
+        (ngModelChange)="onIdentifierChange($event)"
+        required
+      />
 
-    <mat-icon matSuffix>{{identifierIcon}}</mat-icon>
-  </mat-form-field>
+      <mat-icon matSuffix
+        [ngClass]="identifierIcon"
+        matTooltip="Info about the action"
+        matTooltipPosition="right"
+        [matTooltip]="tooltip">{{identifierIcon}}</mat-icon>
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <input matInput
-      placeholder="Name"
-      type="text"
-      [(ngModel)]="stateVariable.name"
-      required
-    />
-  </mat-form-field>
+    <mat-form-field appearance="fill">
+      <input matInput
+        placeholder="Name"
+        type="text"
+        formControlName="name"
+        required
+      />
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <input matInput
-      placeholder="Type"
-      type="text"
-      [(ngModel)]="stateVariable.type"
-      required
-    />
-  </mat-form-field>
+    <mat-form-field appearance="fill">
+      <input matInput
+        placeholder="Type"
+        type="text"
+        formControlName="type"
+        required
+      />
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <input matInput
-      placeholder="Units"
-      type="text"
-      [(ngModel)]="stateVariable.units"
-      required
-    />
-  </mat-form-field>
+    <mat-form-field appearance="fill">
+      <input matInput
+        placeholder="Units"
+        type="text"
+        formControlName="units"
+        required
+      />
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <input matInput
-      placeholder="Source"
-      type="text"
-      [(ngModel)]="stateVariable.source"
-      required
-    />
-  </mat-form-field>
+    <mat-form-field appearance="fill">
+      <input matInput
+        placeholder="Source"
+        type="text"
+        formControlName="source"
+        required
+      />
+    </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <textarea matInput
-      placeholder="Description"
-      [(ngModel)]="stateVariable.description"></textarea>
-  </mat-form-field>
+    <mat-form-field appearance="fill">
+      <textarea matInput
+        placeholder="Description"
+        formControlName="description"></textarea>
+    </mat-form-field>
+  </form>
 </div>
 
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Submit</button>
 </div>
