@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface StateVariableDao {
     List<StateVariable> getStateVariables();
-    int postStateVariable(StateVariable stateVariable);
+    int saveStateVariable(StateVariable stateVariable);
+
+    List<String> getIdentifiers();
 }

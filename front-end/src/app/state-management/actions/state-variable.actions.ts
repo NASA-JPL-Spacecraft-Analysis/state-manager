@@ -2,8 +2,8 @@ import { createAction, props } from '@ngrx/store';
 
 import { StateVariable } from '../models';
 
-export const modifyStateVariable = createAction(
-  '[state variable] modify_state_variable',
+export const createStateVariable = createAction(
+  '[state variable] create_state_variable',
   props<{ stateVariable: StateVariable }>()
 );
 
@@ -17,9 +17,39 @@ export const createStateVariableSuccess = createAction(
   props<{ stateVariables: StateVariable[] }>()
 );
 
+export const editStateVariable = createAction(
+  '[state variable] edit_state_variable',
+  props<{ stateVariable: StateVariable }>()
+);
+
+export const editStateVariableFailure = createAction(
+  '[state variable] edit_state_variable_failure',
+  props<{ error: Error }>()
+);
+
+export const editStateVariableSuccess = createAction(
+  '[state variable] edit_state_variable_success',
+  props<{ stateVariables: StateVariable[] }>()
+);
+
+export const fetchIdentifiers = createAction(
+  '[state variable] fetch_identifiers',
+  props<{}>()
+);
+
+export const fetchIdentifiersFailure = createAction(
+  '[state variable] fetch_identifiers_failure',
+  props<{ error: Error }>()
+);
+
 export const fetchStateVariablesFailure = createAction(
   '[state variable] fetch_state_varaiables_failure',
   props<{ error: Error }>()
+);
+
+export const setIdentifiers = createAction(
+  '[state varaiable] set_identifiers',
+  props<{ identifiers: string[] }>()
 );
 
 export const setStateVariables = createAction(

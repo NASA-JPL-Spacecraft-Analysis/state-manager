@@ -6,5 +6,5 @@ export interface StateVariable {
   type: string; // enum?
   units: string; // enum?
   source: string; // enum?
-  descirption: string;
+  description: string;
 }

@@ -7,10 +7,15 @@ const featureSelector = createFeatureSelector<State>('stateManagementApp');
 
 export const getStateManagementState = createSelector(
   featureSelector,
-  (state: State): StateManagementState => state.data,
+  (state: State): StateManagementState => state.data
 );
 
 export const getStateVariables = createSelector(
   getStateManagementState,
-  (state: StateManagementState) => state.stateVariables,
+  (state: StateManagementState) => state.stateVariables
 );
+
+export const getIdentifiers = createSelector(
+  getStateManagementState,
+  (state: StateManagementState) => state.identifiers
+)

@@ -20,14 +20,19 @@ public class StateVariableServiceImpl implements StateVariableService {
     }
 
     @Override
-    public List<StateVariable> postStateVariable(StateVariable stateVariable) {
+    public List<StateVariable> modifyStateVariable(StateVariable stateVariable) {
         // TODO: Do a check here to make sure the identifier is unique.
-        int id = stateVariableDao.postStateVariable(stateVariable);
+        int id = stateVariableDao.saveStateVariable(stateVariable);
 
         if (id != -1) {
             return getStateVariables();
         }
 
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<String> getIdentifiers() {
+        return stateVariableDao.getIdentifiers();
     }
 }

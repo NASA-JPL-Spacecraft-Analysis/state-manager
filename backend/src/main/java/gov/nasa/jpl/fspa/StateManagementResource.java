@@ -20,7 +20,7 @@ public class StateManagementResource {
     @GET
     @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response test() {
+    public Response getStateVariables() {
         List<StateVariable> stateVariables = stateVariableService.getStateVariables();
 
         if (stateVariables.isEmpty()) {
@@ -30,11 +30,37 @@ public class StateManagementResource {
         return Response.status(Response.Status.OK).entity(stateVariables).build();
     }
 
+    @GET
+    @Path("/state-identifiers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIdentifiers() {
+        List<String> identifiers = stateVariableService.getIdentifiers();
+
+        if (identifiers.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(identifiers).build();
+    }
+
     @POST
     @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response data(StateVariable stateVariable) {
-        List<StateVariable> stateVariables = stateVariableService.postStateVariable(stateVariable);
+    public Response postStateVariable(StateVariable stateVariable) {
+        List<StateVariable> stateVariables = stateVariableService.modifyStateVariable(stateVariable);
+
+        if (stateVariables.isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(stateVariables).build();
+    }
+
+    @PUT
+    @Path("/state-variable")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putStateVariable(StateVariable stateVariable) {
+        List<StateVariable> stateVariables = stateVariableService.modifyStateVariable(stateVariable);
 
         if (stateVariables.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();

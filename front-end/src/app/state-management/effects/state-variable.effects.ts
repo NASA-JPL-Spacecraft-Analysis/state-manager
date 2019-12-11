@@ -16,13 +16,13 @@ export class DataEffects {
     private store: Store<StateManagementAppState>
   ) {}
 
-  public modifyStateVariable = createEffect(() =>
+  public createStateVariable = createEffect(() =>
     this.actions.pipe(
-      ofType(StateVariableActions.modifyStateVariable),
+      ofType(StateVariableActions.createStateVariable),
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
       switchMap(({ action, state }) => {
-        return this.stateManagementService.createNewStateVariable(
+        return this.stateManagementService.createStateVariable(
           state.config.app.baseUrl,
           action.stateVariable
         ).pipe(
@@ -36,6 +36,59 @@ export class DataEffects {
           catchError(
             (error: Error) => [
               StateVariableActions.createStateVariableFailure({ error })
+            ]
+          )
+        );
+      })
+    )
+  );
+
+  public editStateVariable = createEffect(() =>
+    this.actions.pipe(
+      ofType(StateVariableActions.editStateVariable),
+      withLatestFrom(this.store),
+      map(([action, state]) => ({ action, state })),
+      switchMap(({ action, state }) => {
+        return this.stateManagementService.editStateVariable(
+          state.config.app.baseUrl,
+          action.stateVariable
+        ).pipe(
+          switchMap(
+            (stateVariables: StateVariable[]) => [
+              StateVariableActions.editStateVariableSuccess({
+                stateVariables
+              })
+            ]
+          ),
+          catchError(
+            (error: Error) => [
+              StateVariableActions.editStateVariableFailure({ error })
+            ]
+          )
+        );
+      })
+    )
+  );
+
+  public fetchIdentifiers = createEffect(() =>
+    this.actions.pipe(
+      ofType(StateVariableActions.fetchIdentifiers),
+      withLatestFrom(this.store),
+      map(([_, state]) => state),
+      switchMap(state => {
+        return this.stateManagementService.getIdentifiers(
+          state.config.app.baseUrl
+        ).pipe(
+          switchMap(
+            (identifiers: string[]) => [
+              StateVariableActions.setIdentifiers({
+                identifiers
+              })
+            ]
+          ),
+          catchError(
+            (error: Error) => [
+              StateVariableActions.fetchIdentifiersFailure({ error })
             ]
           )
         );
