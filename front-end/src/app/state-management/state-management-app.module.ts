@@ -7,7 +7,7 @@ import { StateManagementAppRoutingModule } from './state-management-app-routing.
 import { reducers } from './state-management-app-store';
 import { HomeModule } from './containers';
 import { DataEffects } from './effects';
-import { DataDialogComponent } from './components/data-dialog/data-dialog.component';
+import { DataDialogComponent } from './containers/data-dialog/data-dialog.component';
 
 @NgModule({
   imports: [

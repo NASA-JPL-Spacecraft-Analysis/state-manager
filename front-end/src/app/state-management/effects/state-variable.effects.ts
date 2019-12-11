@@ -69,4 +69,30 @@ export class DataEffects {
       })
     )
   );
+
+  public fetchIdentifiers = createEffect(() =>
+    this.actions.pipe(
+      ofType(StateVariableActions.fetchIdentifiers),
+      withLatestFrom(this.store),
+      map(([_, state]) => state),
+      switchMap(state => {
+        return this.stateManagementService.getIdentifiers(
+          state.config.app.baseUrl
+        ).pipe(
+          switchMap(
+            (identifiers: string[]) => [
+              StateVariableActions.setIdentifiers({
+                identifiers
+              })
+            ]
+          ),
+          catchError(
+            (error: Error) => [
+              StateVariableActions.fetchIdentifiersFailure({ error })
+            ]
+          )
+        );
+      })
+    )
+  );
 }

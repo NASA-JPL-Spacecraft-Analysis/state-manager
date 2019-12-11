@@ -28,6 +28,12 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
+  public getIdentifiers(baseUrl: string): Observable<string[]> {
+    return this.http.get<string[]>(
+      baseUrl + '/state-identifiers'
+    );
+  }
+
   public getStateVariables(baseUrl: string): Observable<Action> {
     return this.http.get<StateVariable[]>(baseUrl + '/state-variable').pipe(
       map(

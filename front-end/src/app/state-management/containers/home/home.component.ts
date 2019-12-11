@@ -10,7 +10,7 @@ import { getStateVariables } from '../../selectors';
 import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
 import { StateVariableActions } from '../../actions';
 import { StateVariableTableModule } from '../../components/state-variable-table/state-variable-table.component';
-import { DataDialogComponent, DataDialogModule } from '../../components/data-dialog/data-dialog.component';
+import { DataDialogComponent, DataDialogModule } from '../data-dialog/data-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

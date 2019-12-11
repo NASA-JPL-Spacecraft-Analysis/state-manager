@@ -32,9 +32,24 @@ export const editStateVariableSuccess = createAction(
   props<{ stateVariables: StateVariable[] }>()
 );
 
+export const fetchIdentifiers = createAction(
+  '[state variable] fetch_identifiers',
+  props<{}>()
+);
+
+export const fetchIdentifiersFailure = createAction(
+  '[state variable] fetch_identifiers_failure',
+  props<{ error: Error }>()
+);
+
 export const fetchStateVariablesFailure = createAction(
   '[state variable] fetch_state_varaiables_failure',
   props<{ error: Error }>()
+);
+
+export const setIdentifiers = createAction(
+  '[state varaiable] set_identifiers',
+  props<{ identifiers: string[] }>()
 );
 
 export const setStateVariables = createAction(
