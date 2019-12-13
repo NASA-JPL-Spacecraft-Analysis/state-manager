@@ -64,4 +64,9 @@ public class StateVariable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return id + "," + identifier + "," + name + "," + type + "," + units + "," + source + "," + description + "\n";
+    }
 }

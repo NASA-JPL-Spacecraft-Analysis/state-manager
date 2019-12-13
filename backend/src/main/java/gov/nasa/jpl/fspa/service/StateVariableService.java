@@ -7,6 +7,7 @@ import java.util.List;
 public interface StateVariableService {
     List<StateVariable> getStateVariables();
     List<StateVariable> modifyStateVariable(StateVariable stateVariable);
+    String getStateVariablesAsCsv();
 
     List<String> getIdentifiers();
 }
