@@ -67,6 +67,7 @@ public class StateVariable {
 
     /**
      * Surround each property with double quotes to support csv exporting.
+     *
      * @return
      */
     @Override
