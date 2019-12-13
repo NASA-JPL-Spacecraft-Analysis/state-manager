@@ -2,7 +2,7 @@
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div mat-dialog-content *ngIf="identifiers !== null">
-    <mat-form-field appearance="fill">
+    <mat-form-field>
       <input matInput
         placeholder="Identifier"
         type="text"
@@ -19,7 +19,7 @@
         [matTooltip]="tooltip">{{identifierIcon}}</mat-icon>
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field>
       <input matInput
         placeholder="Name"
         type="text"
@@ -28,7 +28,7 @@
       />
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field>
       <input matInput
         placeholder="Type"
         type="text"
@@ -37,7 +37,7 @@
       />
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field>
       <input matInput
         placeholder="Units"
         type="text"
@@ -46,7 +46,7 @@
       />
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field>
       <input matInput
         placeholder="Source"
         type="text"
@@ -55,7 +55,7 @@
       />
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field>
       <textarea matInput
         placeholder="Description"
         formControlName="description"></textarea>
