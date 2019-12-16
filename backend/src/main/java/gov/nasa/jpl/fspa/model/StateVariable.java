@@ -64,4 +64,21 @@ public class StateVariable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /**
+     * Surround each property with double quotes to support csv exporting.
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "\"" + id
+                + "\",\"" + identifier
+                + "\",\"" + name
+                + "\",\"" + type
+                + "\",\"" + units
+                + "\",\"" + source
+                + "\",\"" + description
+                + "\"\n";
+    }
 }
