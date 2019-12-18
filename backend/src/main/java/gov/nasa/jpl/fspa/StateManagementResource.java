@@ -7,6 +7,9 @@ import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 @Path("v1/")
@@ -28,6 +31,22 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.OK).entity(stateVariables).build();
+    }
+
+    @GET
+    @Path("/state-variable-csv")
+    @Produces({ "text/csv" })
+    public Response getStateVariablesCsv() {
+        String stateVariableCsv = stateVariableService.getStateVariablesAsCsv();
+
+        if (stateVariableCsv.equals("")) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK)
+                .entity(getOutputAsCsv(stateVariableCsv.getBytes()))
+                .header("Content-Disposition", "attachment;filename=StateVariables.csv")
+                .build();
     }
 
     @GET
@@ -67,5 +86,20 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.OK).entity(stateVariables).build();
+    }
+
+    /**
+     * Outputs our excel file.
+     *
+     * @param csvBytes
+     * @return
+     */
+    private StreamingOutput getOutputAsCsv(final byte[] csvBytes) {
+        return new StreamingOutput() {
+            @Override
+            public void write(OutputStream out) throws IOException, WebApplicationException {
+                out.write(csvBytes);
+            }
+        };
     }
 }

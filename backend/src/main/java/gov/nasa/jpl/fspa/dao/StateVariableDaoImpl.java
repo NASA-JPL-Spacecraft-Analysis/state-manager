@@ -21,7 +21,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
 
                 stateVariable.setId(Integer.valueOf(resultSet.getString("id")));
                 stateVariable.setIdentifier(resultSet.getString("identifier"));
-                stateVariable.setName(resultSet.getString("name"));
+                stateVariable.setDisplayName(resultSet.getString("displayName"));
                 stateVariable.setType(resultSet.getString("type"));
                 stateVariable.setUnits(resultSet.getString("units"));
                 stateVariable.setSource(resultSet.getString("source"));
@@ -54,7 +54,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
                      Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, stateVariable.getIdentifier());
-            preparedStatement.setString(2, stateVariable.getName());
+            preparedStatement.setString(2, stateVariable.getDisplayName());
             preparedStatement.setString(3, stateVariable.getType());
             preparedStatement.setString(4, stateVariable.getUnits());
             preparedStatement.setString(5, stateVariable.getSource());

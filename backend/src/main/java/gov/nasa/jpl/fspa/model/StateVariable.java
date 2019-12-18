@@ -3,7 +3,7 @@ package gov.nasa.jpl.fspa.model;
 public class StateVariable {
     private Integer id;
     private String identifier;
-    private String name;
+    private String displayName;
     private String type; // enum?
     private String units; // enum?
     private String source; // enum?
@@ -25,12 +25,12 @@ public class StateVariable {
         this.identifier = identifier;
     }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getType() {
@@ -63,5 +63,22 @@ public class StateVariable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * Surround each property with double quotes to support csv exporting.
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "\"" + id
+                + "\",\"" + identifier
+                + "\",\"" + displayName
+                + "\",\"" + type
+                + "\",\"" + units
+                + "\",\"" + source
+                + "\",\"" + description
+                + "\"\n";
     }
 }

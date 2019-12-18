@@ -24,7 +24,7 @@ export class StateVariableTableComponent implements OnChanges {
   public dataSource: MatTableDataSource<StateVariable>;
   public displayedColumns: string[] = [
     'identifier',
-    'name',
+    'displayName',
     'type',
     'units',
     'source',

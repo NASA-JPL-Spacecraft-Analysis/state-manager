@@ -67,7 +67,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
       stateVariable = {
         id: undefined,
         identifier: '',
-        name: '',
+        displayName: '',
         type: '',
         units: '',
         source: '',
@@ -88,7 +88,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
     this.form = new FormGroup({
       id: new FormControl(stateVariable.id),
       identifier: new FormControl(stateVariable.identifier, [ Validators.required ]),
-      name: new FormControl(stateVariable.name, [ Validators.required ]),
+      displayName: new FormControl(stateVariable.displayName, [ Validators.required ]),
       type: new FormControl(stateVariable.type, [ Validators.required ]),
       units: new FormControl(stateVariable.units, [ Validators.required ]),
       source: new FormControl(stateVariable.source, [ Validators.required ]),
