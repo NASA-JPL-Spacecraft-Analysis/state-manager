@@ -2,7 +2,7 @@
 export interface StateVariable {
   id: number;
   identifier: string;
-  name: string;
+  displayName: string;
   type: string; // enum?
   units: string; // enum?
   source: string; // enum?
