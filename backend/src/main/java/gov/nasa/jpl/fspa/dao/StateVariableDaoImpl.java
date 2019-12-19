@@ -43,7 +43,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
 
         if (stateVariable.getId() == null) {
             // Create a state variable.
-            query = StateVariableQueries.POST_STATE_VARIABLE;
+            query = StateVariableQueries.CREATE_STATE_VARIABLE;
         } else {
             // Edit a state variable.
             query = StateVariableQueries.PUT_STATE_VARIABLE;
@@ -52,18 +52,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query,
                      Statement.RETURN_GENERATED_KEYS)) {
-
-            preparedStatement.setString(1, stateVariable.getIdentifier());
-            preparedStatement.setString(2, stateVariable.getDisplayName());
-            preparedStatement.setString(3, stateVariable.getType());
-            preparedStatement.setString(4, stateVariable.getUnits());
-            preparedStatement.setString(5, stateVariable.getSource());
-            preparedStatement.setString(6, stateVariable.getDescription());
-
-            // If we're editing our state variable, we need to set the id.
-            if (stateVariable.getId() != null) {
-                preparedStatement.setInt(7, stateVariable.getId());
-            }
+            setStateVariablePreparedStatement(preparedStatement, stateVariable);
 
             preparedStatement.executeUpdate();
 
@@ -84,6 +73,29 @@ public class StateVariableDaoImpl implements StateVariableDao {
     }
 
     @Override
+    public void createStateVariables(List<StateVariable> stateVariables) {
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.CREATE_STATE_VARIABLE)) {
+            // some drivers have limits on batch length, so run batch every 1000
+            int stateVariableCounter = 0;
+
+            for (StateVariable stateVariable: stateVariables) {
+                setStateVariablePreparedStatement(preparedStatement, stateVariable);
+
+                preparedStatement.addBatch();
+
+                stateVariableCounter++;
+
+                if (stateVariableCounter % StateVariableQueries.BATCH_SIZE == 0 || stateVariableCounter == stateVariables.size()) {
+                    preparedStatement.executeBatch();
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
     public List<String> getIdentifiers() {
         List<String> identifiers = new ArrayList<>();
 
@@ -101,5 +113,23 @@ public class StateVariableDaoImpl implements StateVariableDao {
         }
 
         return identifiers;
+    }
+
+    private void setStateVariablePreparedStatement(PreparedStatement preparedStatement, StateVariable stateVariable) {
+        try {
+            preparedStatement.setString(1, stateVariable.getIdentifier());
+            preparedStatement.setString(2, stateVariable.getDisplayName());
+            preparedStatement.setString(3, stateVariable.getType());
+            preparedStatement.setString(4, stateVariable.getUnits());
+            preparedStatement.setString(5, stateVariable.getSource());
+            preparedStatement.setString(6, stateVariable.getDescription());
+
+            // If we're editing our state variable, we need to set the id.
+            if (stateVariable.getId() != null) {
+                preparedStatement.setInt(7, stateVariable.getId());
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

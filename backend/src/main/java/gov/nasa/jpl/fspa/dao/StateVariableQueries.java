@@ -1,9 +1,11 @@
 package gov.nasa.jpl.fspa.dao;
 
 public class StateVariableQueries {
+    public static int BATCH_SIZE = 1000;
+
     public static String GET_STATE_VARIABLES = " select * from state_variables";
 
-    public static String POST_STATE_VARIABLE = " insert into state_variables " +
+    public static String CREATE_STATE_VARIABLE = " insert into state_variables " +
                                                " (identifier, displayName, type, units, source, description) " +
                                                " values " +
                                                " (?, ?, ?, ?, ?, ?) ";

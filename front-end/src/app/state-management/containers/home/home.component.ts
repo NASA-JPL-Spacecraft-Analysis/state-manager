@@ -47,6 +47,12 @@ export class HomeComponent {
     );
   }
 
+  public onUploadStateVariables(file: File): void {
+    this.store.dispatch(StateVariableActions.parseStateVariablesFile({
+      file
+    }));
+  }
+
   public modifyData(stateVariable: StateVariable): void {
     if (stateVariable !== undefined) {
       if (stateVariable.id == null) {

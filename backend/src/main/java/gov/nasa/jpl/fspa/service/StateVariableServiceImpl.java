@@ -3,9 +3,12 @@ package gov.nasa.jpl.fspa.service;
 import gov.nasa.jpl.fspa.dao.StateVariableDao;
 import gov.nasa.jpl.fspa.dao.StateVariableDaoImpl;
 import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.util.StateVariableConstants;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StateVariableServiceImpl implements StateVariableService {
     private final OutputServiceImpl<StateVariable> outputService;
@@ -39,7 +42,42 @@ public class StateVariableServiceImpl implements StateVariableService {
     }
 
     @Override
+    public String createStateVariables(List<StateVariable> stateVariables) {
+        List<String> identifiers = getIdentifiers();
+
+        // If there's duplicate identifiers, respond with an error.
+        if (containsDuplicateIdentifiers(stateVariables, identifiers)) {
+            return StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE;
+        }
+
+        if (!containsDuplicateIdentifiers(stateVariables, identifiers)) {
+            stateVariableDao.createStateVariables(stateVariables);
+        }
+
+        return "";
+    }
+
+    @Override
     public List<String> getIdentifiers() {
         return stateVariableDao.getIdentifiers();
+    }
+
+    /**
+     * Checks for duplicate identifiers.
+     *
+     * @param stateVariables
+     * @param identifiers
+     * @return
+     */
+    private boolean containsDuplicateIdentifiers(List<StateVariable> stateVariables, List<String> identifiers) {
+        Set<String> identifierMap = new HashSet<>(identifiers);
+
+        for (StateVariable stateVariable: stateVariables) {
+            if (identifierMap.contains(stateVariable.getIdentifier())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

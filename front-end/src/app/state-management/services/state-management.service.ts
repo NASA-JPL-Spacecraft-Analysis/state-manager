@@ -21,6 +21,31 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
+  /**
+   * Takes the data from our uploaded file and tries to post it. Will be
+   * rejected if there's duplicate identifiers.
+   *
+   * @param baseUrl Our baseUrl
+   * @param data Our parsed .csv data
+   */
+  public createStateVariables(baseUrl: string, data: string): Observable<Action> {
+    return this.http.post<StateVariable[]>(
+      baseUrl + '/state-variables',
+      data
+    ).pipe(
+      map(
+        stateVariables => StateVariableActions.setStateVariables({
+          stateVariables
+        })
+      ),
+      catchError(error => [
+        StateVariableActions.uploadStateVariablesFailure({
+          error: new Error(error)
+        })
+      ])
+    );
+  }
+
   public editStateVariable(baseUrl: string, stateVariable: StateVariable): Observable<StateVariable[]> {
     return this.http.put<StateVariable[]>(
       baseUrl + '/state-variable',
@@ -37,11 +62,16 @@ export class StateManagementService implements StateManagementServiceInterface {
   public getStateVariables(baseUrl: string): Observable<Action> {
     return this.http.get<StateVariable[]>(baseUrl + '/state-variable').pipe(
       map(
-        stateVariables => StateVariableActions.setStateVariables({ stateVariables })
+        stateVariables => StateVariableActions.setStateVariables({
+          stateVariables
+        })
       ),
       catchError(error => [
-        StateVariableActions.fetchStateVariablesFailure({ error: new Error(error) })
+        StateVariableActions.fetchStateVariablesFailure({
+          error: new Error(error)
+        })
       ])
     );
   }
+
 }
