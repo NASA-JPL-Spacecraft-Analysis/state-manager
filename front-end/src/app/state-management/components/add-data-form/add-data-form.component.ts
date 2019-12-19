@@ -25,8 +25,9 @@ export class AddDataFormComponent {
 
   public onFileUpload(fileEvent: Event): void {
     const file = (fileEvent.target as HTMLInputElement).files[0];
+    const fileType = file.name.split('.').pop();
 
-    if (!file) {
+    if (!file || fileType !== 'csv') {
       return;
     }
 
