@@ -73,8 +73,8 @@ export class FileUploadService implements FileUploadServiceInterface {
 
   /**
    * Trims our data based on the passed parameters.
-   * If we're looking the first column, remove the starting double quote.
-   * If we're looking at the last column, remove the hanging double quote.
+   * If we're looking the first column, remove the starting double quote if it's there.
+   * If we're looking at the last column, remove the hanging double quote if it's there.
    * Otherwise, just trim the data inside the column.
    *
    * @param data The current column's data.
@@ -82,10 +82,14 @@ export class FileUploadService implements FileUploadServiceInterface {
    * @param length The number of columns we have.
    */
   private trimData(data: string, index: number, length: number): string {
-    if (index === 0) {
+    if (index === 0
+      && data.length > 0
+      && data.charAt(0) === '\"') {
       // Remove the starting double quote.
       return data.trim().substring(1, data.length);
-    } else if (index === length - 1) {
+    } else if (index === length - 1
+      && data.length > 0
+      && data.charAt(data.length - 1) === '\"') {
       // Remove the hanging double quote.
       return data.trim().substring(0, data.length - 1);
     } else {
