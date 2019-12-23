@@ -28,10 +28,10 @@ export class AddDataFormComponent {
     const fileType = file.name.split('.').pop();
 
     if (!file || fileType !== 'csv') {
-      return;
+      this.uploadStateVariables.emit(null);
+    } else {
+      this.uploadStateVariables.emit(file);
     }
-
-    this.uploadStateVariables.emit(file);
   }
 }
 
