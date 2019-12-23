@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { StateVariable } from '../models';
-import { map, catchError } from 'rxjs/operators';
-import { StateVariableActions } from '../actions';
 import { StateManagementServiceInterface } from './state-management.service.interface';
 
 @Injectable({
@@ -34,14 +31,9 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
-  public getStateVariables(baseUrl: string): Observable<Action> {
-    return this.http.get<StateVariable[]>(baseUrl + '/state-variable').pipe(
-      map(
-        stateVariables => StateVariableActions.setStateVariables({ stateVariables })
-      ),
-      catchError(error => [
-        StateVariableActions.fetchStateVariablesFailure({ error: new Error(error) })
-      ])
+  public getStateVariables(baseUrl: string): Observable<StateVariable[]> {
+    return this.http.get<StateVariable[]>(
+      baseUrl + '/state-variable'
     );
   }
 }

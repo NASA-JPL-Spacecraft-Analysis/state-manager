@@ -1,7 +1,8 @@
+/*
 import { initialState, reducer } from './state-management.reducer';
 import { DataActions } from '../actions';
 import { TestString } from '../models';
-import { getMockTestStrings } from '../services/mock-data.service';
+import { getMockTestStrings } from '../services/mock-state-management.service';
 
 describe('DataReducer', () => {
   let data: TestString[];
@@ -38,3 +39,5 @@ describe('DataReducer', () => {
     });
   });
 });
+
+*/
