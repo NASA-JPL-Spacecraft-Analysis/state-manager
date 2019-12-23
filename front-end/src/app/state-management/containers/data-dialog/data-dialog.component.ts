@@ -24,7 +24,7 @@ import { StateVariableActions } from '../../actions';
   styleUrls: [ 'data-dialog.component.css' ]
 })
 export class DataDialogComponent implements OnDestroy, OnInit {
-  @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
+  @ViewChild(MatTooltip) duplicateTooltip: MatTooltip;
 
   public identifiers: Map<string, boolean>;
   public title = '';
