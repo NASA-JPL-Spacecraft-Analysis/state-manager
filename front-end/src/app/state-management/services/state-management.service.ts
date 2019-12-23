@@ -28,7 +28,7 @@ export class StateManagementService implements StateManagementServiceInterface {
    * @param baseUrl Our baseUrl
    * @param data Our parsed .csv data
    */
-  public createStateVariables(baseUrl: string, data: string): Observable<Action> {
+  public createStateVariables(baseUrl: string, data: Partial<StateVariable>[]): Observable<Action> {
     return this.http.post<StateVariable[]>(
       baseUrl + '/state-variables',
       data

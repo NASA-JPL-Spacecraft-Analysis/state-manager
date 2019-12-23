@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { switchMap, map, withLatestFrom } from 'rxjs/operators';
 
 import { StateManagementAppState } from '../state-management-app-store';
 import { FileUploadService } from '../services/file-upload.service';
@@ -20,26 +21,16 @@ export class FileUploadEffects {
       ofType(StateVariableActions.parseStateVariablesFile),
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        return this.fileUploadService.parseFile(
-          action.file
-        ).pipe(
-          switchMap(
-            (parsedFile: string) => [
-              StateVariableActions.parseStateVariablesFileSuccess({
-                parsedFile
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              StateVariableActions.parseStateVariablesFileFailure({
-                error
-              })
-            ]
+      switchMap(({ action, state }) =>
+        forkJoin([
+          this.fileUploadService.parseFile(
+            action.file
           )
-        );
-      })
+        ]),
+      ),
+      switchMap((actions: Action[]) => [
+        ...actions
+      ])
     )
   );
 }

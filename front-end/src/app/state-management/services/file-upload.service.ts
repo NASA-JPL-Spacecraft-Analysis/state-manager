@@ -1,22 +1,24 @@
 import { Injectable } from '@angular/core';
+import { Action } from '@ngrx/store';
 import { Subject, Observable } from 'rxjs';
 
 import { FileUploadServiceInterface } from './file-upload.service.interface';
 import { StateManagementConstants } from '../constants/state-management.constants';
 import { StateVariable } from '../models';
+import { StateVariableActions } from '../actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileUploadService implements FileUploadServiceInterface {
-  private readData = new Subject<Array<Partial<StateVariable>>>();
+  private readData = new Subject<Action>();
 
-  public parseFile(file: File): Observable<Array<Partial<StateVariable>>> {
+  public parseFile(file: File): Observable<Action> {
     const reader = new FileReader();
 
     reader.onload = (event) => {
       const fileData = reader.result.toString();
-      const stateVariables: Partial<StateVariable>[] = [];
+      const parsedStateVariables: Partial<StateVariable>[] = [];
 
       // Try and parse our .csv if there's some data.
       if (fileData.length > 0) {
@@ -43,13 +45,26 @@ export class FileUploadService implements FileUploadServiceInterface {
                 stateVariable[headers[i]] = trimmedData;
               }
 
-              stateVariables.push(stateVariable);
+              parsedStateVariables.push(stateVariable);
+            } else {
+              this.readData.next(
+                StateVariableActions.parseStateVariablesFileFailure({
+                  error: new Error('Parse failed. Could not interpret csv headers.')
+                })
+              );
+
+              return;
             }
           }
         }
+
+        this.readData.next(
+          StateVariableActions.parseStateVariablesFileSuccess({
+            parsedStateVariables
+          })
+        );
       }
 
-      this.readData.next(stateVariables);
       this.readData.complete();
     };
 

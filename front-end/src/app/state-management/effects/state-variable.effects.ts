@@ -106,7 +106,7 @@ export class StateVariableEffects {
         forkJoin([
           this.stateManagementService.createStateVariables(
             state.config.app.baseUrl,
-            action.parsedFile
+            action.parsedStateVariables
           )
         ]),
       ),

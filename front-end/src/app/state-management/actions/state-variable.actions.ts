@@ -54,7 +54,7 @@ export const parseStateVariablesFile = createAction(
 
 export const parseStateVariablesFileSuccess = createAction(
   '[state variable] parse_state_variables_file_success',
-  props<{ parsedFile: string }>()
+  props<{ parsedStateVariables: Partial<StateVariable>[] }>()
 );
 
 export const parseStateVariablesFileFailure = createAction(

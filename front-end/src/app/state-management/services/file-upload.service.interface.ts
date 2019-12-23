@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
-
-import { StateVariable } from '../models';
+import { Action } from '@ngrx/store';
 
 export interface FileUploadServiceInterface {
-  parseFile(file: File): Observable<Array<Partial<StateVariable>>>;
+  parseFile(file: File): Observable<Action>;
 }
