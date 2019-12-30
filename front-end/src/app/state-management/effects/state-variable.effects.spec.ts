@@ -1,80 +1,56 @@
-/*
 import { TestBed } from '@angular/core/testing';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { StoreModule, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
+import { Actions } from '@ngrx/effects';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { hot, cold } from 'jasmine-marbles';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
-import { DataEffects } from './state-variable.effects';
-import { reducers } from '../state-management-app-store';
-import { DataService } from '../services/state-management.service';
-import { MockDataService, getMockTestStrings } from '../services/mock-state-management.service';
-import { DataActions } from '../actions';
-import { TestString } from '../models';
-import { ROOT_REDUCERS } from '../../app-store';
+import { StateVariableEffects } from './state-variable.effects';
+import { StateManagementService } from '../services/state-management.service';
+import { MockStateManagementService, getMockIdentifiers } from '../services/mock-state-management.service';
+import { TestScheduler } from 'rxjs/testing';
+import { StateVariableActions } from '../actions';
 
-describe('DataEffects', () => {
-  let actions: Observable<any>;
-  let effects: DataEffects;
+describe('StateVariableEffects', () => {
+  let actions: Observable<Action>;
+  let effects: StateVariableEffects;
+  let testScheduler: TestScheduler;
+  let stateManagementService: StateManagementService;
 
   // Mock data
-  const data: TestString[] = getMockTestStrings();
+  const identifiers: string[] = getMockIdentifiers();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-        StoreModule.forRoot(ROOT_REDUCERS),
-        StoreModule.forFeature('stateManagementApp', reducers)
-      ],
       providers: [
-        DataEffects,
-        HttpClient,
-        Store,
+        StateVariableEffects,
         provideMockActions(() => actions),
         {
-          provide: DataService,
-          useValue: new MockDataService()
+          provide: StateManagementService,
+          useValue: new MockStateManagementService()
         }
       ]
     });
 
-    effects = TestBed.get(DataEffects);
+    stateManagementService = TestBed.inject(StateManagementService);
+    actions = TestBed.inject(Actions);
+    effects = TestBed.inject(StateVariableEffects);
+
+    testScheduler = new TestScheduler((actual, expected) => {
+      expect(actual).toEqual(expected);
+    });
   });
 
-  describe('createNewData', () => {
-    it('should return a createTestStringSuccess action with data on success', () => {
-      const action = DataActions.createNewData({ data: 'Test data' });
-      const success = DataActions.createTestStringSuccess({ data });
+  describe('fetchIdentifiers', () => {
+    it('should dispatch the correct actions when we try to fetch our identifiers', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = StateVariableActions.fetchIdentifiers({});
 
-      actions = hot('-a', { a: action });
+        actions = hot('-a', { a: action });
 
-      const expected = cold('-(b)', {
-        b: success
+        expectObservable(effects.fetchIdentifiers).toBe('-(b)', {
+          b: StateVariableActions.setIdentifiers({ identifiers })
+        });
       });
-
-      expect(effects.createNewData).toBeObservable(expected);
-    });
-
-    it('should return a createTestStringFailure action with an error on failure', () => {
-      const action = DataActions.createNewData({ data: 'Test data' });
-      const error = new Error('CreateTestStringFailure');
-      const failure = DataActions.createTestStringFailure({ error });
-      const service = TestBed.get(DataService);
-
-      spyOn(service, 'createNewData').and.returnValue(
-        cold('-#|', null, error),
-      );
-
-      actions = hot('-a', { a: action });
-      const expected = cold('--(b)', {
-        b: failure
-      });
-
-      expect(effects.createNewData).toBeObservable(expected);
     });
   });
 });
-
-*/

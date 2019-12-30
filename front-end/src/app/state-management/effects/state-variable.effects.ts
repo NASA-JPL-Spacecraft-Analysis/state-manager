@@ -6,7 +6,7 @@ import { StateManagementService } from '../services/state-management.service';
 import { StateVariableActions } from '../actions';
 
 @Injectable()
-export class DataEffects {
+export class StateVariableEffects {
   constructor(
     private actions: Actions,
     private stateManagementService: StateManagementService

@@ -53,9 +53,9 @@ describe('NavEffects', () => {
         provideMockActions(() => actions),
         {
           provide: StateManagementService,
-          useValue: new MockStateManagementService(),
+          useValue: new MockStateManagementService()
         },
-      ],
+      ]
     });
 
     stateManagementService = TestBed.inject(StateManagementService);
