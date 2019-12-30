@@ -46,7 +46,8 @@ export class FileUploadService implements FileUploadServiceInterface {
               }
 
               parsedStateVariables.push(stateVariable);
-            } else {
+            } else if (splitColumns.length !== 1) {
+              // Skip the error if we're looking at an empty newline at the end of the file.
               this.readData.next(
                 StateVariableActions.parseStateVariablesFileFailure({
                   error: new Error('Parse failed. Could not interpret csv headers.')
