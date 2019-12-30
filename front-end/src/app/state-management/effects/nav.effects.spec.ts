@@ -14,8 +14,8 @@ import { StateVariable } from '../models';
 import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
 
-function getRouterNavigatedAction(url: string, path?: string, params = {}) {
-  const action: RouterNavigatedAction<RouterState> = {
+function getRouterNavigatedAction(url: string, path?: string, params = {}): RouterNavigatedAction<RouterState> {
+  return {
     payload: {
       event: {
         id: 1,
@@ -31,7 +31,6 @@ function getRouterNavigatedAction(url: string, path?: string, params = {}) {
     },
     type: '@ngrx/router-store/navigated',
   };
-  return action;
 }
 
 describe('NavEffects', () => {
@@ -75,7 +74,7 @@ describe('NavEffects', () => {
 
         actions = hot('-a', { a: action });
 
-        expectObservable(effects.navStates).toBe('-b', {
+        expectObservable(effects.navStates).toBe('-(b)', {
           b: StateVariableActions.setStateVariables({ stateVariables })
         });
       });
@@ -97,6 +96,6 @@ describe('NavEffects', () => {
         });
       });
     });
-    */
+  */
   });
 });

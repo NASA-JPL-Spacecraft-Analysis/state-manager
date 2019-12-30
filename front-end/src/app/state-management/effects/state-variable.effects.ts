@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
+import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { StateManagementAppState } from '../state-management-app-store';
 import { StateVariableActions } from '../actions';
-import { StateVariable } from '../models';
 
 @Injectable()
 export class DataEffects {
@@ -16,83 +15,63 @@ export class DataEffects {
     private store: Store<StateManagementAppState>
   ) {}
 
-  public createStateVariable = createEffect(() =>
-    this.actions.pipe(
+  public createStateVariable = createEffect(() => {
+    return this.actions.pipe(
       ofType(StateVariableActions.createStateVariable),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        return this.stateManagementService.createStateVariable(
-          state.config.app.baseUrl,
-          action.stateVariable
-        ).pipe(
-          switchMap(
-            (stateVariables: StateVariable[]) => [
-              StateVariableActions.createStateVariableSuccess({
-                stateVariables
-              })
-            ]
-          ),
+      switchMap(({ stateVariable }) =>
+        this.stateManagementService.createStateVariable(stateVariable).pipe(
+          switchMap((stateVariables) => {
+            return [
+              StateVariableActions.createStateVariableSuccess({ stateVariables })
+            ];
+          }),
           catchError(
             (error: Error) => [
               StateVariableActions.createStateVariableFailure({ error })
             ]
           )
-        );
-      })
-    )
-  );
+        )
+      )
+    );
+  });
 
-  public editStateVariable = createEffect(() =>
-    this.actions.pipe(
+  public editStateVariable = createEffect(() => {
+    return this.actions.pipe(
       ofType(StateVariableActions.editStateVariable),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        return this.stateManagementService.editStateVariable(
-          state.config.app.baseUrl,
-          action.stateVariable
-        ).pipe(
-          switchMap(
-            (stateVariables: StateVariable[]) => [
-              StateVariableActions.editStateVariableSuccess({
-                stateVariables
-              })
-            ]
-          ),
+      switchMap(({ stateVariable }) =>
+        this.stateManagementService.editStateVariable(stateVariable).pipe(
+          switchMap((stateVariables) => {
+            return [
+              StateVariableActions.editStateVariableSuccess({ stateVariables })
+            ];
+          }),
           catchError(
             (error: Error) => [
               StateVariableActions.editStateVariableFailure({ error })
             ]
           )
-        );
-      })
-    )
-  );
+        )
+      )
+    );
+  });
 
-  public fetchIdentifiers = createEffect(() =>
-    this.actions.pipe(
+  public fetchIdentifiers = createEffect(() => {
+    return this.actions.pipe(
       ofType(StateVariableActions.fetchIdentifiers),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        return this.stateManagementService.getIdentifiers(
-          state.config.app.baseUrl
-        ).pipe(
-          switchMap(
-            (identifiers: string[]) => [
-              StateVariableActions.setIdentifiers({
-                identifiers
-              })
-            ]
-          ),
+      switchMap(_ =>
+        this.stateManagementService.getIdentifiers().pipe(
+          switchMap((identifiers) => {
+            return [
+              StateVariableActions.setIdentifiers({ identifiers })
+            ];
+          }),
           catchError(
             (error: Error) => [
               StateVariableActions.fetchIdentifiersFailure({ error })
             ]
           )
-        );
-      })
+        )
+      )
     )
-  );
+  });
 }
