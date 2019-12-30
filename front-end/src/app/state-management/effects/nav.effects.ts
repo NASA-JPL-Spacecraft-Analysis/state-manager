@@ -21,9 +21,7 @@ export class NavEffects {
           map(stateVariables => StateVariableActions.setStateVariables({ stateVariables })),
           catchError(
             (error: Error) => [
-              StateVariableActions.fetchStateVariablesFailure({
-                error
-              })
+              StateVariableActions.fetchStateVariablesFailure({ error })
             ]
           )
         )

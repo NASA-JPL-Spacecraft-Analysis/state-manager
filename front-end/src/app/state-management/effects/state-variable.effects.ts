@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
-import { StateManagementAppState } from '../state-management-app-store';
 import { StateVariableActions } from '../actions';
 
 @Injectable()
 export class DataEffects {
   constructor(
     private actions: Actions,
-    private stateManagementService: StateManagementService,
-    private store: Store<StateManagementAppState>
+    private stateManagementService: StateManagementService
   ) {}
 
   public createStateVariable = createEffect(() => {
@@ -72,6 +69,6 @@ export class DataEffects {
           )
         )
       )
-    )
+    );
   });
 }

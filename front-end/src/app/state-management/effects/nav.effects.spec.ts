@@ -79,23 +79,5 @@ describe('NavEffects', () => {
         });
       });
     });
-
-    /*
-    it('should dispatch the correct actions when navigating to /states and the call fails', () => {
-      testScheduler.run(({ cold, hot, expectObservable }) => {
-        const action = getRouterNavigatedAction('states');
-
-        actions = hot('-a', { a: action });
-
-        spyOn(stateManagementService, 'getStateVariables').and.returnValue(
-          cold('#|', null, '')
-        );
-
-        expectObservable(effects.navRoot).toBe('-(b)', {
-          b: fetchStateVariablesFailure
-        });
-      });
-    });
-  */
   });
 });
