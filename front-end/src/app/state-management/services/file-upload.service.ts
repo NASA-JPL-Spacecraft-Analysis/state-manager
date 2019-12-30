@@ -98,18 +98,21 @@ export class FileUploadService implements FileUploadServiceInterface {
    * @param length The number of columns we have.
    */
   private trimData(data: string, index: number, length: number): string {
+    // Remove any hanging characters first.
+    data = data.trim();
+
     if (index === 0
       && data.length > 0
       && data.charAt(0) === '\"') {
       // Remove the starting double quote.
-      return data.trim().substring(1, data.length);
+      return data.substring(1, data.length);
     } else if (index === length - 1
       && data.length > 0
       && data.charAt(data.length - 1) === '\"') {
       // Remove the hanging double quote.
-      return data.trim().substring(0, data.length - 1);
+      return data.substring(0, data.length - 1);
     } else {
-      return data.trim();
+      return data;
     }
   }
 }
