@@ -33,3 +33,15 @@ These instructions for subsequent runs of the application after you've followed 
 When changing the front-end, the application will automatically be rebuilt and deployed after saving a file.
 
 If you're changing the backend, after you've made your changes the `.war` file needs to be rebuilt and redeployed to the Docker container.  To do this run `. build.sh` inside the root directory.
+
+## Usage
+
+CSV Upload:
+In order to upload a `.csv` file, it needs to use the following format:
+
+```
+"identifier","displayName","type","units","source","description"
+"IDENTIFIER 1","Identifier 1","test type","test units","test source","identifier 1"
+```
+
+You can upload more states by adding each one on a new line.  If any states you try and upload have identifiers that are already in the database the upload will fail.
