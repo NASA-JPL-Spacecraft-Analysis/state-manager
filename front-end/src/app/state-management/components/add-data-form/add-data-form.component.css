@@ -1,3 +1,11 @@
+button:not(:first-of-type) {
+  margin-left: 1em;
+}
+
 .add-data-form-container {
   margin-bottom: 1em;
+}
+
+.file-upload-input {
+  display: none;
 }

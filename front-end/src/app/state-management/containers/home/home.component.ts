@@ -47,6 +47,24 @@ export class HomeComponent {
     );
   }
 
+  /**
+   * Only dispatch a valid file, if file is null then we couldn't parse the file
+   * due to a filetype issue.
+   * 
+   * @param file The file we're being passed.
+   */
+  public onUploadStateVariables(file: File): void {
+    if (file) {
+      this.store.dispatch(StateVariableActions.parseStateVariablesFile({
+        file
+      }));
+    } else {
+      this.store.dispatch(StateVariableActions.parseStateVariablesFileFailure({
+        error: new Error('Wrong filetype supplied, only csv is supported.')
+      }));
+    }
+  }
+
   public modifyData(stateVariable: StateVariable): void {
     if (stateVariable !== undefined) {
       if (stateVariable.id == null) {

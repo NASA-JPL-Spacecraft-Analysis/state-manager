@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { StateManagementAppState } from '../state-management-app-store';
 import { StateVariableActions } from '../actions';
 import { StateVariable } from '../models';
+import { forkJoin } from 'rxjs';
 
 @Injectable()
-export class DataEffects {
+export class StateVariableEffects {
   constructor(
     private actions: Actions,
     private stateManagementService: StateManagementService,
@@ -93,6 +94,25 @@ export class DataEffects {
           )
         );
       })
+    )
+  );
+
+  public parseUploadedStateVariables = createEffect(() =>
+    this.actions.pipe(
+      ofType(StateVariableActions.parseStateVariablesFileSuccess),
+      withLatestFrom(this.store),
+      map(([action, state]) => ({ action, state })),
+      switchMap(({ action, state }) =>
+        forkJoin([
+          this.stateManagementService.createStateVariables(
+            state.config.app.baseUrl,
+            action.parsedStateVariables
+          )
+        ]),
+      ),
+      switchMap((actions: Action[]) => [
+        ...actions
+      ]),
     )
   );
 }

@@ -75,6 +75,26 @@ public class StateManagementResource {
         return Response.status(Response.Status.OK).entity(stateVariables).build();
     }
 
+    @POST
+    @Path("/state-variables")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postStateVariables(List<StateVariable> stateVariables) {
+        String output = this.stateVariableService.createStateVariables(stateVariables);
+
+        // State variables created successfully.
+        if (output.equals("")) {
+            List<StateVariable> allStateVariables = stateVariableService.getStateVariables();
+
+            if (allStateVariables.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+
+            return Response.status(Response.Status.OK).entity(stateVariableService.getStateVariables()).build();
+        }
+
+        return Response.status(Response.Status.CONFLICT).entity(output).build();
+    }
+
     @PUT
     @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
