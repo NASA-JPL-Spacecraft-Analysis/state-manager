@@ -1,5 +1,6 @@
 package gov.nasa.jpl.fspa.dao;
 
+import gov.nasa.jpl.fspa.model.Identifier;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
@@ -35,31 +36,6 @@ public class StateVariableDaoImpl implements StateVariableDao {
         }
 
         return stateVariables;
-    }
-
-    @Override
-    public List<StateEnumeration> getStateEnumerations() {
-        List<StateEnumeration> stateEnumerations = new ArrayList<>();
-
-        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(StateVariableQueries.GET_STATE_ENUMERATIONS);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                StateEnumeration stateEnumeration = new StateEnumeration();
-
-                stateEnumeration.setId(Integer.parseInt(resultSet.getString("id")));
-                stateEnumeration.setStateVariableId(Integer.parseInt(resultSet.getString("state_variable_id")));
-                stateEnumeration.setEnumValue(resultSet.getString("enum_value"));
-                stateEnumeration.setValue(resultSet.getString("value"));
-
-                stateEnumerations.add(stateEnumeration);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        return stateEnumerations;
     }
 
     @Override
@@ -122,15 +98,44 @@ public class StateVariableDaoImpl implements StateVariableDao {
     }
 
     @Override
-    public List<String> getIdentifiers() {
-        List<String> identifiers = new ArrayList<>();
+    public List<StateEnumeration> getStateEnumerations() {
+        List<StateEnumeration> stateEnumerations = new ArrayList<>();
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(StateVariableQueries.GET_STATE_VARIABLES);
+             PreparedStatement statement = connection.prepareStatement(StateVariableQueries.GET_STATE_ENUMERATIONS);
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                String identifier = resultSet.getString("identifier");
+                StateEnumeration stateEnumeration = new StateEnumeration();
+
+                stateEnumeration.setId(Integer.parseInt(resultSet.getString("id")));
+                stateEnumeration.setStateVariableId(Integer.parseInt(resultSet.getString("state_variable_id")));
+                stateEnumeration.setEnumValue(resultSet.getString("enum_value"));
+                stateEnumeration.setValue(resultSet.getString("value"));
+
+                stateEnumerations.add(stateEnumeration);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return stateEnumerations;
+    }
+
+
+    @Override
+    public List<Identifier> getIdentifiers() {
+        List<Identifier> identifiers = new ArrayList<>();
+
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement statement = connection.prepareStatement(StateVariableQueries.GET_IDENTIFIERS);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Identifier identifier = new Identifier();
+
+                identifier.setStateVariableId(Integer.parseInt(resultSet.getString("id")));
+                identifier.setIdentifier(resultSet.getString("identifier"));
 
                 identifiers.add(identifier);
             }
