@@ -18,17 +18,12 @@ public class StateVariableServiceImpl implements StateVariableService {
         this.stateVariableDao = new StateVariableDaoImpl();
     }
 
-    @Override
-    public List<StateVariable> getStateVariables() {
-        return stateVariableDao.getStateVariables();
-    }
-
     /**
      * Gets our state variables sets their list of enumerations if they exist.
      * @return The list of state variables with their enumerations.
      */
     @Override
-    public List<StateVariable> getStateVariablesWithEnumerations() {
+    public List<StateVariable> getStateVariables() {
         List<StateVariable> stateVariables = getStateVariables();
         List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
         Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();

@@ -25,7 +25,7 @@ public class StateManagementResource {
     @Path("/state-variables")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStateVariables() {
-        List<StateVariable> stateVariables = stateVariableService.getStateVariablesWithEnumerations();
+        List<StateVariable> stateVariables = stateVariableService.getStateVariables();
 
         if (stateVariables.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
