@@ -73,7 +73,7 @@ public class StateManagementResource {
             return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
         }
 
-        return Response.status(Response.Status.OK).entity(stateVariables).build();
+        return Response.status(Response.Status.CREATED).entity(stateVariables).build();
     }
 
     @POST
@@ -82,18 +82,12 @@ public class StateManagementResource {
     public Response postStateVariables(List<StateVariable> stateVariables) {
         String output = this.stateVariableService.createStateVariables(stateVariables);
 
-        // State variables created successfully.
-        if (output.equals("")) {
-            List<StateVariable> allStateVariables = stateVariableService.getStateVariables();
-
-            if (allStateVariables.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
-            }
-
-            return Response.status(Response.Status.OK).entity(stateVariableService.getStateVariables()).build();
+        // State variables not created successfully.
+        if (!output.equals("")) {
+            return Response.status(Response.Status.CONFLICT).entity(output).build();
         }
 
-        return Response.status(Response.Status.CONFLICT).entity(output).build();
+        return Response.status(Response.Status.CREATED).entity(stateVariableService.getStateVariables()).build();
     }
 
     @PUT
@@ -106,7 +100,7 @@ public class StateManagementResource {
             return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
         }
 
-        return Response.status(Response.Status.OK).entity(stateVariables).build();
+        return Response.status(Response.Status.CREATED).entity(stateVariables).build();
     }
 
     /**
