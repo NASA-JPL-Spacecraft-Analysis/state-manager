@@ -36,7 +36,8 @@ export class HomeComponent {
       width: '400px',
       data: {
         stateVariable
-      }
+      },
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(
