@@ -28,21 +28,10 @@ export class StateManagementService implements StateManagementServiceInterface {
    * @param baseUrl Our baseUrl
    * @param data Our parsed .csv data
    */
-  public createStateVariables(baseUrl: string, data: Partial<StateVariable>[]): Observable<Action> {
+  public createStateVariables(baseUrl: string, data: Partial<StateVariable>[]): Observable<StateVariable[]> {
     return this.http.post<StateVariable[]>(
       baseUrl + '/state-variables',
       data
-    ).pipe(
-      map(
-        stateVariables => StateVariableActions.setStateVariables({
-          stateVariables
-        })
-      ),
-      catchError(error => [
-        StateVariableActions.uploadStateVariablesFailure({
-          error: new Error(error)
-        })
-      ])
     );
   }
 

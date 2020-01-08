@@ -1,15 +1,14 @@
 import { NgModule, Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
-import { EffectsModule } from '@ngrx/effects';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
-import { NavEffects } from './state-management/effects/nav.effects';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-root',
@@ -27,10 +26,8 @@ export class AppComponent {
   imports: [
     AppRoutingModule,
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
-    EffectsModule.forRoot([
-      NavEffects
-    ]),
     StoreModule.forRoot(ROOT_REDUCERS, {
       metaReducers,
       runtimeChecks: {
@@ -44,13 +41,16 @@ export class AppComponent {
       routerState: RouterState.Minimal,
       serializer: RouterSerializer
     }),
+    ToastrModule.forRoot({
+      countDuplicates: true,
+      maxOpened: 4,
+      preventDuplicates: true,
+      resetTimeoutOnDuplicate: true
+    }),
     NoopAnimationsModule
-  ],
-  providers: [
-
   ],
   bootstrap: [
     AppComponent
-  ],
+  ]
 })
 export class AppModule {}

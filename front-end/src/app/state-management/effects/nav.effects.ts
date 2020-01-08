@@ -23,12 +23,12 @@ export class NavEffects {
       map(([_, state]) => state),
       switchMap(state =>
         forkJoin([
-          this.stateManagementService.getStateVariables(state.config.app.baseUrl)
+          this.stateManagementService.getStateVariables(state.config.app.baseUrl),
         ]),
       ),
       switchMap((actions: Action[]) => [
         ...actions,
-      ]),
+      ])
     )
   );
 }
