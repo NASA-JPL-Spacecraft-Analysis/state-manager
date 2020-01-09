@@ -24,7 +24,7 @@ public class StateVariableServiceImpl implements StateVariableService {
      */
     @Override
     public List<StateVariable> getStateVariables() {
-        List<StateVariable> stateVariables = getStateVariables();
+        List<StateVariable> stateVariables = this.stateVariableDao.getStateVariables();
         List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
         Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();
 
