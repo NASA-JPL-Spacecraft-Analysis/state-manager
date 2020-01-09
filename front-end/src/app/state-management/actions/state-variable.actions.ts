@@ -47,12 +47,32 @@ export const fetchStateVariablesFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const parseStateVariablesFile = createAction(
+  '[state variable] parse_state_variables_file',
+  props<{ file: File }>()
+);
+
+export const parseStateVariablesFileSuccess = createAction(
+  '[state variable] parse_state_variables_file_success',
+  props<{ parsedStateVariables: Partial<StateVariable>[] }>()
+);
+
+export const parseStateVariablesFileFailure = createAction(
+  '[state variable] parse_state_variables_file_failure',
+  props<{ error: Error }>()
+);
+
 export const setIdentifiers = createAction(
-  '[state varaiable] set_identifiers',
+  '[state variable] set_identifiers',
   props<{ identifiers: string[] }>()
 );
 
 export const setStateVariables = createAction(
-  '[state varaiable] set_state_variables',
+  '[state variable] set_state_variables',
   props<{ stateVariables: StateVariable[] }>()
+);
+
+export const uploadStateVariablesFailure = createAction(
+  '[state variable] upload_state_variables_file_failure',
+  props<{ error: Error }>()
 );

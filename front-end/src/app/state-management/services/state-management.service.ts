@@ -21,6 +21,19 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
+  /**
+   * Takes the data from our uploaded file and tries to post it. Will be
+   * rejected if there's duplicate identifiers.
+   *
+   * @param data Our parsed .csv data
+   */
+  public createStateVariables(data: Partial<StateVariable>[]): Observable<StateVariable[]> {
+    return this.http.post<StateVariable[]>(
+      baseUrl + '/state-variables',
+      data
+    );
+  }
+
   public editStateVariable(stateVariable: StateVariable): Observable<StateVariable[]> {
     return this.http.put<StateVariable[]>(
       baseUrl + '/state-variable',
@@ -36,7 +49,7 @@ export class StateManagementService implements StateManagementServiceInterface {
 
   public getStateVariables(): Observable<StateVariable[]> {
     return this.http.get<StateVariable[]>(
-      baseUrl + '/state-variable'
+      baseUrl + '/state-variables'
     );
   }
 }

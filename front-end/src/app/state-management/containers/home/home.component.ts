@@ -7,9 +7,8 @@ import { Observable } from 'rxjs';
 import { StateVariable } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
 import { getStateVariables } from '../../selectors';
-import { AddDataFormModule } from '../../components/add-data-form/add-data-form.component';
 import { StateVariableActions } from '../../actions';
-import { StateVariableTableModule } from '../../components/state-variable-table/state-variable-table.component';
+import { AddDataFormModule, StateVariableTableModule } from '../../components';
 import { DataDialogComponent, DataDialogModule } from '../data-dialog/data-dialog.component';
 
 @Component({
@@ -37,7 +36,8 @@ export class HomeComponent {
       width: '400px',
       data: {
         stateVariable
-      }
+      },
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(
@@ -45,6 +45,24 @@ export class HomeComponent {
         this.modifyData(modifiedStateVariable);
       }
     );
+  }
+
+  /**
+   * Only dispatch a valid file, if file is null then we couldn't parse the file
+   * due to a filetype issue.
+   * 
+   * @param file The file we're being passed.
+   */
+  public onUploadStateVariables(file: File): void {
+    if (file) {
+      this.store.dispatch(StateVariableActions.parseStateVariablesFile({
+        file
+      }));
+    } else {
+      this.store.dispatch(StateVariableActions.parseStateVariablesFileFailure({
+        error: new Error('Wrong filetype supplied, only csv is supported.')
+      }));
+    }
   }
 
   public modifyData(stateVariable: StateVariable): void {

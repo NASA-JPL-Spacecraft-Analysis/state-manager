@@ -1,3 +1,7 @@
 <div class="add-data-form-container">
-  <button mat-raised-button color="primary" (click)="createState()">Create State</button>
+  <button mat-raised-button color="primary" (click)="onCreateState()">Create State</button>
+
+  <button mat-raised-button color="primary" type="file" (click)="fileUpload.click()">Upload States</button>
+
+  <input #fileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
 </div>

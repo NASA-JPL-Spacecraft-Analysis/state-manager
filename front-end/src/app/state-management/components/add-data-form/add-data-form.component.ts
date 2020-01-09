@@ -12,13 +12,26 @@ import { StateVariable } from '../../models';
 })
 export class AddDataFormComponent {
   @Output() public createStateVariable: EventEmitter<StateVariable>;
+  @Output() public uploadStateVariables: EventEmitter<File>;
 
   constructor() {
     this.createStateVariable = new EventEmitter<StateVariable>();
+    this.uploadStateVariables = new EventEmitter<File>();
   }
 
-  public createState(): void {
+  public onCreateState(): void {
     this.createStateVariable.emit();
+  }
+
+  public onFileUpload(fileEvent: Event): void {
+    const file = (fileEvent.target as HTMLInputElement).files[0];
+    const fileType = file.name.split('.').pop();
+
+    if (!file || fileType !== 'csv') {
+      this.uploadStateVariables.emit(null);
+    } else {
+      this.uploadStateVariables.emit(file);
+    }
   }
 }
 
