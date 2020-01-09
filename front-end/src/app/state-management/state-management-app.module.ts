@@ -6,15 +6,17 @@ import { EffectsModule } from '@ngrx/effects';
 import { StateManagementAppRoutingModule } from './state-management-app-routing.module';
 import { reducers } from './state-management-app-store';
 import { HomeModule } from './containers';
-import { StateVariableEffects, FileUploadEffects } from './effects';
+import { StateVariableEffects, FileUploadEffects, ToastEffects, NavEffects } from './effects';
 import { DataDialogComponent } from './containers/data-dialog/data-dialog.component';
 
 @NgModule({
   imports: [
     HttpClientModule,
     EffectsModule.forRoot([
+      FileUploadEffects,
+      NavEffects,
       StateVariableEffects,
-      FileUploadEffects
+      ToastEffects,
     ]),
     StateManagementAppRoutingModule,
     StoreModule.forFeature('stateManagementApp', reducers),

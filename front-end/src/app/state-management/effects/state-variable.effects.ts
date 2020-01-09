@@ -5,9 +5,10 @@ import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { StateManagementAppState } from '../state-management-app-store';
-import { StateVariableActions } from '../actions';
+import { StateVariableActions, ToastActions } from '../actions';
 import { StateVariable } from '../models';
 import { forkJoin } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class StateVariableEffects {
@@ -31,12 +32,20 @@ export class StateVariableEffects {
             (stateVariables: StateVariable[]) => [
               StateVariableActions.createStateVariableSuccess({
                 stateVariables
+              }),
+              ToastActions.showToast({
+                message: 'State variable created',
+                toastType: 'success'
               })
             ]
           ),
           catchError(
             (error: Error) => [
-              StateVariableActions.createStateVariableFailure({ error })
+              StateVariableActions.createStateVariableFailure({ error }),
+              ToastActions.showToast({
+                message: 'State variable creation failed',
+                toastType: 'error'
+              })
             ]
           )
         );
@@ -58,12 +67,20 @@ export class StateVariableEffects {
             (stateVariables: StateVariable[]) => [
               StateVariableActions.editStateVariableSuccess({
                 stateVariables
+              }),
+              ToastActions.showToast({
+                message: 'State variable edited',
+                toastType: 'success'
               })
             ]
           ),
           catchError(
             (error: Error) => [
-              StateVariableActions.editStateVariableFailure({ error })
+              StateVariableActions.editStateVariableFailure({ error }),
+              ToastActions.showToast({
+                message: 'State variable editing failed',
+                toastType: 'error'
+              })
             ]
           )
         );
@@ -102,17 +119,33 @@ export class StateVariableEffects {
       ofType(StateVariableActions.parseStateVariablesFileSuccess),
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) =>
-        forkJoin([
-          this.stateManagementService.createStateVariables(
+      switchMap(({ action, state }) => {
+        return this.stateManagementService.createStateVariables(
             state.config.app.baseUrl,
             action.parsedStateVariables
+        ).pipe(
+          switchMap(
+            (stateVariables: StateVariable[]) => [
+              StateVariableActions.createStateVariableSuccess({
+                stateVariables
+              }),
+              ToastActions.showToast({
+                message: 'State variable(s) uploaded',
+                toastType: 'success'
+              })
+            ]
+          ),
+          catchError(
+            (error: HttpErrorResponse) => [
+              StateVariableActions.uploadStateVariablesFailure({ error }),
+              ToastActions.showToast({
+                message: error.error,
+                toastType: 'error'
+              })
+            ]
           )
-        ]),
-      ),
-      switchMap((actions: Action[]) => [
-        ...actions
-      ]),
+        );
+      })
     )
   );
 }
