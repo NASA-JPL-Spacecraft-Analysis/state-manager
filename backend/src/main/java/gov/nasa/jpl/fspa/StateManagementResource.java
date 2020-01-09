@@ -3,6 +3,7 @@ package gov.nasa.jpl.fspa;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.service.StateVariableService;
 import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
+import gov.nasa.jpl.fspa.util.StateVariableConstants;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,7 +22,7 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/state-variable")
+    @Path("/state-variables")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStateVariables() {
         List<StateVariable> stateVariables = stateVariableService.getStateVariables();
@@ -69,10 +70,10 @@ public class StateManagementResource {
         List<StateVariable> stateVariables = stateVariableService.modifyStateVariable(stateVariable);
 
         if (stateVariables.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
         }
 
-        return Response.status(Response.Status.OK).entity(stateVariables).build();
+        return Response.status(Response.Status.CREATED).entity(stateVariables).build();
     }
 
     @POST
@@ -81,18 +82,12 @@ public class StateManagementResource {
     public Response postStateVariables(List<StateVariable> stateVariables) {
         String output = this.stateVariableService.createStateVariables(stateVariables);
 
-        // State variables created successfully.
-        if (output.equals("")) {
-            List<StateVariable> allStateVariables = stateVariableService.getStateVariables();
-
-            if (allStateVariables.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
-            }
-
-            return Response.status(Response.Status.OK).entity(stateVariableService.getStateVariables()).build();
+        // State variables not created successfully.
+        if (!output.equals("")) {
+            return Response.status(Response.Status.CONFLICT).entity(output).build();
         }
 
-        return Response.status(Response.Status.CONFLICT).entity(output).build();
+        return Response.status(Response.Status.CREATED).entity(stateVariableService.getStateVariables()).build();
     }
 
     @PUT
@@ -102,10 +97,10 @@ public class StateManagementResource {
         List<StateVariable> stateVariables = stateVariableService.modifyStateVariable(stateVariable);
 
         if (stateVariables.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
+            return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
         }
 
-        return Response.status(Response.Status.OK).entity(stateVariables).build();
+        return Response.status(Response.Status.CREATED).entity(stateVariables).build();
     }
 
     /**

@@ -60,7 +60,7 @@ export class StateManagementService implements StateManagementServiceInterface {
   }
 
   public getStateVariables(baseUrl: string): Observable<Action> {
-    return this.http.get<StateVariable[]>(baseUrl + '/state-variable').pipe(
+    return this.http.get<StateVariable[]>(baseUrl + '/state-variables').pipe(
       map(
         stateVariables => StateVariableActions.setStateVariables({
           stateVariables

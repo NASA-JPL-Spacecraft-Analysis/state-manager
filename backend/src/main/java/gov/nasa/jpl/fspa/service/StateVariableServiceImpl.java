@@ -2,13 +2,12 @@ package gov.nasa.jpl.fspa.service;
 
 import gov.nasa.jpl.fspa.dao.StateVariableDao;
 import gov.nasa.jpl.fspa.dao.StateVariableDaoImpl;
+import gov.nasa.jpl.fspa.model.Identifier;
+import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
     private final OutputServiceImpl<StateVariable> outputService;
@@ -19,9 +18,34 @@ public class StateVariableServiceImpl implements StateVariableService {
         this.stateVariableDao = new StateVariableDaoImpl();
     }
 
+    /**
+     * Gets our state variables sets their list of enumerations if they exist.
+     * @return The list of state variables with their enumerations.
+     */
     @Override
     public List<StateVariable> getStateVariables() {
-        return stateVariableDao.getStateVariables();
+        List<StateVariable> stateVariables = this.stateVariableDao.getStateVariables();
+        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
+        Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();
+
+        // Setup a map from state variable ids to a list of enumerations.
+        for (StateEnumeration stateEnumeration: stateEnumerations) {
+            if (stateEnumerationMap.get(stateEnumeration.getStateVariableId()) == null) {
+                stateEnumerationMap.put(stateEnumeration.getStateVariableId(), new ArrayList<StateEnumeration>());
+            }
+
+            // Add our enumeration to the list.
+            stateEnumerationMap.get(stateEnumeration.getStateVariableId()).add(stateEnumeration);
+        }
+
+        for (StateVariable stateVariable: stateVariables) {
+            // If we have enumerations for a given state variable, set them.
+            if (stateEnumerationMap.get(stateVariable.getId()) != null) {
+                stateVariable.setEnumarations(stateEnumerationMap.get(stateVariable.getId()));
+            }
+        }
+
+        return stateVariables;
     }
 
     @Override
@@ -31,11 +55,18 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public List<StateVariable> modifyStateVariable(StateVariable stateVariable) {
-        // TODO: Do a check here to make sure the identifier is unique.
-        int id = stateVariableDao.saveStateVariable(stateVariable);
+        List<StateVariable> stateVariables = new ArrayList<>();
 
-        if (id != -1) {
-            return getStateVariables();
+        stateVariables.add(stateVariable);
+
+        List<String> duplicateIdentifiers = getDuplicateIdentifiers(stateVariables);
+
+        if (duplicateIdentifiers.isEmpty()) {
+            int id = stateVariableDao.createStateVariable(stateVariable);
+
+            if (id != -1) {
+                return getStateVariables();
+            }
         }
 
         return new ArrayList<>();
@@ -43,15 +74,13 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public String createStateVariables(List<StateVariable> stateVariables) {
-        List<String> identifiers = getIdentifiers();
+        List<String> duplicateIdentifiers = getDuplicateIdentifiers(stateVariables);
 
-        // If there's duplicate identifiers, respond with an error.
-        if (containsDuplicateIdentifiers(stateVariables, identifiers)) {
-            return StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE;
-        }
-
-        if (!containsDuplicateIdentifiers(stateVariables, identifiers)) {
+        if (duplicateIdentifiers.isEmpty()) {
             stateVariableDao.createStateVariables(stateVariables);
+        } else {
+            // If there's duplicate identifiers, respond with an error.
+            return StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString();
         }
 
         return "";
@@ -59,25 +88,38 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public List<String> getIdentifiers() {
-        return stateVariableDao.getIdentifiers();
+        List<String> identifiers = new ArrayList<>();
+        List<Identifier> idIdentifiers = stateVariableDao.getIdentifiers();
+
+        for (Identifier identifier: idIdentifiers) {
+            identifiers.add(identifier.getIdentifier());
+        }
+
+        return identifiers;
     }
 
     /**
      * Checks for duplicate identifiers.
-     *
-     * @param stateVariables
-     * @param identifiers
-     * @return
+     * @param stateVariables The new list of state variables we are checking for duplicates.
+     * @return A list of the duplicate identifiers.
      */
-    private boolean containsDuplicateIdentifiers(List<StateVariable> stateVariables, List<String> identifiers) {
-        Set<String> identifierMap = new HashSet<>(identifiers);
+    private List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables) {
+        List<Identifier> identifiers = stateVariableDao.getIdentifiers();
+        List<String> duplicateIdentifiers = new ArrayList<>();
+        Map<String, Integer> identifierMap = new HashMap<>();
+
+        // Create our map of state variable ids to identifiers, and populate our identifiers set.
+        for (Identifier identifier: identifiers) {
+            identifierMap.put(identifier.getIdentifier(), identifier.getStateVariableId());
+        }
 
         for (StateVariable stateVariable: stateVariables) {
-            if (identifierMap.contains(stateVariable.getIdentifier())) {
-                return true;
+            if (identifierMap.get(stateVariable.getIdentifier()) != null
+                && !identifierMap.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
+                duplicateIdentifiers.add(stateVariable.getIdentifier());
             }
         }
 
-        return false;
+        return duplicateIdentifiers;
     }
 }
