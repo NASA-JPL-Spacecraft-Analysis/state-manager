@@ -26,7 +26,7 @@ import { StateVariableActions } from '../../actions';
 export class DataDialogComponent implements OnDestroy, OnInit {
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
-  public identifiers: Map<string, boolean>;
+  public identifiers: Set<string>;
   public title = '';
   public oldIdentifier: string;
   public identifierIcon: string;
@@ -40,7 +40,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { stateVariable: StateVariable },
     private store: Store<StateManagementAppState>,
     private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer,
+    private sanitizer: DomSanitizer
   ) {
     this.iconRegistry.addSvgIcon('done', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/done.svg'));
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
@@ -53,7 +53,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
       select(getIdentifiers),
       takeUntil(this.ngUnsubscribe)
     ).subscribe(
-      (identifiers: Map<string, boolean>) => {
+      (identifiers: Set<string>) => {
         this.identifiers = identifiers;
       }
     );
@@ -149,7 +149,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
    */
   private isIdentifierDuplicate(identifier: string): boolean {
     if (this.identifiers.size > 0) {
-      return this.identifiers.get(identifier)
+      return this.identifiers.has(identifier)
           && (!this.oldIdentifier || identifier !== this.oldIdentifier);
     }
 

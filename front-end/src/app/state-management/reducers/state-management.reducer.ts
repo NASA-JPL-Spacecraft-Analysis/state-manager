@@ -5,12 +5,12 @@ import { StateVariable } from '../models';
 
 export interface StateManagementState {
   stateVariables: StateVariable[];
-  identifiers: Map<string, boolean>;
+  identifiers: Set<string>;
 }
 
 export const initialState: StateManagementState = {
   stateVariables: [],
-  identifiers: new Map<string, boolean>()
+  identifiers: new Set<string>()
 };
 
 export const reducer = createReducer(
@@ -24,11 +24,11 @@ export const reducer = createReducer(
     stateVariables: action.stateVariables
   })),
   on(StateVariableActions.setIdentifiers, (state, action) => {
-    const identifiers = new Map<string, boolean>();
+    const identifiers = new Set<string>();
 
     if (action.identifiers) {
       for (const identifier of action.identifiers) {
-        identifiers.set(identifier, true);
+        identifiers.add(identifier);
       }
     }
 

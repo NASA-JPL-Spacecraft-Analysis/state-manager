@@ -18,7 +18,7 @@ export class ToastEffects {
       mergeMap(action => {
         this.toastrService[action.toastType](action.message, '', {
           positionClass: 'toast-bottom-center',
-          timeOut: 3000
+          timeOut: 5000
         });
 
         return [];

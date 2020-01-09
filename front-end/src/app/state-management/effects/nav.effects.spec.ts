@@ -1,82 +1,83 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { StoreModule, Store } from '@ngrx/store';
+import { HttpClientModule } from '@angular/common/http';
+import { Action, StoreModule } from '@ngrx/store';
+import { Actions } from '@ngrx/effects';
+import { RouterNavigatedAction } from '@ngrx/router-store';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { hot, cold } from 'jasmine-marbles';
-import { Observable, of } from 'rxjs';
-
-import { RouterNavigation } from 'src/libs/ngrx-router';
+import { Observable } from 'rxjs';
+import { TestScheduler } from 'rxjs/testing';
 
 import { NavEffects } from './nav.effects';
-import { ROOT_REDUCERS } from 'src/app/app-store';
-import { reducers } from '../state-management-app-store';
-import { DataService } from '../services/data.service';
-import { MockDataService, getMockTestStrings } from '../services/mock-data.service';
+import { MockStateManagementService, getMockStateVariables } from '../services/mock-state-management.service';
 import { StateVariableActions } from '../actions';
-import { TestString } from '../models';
+import { StateVariable } from '../models';
+import { RouterState } from 'src/app/app-routing.module';
+import { StateManagementService } from '../services/state-management.service';
+
+function getRouterNavigatedAction(url: string, path?: string, params = {}): RouterNavigatedAction<RouterState> {
+  return {
+    payload: {
+      event: {
+        id: 1,
+        url: `/${url}`,
+        urlAfterRedirects: `/${url}`,
+      },
+      routerState: {
+        params,
+        path: path || `${url}`,
+        queryParams: {},
+        url: `/${url}`,
+      },
+    },
+    type: '@ngrx/router-store/navigated',
+  };
+}
 
 describe('NavEffects', () => {
-  let actions: Observable<any>;
+  let actions: Observable<Action>;
   let effects: NavEffects;
+  let testScheduler: TestScheduler;
+  let stateManagementService: StateManagementService;
 
   // Mock data
-  const data: TestString[] = getMockTestStrings();
-
-  // Failure actions
-  const dataFailure = DataActions.fetchDataFailure({
-    error: new Error('FetchDataFailure'),
-  });
+  const stateVariables: StateVariable[] = getMockStateVariables();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientModule,
-        StoreModule.forRoot(ROOT_REDUCERS),
-        StoreModule.forFeature('stateManagementApp', reducers)
+        StoreModule.forRoot({})
       ],
       providers: [
         NavEffects,
-        HttpClient,
-        Store,
         provideMockActions(() => actions),
         {
-          provide: DataService,
-          useValue: new MockDataService()
-        }
+          provide: StateManagementService,
+          useValue: new MockStateManagementService()
+        },
       ]
     });
 
-    effects = TestBed.get(NavEffects);
+    stateManagementService = TestBed.inject(StateManagementService);
+    actions = TestBed.inject(Actions);
+    effects = TestBed.inject(NavEffects);
+
+    testScheduler = new TestScheduler((actual, expected) => {
+      expect(actual).toEqual(expected);
+    });
   });
 
-  describe('navRoot', () => {
-    it('should dispatch the correct actions when navigating to /test', () => {
-      const action = new RouterNavigation({ path: 'test' });
+  describe('navStates', () => {
+    it('should dispatch the correct actions when navigating to /states', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('states');
 
-      actions = hot('-a', { a: action });
+        actions = hot('-a', { a: action });
 
-      const expected = cold('-(b)', {
-        b: DataActions.setData({ data })
+        expectObservable(effects.navStates).toBe('-(b)', {
+          b: StateVariableActions.setStateVariables({ stateVariables })
+        });
       });
-
-      expect(effects.navRoot).toBeObservable(expected);
-    });
-
-    it('should dispatch the correct actions when navigating to /test and the call fails', () => {
-      const action = new RouterNavigation({ path: 'test' });
-
-      const dataService = TestBed.get(DataService);
-      spyOn(dataService, 'getData').and.returnValue(
-        of(dataFailure),
-      );
-
-      actions = hot('-a', { a: action });
-
-      const expected = cold('-(b)', {
-        b: dataFailure
-      });
-
-      expect(effects.navRoot).toBeObservable(expected);
     });
   });
 });

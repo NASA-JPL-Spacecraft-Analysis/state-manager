@@ -1,32 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
-import { StateManagementAppState } from '../state-management-app-store';
 import { StateVariableActions, ToastActions } from '../actions';
 import { StateVariable } from '../models';
-import { forkJoin } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class StateVariableEffects {
   constructor(
     private actions: Actions,
-    private stateManagementService: StateManagementService,
-    private store: Store<StateManagementAppState>
+    private stateManagementService: StateManagementService
   ) {}
 
-  public createStateVariable = createEffect(() =>
-    this.actions.pipe(
+  public createStateVariable = createEffect(() => {
+    return this.actions.pipe(
       ofType(StateVariableActions.createStateVariable),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        return this.stateManagementService.createStateVariable(
-          state.config.app.baseUrl,
-          action.stateVariable
+      switchMap(({ stateVariable }) =>
+        this.stateManagementService.createStateVariable(
+          stateVariable
         ).pipe(
           switchMap(
             (stateVariables: StateVariable[]) => [
@@ -48,20 +41,17 @@ export class StateVariableEffects {
               })
             ]
           )
-        );
-      })
-    )
-  );
+        )
+      )
+    );
+  });
 
-  public editStateVariable = createEffect(() =>
-    this.actions.pipe(
+  public editStateVariable = createEffect(() => {
+    return this.actions.pipe(
       ofType(StateVariableActions.editStateVariable),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        return this.stateManagementService.editStateVariable(
-          state.config.app.baseUrl,
-          action.stateVariable
+      switchMap(({ stateVariable }) =>
+        this.stateManagementService.editStateVariable(
+          stateVariable
         ).pipe(
           switchMap(
             (stateVariables: StateVariable[]) => [
@@ -83,46 +73,43 @@ export class StateVariableEffects {
               })
             ]
           )
-        );
-      })
-    )
-  );
+        )
+      )
+    );
+  });
 
-  public fetchIdentifiers = createEffect(() =>
-    this.actions.pipe(
+  public fetchIdentifiers = createEffect(() => {
+    return this.actions.pipe(
       ofType(StateVariableActions.fetchIdentifiers),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        return this.stateManagementService.getIdentifiers(
-          state.config.app.baseUrl
-        ).pipe(
-          switchMap(
-            (identifiers: string[]) => [
-              StateVariableActions.setIdentifiers({
-                identifiers
-              })
-            ]
-          ),
+      switchMap(_ =>
+        this.stateManagementService.getIdentifiers().pipe(
+          switchMap((identifiers) => {
+            return [
+              StateVariableActions.setIdentifiers({ identifiers })
+            ];
+          }),
           catchError(
             (error: Error) => [
               StateVariableActions.fetchIdentifiersFailure({ error })
             ]
           )
-        );
-      })
-    )
-  );
+        )
+      )
+    );
+  });
+  /*
+    return this.actions.pipe(
+      ofType(StateVariableActions.editStateVariable),
+      switchMap(({ stateVariable }) =>
+        this.stateManagementService.editStateVariable(
+          */
 
-  public parseUploadedStateVariables = createEffect(() =>
-    this.actions.pipe(
+  public parseUploadedStateVariables = createEffect(() => {
+    return this.actions.pipe(
       ofType(StateVariableActions.parseStateVariablesFileSuccess),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
+      switchMap(({ parsedStateVariables }) => {
         return this.stateManagementService.createStateVariables(
-            state.config.app.baseUrl,
-            action.parsedStateVariables
+          parsedStateVariables
         ).pipe(
           switchMap(
             (stateVariables: StateVariable[]) => [
@@ -146,6 +133,6 @@ export class StateVariableEffects {
           )
         );
       })
-    )
-  );
+    );
+  });
 }
