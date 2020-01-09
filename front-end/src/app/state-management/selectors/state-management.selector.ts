@@ -18,4 +18,4 @@ export const getStateVariables = createSelector(
 export const getIdentifiers = createSelector(
   getStateManagementState,
   (state: StateManagementState) => state.identifiers
-)
+);

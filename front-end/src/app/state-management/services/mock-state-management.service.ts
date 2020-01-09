@@ -36,9 +36,16 @@ export function getMockStateVariables(): StateVariable[] {
   ];
 }
 
-export function getMockIdentifiers(): string[] {
+export function getMockIdentifiersArray(): string[] {
   return [
     'TEST',
     'TEST 1'
   ];
+}
+
+export function getMockIdentifiersSet(): Set<string> {
+  return new Set([
+    'TEST',
+    'TEST 1'
+  ]);
 }
