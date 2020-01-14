@@ -1,6 +1,6 @@
 import { NgModule, Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NoopAnimationsModule, BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
@@ -46,8 +46,7 @@ export class AppComponent {
       maxOpened: 4,
       preventDuplicates: true,
       resetTimeoutOnDuplicate: true
-    }),
-    NoopAnimationsModule
+    })
   ],
   bootstrap: [
     AppComponent

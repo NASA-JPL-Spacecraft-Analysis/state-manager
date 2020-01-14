@@ -15,7 +15,8 @@
 
   <div class="sidebar" *ngIf="showSidenav">
     <state-variable-sidenav
-      [stateVariable]="stateVariable">
+      [stateVariable]="stateVariable"
+      (closeSidenav)="onCloseSidenav($event)">
     </state-variable-sidenav>
   </div>
 </div>

@@ -7,7 +7,6 @@ import { StateManagementAppRoutingModule } from './state-management-app-routing.
 import { reducers } from './state-management-app-store';
 import { HomeModule } from './containers';
 import { StateVariableEffects, FileUploadEffects, ToastEffects, NavEffects } from './effects';
-import { DataDialogComponent } from './containers/data-dialog/data-dialog.component';
 
 @NgModule({
   imports: [
@@ -21,9 +20,6 @@ import { DataDialogComponent } from './containers/data-dialog/data-dialog.compon
     StateManagementAppRoutingModule,
     StoreModule.forFeature('stateManagementApp', reducers),
     HomeModule
-  ],
-  entryComponents: [
-    DataDialogComponent
   ]
 })
 export class StateManagementAppModule {}

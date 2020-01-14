@@ -1,73 +1,70 @@
-import { Component, NgModule, Inject, OnInit, ChangeDetectionStrategy, OnDestroy, ViewChild, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, NgModule, ChangeDetectionStrategy, Input,
+  ChangeDetectorRef, OnDestroy, ViewChild, Output, EventEmitter, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconRegistry, MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { SubSink } from 'subsink';
 
 import { StateVariable } from '../../models';
-import { getIdentifiers } from '../../selectors';
 import { StateManagementAppState } from '../../state-management-app-store';
+import { getIdentifiers } from '../../selectors';
 import { StateVariableActions } from '../../actions';
 
-/**
- * TODO: Delete this once we're done moving the code into the sidenav.
- */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'data-dialog',
-  templateUrl: 'data-dialog.component.html',
-  styleUrls: [ 'data-dialog.component.css' ]
+  selector: 'state-variable-sidenav',
+  styleUrls: [ 'state-variable-sidenav.component.css' ],
+  templateUrl: 'state-variable-sidenav.component.html'
 })
-export class DataDialogComponent implements OnDestroy, OnInit {
+export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
+  @Input() public stateVariable: StateVariable;
+
+  @Output() public closeSidenav: EventEmitter<StateVariable>;
+
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
-  public identifiers: Set<string>;
-  public title = '';
-  public oldIdentifier: string;
+  public newStateVariable: StateVariable;
   public identifierIcon: string;
-  public form: FormGroup;
   public tooltip: string;
+  public form: FormGroup;
+  public identifiers: Set<string>;
 
-  private ngUnsubscribe: Subject<{}> = new Subject();
+  private subscriptions = new SubSink();
 
   constructor(
-    public dialogRef: MatDialogRef<DataDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { stateVariable: StateVariable },
     private store: Store<StateManagementAppState>,
     private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.iconRegistry.addSvgIcon('done', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/done.svg'));
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-  }
 
-  public ngOnInit(): void {
+    this.closeSidenav = new EventEmitter<StateVariable>();
+
     this.store.dispatch(StateVariableActions.fetchIdentifiers({}));
 
-    this.store.pipe(
-      select(getIdentifiers),
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(
-      (identifiers: Set<string>) => {
+    this.subscriptions.add(
+      this.store.pipe(select(getIdentifiers)).subscribe(identifiers => {
         this.identifiers = identifiers;
-      }
+        this.changeDetectorRef.markForCheck();
+      })
     );
+  }
 
-    let stateVariable: StateVariable;
+  public ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
-    if (this.data.stateVariable === undefined) {
-      // On a create setup a new state variable.
-      this.title = 'Create State';
-
-      stateVariable = {
+  public ngOnChanges(): void {
+    if (this.stateVariable === undefined) {
+      this.newStateVariable = {
         id: undefined,
         identifier: '',
         displayName: '',
@@ -77,31 +74,20 @@ export class DataDialogComponent implements OnDestroy, OnInit {
         description: ''
       };
     } else {
-      // On an edit copy our existing state variable to be modified.
-      this.title = 'Edit State';
-
-      stateVariable = {
-        ...this.data.stateVariable
+      this.newStateVariable = {
+        ...this.stateVariable
       };
-
-      // Keep track of our previous identifier so we can still save if it doesn't change.
-      this.oldIdentifier = stateVariable.identifier;
     }
 
     this.form = new FormGroup({
-      id: new FormControl(stateVariable.id),
-      identifier: new FormControl(stateVariable.identifier, [ Validators.required ]),
-      displayName: new FormControl(stateVariable.displayName, [ Validators.required ]),
-      type: new FormControl(stateVariable.type, [ Validators.required ]),
-      units: new FormControl(stateVariable.units, [ Validators.required ]),
-      source: new FormControl(stateVariable.source, [ Validators.required ]),
-      description: new FormControl(stateVariable.description),
+      id: new FormControl(this.newStateVariable.id),
+      identifier: new FormControl(this.newStateVariable.identifier, [ Validators.required ]),
+      displayName: new FormControl(this.newStateVariable.displayName, [ Validators.required ]),
+      type: new FormControl(this.newStateVariable.type, [ Validators.required ]),
+      units: new FormControl(this.newStateVariable.units, [ Validators.required ]),
+      source: new FormControl(this.newStateVariable.source, [ Validators.required ]),
+      description: new FormControl(this.newStateVariable.description),
     });
-  }
-
-  public ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 
   /**
@@ -111,7 +97,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
    */
   public onSubmit(): void {
     if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
-      this.dialogRef.close(this.form.value);
+      this.closeSidenav.emit(this.form.value);
     } else {
       // Show the duplicate tooltip.
       this.duplicateTooltip.show();
@@ -119,7 +105,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
   }
 
   public onCancel(): void {
-    this.dialogRef.close();
+    this.closeSidenav.emit(undefined);
   }
 
   /**
@@ -153,7 +139,7 @@ export class DataDialogComponent implements OnDestroy, OnInit {
   private isIdentifierDuplicate(identifier: string): boolean {
     if (this.identifiers.size > 0) {
       return this.identifiers.has(identifier)
-          && (!this.oldIdentifier || identifier !== this.oldIdentifier);
+          && (!this.stateVariable.identifier || identifier !== this.stateVariable.identifier);
     }
 
     return false;
@@ -162,21 +148,20 @@ export class DataDialogComponent implements OnDestroy, OnInit {
 
 @NgModule({
   declarations: [
-    DataDialogComponent
+    StateVariableSidenavComponent
   ],
   exports: [
-    DataDialogComponent
+    StateVariableSidenavComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatTooltipModule
   ]
 })
-export class DataDialogModule {}
+export class StateVariableSidenavModule {}
