@@ -20,7 +20,7 @@ import { StateVariableSidenavModule } from '../state-variable-sidenav/state-vari
 })
 export class HomeComponent implements OnDestroy {
   public showSidenav: boolean;
-  public stateVariables$: Observable<StateVariable[]>;
+  public stateVariables: StateVariable[];
   public stateVariable: StateVariable;
 
   private subscriptions = new SubSink();
@@ -29,11 +29,13 @@ export class HomeComponent implements OnDestroy {
     private store: Store<StateManagementAppState>,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.stateVariables$ = this.store.pipe(select(getStateVariables));
-
     this.subscriptions.add(
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateVariables)).subscribe(stateVariables => {
+        this.stateVariables = stateVariables;
         this.changeDetectorRef.markForCheck();
       })
     );

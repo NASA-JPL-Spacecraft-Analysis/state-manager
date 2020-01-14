@@ -7,8 +7,8 @@
       (uploadStateVariables)="onUploadStateVariables($event)">
     </add-data-form>
 
-    <state-variable-table
-      [stateVariables]="stateVariables$ | async"
+    <state-variable-table *ngIf="stateVariables"
+      [stateVariables]="stateVariables"
       (editStateVariable)="onModifyStateVariable($event)">
     </state-variable-table>
   </div>
