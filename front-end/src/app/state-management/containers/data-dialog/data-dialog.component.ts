@@ -17,6 +17,9 @@ import { getIdentifiers } from '../../selectors';
 import { StateManagementAppState } from '../../state-management-app-store';
 import { StateVariableActions } from '../../actions';
 
+/**
+ * TODO: Delete this once we're done moving the code into the sidenav.
+ */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'data-dialog',
