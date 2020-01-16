@@ -25,7 +25,7 @@ import { StateVariableActions } from '../../actions';
 export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   @Input() public stateVariable: StateVariable;
 
-  @Output() public closeSidenav: EventEmitter<StateVariable>;
+  @Output() public modifyStateVariable: EventEmitter<StateVariable>;
 
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
@@ -46,7 +46,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     this.iconRegistry.addSvgIcon('done', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/done.svg'));
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.closeSidenav = new EventEmitter<StateVariable>();
+    this.modifyStateVariable = new EventEmitter<StateVariable>();
 
     this.store.dispatch(StateVariableActions.fetchIdentifiers({}));
 
@@ -97,7 +97,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
    */
   public onSubmit(): void {
     if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
-      this.closeSidenav.emit(this.form.value);
+      this.modifyStateVariable.emit(this.form.value);
     } else {
       // Show the duplicate tooltip.
       this.duplicateTooltip.show();
@@ -105,7 +105,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   }
 
   public onCancel(): void {
-    this.closeSidenav.emit(undefined);
+    this.modifyStateVariable.emit(undefined);
   }
 
   /**
@@ -118,6 +118,9 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
         this.tooltip = 'Your identifier is a duplicate';
+
+        // Mark our form as invalid so the user can't save when there's a duplicate.
+        this.form.get('identifier').setErrors({});
       } else {
         this.identifierIcon = 'done';
         this.tooltip = 'Your identifier is unique';

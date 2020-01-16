@@ -9,14 +9,14 @@
 
     <state-variable-table *ngIf="stateVariables"
       [stateVariables]="stateVariables"
-      (editStateVariable)="onModifyStateVariable($event)">
+      (stateVariableSelected)="onModifyStateVariable($event)">
     </state-variable-table>
   </div>
 
   <div class="sidebar" *ngIf="showSidenav">
     <state-variable-sidenav
       [stateVariable]="stateVariable"
-      (closeSidenav)="onCloseSidenav($event)">
+      (modifyStateVariable)="onSidenavOutput($event)">
     </state-variable-sidenav>
   </div>
 </div>

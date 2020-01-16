@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 import { StateVariable } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
-import { getStateVariables } from '../../selectors';
+import { getStateVariables, getSelectedStateVariable } from '../../selectors';
 import { StateVariableActions, LayoutActions } from '../../actions';
 import { AddDataFormModule, StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
@@ -37,6 +37,10 @@ export class HomeComponent implements OnDestroy {
       this.store.pipe(select(getStateVariables)).subscribe(stateVariables => {
         this.stateVariables = stateVariables;
         this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getSelectedStateVariable)).subscribe(selectedStateVariable => {
+        this.stateVariable = selectedStateVariable;
+        this.changeDetectorRef.markForCheck();
       })
     );
   }
@@ -51,16 +55,23 @@ export class HomeComponent implements OnDestroy {
    * if the user is creating a new state variable.
    */
   public onModifyStateVariable(stateVariable?: StateVariable): void {
-    this.stateVariable = stateVariable;
+    this.store.dispatch(StateVariableActions.setSelectedStateVariable({
+      stateVariable
+    }));
 
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
   }
 
-  public onCloseSidenav(stateVariable?: StateVariable): void {
+  public onSidenavOutput(stateVariable?: StateVariable): void {
     if (stateVariable !== undefined) {
-      if (stateVariable.id == null) {
+      // Try and set the state variable id so we don't get duplicate identifier errors.
+      if (stateVariable.id === null && this.stateVariable) {
+        stateVariable.id = this.stateVariable.id;
+      }
+
+      if (stateVariable.id === null) {
         this.store.dispatch(StateVariableActions.createStateVariable({
           stateVariable
         }));

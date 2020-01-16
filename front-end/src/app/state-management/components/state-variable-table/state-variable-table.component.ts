@@ -16,7 +16,8 @@ import { StateVariable } from '../../models';
 })
 export class StateVariableTableComponent implements OnChanges {
   @Input() public stateVariables: StateVariable[];
-  @Output() public editStateVariable: EventEmitter<StateVariable>;
+
+  @Output() public stateVariableSelected: EventEmitter<StateVariable>;
 
   public dataSource: MatTableDataSource<StateVariable>;
   public displayedColumns: string[] = [
@@ -29,7 +30,7 @@ export class StateVariableTableComponent implements OnChanges {
   ];
 
   constructor() {
-    this.editStateVariable = new EventEmitter<StateVariable>();
+    this.stateVariableSelected = new EventEmitter<StateVariable>();
   }
 
   public ngOnChanges(): void {
@@ -51,7 +52,7 @@ export class StateVariableTableComponent implements OnChanges {
   }
 
   public onRowClick(stateVariable: StateVariable): void {
-    this.editStateVariable.emit(stateVariable);
+    this.stateVariableSelected.emit(stateVariable);
   }
 
   // Filter by our state variable's type to start with.

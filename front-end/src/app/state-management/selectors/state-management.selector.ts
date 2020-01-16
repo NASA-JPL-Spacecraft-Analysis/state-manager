@@ -15,6 +15,11 @@ export const getStateVariables = createSelector(
   (state: StateManagementState) => state.stateVariables
 );
 
+export const getSelectedStateVariable = createSelector(
+  getStateManagementState,
+  (state: StateManagementState) => state.selectedStateVariable
+);
+
 export const getIdentifiers = createSelector(
   getStateManagementState,
   (state: StateManagementState) => state.identifiers

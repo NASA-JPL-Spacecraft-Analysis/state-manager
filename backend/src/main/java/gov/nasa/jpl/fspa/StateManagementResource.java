@@ -67,13 +67,13 @@ public class StateManagementResource {
     @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
     public Response postStateVariable(StateVariable stateVariable) {
-        List<StateVariable> stateVariables = stateVariableService.modifyStateVariable(stateVariable);
+        StateVariable createdStateVariable = stateVariableService.modifyStateVariable(stateVariable);
 
-        if (stateVariables.isEmpty()) {
+        if (createdStateVariable == null) {
             return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
         }
 
-        return Response.status(Response.Status.CREATED).entity(stateVariables).build();
+        return Response.status(Response.Status.CREATED).entity(createdStateVariable).build();
     }
 
     @POST
@@ -94,13 +94,13 @@ public class StateManagementResource {
     @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
     public Response putStateVariable(StateVariable stateVariable) {
-        List<StateVariable> stateVariables = stateVariableService.modifyStateVariable(stateVariable);
+        StateVariable editedStateVariable = stateVariableService.modifyStateVariable(stateVariable);
 
-        if (stateVariables.isEmpty()) {
+        if (editedStateVariable == null) {
             return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
         }
 
-        return Response.status(Response.Status.CREATED).entity(stateVariables).build();
+        return Response.status(Response.Status.CREATED).entity(editedStateVariable).build();
     }
 
     /**

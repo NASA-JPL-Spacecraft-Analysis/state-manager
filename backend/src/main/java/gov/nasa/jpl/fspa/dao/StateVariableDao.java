@@ -14,7 +14,7 @@ public interface StateVariableDao {
      * @param stateVariable The state variable we are creating.
      * @return The id of the created state variable.
      */
-    int createStateVariable(StateVariable stateVariable);
+    StateVariable createStateVariable(StateVariable stateVariable);
 
     /**
      * Creates a list of {@link StateVariable}s.
