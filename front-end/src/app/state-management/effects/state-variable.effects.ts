@@ -22,9 +22,9 @@ export class StateVariableEffects {
           stateVariable
         ).pipe(
           switchMap(
-            (stateVariables: StateVariable[]) => [
+            (createdStateVariable: StateVariable) => [
               StateVariableActions.createStateVariableSuccess({
-                stateVariables
+                stateVariable: createdStateVariable
               }),
               ToastActions.showToast({
                 message: 'State variable created',
@@ -54,9 +54,9 @@ export class StateVariableEffects {
           stateVariable
         ).pipe(
           switchMap(
-            (stateVariables: StateVariable[]) => [
+            (editedStateVariable: StateVariable) => [
               StateVariableActions.editStateVariableSuccess({
-                stateVariables
+                stateVariable: editedStateVariable
               }),
               ToastActions.showToast({
                 message: 'State variable edited',
@@ -113,7 +113,7 @@ export class StateVariableEffects {
         ).pipe(
           switchMap(
             (stateVariables: StateVariable[]) => [
-              StateVariableActions.createStateVariableSuccess({
+              StateVariableActions.createStateVariablesSuccess({
                 stateVariables
               }),
               ToastActions.showToast({

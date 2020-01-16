@@ -1,11 +1,22 @@
-<h2>State Management App</h2>
+<div class="main">
+  <div class="content">
+    <h2>State Management App</h2>
 
-<add-data-form
-  (createStateVariable)="onModifyStateVariable($event)"
-  (uploadStateVariables)="onUploadStateVariables($event)">
-</add-data-form>
+    <add-data-form
+      (createStateVariable)="onModifyStateVariable($event)"
+      (uploadStateVariables)="onUploadStateVariables($event)">
+    </add-data-form>
 
-<state-variable-table
-  [stateVariables]="stateVariables$ | async"
-  (editStateVariable)="onModifyStateVariable($event)">
-</state-variable-table>
+    <state-variable-table *ngIf="stateVariables"
+      [stateVariables]="stateVariables"
+      (stateVariableSelected)="onModifyStateVariable($event)">
+    </state-variable-table>
+  </div>
+
+  <div class="sidebar" *ngIf="showSidenav">
+    <state-variable-sidenav
+      [stateVariable]="stateVariable"
+      (modifyStateVariable)="onSidenavOutput($event)">
+    </state-variable-sidenav>
+  </div>
+</div>

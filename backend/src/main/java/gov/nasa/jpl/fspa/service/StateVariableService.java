@@ -16,7 +16,7 @@ public interface StateVariableService {
      * @param stateVariable The updated / new state variable.
      * @return The entire list of state variables.
      */
-    List<StateVariable> modifyStateVariable(StateVariable stateVariable);
+    StateVariable modifyStateVariable(StateVariable stateVariable);
 
     /**
      * Takes a list of new state variables that should be created.

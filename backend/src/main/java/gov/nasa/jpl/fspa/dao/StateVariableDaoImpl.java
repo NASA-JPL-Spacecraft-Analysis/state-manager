@@ -39,8 +39,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
     }
 
     @Override
-    public int createStateVariable(StateVariable stateVariable) {
-        int id = -1;
+    public StateVariable createStateVariable(StateVariable stateVariable) {
         String query;
 
         if (stateVariable.getId() == null) {
@@ -60,18 +59,18 @@ public class StateVariableDaoImpl implements StateVariableDao {
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
-            if (stateVariable.getId() != null) {
-                id = stateVariable.getId();
-            } else {
-                resultSet.next();
-
-                id = resultSet.getInt(1);
+            if (!resultSet.next()) {
+                throw new Exception("Insert unsuccessful");
             }
+
+            System.out.println(resultSet.getInt(1) + " ---------------------");
+
+            stateVariable.setId(resultSet.getInt(1));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return id;
+        return stateVariable;
     }
 
     @Override

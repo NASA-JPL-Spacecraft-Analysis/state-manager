@@ -1,15 +1,16 @@
-import { NgModule, Component, ChangeDetectionStrategy } from '@angular/core';
+import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { select, Store } from '@ngrx/store';
-import { MatDialog } from '@angular/material/dialog';
+import { SubSink } from 'subsink';
 import { Observable } from 'rxjs';
 
 import { StateVariable } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
-import { getStateVariables } from '../../selectors';
-import { StateVariableActions } from '../../actions';
+import { getStateVariables, getSelectedStateVariable } from '../../selectors';
+import { StateVariableActions, LayoutActions } from '../../actions';
 import { AddDataFormModule, StateVariableTableModule } from '../../components';
-import { DataDialogComponent, DataDialogModule } from '../data-dialog/data-dialog.component';
+import { getShowSidenav } from '../../selectors/layout.selector';
+import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,40 +18,79 @@ import { DataDialogComponent, DataDialogModule } from '../data-dialog/data-dialo
   styleUrls: [ 'home.component.css' ],
   templateUrl: 'home.component.html'
 })
-export class HomeComponent {
-  public stateVariables$: Observable<StateVariable[]>;
+export class HomeComponent implements OnDestroy {
+  public showSidenav: boolean;
+  public stateVariables: StateVariable[];
+  public stateVariable: StateVariable;
+
+  private subscriptions = new SubSink();
 
   constructor(
-    public dialog: MatDialog,
-    private store: Store<StateManagementAppState>
+    private store: Store<StateManagementAppState>,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.stateVariables$ = this.store.pipe(select(getStateVariables));
+    this.subscriptions.add(
+      this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
+        this.showSidenav = showSidenav;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateVariables)).subscribe(stateVariables => {
+        this.stateVariables = stateVariables;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getSelectedStateVariable)).subscribe(selectedStateVariable => {
+        this.stateVariable = selectedStateVariable;
+        this.changeDetectorRef.markForCheck();
+      })
+    );
+  }
+
+  public ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   /**
    * Called on creation or edit of a state variable.
-   * @param stateVariable The state variable that we're creating or modifing.
+   * @param stateVariable The state variable that we're creating or modifing. Can be undefined
+   * if the user is creating a new state variable.
    */
   public onModifyStateVariable(stateVariable?: StateVariable): void {
-    const dialogRef = this.dialog.open(DataDialogComponent, {
-      width: '400px',
-      data: {
-        stateVariable
-      },
-      disableClose: true
-    });
+    this.store.dispatch(StateVariableActions.setSelectedStateVariable({
+      stateVariable
+    }));
 
-    dialogRef.afterClosed().subscribe(
-      (modifiedStateVariable: StateVariable) => {
-        this.modifyData(modifiedStateVariable);
+    this.store.dispatch(LayoutActions.toggleSidenav({
+      showSidenav: true
+    }));
+  }
+
+  public onSidenavOutput(stateVariable?: StateVariable): void {
+    if (stateVariable !== undefined) {
+      // Try and set the state variable id so we don't get duplicate identifier errors.
+      if (stateVariable.id === null && this.stateVariable) {
+        stateVariable.id = this.stateVariable.id;
       }
-    );
+
+      if (stateVariable.id === null) {
+        this.store.dispatch(StateVariableActions.createStateVariable({
+          stateVariable
+        }));
+      } else {
+        this.store.dispatch(StateVariableActions.editStateVariable({
+          stateVariable
+        }));
+      }
+    } else {
+      // If our state variable is undefined the user closed the sidenav.
+      this.store.dispatch(LayoutActions.toggleSidenav({
+        showSidenav: false
+      }));
+    }
   }
 
   /**
    * Only dispatch a valid file, if file is null then we couldn't parse the file
    * due to a filetype issue.
-   * 
    * @param file The file we're being passed.
    */
   public onUploadStateVariables(file: File): void {
@@ -64,20 +104,6 @@ export class HomeComponent {
       }));
     }
   }
-
-  public modifyData(stateVariable: StateVariable): void {
-    if (stateVariable !== undefined) {
-      if (stateVariable.id == null) {
-        this.store.dispatch(StateVariableActions.createStateVariable({
-          stateVariable
-        }));
-      } else {
-        this.store.dispatch(StateVariableActions.editStateVariable({
-          stateVariable
-        }));
-      }
-    }
-  }
 }
 
 @NgModule({
@@ -89,7 +115,7 @@ export class HomeComponent {
   ],
   imports: [
     AddDataFormModule,
-    DataDialogModule,
+    StateVariableSidenavModule,
     StateVariableTableModule,
     CommonModule
   ]

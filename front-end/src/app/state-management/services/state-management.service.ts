@@ -14,8 +14,8 @@ const { baseUrl } = environment;
 export class StateManagementService implements StateManagementServiceInterface {
   constructor(private http: HttpClient) {}
 
-  public createStateVariable(stateVariable: StateVariable): Observable<StateVariable[]> {
-    return this.http.post<StateVariable[]>(
+  public createStateVariable(stateVariable: StateVariable): Observable<StateVariable> {
+    return this.http.post<StateVariable>(
       baseUrl + '/state-variable',
       stateVariable
     );
@@ -34,8 +34,8 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
-  public editStateVariable(stateVariable: StateVariable): Observable<StateVariable[]> {
-    return this.http.put<StateVariable[]>(
+  public editStateVariable(stateVariable: StateVariable): Observable<StateVariable> {
+    return this.http.put<StateVariable>(
       baseUrl + '/state-variable',
       stateVariable
     );

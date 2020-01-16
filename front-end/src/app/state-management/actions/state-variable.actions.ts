@@ -14,6 +14,11 @@ export const createStateVariableFailure = createAction(
 
 export const createStateVariableSuccess = createAction(
   '[state variable] create_state_variable_success',
+  props<{ stateVariable: StateVariable }>()
+);
+
+export const createStateVariablesSuccess = createAction(
+  '[state variable] create_states_variable_success',
   props<{ stateVariables: StateVariable[] }>()
 );
 
@@ -29,7 +34,7 @@ export const editStateVariableFailure = createAction(
 
 export const editStateVariableSuccess = createAction(
   '[state variable] edit_state_variable_success',
-  props<{ stateVariables: StateVariable[] }>()
+  props<{ stateVariable: StateVariable }>()
 );
 
 export const fetchIdentifiers = createAction(
@@ -70,6 +75,11 @@ export const setIdentifiers = createAction(
 export const setStateVariables = createAction(
   '[state variable] set_state_variables',
   props<{ stateVariables: StateVariable[] }>()
+);
+
+export const setSelectedStateVariable = createAction(
+  '[state variable] set_selected_state_variable',
+  props<{ stateVariable: StateVariable }>()
 );
 
 export const uploadStateVariablesFailure = createAction(

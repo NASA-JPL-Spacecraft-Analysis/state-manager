@@ -54,7 +54,7 @@ public class StateVariableServiceImpl implements StateVariableService {
     }
 
     @Override
-    public List<StateVariable> modifyStateVariable(StateVariable stateVariable) {
+    public StateVariable modifyStateVariable(StateVariable stateVariable) {
         List<StateVariable> stateVariables = new ArrayList<>();
 
         stateVariables.add(stateVariable);
@@ -62,14 +62,10 @@ public class StateVariableServiceImpl implements StateVariableService {
         List<String> duplicateIdentifiers = getDuplicateIdentifiers(stateVariables);
 
         if (duplicateIdentifiers.isEmpty()) {
-            int id = stateVariableDao.createStateVariable(stateVariable);
-
-            if (id != -1) {
-                return getStateVariables();
-            }
+            return stateVariableDao.createStateVariable(stateVariable);
         }
 
-        return new ArrayList<>();
+        return null;
     }
 
     @Override

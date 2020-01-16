@@ -5,3 +5,7 @@ table {
 .filter-container {
   width: 100%;
 }
+
+.table-row {
+  cursor: pointer;
+}
