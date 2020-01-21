@@ -3,8 +3,8 @@ package gov.nasa.jpl.fspa.model;
 public class StateEnumeration {
     private int id;
     private int stateVariableId;
-    private String enumValue;
-    private String value;
+    private String label;
+    private int value;
 
     public int getId() {
         return id;
@@ -22,19 +22,19 @@ public class StateEnumeration {
         this.stateVariableId = stateVariableId;
     }
 
-    public String getEnumValue() {
-        return enumValue;
+    public String getLabel() {
+        return label;
     }
 
-    public void setEnumValue(String enumValue) {
-        this.enumValue = enumValue;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(int value) {
         this.value = value;
     }
 }

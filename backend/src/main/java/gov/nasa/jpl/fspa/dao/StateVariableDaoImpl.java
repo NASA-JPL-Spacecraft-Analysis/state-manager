@@ -63,8 +63,6 @@ public class StateVariableDaoImpl implements StateVariableDao {
                 throw new Exception("Insert unsuccessful");
             }
 
-            System.out.println(resultSet.getInt(1) + " ---------------------");
-
             stateVariable.setId(resultSet.getInt(1));
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,8 +107,8 @@ public class StateVariableDaoImpl implements StateVariableDao {
 
                 stateEnumeration.setId(Integer.parseInt(resultSet.getString("id")));
                 stateEnumeration.setStateVariableId(Integer.parseInt(resultSet.getString("state_variable_id")));
-                stateEnumeration.setEnumValue(resultSet.getString("enum_value"));
-                stateEnumeration.setValue(resultSet.getString("value"));
+                stateEnumeration.setLabel(resultSet.getString("label"));
+                stateEnumeration.setValue(Integer.parseInt(resultSet.getString("value")));
 
                 stateEnumerations.add(stateEnumeration);
             }
