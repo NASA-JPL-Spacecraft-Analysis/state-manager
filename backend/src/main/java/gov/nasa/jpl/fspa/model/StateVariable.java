@@ -10,7 +10,7 @@ public class StateVariable {
     private String units; // enum?
     private String source; // enum?
     private String description;
-    private List<StateEnumeration> enumarations;
+    private List<StateEnumeration> enumerations;
 
     public Integer getId() {
         return id;
@@ -68,12 +68,12 @@ public class StateVariable {
         this.description = description;
     }
 
-    public List<StateEnumeration> getEnumarations() {
-        return enumarations;
+    public List<StateEnumeration> getEnumerations() {
+        return enumerations;
     }
 
-    public void setEnumarations(List<StateEnumeration> enumarations) {
-        this.enumarations = enumarations;
+    public void setEnumerations(List<StateEnumeration> enumerations) {
+        this.enumerations = enumerations;
     }
 
     /**
