@@ -3,13 +3,14 @@ package gov.nasa.jpl.fspa.service;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StateVariableService {
     /**
      * Gets all our state variables with their enumerations.
-     * @return The list of state variables with enumerations.
+     * @return A map of ids to state variables.
      */
-    List<StateVariable> getStateVariables();
+    Map<Integer, StateVariable> getStateVariables();
 
     /**
      * Takes a new or existing state variable that should be created or updated.

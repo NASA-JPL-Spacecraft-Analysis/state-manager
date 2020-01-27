@@ -12,6 +12,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 @Path("v1/")
 public class StateManagementResource {
@@ -25,13 +26,13 @@ public class StateManagementResource {
     @Path("/state-variables")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStateVariables() {
-        List<StateVariable> stateVariables = stateVariableService.getStateVariables();
+        Map<Integer, StateVariable> stateVariableMap = stateVariableService.getStateVariables();
 
-        if (stateVariables.isEmpty()) {
+        if (stateVariableMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.OK).entity(stateVariables).build();
+        return Response.status(Response.Status.OK).entity(stateVariableMap).build();
     }
 
     @GET

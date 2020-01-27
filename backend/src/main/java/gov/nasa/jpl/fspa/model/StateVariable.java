@@ -10,7 +10,7 @@ public class StateVariable {
     private String units; // enum?
     private String source; // enum?
     private String description;
-    private List<StateEnumeration> enumerations;
+    private List<Integer> enumerationIds;
 
     public Integer getId() {
         return id;
@@ -68,17 +68,17 @@ public class StateVariable {
         this.description = description;
     }
 
-    public List<StateEnumeration> getEnumerations() {
-        return enumerations;
+    public List<Integer> getEnumerationIds() {
+        return enumerationIds;
     }
 
-    public void setEnumerations(List<StateEnumeration> enumerations) {
-        this.enumerations = enumerations;
+    public void setEnumerationIds(List<Integer> enumerationIds) {
+        this.enumerationIds = enumerationIds;
     }
 
     /**
      * Surround each property with double quotes to support csv exporting.
-     *
+     * TODO: Add state enumeration ids to the csv output.
      * @return
      */
     @Override

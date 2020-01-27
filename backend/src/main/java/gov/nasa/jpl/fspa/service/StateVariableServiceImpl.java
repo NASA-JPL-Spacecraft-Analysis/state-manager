@@ -7,6 +7,7 @@ import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
 
+import java.sql.Statement;
 import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
@@ -23,36 +24,32 @@ public class StateVariableServiceImpl implements StateVariableService {
      * @return The list of state variables with their enumerations.
      */
     @Override
-    public List<StateVariable> getStateVariables() {
+    public Map<Integer, StateVariable> getStateVariables() {
         List<StateVariable> stateVariables = this.stateVariableDao.getStateVariables();
-        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
-        Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();
-
-        // Setup a map from state variable ids to a list of enumerations.
-        for (StateEnumeration stateEnumeration: stateEnumerations) {
-            if (stateEnumerationMap.get(stateEnumeration.getStateVariableId()) == null) {
-                stateEnumerationMap.put(stateEnumeration.getStateVariableId(), new ArrayList<StateEnumeration>());
-            }
-
-            // Add our enumeration to the list.
-            stateEnumerationMap.get(stateEnumeration.getStateVariableId()).add(stateEnumeration);
-        }
+        List<StateEnumeration> stateEnumerations = this.stateVariableDao.getStateEnumerations();
+        Map<Integer, StateVariable> stateVariableMap = new HashMap<>();
 
         for (StateVariable stateVariable: stateVariables) {
-            // If we have enumerations for a given state variable, set them.
-            if (stateEnumerationMap.get(stateVariable.getId()) != null) {
-                stateVariable.setEnumerations(stateEnumerationMap.get(stateVariable.getId()));
-            } else {
-                stateVariable.setEnumerations(new ArrayList<StateEnumeration>());
-            }
+            stateVariableMap.put(stateVariable.getId(), stateVariable);
         }
 
-        return stateVariables;
+        // Add our enumeration ids to our state variables.
+        for (StateEnumeration stateEnumeration: stateEnumerations) {
+            StateVariable currentStateVariable = stateVariableMap.get(stateEnumeration.getStateVariableId());
+
+            if (currentStateVariable.getEnumerationIds() == null) {
+                currentStateVariable.setEnumerationIds(new ArrayList<Integer>());
+            }
+
+            currentStateVariable.getEnumerationIds().add(stateEnumeration.getId());
+        }
+
+        return stateVariableMap;
     }
 
     @Override
     public String getStateVariablesAsCsv() {
-        return outputService.outputAsCsv(this.getStateVariables());
+        return outputService.outputAsCsv(stateVariableDao.getStateVariables());
     }
 
     @Override
