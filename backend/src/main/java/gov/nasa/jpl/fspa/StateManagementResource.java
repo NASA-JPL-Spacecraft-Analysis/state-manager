@@ -1,5 +1,6 @@
 package gov.nasa.jpl.fspa;
 
+import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.service.StateVariableService;
 import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
@@ -20,6 +21,19 @@ public class StateManagementResource {
 
     public StateManagementResource() {
         stateVariableService = new StateVariableServiceImpl();
+    }
+
+    @GET
+    @Path("/state-enumerations")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStateEnumerations() {
+        Map<Integer, StateEnumeration> stateEnumerationMap = stateVariableService.getStateEnumerations();
+
+        if (stateEnumerationMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(stateEnumerationMap).build();
     }
 
     @GET

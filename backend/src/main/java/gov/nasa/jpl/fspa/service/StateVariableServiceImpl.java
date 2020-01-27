@@ -7,7 +7,6 @@ import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
 
-import java.sql.Statement;
 import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
@@ -19,14 +18,26 @@ public class StateVariableServiceImpl implements StateVariableService {
         this.stateVariableDao = new StateVariableDaoImpl();
     }
 
+    @Override
+    public Map<Integer, StateEnumeration> getStateEnumerations() {
+        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
+        Map<Integer, StateEnumeration> stateEnumerationMap = new HashMap<>();
+
+        for (StateEnumeration stateEnumeration: stateEnumerations) {
+            stateEnumerationMap.put(stateEnumeration.getId(), stateEnumeration);
+        }
+
+        return stateEnumerationMap;
+    }
+
     /**
      * Gets our state variables sets their list of enumerations if they exist.
      * @return The list of state variables with their enumerations.
      */
     @Override
     public Map<Integer, StateVariable> getStateVariables() {
-        List<StateVariable> stateVariables = this.stateVariableDao.getStateVariables();
-        List<StateEnumeration> stateEnumerations = this.stateVariableDao.getStateEnumerations();
+        List<StateVariable> stateVariables = stateVariableDao.getStateVariables();
+        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
         Map<Integer, StateVariable> stateVariableMap = new HashMap<>();
 
         for (StateVariable stateVariable: stateVariables) {
