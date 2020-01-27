@@ -42,6 +42,8 @@ public class StateVariableServiceImpl implements StateVariableService {
             // If we have enumerations for a given state variable, set them.
             if (stateEnumerationMap.get(stateVariable.getId()) != null) {
                 stateVariable.setEnumerations(stateEnumerationMap.get(stateVariable.getId()));
+            } else {
+                stateVariable.setEnumerations(new ArrayList<StateEnumeration>());
             }
         }
 

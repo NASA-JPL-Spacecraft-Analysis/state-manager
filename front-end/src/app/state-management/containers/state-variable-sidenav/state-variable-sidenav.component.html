@@ -8,7 +8,7 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div mat-dialog-content *ngIf="identifiers !== null">
+    <div *ngIf="identifiers !== null">
       <mat-form-field>
         <input matInput
           placeholder="Identifier"
@@ -67,9 +67,13 @@
           placeholder="Description"
           formControlName="description"></textarea>
       </mat-form-field>
+
+      <enum-form
+        [enumerations]="newStateVariable.enumerations">
+      </enum-form>
     </div>
 
-    <div mat-dialog-actions>
+    <div class="sidenav-actions">
       <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Save</button>
     </div>
   </form>

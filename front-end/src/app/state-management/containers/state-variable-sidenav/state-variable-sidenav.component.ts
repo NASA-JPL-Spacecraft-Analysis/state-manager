@@ -15,6 +15,7 @@ import { StateVariable } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
 import { getIdentifiers } from '../../selectors';
 import { StateVariableActions } from '../../actions';
+import { EnumFormModule } from '../../components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,11 +72,15 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
         type: '',
         units: '',
         source: '',
-        description: ''
+        description: '',
+        enumerations: []
       };
     } else {
       this.newStateVariable = {
-        ...this.stateVariable
+        ...this.stateVariable,
+        enumerations: [
+          ...this.stateVariable.enumerations
+        ]
       };
     }
 
@@ -87,6 +92,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       units: new FormControl(this.newStateVariable.units, [ Validators.required ]),
       source: new FormControl(this.newStateVariable.source, [ Validators.required ]),
       description: new FormControl(this.newStateVariable.description),
+      enumerations: new FormControl(this.newStateVariable.enumerations)
     });
   }
 
@@ -157,6 +163,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     StateVariableSidenavComponent
   ],
   imports: [
+    EnumFormModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

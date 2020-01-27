@@ -1,0 +1,41 @@
+<div *ngIf="enumerations">
+  <div class="enumerations-header">
+    <span>{{enumerationsLabel}}</span>
+
+    <button mat-icon-button type="button" (click)="onAddEnumeration()">
+      <mat-icon svgIcon="add"></mat-icon>
+    </button>
+  </div>
+
+  <table>
+    <tr>
+      <th>Variable</th>
+      <th class="label-column">Label</th>
+      <th></th>
+    </tr>
+
+    <tr *ngFor="let enumeration of enumerations">
+      <td>
+        <input matInput 
+          [(ngModel)]="enumeration.value"
+          (change)="onEnumerationChange()"
+          type="number"
+          placeholder="Value" />
+      </td>
+
+      <td>
+        <input matInput 
+          [(ngModel)]="enumeration.label"
+          (change)="onEnumerationChange()"
+          type="text"
+          placeholder="Label" />
+      </td>
+
+      <td>
+        <button mat-icon-button type="button" (click)="onDeleteEnumeration(enumeration)">
+          <mat-icon svgIcon="clear"></mat-icon>
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>
