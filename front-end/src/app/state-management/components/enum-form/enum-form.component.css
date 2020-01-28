@@ -23,6 +23,11 @@ table tr td:nth-child(odd) {
   justify-content: space-between;
 }
 
+.enumeration-label {
+  position: relative;
+  top: .75em;
+}
+
 /* Make our label column the widest. */
 .label-column {
   width: 100%;

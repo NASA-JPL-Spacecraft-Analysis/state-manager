@@ -1,4 +1,4 @@
-import { Component, NgModule, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, NgModule, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,10 +13,8 @@ import { StateEnumeration } from '../../models';
   styleUrls: [ 'enum-form.component.css' ],
   templateUrl: 'enum-form.component.html'
 })
-export class EnumFormComponent implements OnInit {
+export class EnumFormComponent implements OnChanges {
   @Input() enumerations: StateEnumeration[];
-
-  @Output() enumerationsOutput: EventEmitter<StateEnumeration[]>;
 
   public enumerationsLabel: string;
 
@@ -26,11 +24,9 @@ export class EnumFormComponent implements OnInit {
   ) {
     this.iconRegistry.addSvgIcon('add', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/add.svg'));
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-
-    this.enumerationsOutput = new EventEmitter<StateEnumeration[]>();
   }
 
-  public ngOnInit(): void {
+  public ngOnChanges(): void {
     this.updateEnumerationsLabel();
   }
 
@@ -40,10 +36,6 @@ export class EnumFormComponent implements OnInit {
     if (this.enumerations.length !== 1) {
       this.enumerationsLabel += 's';
     }
-  }
-
-  public onEnumerationChange(): void {
-    console.log(this.enumerations);
   }
 
   // Add a new blank enumeration.
@@ -61,8 +53,6 @@ export class EnumFormComponent implements OnInit {
   // Remove the deleted enumeration and then emit the current list of enumerations.
   public onDeleteEnumeration(enumeration: StateEnumeration): void {
     this.enumerations.splice(this.enumerations.indexOf(enumeration), 1);
-
-    this.enumerationsOutput.emit(this.enumerations);
 
     this.updateEnumerationsLabel();
   }

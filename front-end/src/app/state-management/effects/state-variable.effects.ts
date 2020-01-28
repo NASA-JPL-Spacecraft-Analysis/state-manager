@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
+import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { StateVariableActions, ToastActions } from '../actions';
 import { StateVariable } from '../models';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class StateVariableEffects {
@@ -97,12 +97,6 @@ export class StateVariableEffects {
       )
     );
   });
-  /*
-    return this.actions.pipe(
-      ofType(StateVariableActions.editStateVariable),
-      switchMap(({ stateVariable }) =>
-        this.stateManagementService.editStateVariable(
-          */
 
   public parseUploadedStateVariables = createEffect(() => {
     return this.actions.pipe(
@@ -133,6 +127,30 @@ export class StateVariableEffects {
           )
         );
       })
+    );
+  });
+
+  public saveEnumerations = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateVariableActions.saveEnumerations),
+      switchMap(({ enumerations }) =>
+        this.stateManagementService.saveEnumerations(
+          enumerations
+        ).pipe(
+          switchMap((savedEnumerations) => {
+            return [
+              StateVariableActions.saveEnumerationsSuccess({
+                enumerations: savedEnumerations
+              })
+            ];
+          }),
+          catchError(
+            (error: Error) => [
+              StateVariableActions.saveEnumerationsFailure({ error })
+            ]
+          )
+        )
+      )
     );
   });
 }

@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 
-import { StateVariable } from '../../models';
+import { StateVariable, StateVariableMap } from '../../models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,11 +15,12 @@ import { StateVariable } from '../../models';
   templateUrl: 'state-variable-table.component.html'
 })
 export class StateVariableTableComponent implements OnChanges {
-  @Input() public stateVariables: StateVariable[];
+  @Input() public stateVariableMap: StateVariableMap;
 
   @Output() public stateVariableSelected: EventEmitter<StateVariable>;
 
   public dataSource: MatTableDataSource<StateVariable>;
+  public stateVariableMapSize: number;
   public displayedColumns: string[] = [
     'identifier',
     'displayName',
@@ -34,7 +35,16 @@ export class StateVariableTableComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.dataSource = new MatTableDataSource(this.stateVariables);
+    // Get all our state variables from our map so the table can display them.
+    const keys = Object.keys(this.stateVariableMap);
+    const stateVariables: StateVariable[] = [];
+    this.stateVariableMapSize = keys.length;
+
+    for (const key of keys) {
+      stateVariables.push(this.stateVariableMap[key]);
+    }
+
+    this.dataSource = new MatTableDataSource(stateVariables);
 
     this.dataSource.filterPredicate = this.filter;
   }

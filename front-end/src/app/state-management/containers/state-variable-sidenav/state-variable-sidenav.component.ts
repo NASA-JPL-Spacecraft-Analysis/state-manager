@@ -11,9 +11,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
 import { SubSink } from 'subsink';
 
-import { StateVariable } from '../../models';
+import { StateVariable, StateEnumeration } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
-import { getIdentifiers } from '../../selectors';
+import { getIdentifiers, getStateEnumerationsForSelectedStateVariable } from '../../selectors';
 import { StateVariableActions } from '../../actions';
 import { EnumFormModule } from '../../components';
 
@@ -27,10 +27,13 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   @Input() public stateVariable: StateVariable;
 
   @Output() public modifyStateVariable: EventEmitter<StateVariable>;
+  @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
   public newStateVariable: StateVariable;
+  public oldEnumerations: StateEnumeration[];
+  public enumerations: StateEnumeration[];
   public identifierIcon: string;
   public tooltip: string;
   public form: FormGroup;
@@ -48,12 +51,22 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
     this.modifyStateVariable = new EventEmitter<StateVariable>();
+    this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.store.dispatch(StateVariableActions.fetchIdentifiers({}));
 
     this.subscriptions.add(
       this.store.pipe(select(getIdentifiers)).subscribe(identifiers => {
         this.identifiers = identifiers;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateEnumerationsForSelectedStateVariable)).subscribe(enumerations => {
+        this.enumerations = [
+          ...enumerations
+        ];
+
+        this.oldEnumerations = enumerations;
+
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -73,13 +86,17 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
         units: '',
         source: '',
         description: '',
-        enumerations: []
+        enumerationIds: []
       };
     } else {
       this.newStateVariable = {
         ...this.stateVariable,
-        enumerations: [
-          ...this.stateVariable.enumerations
+        enumerationIds: [
+          ...(
+            this.stateVariable.enumerationIds === null
+            ? []
+            : this.stateVariable.enumerationIds
+          )
         ]
       };
     }
@@ -91,8 +108,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       type: new FormControl(this.newStateVariable.type, [ Validators.required ]),
       units: new FormControl(this.newStateVariable.units, [ Validators.required ]),
       source: new FormControl(this.newStateVariable.source, [ Validators.required ]),
-      description: new FormControl(this.newStateVariable.description),
-      enumerations: new FormControl(this.newStateVariable.enumerations)
+      description: new FormControl(this.newStateVariable.description)
     });
   }
 
@@ -102,7 +118,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
    * 1) That our identifier is unique (when trimmed)
    */
   public onSubmit(): void {
-    if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
+    if (!this.isIdentifierDuplicate(this.form.value.identifier.trim()) && this.processEnumerations()) {
       this.modifyStateVariable.emit(this.form.value);
     } else {
       // Show the duplicate tooltip.
@@ -136,6 +152,59 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       this.identifierIcon = null;
       this.tooltip = null;
     }
+  }
+
+  /**
+   * Checks to see if the enumerations were modified. If they were, then we save them.
+   */
+  private processEnumerations(): boolean {
+    // If we aren't trying to save any enumerations, skip everything.
+    if (this.enumerations.length === 0) {
+      return true;
+    }
+
+    // Check and make sure values are set for all our enumerations.
+    for (const enumeration of this.enumerations) {
+      if (enumeration.label === null || enumeration.value === null) {
+        return false;
+      }
+    }
+
+    let shouldSave = true;
+
+    /**
+     * Make sure there's at least 1 changed enumeration. We don't need to check if the lengths our our current
+     * vs old enumerations don't match.
+     */
+    if (this.enumerations.length === this.oldEnumerations.length) {
+      shouldSave = this.checkDuplicateEnumerations();
+    }
+
+    if (shouldSave) {
+      // Set the state variable id for every enumeration before saving.
+      for (const enumeration of this.enumerations) {
+        enumeration.stateVariableId = this.stateVariable.id;
+      }
+
+      this.modifyEnumerations.emit(this.enumerations);
+    }
+
+    return shouldSave;
+  }
+
+  /**
+   * Looks at all our enumerations, and if we have 1 new item then we save them.
+   */
+  private checkDuplicateEnumerations(): boolean {
+    for (let i = 0; i < this.enumerations.length; i++) {
+      if (this.enumerations[i].label !== this.oldEnumerations[i].label
+          ||  this.enumerations[i].value !== this.oldEnumerations[i].value) {
+        // If we come across one change, then we know to save.
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

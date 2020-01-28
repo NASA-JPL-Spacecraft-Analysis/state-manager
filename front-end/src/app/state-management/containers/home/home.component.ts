@@ -2,9 +2,8 @@ import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetector
 import { CommonModule } from '@angular/common';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
-import { Observable } from 'rxjs';
 
-import { StateVariable } from '../../models';
+import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
 import { getStateVariables, getSelectedStateVariable } from '../../selectors';
 import { StateVariableActions, LayoutActions } from '../../actions';
@@ -20,7 +19,7 @@ import { StateVariableSidenavModule } from '../state-variable-sidenav/state-vari
 })
 export class HomeComponent implements OnDestroy {
   public showSidenav: boolean;
-  public stateVariables: StateVariable[];
+  public stateVariableMap: StateVariableMap;
   public stateVariable: StateVariable;
 
   private subscriptions = new SubSink();
@@ -34,8 +33,8 @@ export class HomeComponent implements OnDestroy {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateVariables)).subscribe(stateVariables => {
-        this.stateVariables = stateVariables;
+      this.store.pipe(select(getStateVariables)).subscribe(stateVariableMap => {
+        this.stateVariableMap = stateVariableMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedStateVariable)).subscribe(selectedStateVariable => {
@@ -86,6 +85,12 @@ export class HomeComponent implements OnDestroy {
         showSidenav: false
       }));
     }
+  }
+
+  public onEnumerationsOutput(enumerations: StateEnumeration[]): void {
+    this.store.dispatch(StateVariableActions.saveEnumerations({
+      enumerations
+    }));
   }
 
   /**
