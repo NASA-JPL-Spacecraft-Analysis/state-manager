@@ -14,7 +14,7 @@ import { SubSink } from 'subsink';
 import { StateVariable, StateEnumeration } from '../../models';
 import { StateManagementAppState } from '../../state-management-app-store';
 import { getIdentifiers, getStateEnumerationsForSelectedStateVariable } from '../../selectors';
-import { StateVariableActions } from '../../actions';
+import { StateVariableActions, ToastActions } from '../../actions';
 import { EnumFormModule } from '../../components';
 
 @Component({
@@ -35,7 +35,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   public oldEnumerations: StateEnumeration[];
   public enumerations: StateEnumeration[];
   public identifierIcon: string;
-  public tooltip: string;
+  public identifierTooltipText: string;
   public form: FormGroup;
   public identifiers: Set<string>;
 
@@ -118,11 +118,22 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
    * 1) That our identifier is unique (when trimmed)
    */
   public onSubmit(): void {
-    if (!this.isIdentifierDuplicate(this.form.value.identifier.trim()) && this.processEnumerations()) {
-      this.modifyStateVariable.emit(this.form.value);
+    // Process our enumerations before trying to save our state variable.
+    if (this.processEnumerations()) {
+      if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
+        this.modifyStateVariable.emit(this.form.value);
+      } else {
+        // Show the duplicate tooltip.
+        this.duplicateTooltip.show();
+      }
     } else {
-      // Show the duplicate tooltip.
-      this.duplicateTooltip.show();
+      // If we had an issue with the enumerations, show an error.
+      this.store.dispatch(
+        ToastActions.showToast({
+          message: 'Please provide a value and label for all enumerations',
+          toastType: 'error'
+        })
+      );
     }
   }
 
@@ -139,18 +150,18 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     if (identifier.length > 0) {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
-        this.tooltip = 'Your identifier is a duplicate';
+        this.identifierTooltipText = 'Your identifier is a duplicate';
 
         // Mark our form as invalid so the user can't save when there's a duplicate.
         this.form.get('identifier').setErrors({});
       } else {
         this.identifierIcon = 'done';
-        this.tooltip = 'Your identifier is unique';
+        this.identifierTooltipText = 'Your identifier is unique';
       }
     } else {
       // Reset everything when the user clears the field.
       this.identifierIcon = null;
-      this.tooltip = null;
+      this.identifierTooltipText = null;
     }
   }
 
