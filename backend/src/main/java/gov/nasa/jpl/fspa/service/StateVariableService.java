@@ -35,4 +35,6 @@ public interface StateVariableService {
     String getStateVariablesAsCsv();
 
     List<String> getIdentifiers();
+
+    List<StateEnumeration> saveStateEnumerations(int stateVariableId, List<StateEnumeration> stateEnumerations);
 }

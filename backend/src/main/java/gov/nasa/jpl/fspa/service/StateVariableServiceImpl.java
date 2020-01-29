@@ -105,6 +105,43 @@ public class StateVariableServiceImpl implements StateVariableService {
     }
 
     /**
+     * This method processes the posted set of enumerations for a given state variable.
+     * It figures out which enumerations to delete, create, and update based on IDs and what enumerations aren't
+     * included in the posted list.
+     * @param stateVariableId The grouping of enums we're going to modify.
+     * @param stateEnumerations The new list of enumerations we're going to create / update.
+     * @return The final list of enumerations for a given state variable.
+     */
+    @Override
+    public List<StateEnumeration> saveStateEnumerations(int stateVariableId, List<StateEnumeration> stateEnumerations) {
+        List<StateEnumeration> currentStateEnumerationList = stateVariableDao.getStateEnumerationsByStateVariableId(stateVariableId);
+        List<StateEnumeration> stateEnumerationsToSave = new ArrayList<>();
+        List<StateEnumeration> stateEnumerationsToUpdate = new ArrayList<>();
+        Map<Integer, StateEnumeration> currentStateEnumerationMap = new HashMap<>();
+
+        // Create a map of our current state enumerations so we know what to delete as we look at the changes.
+        for (StateEnumeration currentStateEnumeration: currentStateEnumerationList) {
+            currentStateEnumerationMap.put(currentStateEnumeration.getId(), currentStateEnumeration);
+        }
+
+        for (StateEnumeration stateEnumeration: stateEnumerations) {
+            if (stateEnumeration.getId() == null) {
+                stateEnumerationsToSave.add(stateEnumeration);
+            } else {
+                // Remove any ids we come across, so we're left with a map of enumerations to delete.
+                currentStateEnumerationMap.remove(stateEnumeration.getId());
+                stateEnumerationsToUpdate.add(stateEnumeration);
+            }
+        }
+
+        stateVariableDao.deleteStateEnumerations(currentStateEnumerationMap.values());
+        stateVariableDao.saveStateEnumerations(stateEnumerationsToSave);
+        stateVariableDao.updateStateEnumerations(stateEnumerationsToUpdate);
+
+        return stateVariableDao.getStateEnumerationsByStateVariableId(stateVariableId);
+    }
+
+    /**
      * Checks for duplicate identifiers.
      * @param stateVariables The new list of state variables we are checking for duplicates.
      * @return A list of the duplicate identifiers.

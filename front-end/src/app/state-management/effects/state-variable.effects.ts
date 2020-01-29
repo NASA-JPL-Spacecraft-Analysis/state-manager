@@ -133,8 +133,9 @@ export class StateVariableEffects {
   public saveEnumerations = createEffect(() => {
     return this.actions.pipe(
       ofType(StateVariableActions.saveEnumerations),
-      switchMap(({ enumerations }) =>
+      switchMap(({ stateVariableId, enumerations }) =>
         this.stateManagementService.saveEnumerations(
+          stateVariableId,
           enumerations
         ).pipe(
           switchMap((savedEnumerations) => {

@@ -89,6 +89,7 @@ export class HomeComponent implements OnDestroy {
 
   public onEnumerationsOutput(enumerations: StateEnumeration[]): void {
     this.store.dispatch(StateVariableActions.saveEnumerations({
+      stateVariableId: this.stateVariable.id,
       enumerations
     }));
   }

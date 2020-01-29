@@ -62,7 +62,11 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       }),
       this.store.pipe(select(getStateEnumerationsForSelectedStateVariable)).subscribe(enumerations => {
         this.enumerations = enumerations;
-        this.oldEnumerations = enumerations;
+
+        // Copy our current enumerations to compare against later.
+        this.oldEnumerations = [
+          ...enumerations
+        ];
 
         this.changeDetectorRef.markForCheck();
       })
@@ -166,11 +170,6 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
    * Checks to see if the enumerations were modified. If they were, then we save them.
    */
   private processEnumerations(): boolean {
-    // If we aren't trying to save any enumerations, skip everything.
-    if (this.enumerations.length === 0) {
-      return true;
-    }
-
     // Check and make sure values are set for all our enumerations.
     for (const enumeration of this.enumerations) {
       if (enumeration.label === null || enumeration.value === null) {

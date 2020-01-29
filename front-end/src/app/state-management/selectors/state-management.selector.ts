@@ -13,13 +13,12 @@ export const getStateManagementState = createSelector(
 
 export const getStateEnumerationsForSelectedStateVariable = createSelector(
   getStateManagementState,
-  (state: StateManagementState): StateEnumeration[] | null => {
-    let stateEnumerations: StateEnumeration[] = null;
+  (state: StateManagementState): StateEnumeration[] => {
+    const stateEnumerations: StateEnumeration[] = [];
+    debugger;
 
     // Only populate our enumeration list if a state variable is selected, and it has enumerations.
     if (state.selectedStateVariable && state.selectedStateVariable.enumerationIds) {
-      stateEnumerations = [];
-
       for (const id of state.selectedStateVariable.enumerationIds) {
         stateEnumerations.push({
           ...state.stateEnumerations[id]

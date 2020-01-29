@@ -59,9 +59,9 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
-  public saveEnumerations(enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
+  public saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
     return this.http.post<StateEnumeration[]>(
-      baseUrl + '/state-enumerations',
+      baseUrl + '/state-enumerations/' + stateVariableId,
       enumerations
     );
   }

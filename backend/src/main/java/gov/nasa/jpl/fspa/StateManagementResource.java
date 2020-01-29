@@ -79,6 +79,19 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/state-enumerations/{stateVariableId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postStateEnumerations(@PathParam("stateVariableId") int stateVariableId, List<StateEnumeration> stateEnumerations) {
+        List<StateEnumeration> savedStateEnumerations = stateVariableService.saveStateEnumerations(stateVariableId, stateEnumerations);
+
+        if (savedStateEnumerations == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(savedStateEnumerations).build();
+    }
+
+    @POST
     @Path("/state-variable")
     @Produces(MediaType.APPLICATION_JSON)
     public Response postStateVariable(StateVariable stateVariable) {

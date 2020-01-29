@@ -74,7 +74,7 @@ export const parseStateVariablesFileFailure = createAction(
 
 export const saveEnumerations = createAction(
   '[state variable] save_enumerations',
-  props<{ enumerations: StateEnumeration[] }>()
+  props<{ stateVariableId: number, enumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsSuccess = createAction(
