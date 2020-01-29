@@ -61,10 +61,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getStateEnumerationsForSelectedStateVariable)).subscribe(enumerations => {
-        this.enumerations = [
-          ...enumerations
-        ];
-
+        this.enumerations = enumerations;
         this.oldEnumerations = enumerations;
 
         this.changeDetectorRef.markForCheck();

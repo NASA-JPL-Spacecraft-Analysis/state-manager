@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import { State } from '../state-management-app-store';
 import { StateManagementState } from '../reducers/state-management.reducer';
-import { StateEnumeration, StateEnumerationMap } from '../models';
+import { StateEnumeration } from '../models';
 
 const featureSelector = createFeatureSelector<State>('stateManagementApp');
 
@@ -13,14 +13,17 @@ export const getStateManagementState = createSelector(
 
 export const getStateEnumerationsForSelectedStateVariable = createSelector(
   getStateManagementState,
-  (state: StateManagementState): StateEnumeration[] => {
-    const stateEnumerations: StateEnumeration[] = [];
+  (state: StateManagementState): StateEnumeration[] | null => {
+    let stateEnumerations: StateEnumeration[] = null;
 
     // Only populate our enumeration list if a state variable is selected, and it has enumerations.
-    if (state.selectedStateVariable &&
-        (state.selectedStateVariable.enumerationIds && state.selectedStateVariable.enumerationIds.length > 0)) {
+    if (state.selectedStateVariable && state.selectedStateVariable.enumerationIds) {
+      stateEnumerations = [];
+
       for (const id of state.selectedStateVariable.enumerationIds) {
-        stateEnumerations.push(state.stateEnumerations[id]);
+        stateEnumerations.push({
+          ...state.stateEnumerations[id]
+        });
       }
     }
 
