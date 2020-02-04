@@ -27,7 +27,7 @@ public class StateManagementResource {
     @Path("/state-enumerations")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStateEnumerations() {
-        Map<Integer, StateEnumeration> stateEnumerationMap = stateVariableService.getStateEnumerations();
+        Map<Integer, List<StateEnumeration>> stateEnumerationMap = stateVariableService.getStateEnumerations();
 
         if (stateEnumerationMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();

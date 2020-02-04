@@ -1,7 +1,5 @@
 package gov.nasa.jpl.fspa.model;
 
-import java.util.List;
-
 public class StateVariable {
     private Integer id;
     private String identifier;
@@ -10,7 +8,6 @@ public class StateVariable {
     private String units; // enum?
     private String source; // enum?
     private String description;
-    private List<Integer> enumerationIds;
 
     public Integer getId() {
         return id;
@@ -68,17 +65,8 @@ public class StateVariable {
         this.description = description;
     }
 
-    public List<Integer> getEnumerationIds() {
-        return enumerationIds;
-    }
-
-    public void setEnumerationIds(List<Integer> enumerationIds) {
-        this.enumerationIds = enumerationIds;
-    }
-
     /**
      * Surround each property with double quotes to support csv exporting.
-     * TODO: Add state enumeration ids to the csv output.
      * @return
      */
     @Override

@@ -32,7 +32,6 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
   public newStateVariable: StateVariable;
-  public oldEnumerations: StateEnumeration[];
   public enumerations: StateEnumeration[];
   public identifierIcon: string;
   public identifierTooltipText: string;
@@ -62,12 +61,6 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       }),
       this.store.pipe(select(getStateEnumerationsForSelectedStateVariable)).subscribe(enumerations => {
         this.enumerations = enumerations;
-
-        // Copy our current enumerations to compare against later.
-        this.oldEnumerations = [
-          ...enumerations
-        ];
-
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -86,19 +79,11 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
         type: '',
         units: '',
         source: '',
-        description: '',
-        enumerationIds: []
+        description: ''
       };
     } else {
       this.newStateVariable = {
-        ...this.stateVariable,
-        enumerationIds: [
-          ...(
-            this.stateVariable.enumerationIds === null
-            ? []
-            : this.stateVariable.enumerationIds
-          )
-        ]
+        ...this.stateVariable
       };
     }
 
@@ -177,41 +162,14 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       }
     }
 
-    let shouldSave = true;
-
-    /**
-     * Make sure there's at least 1 changed enumeration. We don't need to check if the lengths our our current
-     * vs old enumerations don't match.
-     */
-    if (this.enumerations.length === this.oldEnumerations.length) {
-      shouldSave = this.checkDuplicateEnumerations();
+    // Set the state variable id for every enumeration before saving.
+    for (const enumeration of this.enumerations) {
+      enumeration.stateVariableId = this.stateVariable.id;
     }
 
-    if (shouldSave) {
-      // Set the state variable id for every enumeration before saving.
-      for (const enumeration of this.enumerations) {
-        enumeration.stateVariableId = this.stateVariable.id;
-      }
+    this.modifyEnumerations.emit(this.enumerations);
 
-      this.modifyEnumerations.emit(this.enumerations);
-    }
-
-    return shouldSave;
-  }
-
-  /**
-   * Looks at all our enumerations, and if we have 1 new item then we save them.
-   */
-  private checkDuplicateEnumerations(): boolean {
-    for (let i = 0; i < this.enumerations.length; i++) {
-      if (this.enumerations[i].label !== this.oldEnumerations[i].label
-          ||  this.enumerations[i].value !== this.oldEnumerations[i].value) {
-        // If we come across one change, then we know to save.
-        return true;
-      }
-    }
-
-    return false;
+    return true;
   }
 
   /**

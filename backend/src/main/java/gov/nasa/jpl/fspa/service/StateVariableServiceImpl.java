@@ -19,12 +19,16 @@ public class StateVariableServiceImpl implements StateVariableService {
     }
 
     @Override
-    public Map<Integer, StateEnumeration> getStateEnumerations() {
+    public Map<Integer, List<StateEnumeration>> getStateEnumerations() {
         List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
-        Map<Integer, StateEnumeration> stateEnumerationMap = new HashMap<>();
+        Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();
 
         for (StateEnumeration stateEnumeration: stateEnumerations) {
-            stateEnumerationMap.put(stateEnumeration.getId(), stateEnumeration);
+            if (stateEnumerationMap.get(stateEnumeration.getStateVariableId()) == null) {
+               stateEnumerationMap.put(stateEnumeration.getStateVariableId(), new ArrayList<StateEnumeration>());
+            }
+
+            stateEnumerationMap.get(stateEnumeration.getStateVariableId()).add(stateEnumeration);
         }
 
         return stateEnumerationMap;
@@ -37,22 +41,10 @@ public class StateVariableServiceImpl implements StateVariableService {
     @Override
     public Map<Integer, StateVariable> getStateVariables() {
         List<StateVariable> stateVariables = stateVariableDao.getStateVariables();
-        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
         Map<Integer, StateVariable> stateVariableMap = new HashMap<>();
 
         for (StateVariable stateVariable: stateVariables) {
             stateVariableMap.put(stateVariable.getId(), stateVariable);
-        }
-
-        // Add our enumeration ids to our state variables.
-        for (StateEnumeration stateEnumeration: stateEnumerations) {
-            StateVariable currentStateVariable = stateVariableMap.get(stateEnumeration.getStateVariableId());
-
-            if (currentStateVariable.getEnumerationIds() == null) {
-                currentStateVariable.setEnumerationIds(new ArrayList<Integer>());
-            }
-
-            currentStateVariable.getEnumerationIds().add(stateEnumeration.getId());
         }
 
         return stateVariableMap;
@@ -138,7 +130,7 @@ public class StateVariableServiceImpl implements StateVariableService {
         stateVariableDao.saveStateEnumerations(stateEnumerationsToSave);
         stateVariableDao.updateStateEnumerations(stateEnumerationsToUpdate);
 
-        return stateVariableDao.getStateEnumerationsByStateVariableId(stateVariableId);
+        return stateVariableDao.getStateEnumerations();
     }
 
     /**

@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import { State } from '../state-management-app-store';
 import { StateManagementState } from '../reducers/state-management.reducer';
-import { StateEnumeration } from '../models';
+import { StateEnumeration, StateEnumerationMap, StateVariable } from '../models';
 
 const featureSelector = createFeatureSelector<State>('stateManagementApp');
 
@@ -11,23 +11,9 @@ export const getStateManagementState = createSelector(
   (state: State): StateManagementState => state.data
 );
 
-export const getStateEnumerationsForSelectedStateVariable = createSelector(
+export const getStateEnumerations = createSelector(
   getStateManagementState,
-  (state: StateManagementState): StateEnumeration[] => {
-    const stateEnumerations: StateEnumeration[] = [];
-    debugger;
-
-    // Only populate our enumeration list if a state variable is selected, and it has enumerations.
-    if (state.selectedStateVariable && state.selectedStateVariable.enumerationIds) {
-      for (const id of state.selectedStateVariable.enumerationIds) {
-        stateEnumerations.push({
-          ...state.stateEnumerations[id]
-        });
-      }
-    }
-
-    return stateEnumerations;
-  }
+  (state: StateManagementState) => state.stateEnumerations
 );
 
 export const getStateVariables = createSelector(
@@ -43,4 +29,31 @@ export const getSelectedStateVariable = createSelector(
 export const getIdentifiers = createSelector(
   getStateManagementState,
   (state: StateManagementState) => state.identifiers
+);
+
+export const getStateEnumerationsForSelectedStateVariable = createSelector(
+  getStateEnumerations,
+  getSelectedStateVariable,
+  (stateEnumerations: StateEnumerationMap, selectedStateVariable: StateVariable): StateEnumeration[] => {
+    const selectedStateEnumerations: StateEnumeration[] = [];
+
+    if (stateEnumerations) {
+      const keys = Object.keys(stateEnumerations);
+
+      // Return the enumerations for the current state variable if we come across them.
+      if (selectedStateVariable && keys.length > 0) {
+        for (const id of keys) {
+          if (id === String(selectedStateVariable.id)) {
+            for (const enumeration of stateEnumerations[id]) {
+              selectedStateEnumerations.push({
+                ...enumeration
+              });
+            }
+          }
+        }
+      }
+    }
+
+    return selectedStateEnumerations;
+  }
 );

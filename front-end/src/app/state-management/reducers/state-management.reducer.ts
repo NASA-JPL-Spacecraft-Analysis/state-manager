@@ -40,25 +40,27 @@ export const reducer = createReducer(
     }
   })),
   on(StateVariableActions.saveEnumerationsSuccess, (state, action) => {
-    const enumerationIds: string[] = [];
-    const enumerations = {
-      ...state.stateEnumerations
-    };
+    const enumerations: StateEnumerationMap = {};
+    let stateVariableId = null;
 
     for (const enumeration of action.enumerations) {
-      enumerationIds.push(String(enumeration.id));
-      enumerations[enumeration.id] = enumeration;
+      stateVariableId = enumeration.stateVariableId;
+
+      if (enumerations[stateVariableId] === undefined) {
+        enumerations[stateVariableId] = [];
+      }
+
+      enumerations[stateVariableId].push(enumeration);
     }
 
     return {
       ...state,
       selectedStateVariable: {
-        ...state.selectedStateVariable,
-        enumerationIds: [
-          ...enumerationIds
-        ]
+        ...state.selectedStateVariable
       },
-      stateEnumerations: enumerations
+      stateEnumerations: {
+        ...enumerations
+      }
     };
   }),
   on(StateVariableActions.setIdentifiers, (state, action) => {

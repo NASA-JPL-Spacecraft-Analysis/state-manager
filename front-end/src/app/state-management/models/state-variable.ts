@@ -9,7 +9,6 @@ export interface StateVariable {
   units: string; // enum?
   source: string; // enum?
   description: string;
-  enumerationIds: string[];
 }
 
 export type StateVariableMap = StringTMap<StateVariable>;

@@ -11,7 +11,7 @@ public interface StateVariableService {
      * Gets all our state enumerations.
      * @return A map of ids to state enumerations.
      */
-    Map<Integer, StateEnumeration> getStateEnumerations();
+    Map<Integer, List<StateEnumeration>> getStateEnumerations();
 
     /**
      * Gets all our state variables.
