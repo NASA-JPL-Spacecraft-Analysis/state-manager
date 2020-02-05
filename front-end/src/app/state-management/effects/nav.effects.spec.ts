@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { Action, StoreModule } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { RouterNavigatedAction } from '@ngrx/router-store';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -8,9 +8,9 @@ import { Observable } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 
 import { NavEffects } from './nav.effects';
-import { MockStateManagementService, getMockStateVariables } from '../services/mock-state-management.service';
+import { MockStateManagementService, getMockStateVariables, getMockStateEnumerations } from '../services/mock-state-management.service';
 import { StateVariableActions } from '../actions';
-import { StateVariable } from '../models';
+import { StateVariableMap, StateEnumerationMap } from '../models';
 import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
 
@@ -40,13 +40,13 @@ describe('NavEffects', () => {
   let stateManagementService: StateManagementService;
 
   // Mock data
-  const stateVariables: StateVariable[] = getMockStateVariables();
+  const stateVariables: StateVariableMap = getMockStateVariables();
+  const stateEnumerations: StateEnumerationMap = getMockStateEnumerations();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientModule,
-        StoreModule.forRoot({})
       ],
       providers: [
         NavEffects,
@@ -54,7 +54,7 @@ describe('NavEffects', () => {
         {
           provide: StateManagementService,
           useValue: new MockStateManagementService()
-        },
+        }
       ]
     });
 
@@ -74,8 +74,9 @@ describe('NavEffects', () => {
 
         actions = hot('-a', { a: action });
 
-        expectObservable(effects.navStates).toBe('-(b)', {
-          b: StateVariableActions.setStateVariables({ stateVariables })
+        expectObservable(effects.navStates).toBe('-(bc)', {
+          b: StateVariableActions.setStateVariables({ stateVariables }),
+          c: StateVariableActions.setStateEnumerations({ stateEnumerations })
         });
       });
     });

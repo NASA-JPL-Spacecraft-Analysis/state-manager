@@ -55,9 +55,6 @@ export const reducer = createReducer(
 
     return {
       ...state,
-      selectedStateVariable: {
-        ...state.selectedStateVariable
-      },
       stateEnumerations: {
         ...enumerations
       }
