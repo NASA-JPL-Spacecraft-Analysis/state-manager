@@ -26,7 +26,7 @@ import { EnumFormModule } from '../../components';
 export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   @Input() public stateVariable: StateVariable;
 
-  @Output() public modifyStateVariable: EventEmitter<StateVariable>;
+  @Output() public modifyStateVariable: EventEmitter<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>;
   @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
@@ -49,7 +49,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     this.iconRegistry.addSvgIcon('done', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/done.svg'));
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.modifyStateVariable = new EventEmitter<StateVariable>();
+    this.modifyStateVariable = new EventEmitter<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.store.dispatch(StateVariableActions.fetchIdentifiers({}));
@@ -107,7 +107,11 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     // Process our enumerations before trying to save our state variable.
     if (this.processEnumerations()) {
       if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
-        this.modifyStateVariable.emit(this.form.value);
+        // Emit both values, but we'll only use the enumeraion list on creating a new state variable.
+        this.modifyStateVariable.emit({
+          stateVariable: this.form.value,
+          stateEnumerations: this.enumerations
+        });
       } else {
         // Show the duplicate tooltip.
         this.duplicateTooltip.show();
@@ -162,12 +166,10 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       }
     }
 
-    // Set the state variable id for every enumeration before saving.
-    for (const enumeration of this.enumerations) {
-      enumeration.stateVariableId = this.stateVariable.id;
+    // Only emit our enumerations seperatly if we're modifying an existing state variable.
+    if (this.newStateVariable.id !== undefined) {
+      this.modifyEnumerations.emit(this.enumerations);
     }
-
-    this.modifyEnumerations.emit(this.enumerations);
 
     return true;
   }
@@ -182,7 +184,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   private isIdentifierDuplicate(identifier: string): boolean {
     if (this.identifiers.size > 0) {
       return this.identifiers.has(identifier)
-          && (!this.stateVariable.identifier || identifier !== this.stateVariable.identifier);
+          && (!this.newStateVariable.identifier || identifier !== this.newStateVariable.identifier);
     }
 
     return false;

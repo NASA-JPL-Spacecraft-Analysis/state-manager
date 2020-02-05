@@ -4,7 +4,7 @@ import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration 
 
 export const createStateVariable = createAction(
   '[state variable] create_state_variable',
-  props<{ stateVariable: StateVariable }>()
+  props<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>()
 );
 
 export const createStateVariableFailure = createAction(

@@ -17,7 +17,7 @@ export class StateVariableEffects {
   public createStateVariable = createEffect(() => {
     return this.actions.pipe(
       ofType(StateVariableActions.createStateVariable),
-      switchMap(({ stateVariable }) =>
+      switchMap(({ stateVariable, stateEnumerations }) =>
         this.stateManagementService.createStateVariable(
           stateVariable
         ).pipe(
@@ -25,6 +25,10 @@ export class StateVariableEffects {
             (createdStateVariable: StateVariable) => [
               StateVariableActions.createStateVariableSuccess({
                 stateVariable: createdStateVariable
+              }),
+              StateVariableActions.saveEnumerations({
+                stateVariableId: createdStateVariable.id,
+                enumerations: stateEnumerations,
               }),
               ToastActions.showToast({
                 message: 'State variable created',

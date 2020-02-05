@@ -117,6 +117,8 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         for (StateEnumeration stateEnumeration: stateEnumerations) {
+            stateEnumeration.setStateVariableId(stateVariableId);
+
             if (stateEnumeration.getId() == null) {
                 stateEnumerationsToSave.add(stateEnumeration);
             } else {

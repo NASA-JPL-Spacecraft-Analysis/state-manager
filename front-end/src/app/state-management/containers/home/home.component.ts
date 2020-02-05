@@ -63,7 +63,10 @@ export class HomeComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(stateVariable?: StateVariable): void {
+  public onSidenavOutput(result: { stateVariable?: StateVariable, stateEnumerations: StateEnumeration[] }): void {
+    const { stateVariable } = result;
+    const { stateEnumerations } = result;
+
     if (stateVariable !== undefined) {
       // Try and set the state variable id so we don't get duplicate identifier errors.
       if (stateVariable.id === null && this.stateVariable) {
@@ -72,7 +75,8 @@ export class HomeComponent implements OnDestroy {
 
       if (stateVariable.id === null) {
         this.store.dispatch(StateVariableActions.createStateVariable({
-          stateVariable
+          stateVariable,
+          stateEnumerations
         }));
       } else {
         this.store.dispatch(StateVariableActions.editStateVariable({
