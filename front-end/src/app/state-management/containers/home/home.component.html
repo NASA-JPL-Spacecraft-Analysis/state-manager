@@ -7,8 +7,8 @@
       (uploadStateVariables)="onUploadStateVariables($event)">
     </add-data-form>
 
-    <state-variable-table *ngIf="stateVariables"
-      [stateVariables]="stateVariables"
+    <state-variable-table *ngIf="stateVariableMap"
+      [stateVariableMap]="stateVariableMap"
       (stateVariableSelected)="onModifyStateVariable($event)">
     </state-variable-table>
   </div>
@@ -16,7 +16,8 @@
   <div class="sidebar" *ngIf="showSidenav">
     <state-variable-sidenav
       [stateVariable]="stateVariable"
-      (modifyStateVariable)="onSidenavOutput($event)">
+      (modifyStateVariable)="onSidenavOutput($event)"
+      (modifyEnumerations)="onEnumerationsOutput($event)">
     </state-variable-sidenav>
   </div>
 </div>

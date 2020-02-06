@@ -1,0 +1,34 @@
+table, th, td {
+  border: 1px solid #e0e0e0;
+}
+
+th, td {
+  padding: .5em;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #eeeeee;
+}
+
+table tr td:nth-child(odd) {
+  background-color: #eeeeee;
+}
+
+.enumerations-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.enumeration-label {
+  position: relative;
+  top: .75em;
+}
+
+/* Make our label column the widest. */
+.label-column {
+  width: 100%;
+}

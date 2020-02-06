@@ -18,39 +18,41 @@ public class StateVariableServiceImpl implements StateVariableService {
         this.stateVariableDao = new StateVariableDaoImpl();
     }
 
+    @Override
+    public Map<Integer, List<StateEnumeration>> getStateEnumerations() {
+        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
+        Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();
+
+        for (StateEnumeration stateEnumeration: stateEnumerations) {
+            if (stateEnumerationMap.get(stateEnumeration.getStateVariableId()) == null) {
+               stateEnumerationMap.put(stateEnumeration.getStateVariableId(), new ArrayList<StateEnumeration>());
+            }
+
+            stateEnumerationMap.get(stateEnumeration.getStateVariableId()).add(stateEnumeration);
+        }
+
+        return stateEnumerationMap;
+    }
+
     /**
      * Gets our state variables sets their list of enumerations if they exist.
      * @return The list of state variables with their enumerations.
      */
     @Override
-    public List<StateVariable> getStateVariables() {
-        List<StateVariable> stateVariables = this.stateVariableDao.getStateVariables();
-        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
-        Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();
-
-        // Setup a map from state variable ids to a list of enumerations.
-        for (StateEnumeration stateEnumeration: stateEnumerations) {
-            if (stateEnumerationMap.get(stateEnumeration.getStateVariableId()) == null) {
-                stateEnumerationMap.put(stateEnumeration.getStateVariableId(), new ArrayList<StateEnumeration>());
-            }
-
-            // Add our enumeration to the list.
-            stateEnumerationMap.get(stateEnumeration.getStateVariableId()).add(stateEnumeration);
-        }
+    public Map<Integer, StateVariable> getStateVariables() {
+        List<StateVariable> stateVariables = stateVariableDao.getStateVariables();
+        Map<Integer, StateVariable> stateVariableMap = new HashMap<>();
 
         for (StateVariable stateVariable: stateVariables) {
-            // If we have enumerations for a given state variable, set them.
-            if (stateEnumerationMap.get(stateVariable.getId()) != null) {
-                stateVariable.setEnumarations(stateEnumerationMap.get(stateVariable.getId()));
-            }
+            stateVariableMap.put(stateVariable.getId(), stateVariable);
         }
 
-        return stateVariables;
+        return stateVariableMap;
     }
 
     @Override
     public String getStateVariablesAsCsv() {
-        return outputService.outputAsCsv(this.getStateVariables());
+        return outputService.outputAsCsv(stateVariableDao.getStateVariables());
     }
 
     @Override
@@ -92,6 +94,45 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return identifiers;
+    }
+
+    /**
+     * This method processes the posted set of enumerations for a given state variable.
+     * It figures out which enumerations to delete, create, and update based on IDs and what enumerations aren't
+     * included in the posted list.
+     * @param stateVariableId The grouping of enums we're going to modify.
+     * @param stateEnumerations The new list of enumerations we're going to create / update.
+     * @return The final list of enumerations for a given state variable.
+     */
+    @Override
+    public List<StateEnumeration> saveStateEnumerations(int stateVariableId, List<StateEnumeration> stateEnumerations) {
+        List<StateEnumeration> currentStateEnumerationList = stateVariableDao.getStateEnumerationsByStateVariableId(stateVariableId);
+        List<StateEnumeration> stateEnumerationsToSave = new ArrayList<>();
+        List<StateEnumeration> stateEnumerationsToUpdate = new ArrayList<>();
+        Map<Integer, StateEnumeration> currentStateEnumerationMap = new HashMap<>();
+
+        // Create a map of our current state enumerations so we know what to delete as we look at the changes.
+        for (StateEnumeration currentStateEnumeration: currentStateEnumerationList) {
+            currentStateEnumerationMap.put(currentStateEnumeration.getId(), currentStateEnumeration);
+        }
+
+        for (StateEnumeration stateEnumeration: stateEnumerations) {
+            stateEnumeration.setStateVariableId(stateVariableId);
+
+            if (stateEnumeration.getId() == null) {
+                stateEnumerationsToSave.add(stateEnumeration);
+            } else {
+                // Remove any ids we come across, so we're left with a map of enumerations to delete.
+                currentStateEnumerationMap.remove(stateEnumeration.getId());
+                stateEnumerationsToUpdate.add(stateEnumeration);
+            }
+        }
+
+        stateVariableDao.deleteStateEnumerations(currentStateEnumerationMap.values());
+        stateVariableDao.saveStateEnumerations(stateEnumerationsToSave);
+        stateVariableDao.updateStateEnumerations(stateEnumerationsToUpdate);
+
+        return stateVariableDao.getStateEnumerations();
     }
 
     /**

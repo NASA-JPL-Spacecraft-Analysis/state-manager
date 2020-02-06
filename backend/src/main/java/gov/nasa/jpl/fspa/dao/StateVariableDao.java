@@ -4,6 +4,7 @@ import gov.nasa.jpl.fspa.model.Identifier;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface StateVariableDao {
@@ -23,6 +24,11 @@ public interface StateVariableDao {
     void createStateVariables(List<StateVariable> stateVariables);
 
     List<StateEnumeration> getStateEnumerations();
+    List<StateEnumeration> getStateEnumerationsByStateVariableId(Integer id);
 
     List<Identifier> getIdentifiers();
+
+    void deleteStateEnumerations(Collection<StateEnumeration> stateEnumerations);
+    void saveStateEnumerations(List<StateEnumeration> stateEnumerations);
+    void updateStateEnumerations(List<StateEnumeration> stateEnumerations);
 }

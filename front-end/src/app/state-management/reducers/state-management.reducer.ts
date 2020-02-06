@@ -1,53 +1,63 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { StateVariableActions } from '../actions';
-import { StateVariable } from '../models';
+import { StateVariable, StateEnumerationMap, StateVariableMap } from '../models';
 
 export interface StateManagementState {
-  stateVariables: StateVariable[];
-  selectedStateVariable: StateVariable;
   identifiers: Set<string>;
+  selectedStateVariable: StateVariable;
+  stateEnumerations: StateEnumerationMap;
+  stateVariables: StateVariableMap;
 }
 
 export const initialState: StateManagementState = {
-  stateVariables: [],
+  identifiers: new Set<string>(),
   selectedStateVariable: null,
-  identifiers: new Set<string>()
+  stateEnumerations: null,
+  stateVariables: null
 };
 
 export const reducer = createReducer(
   initialState,
-  on(StateVariableActions.createStateVariableSuccess, (state, action) => {
-    const stateVariables = [
-      ...state.stateVariables
-    ];
+  on(StateVariableActions.createStateVariableSuccess, (state, action) => ({
+    ...state,
+    selectedStateVariable: action.stateVariable,
+    stateVariables: {
+      ...state.stateVariables,
+      [action.stateVariable.id]: {
+        ...action.stateVariable
+      }
+    }
+  })),
+  on(StateVariableActions.editStateVariableSuccess, (state, action) => ({
+    ...state,
+    selectedStateVariable: action.stateVariable,
+    stateVariables: {
+      ...state.stateVariables,
+      [action.stateVariable.id]: {
+        ...action.stateVariable
+      }
+    }
+  })),
+  on(StateVariableActions.saveEnumerationsSuccess, (state, action) => {
+    const enumerations: StateEnumerationMap = {};
+    let stateVariableId = null;
 
-    stateVariables.push(action.stateVariable);
+    for (const enumeration of action.enumerations) {
+      stateVariableId = enumeration.stateVariableId;
 
-    return {
-      ...state,
-      stateVariables,
-      selectedStateVariable: action.stateVariable
-    };
-  }),
-  on(StateVariableActions.editStateVariableSuccess, (state, action) => {
-    const stateVariables = [
-      ...state.stateVariables
-    ];
-    let index = 0;
-
-    for (const stateVariable of stateVariables) {
-      if (stateVariable.id === action.stateVariable.id) {
-        stateVariables[index] = action.stateVariable;
+      if (enumerations[stateVariableId] === undefined) {
+        enumerations[stateVariableId] = [];
       }
 
-      index++;
+      enumerations[stateVariableId].push(enumeration);
     }
 
     return {
       ...state,
-      stateVariables,
-      selectedStateVariable: action.stateVariable
+      stateEnumerations: {
+        ...enumerations
+      }
     };
   }),
   on(StateVariableActions.setIdentifiers, (state, action) => {
@@ -64,6 +74,10 @@ export const reducer = createReducer(
       identifiers
     };
   }),
+  on(StateVariableActions.setStateEnumerations, (state, action) => ({
+    ...state,
+    stateEnumerations: action.stateEnumerations
+  })),
   on(StateVariableActions.setStateVariables, (state, action) => ({
     ...state,
     stateVariables: action.stateVariables

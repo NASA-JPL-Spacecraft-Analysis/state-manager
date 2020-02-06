@@ -1,15 +1,23 @@
 package gov.nasa.jpl.fspa.service;
 
+import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StateVariableService {
     /**
-     * Gets all our state variables with their enumerations.
-     * @return The list of state variables with enumerations.
+     * Gets all our state enumerations.
+     * @return A map of ids to state enumerations.
      */
-    List<StateVariable> getStateVariables();
+    Map<Integer, List<StateEnumeration>> getStateEnumerations();
+
+    /**
+     * Gets all our state variables.
+     * @return A map of ids to state variables.
+     */
+    Map<Integer, StateVariable> getStateVariables();
 
     /**
      * Takes a new or existing state variable that should be created or updated.
@@ -27,4 +35,6 @@ public interface StateVariableService {
     String getStateVariablesAsCsv();
 
     List<String> getIdentifiers();
+
+    List<StateEnumeration> saveStateEnumerations(int stateVariableId, List<StateEnumeration> stateEnumerations);
 }

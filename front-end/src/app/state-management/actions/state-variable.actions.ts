@@ -1,10 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateVariable } from '../models';
+import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration } from '../models';
 
 export const createStateVariable = createAction(
   '[state variable] create_state_variable',
-  props<{ stateVariable: StateVariable }>()
+  props<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>()
 );
 
 export const createStateVariableFailure = createAction(
@@ -47,6 +47,11 @@ export const fetchIdentifiersFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchStateEnumerationsFailure = createAction(
+  '[state variable] fetch_state_enuemerations_failure',
+  props<{ error: Error }>()
+);
+
 export const fetchStateVariablesFailure = createAction(
   '[state variable] fetch_state_varaiables_failure',
   props<{ error: Error }>()
@@ -67,14 +72,34 @@ export const parseStateVariablesFileFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const saveEnumerations = createAction(
+  '[state variable] save_enumerations',
+  props<{ stateVariableId: number, enumerations: StateEnumeration[] }>()
+);
+
+export const saveEnumerationsSuccess = createAction(
+  '[state variable] save_enumerations_success',
+  props<{ enumerations: StateEnumeration[] }>()
+);
+
+export const saveEnumerationsFailure = createAction(
+  '[state variable] save_enumerations_failure',
+  props<{ error: Error }>()
+);
+
 export const setIdentifiers = createAction(
   '[state variable] set_identifiers',
   props<{ identifiers: string[] }>()
 );
 
+export const setStateEnumerations = createAction(
+  '[state variable] set_state_enumerations',
+  props<{ stateEnumerations: StateEnumerationMap }>()
+);
+
 export const setStateVariables = createAction(
   '[state variable] set_state_variables',
-  props<{ stateVariables: StateVariable[] }>()
+  props<{ stateVariables: StateVariableMap }>()
 );
 
 export const setSelectedStateVariable = createAction(

@@ -8,7 +8,7 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div mat-dialog-content *ngIf="identifiers !== null">
+    <div *ngIf="identifiers !== null">
       <mat-form-field>
         <input matInput
           placeholder="Identifier"
@@ -21,9 +21,8 @@
         <mat-icon matSuffix
           #duplicateTooltip
           [ngClass]="identifierIcon"
-          matTooltip="Info about the action"
           matTooltipPosition="above"
-          [matTooltip]="tooltip">{{identifierIcon}}</mat-icon>
+          [matTooltip]="identifierTooltipText">{{identifierIcon}}</mat-icon>
       </mat-form-field>
 
       <mat-form-field>
@@ -67,10 +66,14 @@
           placeholder="Description"
           formControlName="description"></textarea>
       </mat-form-field>
+
+      <enum-form
+        [enumerations]="enumerations">
+      </enum-form>
     </div>
 
-    <div mat-dialog-actions>
-      <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Save</button>
+    <div class="sidenav-actions">
+      <button mat-raised-button color="primary" type="submit">Save</button>
     </div>
   </form>
 </div>

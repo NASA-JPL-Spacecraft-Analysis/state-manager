@@ -1,5 +1,6 @@
 package gov.nasa.jpl.fspa;
 
+import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.service.StateVariableService;
 import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 @Path("v1/")
 public class StateManagementResource {
@@ -22,16 +24,29 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/state-variables")
+    @Path("/state-enumerations")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStateVariables() {
-        List<StateVariable> stateVariables = stateVariableService.getStateVariables();
+    public Response getStateEnumerations() {
+        Map<Integer, List<StateEnumeration>> stateEnumerationMap = stateVariableService.getStateEnumerations();
 
-        if (stateVariables.isEmpty()) {
+        if (stateEnumerationMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.OK).entity(stateVariables).build();
+        return Response.status(Response.Status.OK).entity(stateEnumerationMap).build();
+    }
+
+    @GET
+    @Path("/state-variables")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStateVariables() {
+        Map<Integer, StateVariable> stateVariableMap = stateVariableService.getStateVariables();
+
+        if (stateVariableMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(stateVariableMap).build();
     }
 
     @GET
@@ -61,6 +76,19 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.OK).entity(identifiers).build();
+    }
+
+    @POST
+    @Path("/state-enumerations/{stateVariableId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postStateEnumerations(@PathParam("stateVariableId") int stateVariableId, List<StateEnumeration> stateEnumerations) {
+        List<StateEnumeration> savedStateEnumerations = stateVariableService.saveStateEnumerations(stateVariableId, stateEnumerations);
+
+        if (savedStateEnumerations == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(savedStateEnumerations).build();
     }
 
     @POST

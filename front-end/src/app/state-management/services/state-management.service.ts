@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { StateVariable } from '../models';
+import { StateVariable, StateEnumerationMap, StateVariableMap, StateEnumeration } from '../models';
 import { StateManagementServiceInterface } from './state-management.service.interface';
 import { environment } from 'src/environments/environment';
 
@@ -47,9 +47,22 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
-  public getStateVariables(): Observable<StateVariable[]> {
-    return this.http.get<StateVariable[]>(
+  public getStateEnumerations(): Observable<StateEnumerationMap> {
+    return this.http.get<StateEnumerationMap>(
+      baseUrl + '/state-enumerations'
+    );
+  }
+
+  public getStateVariables(): Observable<StateVariableMap> {
+    return this.http.get<StateVariableMap>(
       baseUrl + '/state-variables'
+    );
+  }
+
+  public saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
+    return this.http.post<StateEnumeration[]>(
+      baseUrl + '/state-enumerations/' + stateVariableId,
+      enumerations
     );
   }
 }
