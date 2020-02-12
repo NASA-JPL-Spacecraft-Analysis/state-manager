@@ -13,11 +13,11 @@ import { AppState } from 'src/app/app-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'home',
-  styleUrls: [ 'home.component.css' ],
-  templateUrl: 'home.component.html'
+  selector: 'state-variables',
+  styleUrls: [ 'state-variables.component.css' ],
+  templateUrl: 'state-variables.component.html'
 })
-export class HomeComponent implements OnDestroy {
+export class StateVariablesComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateVariableMap: StateVariableMap;
   public stateVariable: StateVariable;
@@ -119,10 +119,10 @@ export class HomeComponent implements OnDestroy {
 
 @NgModule({
   declarations: [
-    HomeComponent
+    StateVariablesComponent
   ],
   exports: [
-    HomeComponent
+    StateVariablesComponent
   ],
   imports: [
     AddDataFormModule,
@@ -131,4 +131,4 @@ export class HomeComponent implements OnDestroy {
     CommonModule
   ]
 })
-export class HomeModule {}
+export class StateVariablesModule {}
