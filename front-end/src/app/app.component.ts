@@ -4,11 +4,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
+import { EffectsModule } from '@ngrx/effects';
+import { FileUploadEffects, NavEffects, StateVariableEffects, ToastEffects } from './effects';
 import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
+import { HomeModule } from './containers';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +31,12 @@ export class AppComponent {
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    EffectsModule.forRoot([
+      FileUploadEffects,
+      NavEffects,
+      StateVariableEffects,
+      ToastEffects
+    ]),
     StoreModule.forRoot(ROOT_REDUCERS, {
       metaReducers,
       runtimeChecks: {
@@ -46,7 +55,8 @@ export class AppComponent {
       maxOpened: 4,
       preventDuplicates: true,
       resetTimeoutOnDuplicate: true
-    })
+    }),
+    HomeModule
   ],
   bootstrap: [
     AppComponent

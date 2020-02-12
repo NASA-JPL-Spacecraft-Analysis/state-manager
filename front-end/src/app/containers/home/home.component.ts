@@ -4,12 +4,12 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
-import { StateManagementAppState } from '../../state-management-app-store';
 import { getStateVariables, getSelectedStateVariable } from '../../selectors';
 import { StateVariableActions, LayoutActions } from '../../actions';
 import { AddDataFormModule, StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
+import { AppState } from 'src/app/app-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +25,7 @@ export class HomeComponent implements OnDestroy {
   private subscriptions = new SubSink();
 
   constructor(
-    private store: Store<StateManagementAppState>,
+    private store: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(

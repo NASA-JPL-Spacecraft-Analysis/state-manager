@@ -4,15 +4,15 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { forkJoin } from 'rxjs';
 import { switchMap, map, withLatestFrom } from 'rxjs/operators';
 
-import { StateManagementAppState } from '../state-management-app-store';
 import { FileUploadService } from '../services/file-upload.service';
 import { StateVariableActions } from '../actions';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class FileUploadEffects {
   constructor(
     private actions: Actions,
-    private store: Store<StateManagementAppState>,
+    private store: Store<AppState>,
     private fileUploadService: FileUploadService
   ) {}
 

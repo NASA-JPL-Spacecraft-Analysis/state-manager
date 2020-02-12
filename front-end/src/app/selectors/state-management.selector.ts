@@ -1,33 +1,27 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-import { State } from '../state-management-app-store';
 import { StateManagementState } from '../reducers/state-management.reducer';
 import { StateEnumeration, StateEnumerationMap, StateVariable } from '../models';
 
-const featureSelector = createFeatureSelector<State>('stateManagementApp');
-
-export const getStateManagementState = createSelector(
-  featureSelector,
-  (state: State): StateManagementState => state.data
-);
+const getStatesState = createFeatureSelector<StateManagementState>('states');
 
 export const getStateEnumerations = createSelector(
-  getStateManagementState,
+  getStatesState,
   (state: StateManagementState) => state.stateEnumerations
 );
 
 export const getStateVariables = createSelector(
-  getStateManagementState,
+  getStatesState,
   (state: StateManagementState) => state.stateVariables
 );
 
 export const getSelectedStateVariable = createSelector(
-  getStateManagementState,
+  getStatesState,
   (state: StateManagementState) => state.selectedStateVariable
 );
 
 export const getIdentifiers = createSelector(
-  getStateManagementState,
+  getStatesState,
   (state: StateManagementState) => state.identifiers
 );
 
