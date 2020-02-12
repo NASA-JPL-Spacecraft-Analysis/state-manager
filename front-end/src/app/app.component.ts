@@ -11,16 +11,14 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
-import { StateVariablesModule } from './containers/state-variables/state-variables.component';
+import { ToolbarModule } from './components';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.css']
 })
-export class AppComponent {
-  title = 'front-end';
-}
+export class AppComponent {}
 
 @NgModule({
   declarations: [
@@ -56,7 +54,7 @@ export class AppComponent {
       preventDuplicates: true,
       resetTimeoutOnDuplicate: true
     }),
-    StateVariablesModule
+    ToolbarModule
   ],
   bootstrap: [
     AppComponent

@@ -51,6 +51,10 @@ export class RelationshipSidenavComponent implements OnChanges {
   public onCancel(): void {
 
   }
+
+  public onSubmit(): void {
+
+  }
 }
 
 @NgModule({

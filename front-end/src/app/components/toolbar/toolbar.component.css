@@ -1,0 +1,8 @@
+button {
+  margin-right: .5em;
+}
+
+.mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+}
