@@ -3,111 +3,111 @@ import { createAction, props } from '@ngrx/store';
 import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration } from '../models';
 
 export const createStateVariable = createAction(
-  '[state variable] create_state_variable',
+  '[state variable] createStateVariable',
   props<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>()
 );
 
 export const createStateVariableFailure = createAction(
-  '[state variable] create_state_variable_failure',
+  '[state variable] createStateVariableFailure',
   props<{ error: Error }>()
 );
 
 export const createStateVariableSuccess = createAction(
-  '[state variable] create_state_variable_success',
+  '[state variable] createStateVariableSuccess',
   props<{ stateVariable: StateVariable }>()
 );
 
 export const createStateVariablesSuccess = createAction(
-  '[state variable] create_states_variable_success',
+  '[state variable] createStateVariablesSuccess',
   props<{ stateVariables: StateVariable[] }>()
 );
 
 export const editStateVariable = createAction(
-  '[state variable] edit_state_variable',
+  '[state variable] editStateVariable',
   props<{ stateVariable: StateVariable }>()
 );
 
 export const editStateVariableFailure = createAction(
-  '[state variable] edit_state_variable_failure',
+  '[state variable] editStateVariableFailure',
   props<{ error: Error }>()
 );
 
 export const editStateVariableSuccess = createAction(
-  '[state variable] edit_state_variable_success',
+  '[state variable] editStateVariableSuccess',
   props<{ stateVariable: StateVariable }>()
 );
 
 export const fetchIdentifiers = createAction(
-  '[state variable] fetch_identifiers',
+  '[state variable] fetchIdentifiers',
   props<{}>()
 );
 
 export const fetchIdentifiersFailure = createAction(
-  '[state variable] fetch_identifiers_failure',
+  '[state variable] fetchIdentifiersFailure',
   props<{ error: Error }>()
 );
 
 export const fetchStateEnumerationsFailure = createAction(
-  '[state variable] fetch_state_enuemerations_failure',
+  '[state variable] fetchStateEnumerationsFailure',
   props<{ error: Error }>()
 );
 
 export const fetchStateVariablesFailure = createAction(
-  '[state variable] fetch_state_varaiables_failure',
+  '[state variable] fetchStateVariablesFailure',
   props<{ error: Error }>()
 );
 
 export const parseStateVariablesFile = createAction(
-  '[state variable] parse_state_variables_file',
+  '[state variable] parseStateVariablesFile',
   props<{ file: File }>()
 );
 
 export const parseStateVariablesFileSuccess = createAction(
-  '[state variable] parse_state_variables_file_success',
+  '[state variable] parseStateVariablesFileSuccess',
   props<{ parsedStateVariables: Partial<StateVariable>[] }>()
 );
 
 export const parseStateVariablesFileFailure = createAction(
-  '[state variable] parse_state_variables_file_failure',
+  '[state variable] parseStateVariablesFileFailure',
   props<{ error: Error }>()
 );
 
 export const saveEnumerations = createAction(
-  '[state variable] save_enumerations',
+  '[state variable] saveEnumerations',
   props<{ stateVariableId: number, enumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsSuccess = createAction(
-  '[state variable] save_enumerations_success',
+  '[state variable] saveEnumerationsSuccess',
   props<{ enumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsFailure = createAction(
-  '[state variable] save_enumerations_failure',
+  '[state variable] saveEnumerationsFailure',
   props<{ error: Error }>()
 );
 
 export const setIdentifiers = createAction(
-  '[state variable] set_identifiers',
+  '[state variable] setIdentifiers',
   props<{ identifiers: string[] }>()
 );
 
 export const setStateEnumerations = createAction(
-  '[state variable] set_state_enumerations',
+  '[state variable] setStateEnumerations',
   props<{ stateEnumerations: StateEnumerationMap }>()
 );
 
 export const setStateVariables = createAction(
-  '[state variable] set_state_variables',
+  '[state variable] setStateVariables',
   props<{ stateVariables: StateVariableMap }>()
 );
 
 export const setSelectedStateVariable = createAction(
-  '[state variable] set_selected_state_variable',
+  '[state variable] setSelectedStateVariable',
   props<{ stateVariable: StateVariable }>()
 );
 
 export const uploadStateVariablesFailure = createAction(
-  '[state variable] upload_state_variables_file_failure',
+  '[state variable] uploadStateVariablesFailure',
   props<{ error: Error }>()
 );
