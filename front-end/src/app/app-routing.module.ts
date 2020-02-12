@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { HomeComponent } from './containers';
+import { StateVariablesComponent } from './containers';
 
 export const routes: Routes = [
   {
@@ -11,7 +11,7 @@ export const routes: Routes = [
     redirectTo: 'states'
   },
   {
-    component: HomeComponent,
+    component: StateVariablesComponent,
     path: 'states'
   },
 ];

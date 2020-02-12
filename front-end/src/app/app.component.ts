@@ -11,7 +11,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
-import { HomeModule } from './containers';
+import { StateVariablesModule } from './containers/state-variables/state-variables.component';
 
 @Component({
   selector: 'app-root',
@@ -56,7 +56,7 @@ export class AppComponent {
       preventDuplicates: true,
       resetTimeoutOnDuplicate: true
     }),
-    HomeModule
+    StateVariablesModule
   ],
   bootstrap: [
     AppComponent
