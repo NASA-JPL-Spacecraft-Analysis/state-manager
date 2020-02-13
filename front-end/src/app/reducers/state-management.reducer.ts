@@ -31,6 +31,12 @@ export const reducer = createReducer(
       }
     }
   })),
+  on(StateVariableActions.createStateVariablesSuccess, (state, action) => ({
+    ...state,
+    stateVariables: {
+      ...action.stateVariables
+    }
+  })),
   on(StateVariableActions.editStateVariableSuccess, (state, action) => ({
     ...state,
     selectedStateVariable: action.stateVariable,

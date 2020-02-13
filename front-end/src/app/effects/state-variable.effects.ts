@@ -5,7 +5,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { StateVariableActions, ToastActions } from '../actions';
-import { StateVariable } from '../models';
+import { StateVariable, StateVariableMap } from '../models';
 
 @Injectable()
 export class StateVariableEffects {
@@ -110,7 +110,7 @@ export class StateVariableEffects {
           parsedStateVariables
         ).pipe(
           switchMap(
-            (stateVariables: StateVariable[]) => [
+            (stateVariables: StateVariableMap) => [
               StateVariableActions.createStateVariablesSuccess({
                 stateVariables
               }),

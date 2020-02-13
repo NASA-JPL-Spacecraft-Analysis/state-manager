@@ -4,6 +4,7 @@ import { StateVariableMap, StateEnumerationMap, StateVariable, StateEnumeration 
 
 export interface StateManagementServiceInterface {
   createStateVariable(stateVariable: StateVariable): Observable<StateVariable>;
+  createStateVariables(stateVariables: Partial<StateVariable>[]): Observable<StateVariableMap>;
   editStateVariable(stateVariable: StateVariable): Observable<StateVariable>;
   getIdentifiers(): Observable<string[]>;
   getStateEnumerations(): Observable<StateEnumerationMap>;

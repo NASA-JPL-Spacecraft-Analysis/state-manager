@@ -19,7 +19,7 @@ export const createStateVariableSuccess = createAction(
 
 export const createStateVariablesSuccess = createAction(
   '[state variable] createStateVariablesSuccess',
-  props<{ stateVariables: StateVariable[] }>()
+  props<{ stateVariables: StateVariableMap }>()
 );
 
 export const editStateVariable = createAction(
