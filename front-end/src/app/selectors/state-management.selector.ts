@@ -25,6 +25,11 @@ export const getIdentifiers = createSelector(
   (state: StateManagementState) => state.identifiers
 );
 
+export const getRelationships = createSelector(
+  getStatesState,
+  (state: StateManagementState) => state.relationships
+);
+
 export const getStateEnumerationsForSelectedStateVariable = createSelector(
   getStateEnumerations,
   getSelectedStateVariable,

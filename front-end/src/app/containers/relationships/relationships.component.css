@@ -1,0 +1,8 @@
+.relationships-content {
+  margin: 1em;
+}
+
+.relationships-toolbar {
+  display: flex;
+  justify-content: space-between;
+}

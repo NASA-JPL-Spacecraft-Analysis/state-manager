@@ -11,11 +11,11 @@ import { Relationship } from '../../models/relationship';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'relationship-sidenav',
-  styleUrls: [ 'relationship-sidenav.component.css' ],
-  templateUrl: 'relationship-sidenav.component.html'
+  selector: 'relationships-sidenav',
+  styleUrls: [ 'relationships-sidenav.component.css' ],
+  templateUrl: 'relationships-sidenav.component.html'
 })
-export class RelationshipSidenavComponent implements OnChanges {
+export class RelationshipsSidenavComponent implements OnChanges {
   @Input() public relationship: Relationship;
 
   public newRelationship: Relationship;
@@ -59,10 +59,10 @@ export class RelationshipSidenavComponent implements OnChanges {
 
 @NgModule({
   declarations: [
-    RelationshipSidenavComponent
+    RelationshipsSidenavComponent
   ],
   exports: [
-    RelationshipSidenavComponent
+    RelationshipsSidenavComponent
   ],
   imports: [
     CommonModule,
@@ -74,4 +74,4 @@ export class RelationshipSidenavComponent implements OnChanges {
     MatInputModule
   ]
 })
-export class RelationshipSidenavModule {}
+export class RelationshipsSidenavModule {}

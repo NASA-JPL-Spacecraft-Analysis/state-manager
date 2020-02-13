@@ -1,0 +1,22 @@
+<div *ngIf="relationships && relationshipsList.length > 0; else noRelationships">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="displayName">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let relationship">{{relationship.displayName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let relationship">{{relationship.description}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let relationship">{{relationship.type}}</td>
+    </ng-container>
+  </table>
+</div>
+
+<ng-template #noRelationships>
+  <span>There are no defined relationships.</span>
+</ng-template>

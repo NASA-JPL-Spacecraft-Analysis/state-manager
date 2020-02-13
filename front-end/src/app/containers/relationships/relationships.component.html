@@ -1,0 +1,13 @@
+<mat-toolbar class="relationships-toolbar">
+  RELATIONSHIPS
+
+  <button mat-raised-button class="gray-button" (click)="onNewRelationship()">
+    New Relationship
+  </button>
+</mat-toolbar>
+
+<div class="relationships-content">
+  <relationships-table
+    [relationships]="relationships">
+  </relationships-table>
+</div>
