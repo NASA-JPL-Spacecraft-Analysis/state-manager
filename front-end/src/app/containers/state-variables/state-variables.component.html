@@ -1,10 +1,21 @@
-<div class="main">
-  <div class="content">
-    <add-data-form
-      (createStateVariable)="onModifyStateVariable($event)"
-      (uploadStateVariables)="onUploadStateVariables($event)">
-    </add-data-form>
+<mat-toolbar class="states-toolbar">
+  STATES 
 
+  <div>
+    <button mat-raised-button class="gray-button" (click)="onModifyStateVariable()">
+      Create New State 
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="fileUpload.click()">
+      Upload States
+    </button>
+
+    <input #fileUpload class="file-upload-input" type="file" (input)="onUploadStates($event)" />
+  </div>
+</mat-toolbar>
+
+<div class="states-content-container">
+  <div class="states-content">
     <state-variable-table *ngIf="stateVariableMap"
       [stateVariableMap]="stateVariableMap"
       (stateVariableSelected)="onModifyStateVariable($event)">

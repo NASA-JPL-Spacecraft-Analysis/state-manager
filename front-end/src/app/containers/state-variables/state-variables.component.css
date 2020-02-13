@@ -1,13 +1,26 @@
-.main {
-  display: flex;
-  flex-flow: row nowrap;
+.file-upload-input {
+  display: none;
 }
 
-.content {
-  flex-grow: 1;
-  margin-top: 1em;
+.mat-toolbar button:not(:last-child) {
+  margin-right: 1em;
 }
 
 .sidebar {
   width: 25%;
+}
+
+.states-content {
+  flex-grow: 1;
+  margin: 1em;
+}
+
+.states-content-container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.states-toolbar {
+  display: flex;
+  justify-content: space-between;
 }
