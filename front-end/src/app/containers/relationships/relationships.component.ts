@@ -1,15 +1,17 @@
 import { Component, ChangeDetectionStrategy, NgModule, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
+import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { RelationshipMap } from 'src/app/models/relationship';
-import { getRelationships } from 'src/app/selectors';
+import { RelationshipMap, Relationship } from 'src/app/models/relationship';
+import { getRelationships, getSelectedRelationship } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { RelationshipsSidenavModule } from '../relationships-sidenav/relationships-sidenav.component';
-import { MatButtonModule } from '@angular/material/button';
+import { getShowSidenav } from 'src/app/selectors/layout.selector';
+import { StateVariableActions, LayoutActions } from 'src/app/actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class RelationshipsComponent implements OnDestroy {
   public relationships: RelationshipMap;
+  public relationship: Relationship;
+  public showSidenav: boolean;
 
   private subscriptions = new SubSink();
 
@@ -30,6 +34,14 @@ export class RelationshipsComponent implements OnDestroy {
       this.store.pipe(select(getRelationships)).subscribe(relationships => {
         this.relationships = relationships;
         this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getSelectedRelationship)).subscribe(selectedRelationship => {
+        this.relationship = selectedRelationship;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
+        this.showSidenav = showSidenav;
+        this.changeDetectorRef.markForCheck();
       })
     );
   }
@@ -38,8 +50,14 @@ export class RelationshipsComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public onNewRelationship(): void {
+  public onNewRelationship(relationship?: Relationship): void {
+    this.store.dispatch(StateVariableActions.setSelectedRelationship({
+      relationship
+    }));
 
+    this.store.dispatch(LayoutActions.toggleSidenav({
+      showSidenav: true
+    }));
   }
 }
 

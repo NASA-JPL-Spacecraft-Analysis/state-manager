@@ -21,6 +21,10 @@ body {
   box-shadow: none;
 }
 
+.sidenav {
+  width: 25%;
+}
+
 /* Sidenav Specific Styles */
 .sidenav-cancel-button {
   top: -8px;
@@ -36,7 +40,6 @@ body {
 .sidenav-container {
   padding: 1em;
   height: 100%;
-  margin-top: 164px;
   border-left: 1px solid #BEBEBE;
 }
 

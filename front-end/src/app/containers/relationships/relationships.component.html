@@ -6,8 +6,16 @@
   </button>
 </mat-toolbar>
 
-<div class="relationships-content">
-  <relationships-table
-    [relationships]="relationships">
-  </relationships-table>
+<div class="relationships-content-container">
+  <div class="relationships-content">
+    <relationships-table
+      [relationships]="relationships">
+    </relationships-table>
+  </div>
+
+  <div class="sidenav" *ngIf="showSidenav">
+    <relationships-sidenav
+      [relationship]="relationship">
+    </relationships-sidenav>
+  </div>
 </div>

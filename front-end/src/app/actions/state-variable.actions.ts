@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration } from '../models';
+import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration, Relationship } from '../models';
 
 export const createStateVariable = createAction(
   '[state variable] createStateVariable',
@@ -100,6 +100,11 @@ export const setStateEnumerations = createAction(
 export const setStateVariables = createAction(
   '[state variable] setStateVariables',
   props<{ stateVariables: StateVariableMap }>()
+);
+
+export const setSelectedRelationship = createAction(
+  '[state variable] setSelectedRelationship',
+  props<{ relationship: Relationship }>()
 );
 
 export const setSelectedStateVariable = createAction(

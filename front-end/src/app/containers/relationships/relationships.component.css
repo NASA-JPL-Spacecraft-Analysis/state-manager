@@ -1,5 +1,11 @@
 .relationships-content {
+  flex-grow: 1;
   margin: 1em;
+}
+
+.relationships-content-container {
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 .relationships-toolbar {
