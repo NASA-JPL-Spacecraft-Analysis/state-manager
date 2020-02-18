@@ -16,5 +16,19 @@
         required
       />
     </mat-form-field>
+
+    <mat-form-field>
+      <textarea matInput
+        placeholder="Description"
+        formControlName="description"></textarea>
+    </mat-form-field>
+
+    <state-picker
+      [identifiers]="identifiers"
+      [formControlName]="'subjectStates'"
+      [parentFormGroup]="form"
+      [relationship]="newRelationship"
+      ngDefaultControl>
+    </state-picker>
   </form>
 </div>
