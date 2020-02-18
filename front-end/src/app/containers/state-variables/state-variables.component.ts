@@ -4,20 +4,20 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
-import { StateManagementAppState } from '../../state-management-app-store';
 import { getStateVariables, getSelectedStateVariable } from '../../selectors';
 import { StateVariableActions, LayoutActions } from '../../actions';
 import { AddDataFormModule, StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
+import { AppState } from 'src/app/app-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'home',
-  styleUrls: [ 'home.component.css' ],
-  templateUrl: 'home.component.html'
+  selector: 'state-variables',
+  styleUrls: [ 'state-variables.component.css' ],
+  templateUrl: 'state-variables.component.html'
 })
-export class HomeComponent implements OnDestroy {
+export class StateVariablesComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateVariableMap: StateVariableMap;
   public stateVariable: StateVariable;
@@ -25,7 +25,7 @@ export class HomeComponent implements OnDestroy {
   private subscriptions = new SubSink();
 
   constructor(
-    private store: Store<StateManagementAppState>,
+    private store: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
@@ -119,10 +119,10 @@ export class HomeComponent implements OnDestroy {
 
 @NgModule({
   declarations: [
-    HomeComponent
+    StateVariablesComponent
   ],
   exports: [
-    HomeComponent
+    StateVariablesComponent
   ],
   imports: [
     AddDataFormModule,
@@ -131,4 +131,4 @@ export class HomeComponent implements OnDestroy {
     CommonModule
   ]
 })
-export class HomeModule {}
+export class StateVariablesModule {}

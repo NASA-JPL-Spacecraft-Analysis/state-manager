@@ -2,11 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
+import { StateVariablesComponent } from './containers';
+
 export const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./state-management/state-management-app.module').then(m => m.StateManagementAppModule),
-  }
+    pathMatch: 'full',
+    redirectTo: 'states'
+  },
+  {
+    component: StateVariablesComponent,
+    path: 'states'
+  },
 ];
 
 @NgModule({

@@ -3,13 +3,14 @@ import { ActionReducerMap, Action, MetaReducer, ActionReducer } from '@ngrx/stor
 import * as fromRouter from '@ngrx/router-store';
 
 import { environment } from 'src/environments/environment';
-import { ConfigReducer, LayoutReducer } from './state-management/reducers';
+import { ConfigReducer, LayoutReducer, StateReducer } from './reducers';
 import { ConfigState } from './config';
 
 export interface AppState {
   config: ConfigState;
   layout: LayoutReducer.LayoutState;
   router: fromRouter.RouterReducerState;
+  states: StateReducer.StateManagementState;
 }
 
 export const ROOT_REDUCERS = new InjectionToken<
@@ -18,7 +19,8 @@ export const ROOT_REDUCERS = new InjectionToken<
   factory: () => ({
     config: ConfigReducer.reducer,
     layout: LayoutReducer.reducer,
-    router: fromRouter.routerReducer
+    router: fromRouter.routerReducer,
+    states: StateReducer.reducer
   })
 });
 

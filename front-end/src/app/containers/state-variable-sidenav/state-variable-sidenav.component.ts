@@ -12,10 +12,10 @@ import { MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
 import { SubSink } from 'subsink';
 
 import { StateVariable, StateEnumeration } from '../../models';
-import { StateManagementAppState } from '../../state-management-app-store';
 import { getIdentifiers, getStateEnumerationsForSelectedStateVariable } from '../../selectors';
 import { StateVariableActions, ToastActions } from '../../actions';
 import { EnumFormModule } from '../../components';
+import { AppState } from 'src/app/app-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,7 +41,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   private subscriptions = new SubSink();
 
   constructor(
-    private store: Store<StateManagementAppState>,
+    private store: Store<AppState>,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
     private changeDetectorRef: ChangeDetectorRef
