@@ -14,9 +14,12 @@ export class NavEffects {
     private stateManagementService: StateManagementService
   ) {}
 
-  public navStates = createEffect(() =>
+  public navStatesAndRelationships = createEffect(() =>
     this.actions.pipe(
-      ofRoute('states'),
+      ofRoute([
+        'states',
+        'relationships'
+      ]),
       switchMap(_ =>
         concat(
           this.stateManagementService.getStateVariables().pipe(
@@ -32,6 +35,14 @@ export class NavEffects {
             catchError(
               (error: Error) => [
                 StateVariableActions.fetchStateEnumerationsFailure({ error })
+              ]
+            )
+          ),
+          this.stateManagementService.getIdentifiers().pipe(
+            map(identifiers => StateVariableActions.setIdentifiers({ identifiers })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchIdentifiersFailure({ error })
               ]
             )
           )

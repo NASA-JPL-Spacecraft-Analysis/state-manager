@@ -52,8 +52,6 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     this.modifyStateVariable = new EventEmitter<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
-    this.store.dispatch(StateVariableActions.fetchIdentifiers({}));
-
     this.subscriptions.add(
       this.store.pipe(select(getIdentifiers)).subscribe(identifiers => {
         this.identifiers = identifiers;

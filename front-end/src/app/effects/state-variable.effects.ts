@@ -82,26 +82,6 @@ export class StateVariableEffects {
     );
   });
 
-  public fetchIdentifiers = createEffect(() => {
-    return this.actions.pipe(
-      ofType(StateVariableActions.fetchIdentifiers),
-      switchMap(_ =>
-        this.stateManagementService.getIdentifiers().pipe(
-          switchMap((identifiers) => {
-            return [
-              StateVariableActions.setIdentifiers({ identifiers })
-            ];
-          }),
-          catchError(
-            (error: Error) => [
-              StateVariableActions.fetchIdentifiersFailure({ error })
-            ]
-          )
-        )
-      )
-    );
-  });
-
   public parseUploadedStateVariables = createEffect(() => {
     return this.actions.pipe(
       ofType(StateVariableActions.parseStateVariablesFileSuccess),

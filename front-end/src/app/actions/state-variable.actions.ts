@@ -37,11 +37,6 @@ export const editStateVariableSuccess = createAction(
   props<{ stateVariable: StateVariable }>()
 );
 
-export const fetchIdentifiers = createAction(
-  '[state variable] fetchIdentifiers',
-  props<{}>()
-);
-
 export const fetchIdentifiersFailure = createAction(
   '[state variable] fetchIdentifiersFailure',
   props<{ error: Error }>()
