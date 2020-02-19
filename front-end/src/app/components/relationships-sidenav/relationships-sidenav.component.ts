@@ -1,4 +1,4 @@
-import { Component, NgModule, ChangeDetectionStrategy, OnChanges, Input } from '@angular/core';
+import { Component, NgModule, ChangeDetectionStrategy, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -19,6 +19,9 @@ export class RelationshipsSidenavComponent implements OnChanges {
   @Input() public relationship: Relationship;
   @Input() public stateVariableMap: StateVariableMap;
 
+  @Output() public formError: EventEmitter<string>;
+  @Output() public modifyRelationship: EventEmitter<Relationship>;
+
   public newRelationship: Relationship;
   public form: FormGroup;
 
@@ -27,11 +30,15 @@ export class RelationshipsSidenavComponent implements OnChanges {
     private sanitizer: DomSanitizer
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
+
+    this.formError = new EventEmitter<string>();
+    this.modifyRelationship = new EventEmitter<Relationship>();
   }
 
   public ngOnChanges(): void {
     if (this.relationship === undefined) {
       this.newRelationship = {
+        id: null,
         displayName: '',
         description: '',
         subjectStateId: null,
@@ -51,11 +58,15 @@ export class RelationshipsSidenavComponent implements OnChanges {
   }
 
   public onCancel(): void {
-
+    this.modifyRelationship.emit(undefined);
   }
 
   public onSubmit(): void {
-    console.log(this.form.value);
+    if (this.form.valid) {
+      this.modifyRelationship.emit(this.form.value);
+    } else {
+      this.formError.emit('Please fill in required form fields, including selecting a subject and target state');
+    }
   }
 }
 

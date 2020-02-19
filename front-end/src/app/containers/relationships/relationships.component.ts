@@ -8,7 +8,7 @@ import { RelationshipMap, Relationship } from 'src/app/models/relationship';
 import { getRelationships, getSelectedRelationship, getStateVariables } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { getShowSidenav } from 'src/app/selectors/layout.selector';
-import { StateVariableActions, LayoutActions } from 'src/app/actions';
+import { StateVariableActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { RelationshipsSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
 import { StateVariableMap } from 'src/app/models';
@@ -55,6 +55,13 @@ export class RelationshipsComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  public onFormErrorOutput(error: string): void {
+    this.store.dispatch(ToastActions.showToast({
+      message: error,
+      toastType: 'error'
+    }));
+  }
+
   public onNewRelationship(relationship?: Relationship): void {
     this.store.dispatch(StateVariableActions.setSelectedRelationship({
       relationship
@@ -63,6 +70,18 @@ export class RelationshipsComponent implements OnDestroy {
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
+  }
+
+  public onRelationshipOutput(relationship: Relationship): void {
+    if (relationship.id === undefined) {
+      this.store.dispatch(StateVariableActions.createRelationship({
+        relationship
+      }));
+    } else {
+      this.store.dispatch(StateVariableActions.editRelationship({
+        relationship
+      }));
+    }
   }
 }
 

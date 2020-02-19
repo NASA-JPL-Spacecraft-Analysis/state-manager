@@ -16,7 +16,9 @@
   <div class="sidenav" *ngIf="showSidenav">
     <relationships-sidenav
       [relationship]="relationship"
-      [stateVariableMap]="stateVariableMap">
+      [stateVariableMap]="stateVariableMap"
+      (formError)="onFormErrorOutput($event)"
+      (modifyRelationship)="onRelationshipOutput($event)">
     </relationships-sidenav>
   </div>
 </div>

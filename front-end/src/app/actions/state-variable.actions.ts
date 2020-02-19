@@ -7,6 +7,36 @@ export const createStateVariable = createAction(
   props<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>()
 );
 
+export const createRelationship = createAction(
+  '[state variable] createRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const createRelationshipFailure = createAction(
+  '[state variable] createRelationshipFailure',
+  props<{ error: Error }>()
+);
+
+export const createRelationshipSuccess = createAction(
+  '[state variable] createRelationshipSuccess',
+  props<{ relationship: Relationship }>()
+);
+
+export const editRelationship = createAction(
+  '[state variable] editRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const editRelationshipFailure = createAction(
+  '[state variable] editRelationshipFailure',
+  props<{ error: Error }>()
+);
+
+export const editRelationshipSuccess = createAction(
+  '[state variable] editRelationshipSuccess',
+  props<{ relationship: Relationship }>()
+);
+
 export const createStateVariableFailure = createAction(
   '[state variable] createStateVariableFailure',
   props<{ error: Error }>()
