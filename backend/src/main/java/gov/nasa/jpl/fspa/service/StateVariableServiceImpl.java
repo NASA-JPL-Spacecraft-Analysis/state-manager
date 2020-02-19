@@ -3,6 +3,7 @@ package gov.nasa.jpl.fspa.service;
 import gov.nasa.jpl.fspa.dao.StateVariableDao;
 import gov.nasa.jpl.fspa.dao.StateVariableDaoImpl;
 import gov.nasa.jpl.fspa.model.Identifier;
+import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
@@ -16,6 +17,18 @@ public class StateVariableServiceImpl implements StateVariableService {
     public StateVariableServiceImpl() {
         this.outputService = new OutputServiceImpl<>(StateVariable.class);
         this.stateVariableDao = new StateVariableDaoImpl();
+    }
+
+    @Override
+    public Map<Integer, Relationship> getRelationships() {
+        List<Relationship> relationships = stateVariableDao.getRelationships();
+        Map<Integer, Relationship> relationshipMap = new HashMap<>();
+
+        for (Relationship relationship: relationships) {
+            relationshipMap.put(relationship.getId(), relationship);
+        }
+
+        return relationshipMap;
     }
 
     @Override
@@ -53,6 +66,11 @@ public class StateVariableServiceImpl implements StateVariableService {
     @Override
     public String getStateVariablesAsCsv() {
         return outputService.outputAsCsv(stateVariableDao.getStateVariables());
+    }
+
+    @Override
+    public Relationship modifyRelationship(Relationship relationship) {
+        return stateVariableDao.modifyRelationship(relationship);
     }
 
     @Override
