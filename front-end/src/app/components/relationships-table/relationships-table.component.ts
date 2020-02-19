@@ -1,8 +1,9 @@
 import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { RelationshipMap, Relationship } from 'src/app/models';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +39,7 @@ export class RelationshipsTableComponent implements OnChanges {
   ],
   imports: [
     CommonModule,
-    MatTableModule
+    MaterialModule
   ]
 })
 export class RelationshipsTableModule {}

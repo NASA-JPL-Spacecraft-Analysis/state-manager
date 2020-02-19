@@ -1,12 +1,11 @@
 import { Component, NgModule, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { StateEnumeration } from '../../models';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   selector: 'enum-form',
@@ -68,9 +67,7 @@ export class EnumFormComponent implements OnChanges {
   imports: [
     CommonModule,
     FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule
+    MaterialModule
   ]
 })
 export class EnumFormModule {}

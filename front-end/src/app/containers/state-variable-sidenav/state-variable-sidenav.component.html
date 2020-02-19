@@ -20,11 +20,9 @@
 
         <mat-icon matSuffix
           #duplicateTooltip
-          [ngClass]="identifierIcon">
-          <!-- TODO: Fix this tooltip, it's causing errors on Angular 9.0.1.
+          [ngClass]="identifierIcon"
           matTooltipPosition="above"
-          [matTooltip]="identifierTooltipText"
-          -->
+          [matTooltip]="identifierTooltipText">
           {{identifierIcon}}
         </mat-icon>
       </mat-form-field>

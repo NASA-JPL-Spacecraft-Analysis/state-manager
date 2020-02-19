@@ -2,13 +2,11 @@ import { Component, NgModule, ChangeDetectionStrategy, OnChanges, Input } from '
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatIconRegistry } from '@angular/material/icon';
 
 import { Relationship } from '../../models/relationship';
 import { StatePickerModule } from '../state-picker/state-picker.component';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,10 +69,7 @@ export class RelationshipsSidenavComponent implements OnChanges {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
+    MaterialModule,
     StatePickerModule
   ]
 })

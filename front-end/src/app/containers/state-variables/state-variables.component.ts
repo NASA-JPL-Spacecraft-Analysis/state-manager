@@ -1,8 +1,6 @@
 import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { select, Store } from '@ngrx/store';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { SubSink } from 'subsink';
 
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
@@ -12,6 +10,7 @@ import { StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
 import { AppState } from 'src/app/app-store';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -133,8 +132,7 @@ export class StateVariablesComponent implements OnDestroy {
     StateVariableSidenavModule,
     StateVariableTableModule,
     CommonModule,
-    MatButtonModule,
-    MatToolbarModule
+    MaterialModule
   ]
 })
 export class StateVariablesModule {}

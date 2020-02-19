@@ -1,8 +1,6 @@
 import { Component, ChangeDetectionStrategy, NgModule, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
@@ -12,6 +10,7 @@ import { RelationshipsTableModule } from 'src/app/components/relationships-table
 import { getShowSidenav } from 'src/app/selectors/layout.selector';
 import { StateVariableActions, LayoutActions } from 'src/app/actions';
 import { RelationshipsSidenavModule } from 'src/app/components';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,8 +74,7 @@ export class RelationshipsComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
-    MatButtonModule,
-    MatToolbarModule,
+    MaterialModule,
     RelationshipsSidenavModule,
     RelationshipsTableModule
   ]

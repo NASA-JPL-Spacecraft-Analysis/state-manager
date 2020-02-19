@@ -12,6 +12,7 @@ import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
 import { ToolbarModule } from './components';
+import { MaterialModule } from './material';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent {}
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    MaterialModule,
     EffectsModule.forRoot([
       FileUploadEffects,
       NavEffects,

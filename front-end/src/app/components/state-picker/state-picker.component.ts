@@ -1,12 +1,9 @@
 import { Component, ChangeDetectionStrategy, NgModule, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators, FormControl } from '@angular/forms';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
 
+import { MaterialModule } from 'src/app/material';
 import { Relationship } from 'src/app/models';
 
 @Component({
@@ -49,11 +46,8 @@ export class StatePickerComponent implements OnInit {
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-    MatInputModule,
-    MatOptionModule,
-    OverlayModule
+    MaterialModule,
+    ReactiveFormsModule
   ]
 })
 export class StatePickerModule {}

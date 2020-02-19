@@ -1,7 +1,7 @@
 import { Component, NgModule, ChangeDetectionStrategy } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
+
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,8 +19,7 @@ export class ToolbarComponent {}
     ToolbarComponent
   ],
   imports: [
-    MatButtonModule,
-    MatToolbarModule,
+    MaterialModule,
     RouterModule
   ]
 })
