@@ -1,15 +1,11 @@
-<div [formGroup]="parentFormGroup">
-  <input matInput
-    type="text"
-    placeholder="Pick one"
-    matInput
-    [formControlName]="formControlName"
-    [matAutocomplete]="auto"
-  />
+<p class="form-input-label">
+  {{selectLabel}}
+</p>
 
-  <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let identifier of identifiers" [value]="identifier">
-    {{identifier}}
+<div class="form-input">
+  <mat-select [(value)]="formControlValue" (selectionChange)="onSelectionChange($event)">
+    <mat-option *ngFor="let value of stateVariableMap | keyvalue" [value]="stateVariableMap[value.key].id">
+      {{stateVariableMap[value.key].identifier}}
     </mat-option>
-  </mat-autocomplete>
+  </mat-select>
 </div>

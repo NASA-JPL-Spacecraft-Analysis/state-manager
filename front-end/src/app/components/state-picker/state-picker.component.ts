@@ -1,10 +1,10 @@
 import { Component, ChangeDetectionStrategy, NgModule, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, Validators, FormControl } from '@angular/forms';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
 
 import { MaterialModule } from 'src/app/material';
-import { Relationship } from 'src/app/models';
+import { StateVariableMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,27 +13,18 @@ import { Relationship } from 'src/app/models';
   templateUrl: 'state-picker.component.html'
 })
 export class StatePickerComponent implements OnInit {
-  @Input() public identifiers: Set<string>;
   @Input() public formControlName: string;
+  @Input() public formControlValue: number;
   @Input() public parentFormGroup: FormGroup;
-  @Input() public relationship: Relationship;
-
-  public separatorKeysCodes: number[] = [ ENTER, COMMA ];
+  @Input() public selectLabel: string;
+  @Input() public stateVariableMap: StateVariableMap;
 
   public ngOnInit(): void {
-    this.parentFormGroup.addControl(this.formControlName, new FormControl(this.relationship.subjectStates, [ Validators.required ]));
+    this.parentFormGroup.addControl(this.formControlName, new FormControl(this.formControlValue, [ Validators.required ]));
   }
 
-  public add(test: any): void {
-    console.log(test);
-  }
-
-  public remove(identifier: string): void {
-    console.log(identifier);
-  }
-
-  public selected(): void {
-
+  public onSelectionChange(event: MatSelectChange): void {
+    this.parentFormGroup.controls[this.formControlName].setValue(event.value);
   }
 }
 

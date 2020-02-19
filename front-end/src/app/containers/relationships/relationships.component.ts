@@ -5,12 +5,13 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { RelationshipMap, Relationship } from 'src/app/models/relationship';
-import { getRelationships, getSelectedRelationship, getIdentifiers } from 'src/app/selectors';
+import { getRelationships, getSelectedRelationship, getStateVariables } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { getShowSidenav } from 'src/app/selectors/layout.selector';
 import { StateVariableActions, LayoutActions } from 'src/app/actions';
 import { RelationshipsSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
+import { StateVariableMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,10 +20,10 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'relationships.component.html'
 })
 export class RelationshipsComponent implements OnDestroy {
-  public identifiers: Set<string>;
   public relationships: RelationshipMap;
   public relationship: Relationship;
   public showSidenav: boolean;
+  public stateVariableMap: StateVariableMap;
 
   private subscriptions = new SubSink();
 
@@ -31,10 +32,6 @@ export class RelationshipsComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
-      this.store.pipe(select(getIdentifiers)).subscribe(identifiers => {
-        this.identifiers = identifiers;
-        this.changeDetectorRef.markForCheck();
-      }),
       this.store.pipe(select(getRelationships)).subscribe(relationships => {
         this.relationships = relationships;
         this.changeDetectorRef.markForCheck();
@@ -45,6 +42,10 @@ export class RelationshipsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateVariables)).subscribe(stateVariableMap => {
+        this.stateVariableMap = stateVariableMap;
         this.changeDetectorRef.markForCheck();
       })
     );

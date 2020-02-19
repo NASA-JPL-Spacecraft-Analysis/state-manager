@@ -7,6 +7,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { Relationship } from '../../models/relationship';
 import { StatePickerModule } from '../state-picker/state-picker.component';
 import { MaterialModule } from 'src/app/material';
+import { StateVariableMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,8 +16,8 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'relationships-sidenav.component.html'
 })
 export class RelationshipsSidenavComponent implements OnChanges {
-  @Input() public identifiers: Set<string>;
   @Input() public relationship: Relationship;
+  @Input() public stateVariableMap: StateVariableMap;
 
   public newRelationship: Relationship;
   public form: FormGroup;
@@ -33,8 +34,8 @@ export class RelationshipsSidenavComponent implements OnChanges {
       this.newRelationship = {
         displayName: '',
         description: '',
-        targetStates: [],
-        subjectStates: [],
+        subjectStateId: null,
+        targetStateId: null,
         type: ''
       };
     } else {
@@ -54,7 +55,7 @@ export class RelationshipsSidenavComponent implements OnChanges {
   }
 
   public onSubmit(): void {
-
+    console.log(this.form.value);
   }
 }
 

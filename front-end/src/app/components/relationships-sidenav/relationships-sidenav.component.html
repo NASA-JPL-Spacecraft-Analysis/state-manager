@@ -24,11 +24,25 @@
     </mat-form-field>
 
     <state-picker
-      [identifiers]="identifiers"
-      [formControlName]="'subjectStates'"
+      [formControlName]="'subjectStateId'"
+      [formControlValue]="newRelationship.subjectStateId"
       [parentFormGroup]="form"
-      [relationship]="newRelationship"
+      [selectLabel]="'Subject State'"
+      [stateVariableMap]="stateVariableMap"
       ngDefaultControl>
     </state-picker>
+
+    <state-picker
+      [formControlName]="'targetStateId'"
+      [formControlValue]="newRelationship.targetStateId"
+      [parentFormGroup]="form"
+      [selectLabel]="'Target State'"
+      [stateVariableMap]="stateVariableMap"
+      ngDefaultControl>
+    </state-picker>
+
+    <div class="sidenav-actions">
+      <button mat-raised-button color="primary" type="submit">Save</button>
+    </div>
   </form>
 </div>

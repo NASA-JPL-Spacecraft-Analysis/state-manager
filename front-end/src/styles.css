@@ -25,6 +25,20 @@ body {
   width: 25%;
 }
 
+.form-input {
+  background: #FAFAFA;
+  border: 1px solid #BEBEBE;
+  box-sizing: border-box;
+  border-radius: 3px;
+  height: 3em;
+  padding-top: .75em;
+  padding-left: .5em;
+}
+
+.form-input-label {
+  margin-bottom: .5em;
+}
+
 /* Sidenav Specific Styles */
 .sidenav-cancel-button {
   top: -8px;

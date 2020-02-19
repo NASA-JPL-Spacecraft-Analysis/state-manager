@@ -5,8 +5,8 @@ import { StringTMap } from './string-t-map';
 export interface Relationship {
   displayName: string;
   description: string;
-  subjectStates: StateVariable[];
-  targetStates: StateVariable[];
+  subjectStateId: number;
+  targetStateId: number;
   type: string; // Enum?
 }
 
