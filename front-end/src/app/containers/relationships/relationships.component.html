@@ -1,7 +1,7 @@
 <mat-toolbar class="relationships-toolbar">
   RELATIONSHIPS
 
-  <button mat-raised-button class="gray-button" (click)="onNewRelationship()">
+  <button mat-raised-button class="gray-button" (click)="onModifyRelationship()">
     Create New Relationship
   </button>
 </mat-toolbar>
@@ -9,7 +9,9 @@
 <div class="relationships-content-container">
   <div class="relationships-content">
     <relationships-table
-      [relationships]="relationships">
+      [relationshipMap]="relationshipMap"
+      [stateVariableMap]="stateVariableMap"
+      (relationshipSelected)="onModifyRelationship($event)">
     </relationships-table>
   </div>
 

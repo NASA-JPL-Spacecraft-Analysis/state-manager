@@ -1,8 +1,8 @@
-import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { RelationshipMap, Relationship } from 'src/app/models';
+import { RelationshipMap, Relationship, StateVariableMap } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -12,21 +12,38 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'relationships-table.component.html'
 })
 export class RelationshipsTableComponent implements OnChanges {
-  @Input() public relationships: RelationshipMap;
+  @Input() public relationshipMap: RelationshipMap;
+  @Input() public stateVariableMap: StateVariableMap;
+
+  @Output() public relationshipSelected: EventEmitter<Relationship>;
 
   public dataSource: MatTableDataSource<Relationship>;
+  public displayedColumns: string[] = [
+    'displayName',
+    'description',
+    'subjectState',
+    'targetState'
+  ];
   public relationshipsList: Relationship[];
+
+  constructor() {
+    this.relationshipSelected = new EventEmitter<Relationship>();
+  }
 
   public ngOnChanges(): void {
     this.relationshipsList = [];
 
-    if (this.relationships) {
-      for (const key of Object.keys(this.relationships)) {
-        this.relationshipsList.push(this.relationships[key]);
+    if (this.relationshipMap) {
+      for (const key of Object.keys(this.relationshipMap)) {
+        this.relationshipsList.push(this.relationshipMap[key]);
       }
     }
 
     this.dataSource = new MatTableDataSource(this.relationshipsList);
+  }
+
+  public onRowClick(relationship: Relationship): void {
+    this.relationshipSelected.emit(relationship);
   }
 }
 

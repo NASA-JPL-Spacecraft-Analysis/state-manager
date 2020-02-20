@@ -84,6 +84,10 @@ export const reducer = createReducer(
       identifiers
     };
   }),
+  on(StateVariableActions.setRelationships, (state, action) => ({
+    ...state,
+    relationships: action.relationships
+  })),
   on(StateVariableActions.setStateEnumerations, (state, action) => ({
     ...state,
     stateEnumerations: action.stateEnumerations

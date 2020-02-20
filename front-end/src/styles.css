@@ -7,6 +7,10 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+table {
+  width: 100%;
+}
+
 /* Angular Material Global Overwrites */
 .mat-form-field {
   width: 100%;
@@ -14,17 +18,6 @@ body {
 }
 
 /* Global Styles */
-.gray-button {
-  background: #979797;
-  color: white;
-  border-radius: 3px;
-  box-shadow: none;
-}
-
-.sidenav {
-  width: 25%;
-}
-
 .form-input {
   background: #FAFAFA;
   border: 1px solid #BEBEBE;
@@ -37,6 +30,21 @@ body {
 
 .form-input-label {
   margin-bottom: .5em;
+}
+
+.gray-button {
+  background: #979797;
+  color: white;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+.sidenav {
+  width: 25%;
+}
+
+.table-row {
+  cursor: pointer;
 }
 
 /* Sidenav Specific Styles */

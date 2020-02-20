@@ -16,33 +16,76 @@ export class NavEffects {
 
   public navStatesAndRelationships = createEffect(() =>
     this.actions.pipe(
-      ofRoute([
-        'states',
-        'relationships'
-      ]),
+      ofRoute('state'),
       switchMap(_ =>
         concat(
           this.stateManagementService.getStateVariables().pipe(
-            map(stateVariables => StateVariableActions.setStateVariables({ stateVariables })),
+            map(stateVariables => StateVariableActions.setStateVariables({
+              stateVariables
+            })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchStateVariablesFailure({ error })
+                StateVariableActions.fetchStateVariablesFailure({
+                  error
+                })
               ]
             )
           ),
           this.stateManagementService.getStateEnumerations().pipe(
-            map(stateEnumerations => StateVariableActions.setStateEnumerations({ stateEnumerations })),
+            map(stateEnumerations => StateVariableActions.setStateEnumerations({
+              stateEnumerations
+            })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchStateEnumerationsFailure({ error })
+                StateVariableActions.fetchStateEnumerationsFailure({
+                  error
+                })
               ]
             )
           ),
           this.stateManagementService.getIdentifiers().pipe(
-            map(identifiers => StateVariableActions.setIdentifiers({ identifiers })),
+            map(identifiers => StateVariableActions.setIdentifiers({
+              identifiers
+            })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchIdentifiersFailure({ error })
+                StateVariableActions.fetchIdentifiersFailure({
+                  error
+                })
+              ]
+            )
+          )
+        )
+      )
+    )
+  );
+
+  public navRelationships = createEffect(() =>
+    this.actions.pipe(
+      ofRoute('relationships'),
+      switchMap(_ =>
+        concat(
+          this.stateManagementService.getRelationships().pipe(
+            map(relationships => StateVariableActions.setRelationships({
+              relationships
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchRelationshipsFailure({
+                  error
+                })
+              ]
+            )
+          ),
+          this.stateManagementService.getStateVariables().pipe(
+            map(stateVariables => StateVariableActions.setStateVariables({
+              stateVariables
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchStateVariablesFailure({
+                  error
+                })
               ]
             )
           )

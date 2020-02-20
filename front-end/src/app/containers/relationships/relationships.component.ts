@@ -20,7 +20,7 @@ import { StateVariableMap } from 'src/app/models';
   templateUrl: 'relationships.component.html'
 })
 export class RelationshipsComponent implements OnDestroy {
-  public relationships: RelationshipMap;
+  public relationshipMap: RelationshipMap;
   public relationship: Relationship;
   public showSidenav: boolean;
   public stateVariableMap: StateVariableMap;
@@ -32,8 +32,8 @@ export class RelationshipsComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
-      this.store.pipe(select(getRelationships)).subscribe(relationships => {
-        this.relationships = relationships;
+      this.store.pipe(select(getRelationships)).subscribe(relationshipMap => {
+        this.relationshipMap = relationshipMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedRelationship)).subscribe(selectedRelationship => {
@@ -62,7 +62,7 @@ export class RelationshipsComponent implements OnDestroy {
     }));
   }
 
-  public onNewRelationship(relationship?: Relationship): void {
+  public onModifyRelationship(relationship?: Relationship): void {
     this.store.dispatch(StateVariableActions.setSelectedRelationship({
       relationship
     }));
@@ -73,14 +73,16 @@ export class RelationshipsComponent implements OnDestroy {
   }
 
   public onRelationshipOutput(relationship: Relationship): void {
-    if (relationship.id === undefined) {
-      this.store.dispatch(StateVariableActions.createRelationship({
-        relationship
-      }));
-    } else {
-      this.store.dispatch(StateVariableActions.editRelationship({
-        relationship
-      }));
+    if (relationship !== undefined) {
+      if (relationship.id === undefined) {
+        this.store.dispatch(StateVariableActions.createRelationship({
+          relationship
+        }));
+      } else {
+        this.store.dispatch(StateVariableActions.editRelationship({
+          relationship
+        }));
+      }
     }
   }
 }
