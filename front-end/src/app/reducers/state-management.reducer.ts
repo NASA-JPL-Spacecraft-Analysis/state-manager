@@ -23,32 +23,24 @@ export const initialState: StateManagementState = {
 
 export const reducer = createReducer(
   initialState,
-  on(StateVariableActions.createStateVariableSuccess, (state, action) => ({
-    ...state,
-    selectedStateVariable: action.stateVariable,
-    stateVariables: {
-      ...state.stateVariables,
-      [action.stateVariable.id]: {
-        ...action.stateVariable
-      }
-    }
-  })),
+  on(StateVariableActions.createRelationshipSuccess, (state, action) => {
+    return modifyRelationship(state, action.relationship);
+  }),
+  on(StateVariableActions.createStateVariableSuccess, (state, action) => {
+    return modifyStateVariable(state, action.stateVariable);
+  }),
   on(StateVariableActions.createStateVariablesSuccess, (state, action) => ({
     ...state,
     stateVariables: {
       ...action.stateVariables
     }
   })),
-  on(StateVariableActions.editStateVariableSuccess, (state, action) => ({
-    ...state,
-    selectedStateVariable: action.stateVariable,
-    stateVariables: {
-      ...state.stateVariables,
-      [action.stateVariable.id]: {
-        ...action.stateVariable
-      }
-    }
-  })),
+  on(StateVariableActions.editRelationshipSuccess, (state, action) => {
+    return modifyRelationship(state, action.relationship);
+  }),
+  on(StateVariableActions.editStateVariableSuccess, (state, action) => {
+    return modifyStateVariable(state, action.stateVariable);
+  }),
   on(StateVariableActions.saveEnumerationsSuccess, (state, action) => {
     const enumerations: StateEnumerationMap = {};
     let stateVariableId = null;
@@ -105,3 +97,29 @@ export const reducer = createReducer(
     selectedStateVariable: action.stateVariable
   }))
 );
+
+function modifyRelationship(state: StateManagementState, relationship: Relationship): StateManagementState {
+  return {
+    ...state,
+    selectedRelationship: relationship,
+    relationships: {
+      ...state.relationships,
+      [relationship.id]: {
+        ...relationship
+      }
+    }
+  };
+}
+
+function modifyStateVariable(state: StateManagementState, stateVariable: StateVariable): StateManagementState {
+  return {
+    ...state,
+    selectedStateVariable: stateVariable,
+    stateVariables: {
+      ...state.stateVariables,
+      [stateVariable.id]: {
+        ...stateVariable
+      }
+    }
+  };
+}

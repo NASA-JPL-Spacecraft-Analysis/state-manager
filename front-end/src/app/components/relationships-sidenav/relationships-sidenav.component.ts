@@ -42,8 +42,7 @@ export class RelationshipsSidenavComponent implements OnChanges {
         displayName: '',
         description: '',
         subjectStateId: null,
-        targetStateId: null,
-        type: ''
+        targetStateId: null
       };
     } else {
       this.newRelationship = {
@@ -52,6 +51,7 @@ export class RelationshipsSidenavComponent implements OnChanges {
     }
 
     this.form = new FormGroup({
+      id: new FormControl(this.newRelationship.id),
       displayName: new FormControl(this.newRelationship.displayName, [ Validators.required ]),
       description: new FormControl(this.newRelationship.description)
     });
