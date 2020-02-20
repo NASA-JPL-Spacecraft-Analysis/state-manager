@@ -22,6 +22,10 @@ export class StatePickerComponent implements OnChanges {
     this.parentFormGroup.addControl('targetStateId', new FormControl(this.relationship.targetStateId, [ Validators.required ]));
   }
 
+  public checkDisabled(key: string, selectedStateId: number): boolean {
+    return parseInt(key, 10) === selectedStateId;
+  }
+
   public onSubjectStateIdChange(event: MatSelectChange): void {
     this.parentFormGroup.controls.subjectStateId.setValue(event.value);
   }
