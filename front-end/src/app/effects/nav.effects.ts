@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect } from '@ngrx/effects';
 import { switchMap, map, catchError } from 'rxjs/operators';
-import { concat } from 'rxjs';
+import { concat, of } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from '../functions/router';
-import { StateVariableActions } from '../actions';
+import { StateVariableActions, LayoutActions } from '../actions';
 
 @Injectable()
 export class NavEffects {
@@ -19,6 +19,9 @@ export class NavEffects {
       ofRoute('state'),
       switchMap(_ =>
         concat(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
           this.stateManagementService.getStateVariables().pipe(
             map(stateVariables => StateVariableActions.setStateVariables({
               stateVariables
@@ -65,6 +68,9 @@ export class NavEffects {
       ofRoute('relationships'),
       switchMap(_ =>
         concat(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
           this.stateManagementService.getRelationships().pipe(
             map(relationships => StateVariableActions.setRelationships({
               relationships
