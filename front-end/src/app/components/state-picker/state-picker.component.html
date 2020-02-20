@@ -1,11 +1,27 @@
-<p class="form-input-label">
-  {{selectLabel}}
-</p>
+<div>
+  <p class="form-input-label">
+    Subject State
+  </p>
 
-<div class="form-input">
-  <mat-select [(value)]="formControlValue" (selectionChange)="onSelectionChange($event)">
-    <mat-option *ngFor="let value of stateVariableMap | keyvalue" [value]="stateVariableMap[value.key].id">
-      {{stateVariableMap[value.key].identifier}}
-    </mat-option>
-  </mat-select>
+  <div class="form-input">
+    <mat-select [(value)]="relationship.subjectStateId" (selectionChange)="onSubjectStateIdChange($event)">
+      <mat-option *ngFor="let value of stateVariableMap | keyvalue" [value]="stateVariableMap[value.key].id">
+        {{stateVariableMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
+  </div>
+</div>
+
+<div>
+  <p class="form-input-label">
+    Target State
+  </p>
+
+  <div class="form-input">
+    <mat-select [(value)]="relationship.targetStateId" (selectionChange)="onTargetStateIdChange($event)">
+      <mat-option *ngFor="let value of stateVariableMap | keyvalue" [value]="stateVariableMap[value.key].id">
+        {{stateVariableMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
+  </div>
 </div>
