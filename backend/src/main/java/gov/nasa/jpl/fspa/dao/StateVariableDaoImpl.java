@@ -28,6 +28,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
                 relationship.setDescription(resultSet.getString("description"));
                 relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("subject_state_id")));
                 relationship.setTargetStateId(Integer.valueOf(resultSet.getString("target_state_id")));
+                relationship.setType(resultSet.getString("type"));
 
                 relationships.add(relationship);
             }
@@ -242,6 +243,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
             preparedStatement.setString(2, relationship.getDescription());
             preparedStatement.setInt(3, relationship.getSubjectStateId());
             preparedStatement.setInt(4, relationship.getTargetStateId());
+            preparedStatement.setString(5, relationship.getType());
 
             preparedStatement.executeUpdate();
 

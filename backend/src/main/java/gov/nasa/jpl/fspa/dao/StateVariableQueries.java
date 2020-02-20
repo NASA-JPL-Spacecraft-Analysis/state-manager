@@ -28,16 +28,17 @@ public class StateVariableQueries {
                                                + " (?, ?, ?, ?, ?, ?) ";
 
     public static String CREATE_RELATIONSHIP = " insert into relationships "
-                                             + " (display_name, description, subject_state_id, target_state_id) "
+                                             + " (display_name, description, subject_state_id, target_state_id, type) "
                                              + " values "
-                                             + " (?, ?, ?, ?) ";
+                                             + " (?, ?, ?, ?, ?) ";
 
     public static String UPDATE_RELATIONSHIP = " update relationships "
                                              + " set "
-                                             + " display_name = ? "
-                                             + " description = ? "
-                                             + " subject_state_id = ? "
-                                             + " target_state_id = ? ";
+                                             + " display_name = ?, "
+                                             + " description = ?, "
+                                             + " subject_state_id = ?, "
+                                             + " target_state_id = ?, "
+                                             + " type = ? ";
 
     public static String UPDATE_STATE_VARIABLE = " update state_variables "
                                                + " set "

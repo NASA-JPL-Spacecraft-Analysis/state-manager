@@ -6,6 +6,7 @@ public class Relationship {
     private String description;
     private Integer subjectStateId;
     private Integer targetStateId;
+    private String type;
 
     public Integer getId() {
         return id;
@@ -45,5 +46,13 @@ public class Relationship {
 
     public void setTargetStateId(Integer targetStateId) {
         this.targetStateId = targetStateId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

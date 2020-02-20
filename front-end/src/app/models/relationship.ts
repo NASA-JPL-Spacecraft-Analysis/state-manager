@@ -7,6 +7,7 @@ export interface Relationship {
   description: string;
   subjectStateId: number;
   targetStateId: number;
+  type: string;
 }
 
 export type RelationshipMap = StringTMap<Relationship>;

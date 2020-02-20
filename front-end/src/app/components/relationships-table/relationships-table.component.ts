@@ -22,7 +22,8 @@ export class RelationshipsTableComponent implements OnChanges {
     'displayName',
     'description',
     'subjectState',
-    'targetState'
+    'targetState',
+    'type'
   ];
   public relationshipsList: Relationship[];
 
