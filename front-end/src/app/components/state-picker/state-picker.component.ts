@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, NgModule, Input, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, NgModule, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
@@ -12,14 +12,14 @@ import { StateVariableMap } from 'src/app/models';
   styleUrls: [ 'state-picker.component.css' ],
   templateUrl: 'state-picker.component.html'
 })
-export class StatePickerComponent implements OnInit {
+export class StatePickerComponent implements OnChanges {
   @Input() public formControlName: string;
   @Input() public formControlValue: number;
   @Input() public parentFormGroup: FormGroup;
   @Input() public selectLabel: string;
   @Input() public stateVariableMap: StateVariableMap;
 
-  public ngOnInit(): void {
+  public ngOnChanges(): void {
     this.parentFormGroup.addControl(this.formControlName, new FormControl(this.formControlValue, [ Validators.required ]));
   }
 
