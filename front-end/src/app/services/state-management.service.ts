@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { StateVariable, StateEnumerationMap, StateVariableMap, StateEnumeration } from '../models';
+import { StateVariable, StateEnumerationMap, StateVariableMap, StateEnumeration, Relationship, RelationshipMap } from '../models';
 import { StateManagementServiceInterface } from './state-management.service.interface';
 import { environment } from 'src/environments/environment';
 
@@ -13,6 +13,13 @@ const { baseUrl } = environment;
 })
 export class StateManagementService implements StateManagementServiceInterface {
   constructor(private http: HttpClient) {}
+
+  public createRelationship(relationship: Relationship): Observable<Relationship> {
+    return this.http.post<Relationship>(
+      baseUrl + '/relationship',
+      relationship
+    );
+  }
 
   public createStateVariable(stateVariable: StateVariable): Observable<StateVariable> {
     return this.http.post<StateVariable>(
@@ -27,10 +34,17 @@ export class StateManagementService implements StateManagementServiceInterface {
    *
    * @param data Our parsed .csv data
    */
-  public createStateVariables(data: Partial<StateVariable>[]): Observable<StateVariable[]> {
-    return this.http.post<StateVariable[]>(
+  public createStateVariables(stateVariables: Partial<StateVariable>[]): Observable<StateVariableMap> {
+    return this.http.post<StateVariableMap>(
       baseUrl + '/state-variables',
-      data
+      stateVariables
+    );
+  }
+
+  public editRelationship(relationship: Relationship): Observable<Relationship> {
+    return this.http.put<Relationship>(
+      baseUrl + '/relationship',
+      relationship
     );
   }
 
@@ -44,6 +58,12 @@ export class StateManagementService implements StateManagementServiceInterface {
   public getIdentifiers(): Observable<string[]> {
     return this.http.get<string[]>(
       baseUrl + '/state-identifiers'
+    );
+  }
+
+  public getRelationships(): Observable<RelationshipMap> {
+    return this.http.get<RelationshipMap>(
+      baseUrl + '/relationships'
     );
   }
 

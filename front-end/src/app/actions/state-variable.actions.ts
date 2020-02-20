@@ -1,10 +1,40 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration } from '../models';
+import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration, Relationship, RelationshipMap } from '../models';
 
 export const createStateVariable = createAction(
   '[state variable] createStateVariable',
   props<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>()
+);
+
+export const createRelationship = createAction(
+  '[state variable] createRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const createRelationshipFailure = createAction(
+  '[state variable] createRelationshipFailure',
+  props<{ error: Error }>()
+);
+
+export const createRelationshipSuccess = createAction(
+  '[state variable] createRelationshipSuccess',
+  props<{ relationship: Relationship }>()
+);
+
+export const editRelationship = createAction(
+  '[state variable] editRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const editRelationshipFailure = createAction(
+  '[state variable] editRelationshipFailure',
+  props<{ error: Error }>()
+);
+
+export const editRelationshipSuccess = createAction(
+  '[state variable] editRelationshipSuccess',
+  props<{ relationship: Relationship }>()
 );
 
 export const createStateVariableFailure = createAction(
@@ -19,7 +49,7 @@ export const createStateVariableSuccess = createAction(
 
 export const createStateVariablesSuccess = createAction(
   '[state variable] createStateVariablesSuccess',
-  props<{ stateVariables: StateVariable[] }>()
+  props<{ stateVariables: StateVariableMap }>()
 );
 
 export const editStateVariable = createAction(
@@ -37,13 +67,13 @@ export const editStateVariableSuccess = createAction(
   props<{ stateVariable: StateVariable }>()
 );
 
-export const fetchIdentifiers = createAction(
-  '[state variable] fetchIdentifiers',
-  props<{}>()
-);
-
 export const fetchIdentifiersFailure = createAction(
   '[state variable] fetchIdentifiersFailure',
+  props<{ error: Error }>()
+);
+
+export const fetchRelationshipsFailure = createAction(
+  '[state variable] fetchRelationshipsFailure',
   props<{ error: Error }>()
 );
 
@@ -92,6 +122,11 @@ export const setIdentifiers = createAction(
   props<{ identifiers: string[] }>()
 );
 
+export const setRelationships = createAction(
+  '[state variable] setRelationships',
+  props<{ relationships: RelationshipMap }>()
+);
+
 export const setStateEnumerations = createAction(
   '[state variable] setStateEnumerations',
   props<{ stateEnumerations: StateEnumerationMap }>()
@@ -100,6 +135,11 @@ export const setStateEnumerations = createAction(
 export const setStateVariables = createAction(
   '[state variable] setStateVariables',
   props<{ stateVariables: StateVariableMap }>()
+);
+
+export const setSelectedRelationship = createAction(
+  '[state variable] setSelectedRelationship',
+  props<{ relationship: Relationship }>()
 );
 
 export const setSelectedStateVariable = createAction(

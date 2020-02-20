@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { StateVariablesComponent } from './containers';
+import { StateVariablesComponent, RelationshipsComponent } from './containers';
 
 export const routes: Routes = [
   {
@@ -11,9 +11,13 @@ export const routes: Routes = [
     redirectTo: 'states'
   },
   {
+    component: RelationshipsComponent,
+    path: 'relationships'
+  },
+  {
     component: StateVariablesComponent,
     path: 'states'
-  },
+  }
 ];
 
 @NgModule({

@@ -1,5 +1,6 @@
 package gov.nasa.jpl.fspa;
 
+import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.service.StateVariableService;
@@ -21,6 +22,19 @@ public class StateManagementResource {
 
     public StateManagementResource() {
         stateVariableService = new StateVariableServiceImpl();
+    }
+
+    @GET
+    @Path("/relationships")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRelationships() {
+        Map<Integer, Relationship> relationshipMap = stateVariableService.getRelationships();
+
+        if (relationshipMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(relationshipMap).build();
     }
 
     @GET
@@ -79,6 +93,19 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/relationship")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationship(Relationship relationship) {
+        Relationship createdRelationship = stateVariableService.modifyRelationship(relationship);
+
+        if (createdRelationship == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(createdRelationship).build();
+    }
+
+    @POST
     @Path("/state-enumerations/{stateVariableId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response postStateEnumerations(@PathParam("stateVariableId") int stateVariableId, List<StateEnumeration> stateEnumerations) {
@@ -116,6 +143,19 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.CREATED).entity(stateVariableService.getStateVariables()).build();
+    }
+
+    @PUT
+    @Path("/relationship")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putRelationship(Relationship relationship) {
+        Relationship editedRelationship = stateVariableService.modifyRelationship(relationship);
+
+        if (editedRelationship == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(editedRelationship).build();
     }
 
     @PUT

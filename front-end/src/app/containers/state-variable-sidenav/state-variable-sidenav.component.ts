@@ -4,18 +4,16 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatTooltipModule, MatTooltip } from '@angular/material/tooltip';
+import { MatIconRegistry } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import { SubSink } from 'subsink';
 
 import { StateVariable, StateEnumeration } from '../../models';
 import { getIdentifiers, getStateEnumerationsForSelectedStateVariable } from '../../selectors';
-import { StateVariableActions, ToastActions } from '../../actions';
+import { ToastActions } from '../../actions';
 import { EnumFormModule } from '../../components';
 import { AppState } from 'src/app/app-store';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,8 +49,6 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
 
     this.modifyStateVariable = new EventEmitter<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
-
-    this.store.dispatch(StateVariableActions.fetchIdentifiers({}));
 
     this.subscriptions.add(
       this.store.pipe(select(getIdentifiers)).subscribe(identifiers => {
@@ -203,11 +199,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatTooltipModule
+    MaterialModule
   ]
 })
 export class StateVariableSidenavModule {}

@@ -6,10 +6,11 @@ import { SubSink } from 'subsink';
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
 import { getStateVariables, getSelectedStateVariable } from '../../selectors';
 import { StateVariableActions, LayoutActions } from '../../actions';
-import { AddDataFormModule, StateVariableTableModule } from '../../components';
+import { StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
 import { AppState } from 'src/app/app-store';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,6 +47,13 @@ export class StateVariablesComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  public onEnumerationsOutput(enumerations: StateEnumeration[]): void {
+    this.store.dispatch(StateVariableActions.saveEnumerations({
+      stateVariableId: this.stateVariable.id,
+      enumerations
+    }));
   }
 
   /**
@@ -92,20 +100,16 @@ export class StateVariablesComponent implements OnDestroy {
     }
   }
 
-  public onEnumerationsOutput(enumerations: StateEnumeration[]): void {
-    this.store.dispatch(StateVariableActions.saveEnumerations({
-      stateVariableId: this.stateVariable.id,
-      enumerations
-    }));
-  }
-
   /**
    * Only dispatch a valid file, if file is null then we couldn't parse the file
    * due to a filetype issue.
-   * @param file The file we're being passed.
+   * @param fileEvent The Event for the current file.
    */
-  public onUploadStateVariables(file: File): void {
-    if (file) {
+  public onUploadStates(fileEvent: Event): void {
+    const file = (fileEvent.target as HTMLInputElement).files[0];
+    const fileType = file.name.split('.').pop();
+
+    if (file && fileType === 'csv') {
       this.store.dispatch(StateVariableActions.parseStateVariablesFile({
         file
       }));
@@ -125,10 +129,10 @@ export class StateVariablesComponent implements OnDestroy {
     StateVariablesComponent
   ],
   imports: [
-    AddDataFormModule,
     StateVariableSidenavModule,
     StateVariableTableModule,
-    CommonModule
+    CommonModule,
+    MaterialModule
   ]
 })
 export class StateVariablesModule {}
