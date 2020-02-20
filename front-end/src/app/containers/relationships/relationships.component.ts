@@ -78,7 +78,7 @@ export class RelationshipsComponent implements OnDestroy {
         showSidenav: false
       }));
     } else {
-      if (relationship.id === undefined) {
+      if (relationship.id === null) {
         this.store.dispatch(StateVariableActions.createRelationship({
           relationship
         }));
