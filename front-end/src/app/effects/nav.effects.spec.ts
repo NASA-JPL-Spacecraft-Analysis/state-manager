@@ -8,8 +8,14 @@ import { Observable } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 
 import { NavEffects } from './nav.effects';
-import { MockStateManagementService, getMockStateVariables, getMockStateEnumerations } from '../services/mock-state-management.service';
-import { StateVariableActions } from '../actions';
+import {
+  MockStateManagementService,
+  getMockStateVariables,
+  getMockStateEnumerations,
+  getMockIdentifiersArray,
+  getMockRelationships
+} from '../services/mock-state-management.service';
+import { StateVariableActions, LayoutActions } from '../actions';
 import { StateVariableMap, StateEnumerationMap } from '../models';
 import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
@@ -40,13 +46,15 @@ describe('NavEffects', () => {
   let stateManagementService: StateManagementService;
 
   // Mock data
-  const stateVariables: StateVariableMap = getMockStateVariables();
+  const identifiers: string[] = getMockIdentifiersArray();
+  const relationships = getMockRelationships();
   const stateEnumerations: StateEnumerationMap = getMockStateEnumerations();
+  const stateVariables: StateVariableMap = getMockStateVariables();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpClientModule,
+        HttpClientModule
       ],
       providers: [
         NavEffects,
@@ -67,16 +75,34 @@ describe('NavEffects', () => {
     });
   });
 
-  describe('navStates', () => {
-    it('should dispatch the correct actions when navigating to /states', () => {
+  describe('navState', () => {
+    it('should dispatch the correct actions when navigating to /state', () => {
       testScheduler.run(({ hot, expectObservable }) => {
-        const action = getRouterNavigatedAction('states');
+        const action = getRouterNavigatedAction('state');
 
         actions = hot('-a', { a: action });
 
-        expectObservable(effects.navStates).toBe('-(bc)', {
-          b: StateVariableActions.setStateVariables({ stateVariables }),
-          c: StateVariableActions.setStateEnumerations({ stateEnumerations })
+        expectObservable(effects.navState).toBe('-(bcde)', {
+          b: LayoutActions.toggleSidenav({ showSidenav: false }),
+          c: StateVariableActions.setStateVariables({ stateVariables }),
+          d: StateVariableActions.setStateEnumerations({ stateEnumerations }),
+          e: StateVariableActions.setIdentifiers({ identifiers })
+        });
+      });
+    });
+  });
+
+  describe('navRelationships', () => {
+    it('should dispatch the correct actions when navigating to /relationships', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('relationships');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navRelationships).toBe('-(bcd)', {
+          b: LayoutActions.toggleSidenav({ showSidenav: false }),
+          c: StateVariableActions.setRelationships({ relationships }),
+          d: StateVariableActions.setStateVariables({ stateVariables })
         });
       });
     });

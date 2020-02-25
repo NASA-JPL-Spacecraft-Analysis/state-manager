@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 
-import { StateVariableMap, StateEnumerationMap } from '../models';
+import { StateVariableMap, StateEnumerationMap, RelationshipMap } from '../models';
 
 @Injectable()
 export class MockStateManagementService {
-  public getStateVariables(): Observable<StateVariableMap> {
-    return new Observable((observer: Observer<StateVariableMap>) => {
-      observer.next(getMockStateVariables());
+  public getIdentifiers(): Observable<string[]> {
+    return new Observable((observer: Observer<string[]>) => {
+      observer.next(getMockIdentifiersArray());
+      observer.complete();
+    });
+  }
+
+  public getRelationships(): Observable<RelationshipMap> {
+    return new Observable((observer: Observer<RelationshipMap>) => {
+      observer.next(getMockRelationships());
       observer.complete();
     });
   }
@@ -18,6 +25,26 @@ export class MockStateManagementService {
       observer.complete();
     });
   }
+
+  public getStateVariables(): Observable<StateVariableMap> {
+    return new Observable((observer: Observer<StateVariableMap>) => {
+      observer.next(getMockStateVariables());
+      observer.complete();
+    });
+  }
+}
+
+export function getMockRelationships(): RelationshipMap {
+  return {
+    [1]: {
+      id: 1,
+      displayName: 'Test display name',
+      description: 'Test description',
+      subjectStateId: 1,
+      targetStateId: 2,
+      type: 'Test Type'
+    }
+  };
 }
 
 export function getMockStateVariables(): StateVariableMap {
