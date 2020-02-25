@@ -19,3 +19,13 @@ CREATE TABLE `state_enumerations` (
   CONSTRAINT `state_variable_id` FOREIGN KEY (`id`) REFERENCES `state_variables` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `relationships` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `display_name` varchar(45) NOT NULL,
+  `description` text,
+  `subject_state_id` int(11) NOT NULL,
+  `target_state_id` int(11) NOT NULL,
+  `type` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
