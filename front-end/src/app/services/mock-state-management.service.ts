@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 
-import { StateVariableMap, StateEnumerationMap, RelationshipMap } from '../models';
+import { StateVariableMap, StateEnumeration, StateEnumerationMap, RelationshipMap } from '../models';
 
 @Injectable()
 export class MockStateManagementService {
@@ -87,6 +87,23 @@ export function getMockStateEnumerations(): StateEnumerationMap {
       }
     ]
   };
+}
+
+export function getMockStateEnumerationsArray(): StateEnumeration[] {
+  return [
+    {
+      id: 1,
+      stateVariableId: 1,
+      label: 'test off',
+      value: 0
+    },
+    {
+      id: 2,
+      stateVariableId: 1,
+      label: 'test on',
+      value: 1
+    }
+  ];
 }
 
 export function getMockIdentifiersArray(): string[] {
