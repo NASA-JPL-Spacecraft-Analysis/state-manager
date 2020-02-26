@@ -14,7 +14,7 @@ export class NavEffects {
     private stateManagementService: StateManagementService
   ) {}
 
-  public navStatesAndRelationships = createEffect(() =>
+  public navState = createEffect(() =>
     this.actions.pipe(
       ofRoute('state'),
       switchMap(_ =>
