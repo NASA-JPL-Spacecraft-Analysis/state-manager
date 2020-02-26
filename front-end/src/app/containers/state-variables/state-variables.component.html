@@ -16,7 +16,7 @@
 
 <div class="states-content-container">
   <div class="states-content">
-    <state-variable-table *ngIf="stateVariableMap"
+    <state-variable-table
       [stateVariableMap]="stateVariableMap"
       (stateVariableSelected)="onModifyStateVariable($event)">
     </state-variable-table>

@@ -62,14 +62,26 @@ export class RelationshipsComponent implements OnDestroy {
     }));
   }
 
+  /**
+   * Only dispatch our actions if we have state variables, otherwise tell the user they need state
+   * variables before they can create relationships.
+   * @param relationship The relationship that is being modified.
+   */
   public onModifyRelationship(relationship?: Relationship): void {
-    this.store.dispatch(StateVariableActions.setSelectedRelationship({
-      relationship
-    }));
+    if (this.stateVariableMap) {
+      this.store.dispatch(StateVariableActions.setSelectedRelationship({
+        relationship
+      }));
 
-    this.store.dispatch(LayoutActions.toggleSidenav({
-      showSidenav: true
-    }));
+      this.store.dispatch(LayoutActions.toggleSidenav({
+        showSidenav: true
+      }));
+    } else {
+      this.store.dispatch(ToastActions.showToast({
+        message: 'You must create state variables before creating relationships',
+        toastType: 'error'
+      }));
+    }
   }
 
   public onRelationshipOutput(relationship: Relationship): void {

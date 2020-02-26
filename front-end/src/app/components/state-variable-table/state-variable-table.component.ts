@@ -33,17 +33,19 @@ export class StateVariableTableComponent implements OnChanges {
 
   public ngOnChanges(): void {
     // Get all our state variables from our map so the table can display them.
-    const keys = Object.keys(this.stateVariableMap);
-    const stateVariables: StateVariable[] = [];
-    this.stateVariableMapSize = keys.length;
+    if (this.stateVariableMap) {
+      const keys = Object.keys(this.stateVariableMap);
+      const stateVariables: StateVariable[] = [];
+      this.stateVariableMapSize = keys.length;
 
-    for (const key of keys) {
-      stateVariables.push(this.stateVariableMap[key]);
+      for (const key of keys) {
+        stateVariables.push(this.stateVariableMap[key]);
+      }
+
+      this.dataSource = new MatTableDataSource(stateVariables);
+
+      this.dataSource.filterPredicate = this.filter;
     }
-
-    this.dataSource = new MatTableDataSource(stateVariables);
-
-    this.dataSource.filterPredicate = this.filter;
   }
 
   /**
