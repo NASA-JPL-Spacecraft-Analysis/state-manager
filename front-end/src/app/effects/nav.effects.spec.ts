@@ -75,10 +75,10 @@ describe('NavEffects', () => {
     });
   });
 
-  describe('navState', () => {
-    it('should dispatch the correct actions when navigating to /state', () => {
+  describe('navStates', () => {
+    it('should dispatch the correct actions when navigating to /states', () => {
       testScheduler.run(({ hot, expectObservable }) => {
-        const action = getRouterNavigatedAction('state');
+        const action = getRouterNavigatedAction('states');
 
         actions = hot('-a', { a: action });
 
