@@ -16,7 +16,7 @@ export class NavEffects {
 
   public navState = createEffect(() =>
     this.actions.pipe(
-      ofRoute('state'),
+      ofRoute('states'),
       switchMap(_ =>
         concat(
           of(LayoutActions.toggleSidenav({
