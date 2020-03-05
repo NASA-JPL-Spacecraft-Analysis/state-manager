@@ -26,9 +26,17 @@ public class StateVariableDaoImpl implements StateVariableDao {
                 relationship.setId(Integer.valueOf(resultSet.getString("id")));
                 relationship.setDisplayName(resultSet.getString("display_name"));
                 relationship.setDescription(resultSet.getString("description"));
-                relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("subject_state_id")));
-                relationship.setTargetStateId(Integer.valueOf(resultSet.getString("target_state_id")));
+
+                if (resultSet.getString("subject_state_id") != null) {
+                    relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("subject_state_id")));
+                }
+
+                if (resultSet.getString("target_state_id") != null) {
+                    relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("target_state_id")));
+                }
+
                 relationship.setType(resultSet.getString("type"));
+                relationship.setTargetName(resultSet.getString("target_name"));
 
                 relationships.add(relationship);
             }
@@ -241,9 +249,21 @@ public class StateVariableDaoImpl implements StateVariableDao {
                      Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, relationship.getDisplayName());
             preparedStatement.setString(2, relationship.getDescription());
-            preparedStatement.setInt(3, relationship.getSubjectStateId());
-            preparedStatement.setInt(4, relationship.getTargetStateId());
+
+            if (relationship.getSubjectStateId() == null) {
+                preparedStatement.setNull(3, Types.INTEGER);
+            } else {
+                preparedStatement.setInt(3, relationship.getSubjectStateId());
+            }
+
+            if (relationship.getTargetStateId() == null) {
+                preparedStatement.setNull(4, Types.INTEGER);
+            } else {
+                preparedStatement.setInt(4, relationship.getTargetStateId());
+            }
+
             preparedStatement.setString(5, relationship.getType());
+            preparedStatement.setString(6, relationship.getTargetName());
 
             preparedStatement.executeUpdate();
 

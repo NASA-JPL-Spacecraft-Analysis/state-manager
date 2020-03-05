@@ -23,20 +23,29 @@
         formControlName="description"></textarea>
     </mat-form-field>
 
-    <state-picker
+    <mat-form-field>
+      <mat-select placeholder="Type" [(value)]="selectedType">
+        <mat-option *ngFor="let relationshipType of relationshipTypes" [value]="relationshipType">
+          {{relationshipType}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <state-picker *ngIf="selectedType === 'State'; else targetName"
       [parentFormGroup]="form"
       [relationship]="newRelationship"
       [stateVariableMap]="stateVariableMap">
     </state-picker>
 
-    <mat-form-field>
-      <input matInput
-        placeholder="Type"
-        type="text"
-        formControlName="type"
-        required
-      />
-    </mat-form-field>
+    <ng-template #targetName>
+      <mat-form-field>
+        <input matInput
+          placeholder="Target Name"
+          type="text"
+          formControlName="targetName"
+        />
+      </mat-form-field>
+    </ng-template>
 
     <div class="sidenav-actions">
       <button mat-raised-button color="primary" type="submit">Save</button>

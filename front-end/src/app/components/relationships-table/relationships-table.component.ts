@@ -23,7 +23,8 @@ export class RelationshipsTableComponent implements OnChanges {
     'description',
     'subjectState',
     'targetState',
-    'type'
+    'type',
+    'targetName'
   ];
   public relationshipsList: Relationship[];
 
@@ -41,6 +42,14 @@ export class RelationshipsTableComponent implements OnChanges {
     }
 
     this.dataSource = new MatTableDataSource(this.relationshipsList);
+  }
+
+  public getRelationshipStateName(id: number): string {
+    if (id !== null) {
+      return this.stateVariableMap[id].identifier;
+    }
+
+    return null;
   }
 
   public onRowClick(relationship: Relationship): void {

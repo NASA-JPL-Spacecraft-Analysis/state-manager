@@ -30,26 +30,22 @@ export const getSelectedStateVariable = createSelector(
   (state: StateManagementState) => state.selectedStateVariable
 );
 
+/**
+ * Gets the enumerations for the selected state variable.
+ * Only look for enumerations if we have enumerations, a selected state variable,
+ * and we have enumerations for the selected state variable.
+ */
 export const getStateEnumerationsForSelectedStateVariable = createSelector(
   getStateEnumerations,
   getSelectedStateVariable,
   (stateEnumerations: StateEnumerationMap, selectedStateVariable: StateVariable): StateEnumeration[] => {
     const selectedStateEnumerations: StateEnumeration[] = [];
 
-    if (stateEnumerations) {
-      const keys = Object.keys(stateEnumerations);
-
-      // Return the enumerations for the current state variable if we come across them.
-      if (selectedStateVariable && keys.length > 0) {
-        for (const id of keys) {
-          if (id === String(selectedStateVariable.id)) {
-            for (const enumeration of stateEnumerations[id]) {
-              selectedStateEnumerations.push({
-                ...enumeration
-              });
-            }
-          }
-        }
+    if (stateEnumerations && selectedStateVariable && stateEnumerations[selectedStateVariable.id]) {
+      for (const enumeration of stateEnumerations[selectedStateVariable.id]) {
+        selectedStateEnumerations.push({
+          ...enumeration
+        });
       }
     }
 

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, NgModule, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 
 import { MaterialModule } from 'src/app/material';
@@ -18,8 +18,8 @@ export class StatePickerComponent implements OnChanges {
   @Input() public stateVariableMap: StateVariableMap;
 
   public ngOnChanges(): void {
-    this.parentFormGroup.addControl('subjectStateId', new FormControl(this.relationship.subjectStateId, [ Validators.required ]));
-    this.parentFormGroup.addControl('targetStateId', new FormControl(this.relationship.targetStateId, [ Validators.required ]));
+    this.parentFormGroup.addControl('subjectStateId', new FormControl(this.relationship.subjectStateId));
+    this.parentFormGroup.addControl('targetStateId', new FormControl(this.relationship.targetStateId));
   }
 
   public checkDisabled(key: string, selectedStateId: number): boolean {
