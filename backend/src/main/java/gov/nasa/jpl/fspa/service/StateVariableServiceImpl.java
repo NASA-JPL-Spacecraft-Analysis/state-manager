@@ -6,17 +6,41 @@ import gov.nasa.jpl.fspa.model.Identifier;
 import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
-import gov.nasa.jpl.fspa.util.StateVariableConstants;
 
 import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
-    private final OutputServiceImpl<StateVariable> outputService;
+    private final CsvServiceImpl<StateVariable> outputService;
     private final StateVariableDao stateVariableDao;
 
     public StateVariableServiceImpl() {
-        this.outputService = new OutputServiceImpl<>(StateVariable.class);
+        this.outputService = new CsvServiceImpl<>(StateVariable.class);
         this.stateVariableDao = new StateVariableDaoImpl();
+    }
+
+    /**
+     * Checks for duplicate identifiers.
+     * @param stateVariables The new list of state variables we are checking for duplicates.
+     * @return A list of the duplicate identifiers.
+     */
+    public List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables) {
+        List<Identifier> identifiers = stateVariableDao.getIdentifiers();
+        List<String> duplicateIdentifiers = new ArrayList<>();
+        Map<String, Integer> identifierMap = new HashMap<>();
+
+        // Create our map of state variable ids to identifiers, and populate our identifiers set.
+        for (Identifier identifier: identifiers) {
+            identifierMap.put(identifier.getIdentifier(), identifier.getStateVariableId());
+        }
+
+        for (StateVariable stateVariable: stateVariables) {
+            if (identifierMap.get(stateVariable.getIdentifier()) != null
+                    && !identifierMap.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
+                duplicateIdentifiers.add(stateVariable.getIdentifier());
+            }
+        }
+
+        return duplicateIdentifiers;
     }
 
     @Override
@@ -53,7 +77,16 @@ public class StateVariableServiceImpl implements StateVariableService {
      */
     @Override
     public Map<Integer, StateVariable> getStateVariables() {
-        List<StateVariable> stateVariables = stateVariableDao.getStateVariables();
+        return mapStateVariables(stateVariableDao.getStateVariables());
+    }
+
+    @Override
+    public String getStateVariablesAsCsv() {
+        return outputService.outputAsCsv(stateVariableDao.getStateVariables());
+    }
+
+    @Override
+    public Map<Integer, StateVariable> mapStateVariables(List<StateVariable> stateVariables) {
         Map<Integer, StateVariable> stateVariableMap = new HashMap<>();
 
         for (StateVariable stateVariable: stateVariables) {
@@ -61,11 +94,6 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return stateVariableMap;
-    }
-
-    @Override
-    public String getStateVariablesAsCsv() {
-        return outputService.outputAsCsv(stateVariableDao.getStateVariables());
     }
 
     @Override
@@ -86,20 +114,6 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return null;
-    }
-
-    @Override
-    public String createStateVariables(List<StateVariable> stateVariables) {
-        List<String> duplicateIdentifiers = getDuplicateIdentifiers(stateVariables);
-
-        if (duplicateIdentifiers.isEmpty()) {
-            stateVariableDao.createStateVariables(stateVariables);
-        } else {
-            // If there's duplicate identifiers, respond with an error.
-            return StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString();
-        }
-
-        return "";
     }
 
     @Override
@@ -151,30 +165,5 @@ public class StateVariableServiceImpl implements StateVariableService {
         stateVariableDao.updateStateEnumerations(stateEnumerationsToUpdate);
 
         return stateVariableDao.getStateEnumerations();
-    }
-
-    /**
-     * Checks for duplicate identifiers.
-     * @param stateVariables The new list of state variables we are checking for duplicates.
-     * @return A list of the duplicate identifiers.
-     */
-    private List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables) {
-        List<Identifier> identifiers = stateVariableDao.getIdentifiers();
-        List<String> duplicateIdentifiers = new ArrayList<>();
-        Map<String, Integer> identifierMap = new HashMap<>();
-
-        // Create our map of state variable ids to identifiers, and populate our identifiers set.
-        for (Identifier identifier: identifiers) {
-            identifierMap.put(identifier.getIdentifier(), identifier.getStateVariableId());
-        }
-
-        for (StateVariable stateVariable: stateVariables) {
-            if (identifierMap.get(stateVariable.getIdentifier()) != null
-                && !identifierMap.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
-                duplicateIdentifiers.add(stateVariable.getIdentifier());
-            }
-        }
-
-        return duplicateIdentifiers;
     }
 }

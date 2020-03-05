@@ -1,11 +1,23 @@
 package gov.nasa.jpl.fspa.model;
 
+import com.opencsv.bean.CsvBindByName;
+
 public class StateVariable {
     private Integer id;
+
+    @CsvBindByName(required = true)
     private String identifier;
+
+    @CsvBindByName(required = true)
     private String displayName;
+
+    @CsvBindByName(required = true)
     private String type; // enum?
+
+    @CsvBindByName(required = true)
     private String units; // enum?
+
+    @CsvBindByName(required = true)
     private String source; // enum?
     private String description;
 

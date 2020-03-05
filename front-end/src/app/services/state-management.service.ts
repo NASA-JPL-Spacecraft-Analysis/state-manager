@@ -28,19 +28,6 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
-  /**
-   * Takes the data from our uploaded file and tries to post it. Will be
-   * rejected if there's duplicate identifiers.
-   *
-   * @param data Our parsed .csv data
-   */
-  public createStateVariables(stateVariables: Partial<StateVariable>[]): Observable<StateVariableMap> {
-    return this.http.post<StateVariableMap>(
-      baseUrl + '/state-variables',
-      stateVariables
-    );
-  }
-
   public editRelationship(relationship: Relationship): Observable<Relationship> {
     return this.http.put<Relationship>(
       baseUrl + '/relationship',
@@ -83,6 +70,17 @@ export class StateManagementService implements StateManagementServiceInterface {
     return this.http.post<StateEnumeration[]>(
       baseUrl + '/state-enumerations/' + stateVariableId,
       enumerations
+    );
+  }
+
+  public saveStateVariables(file: File): Observable<StateVariableMap> {
+    const formData = new FormData();
+
+    formData.append('file', file);
+
+    return this.http.post<StateVariableMap>(
+      baseUrl + '/state-variables-csv',
+      formData
     );
   }
 }

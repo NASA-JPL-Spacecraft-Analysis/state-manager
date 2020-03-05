@@ -147,12 +147,37 @@ export class StateVariableEffects {
     );
   });
 
-  public parseUploadedStateVariables = createEffect(() => {
+  public saveEnumerations = createEffect(() => {
     return this.actions.pipe(
-      ofType(StateVariableActions.parseStateVariablesFileSuccess),
-      switchMap(({ parsedStateVariables }) => {
-        return this.stateManagementService.createStateVariables(
-          parsedStateVariables
+      ofType(StateVariableActions.saveEnumerations),
+      switchMap(({ stateVariableId, enumerations }) =>
+        this.stateManagementService.saveEnumerations(
+          stateVariableId,
+          enumerations
+        ).pipe(
+          switchMap((savedEnumerations) => {
+            return [
+              StateVariableActions.saveEnumerationsSuccess({
+                enumerations: savedEnumerations
+              })
+            ];
+          }),
+          catchError(
+            (error: Error) => [
+              StateVariableActions.saveEnumerationsFailure({ error })
+            ]
+          )
+        )
+      )
+    );
+  });
+
+  public uploadStateVariables = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateVariableActions.uploadStateVariables),
+      switchMap(({ file }) => {
+        return this.stateManagementService.saveStateVariables(
+          file 
         ).pipe(
           switchMap(
             (stateVariables: StateVariableMap) => [
@@ -176,31 +201,6 @@ export class StateVariableEffects {
           )
         );
       })
-    );
-  });
-
-  public saveEnumerations = createEffect(() => {
-    return this.actions.pipe(
-      ofType(StateVariableActions.saveEnumerations),
-      switchMap(({ stateVariableId, enumerations }) =>
-        this.stateManagementService.saveEnumerations(
-          stateVariableId,
-          enumerations
-        ).pipe(
-          switchMap((savedEnumerations) => {
-            return [
-              StateVariableActions.saveEnumerationsSuccess({
-                enumerations: savedEnumerations
-              })
-            ];
-          }),
-          catchError(
-            (error: Error) => [
-              StateVariableActions.saveEnumerationsFailure({ error })
-            ]
-          )
-        )
-      )
     );
   });
 }

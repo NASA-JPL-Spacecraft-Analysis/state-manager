@@ -87,21 +87,6 @@ export const fetchStateVariablesFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const parseStateVariablesFile = createAction(
-  '[state variable] parseStateVariablesFile',
-  props<{ file: File }>()
-);
-
-export const parseStateVariablesFileSuccess = createAction(
-  '[state variable] parseStateVariablesFileSuccess',
-  props<{ parsedStateVariables: Partial<StateVariable>[] }>()
-);
-
-export const parseStateVariablesFileFailure = createAction(
-  '[state variable] parseStateVariablesFileFailure',
-  props<{ error: Error }>()
-);
-
 export const saveEnumerations = createAction(
   '[state variable] saveEnumerations',
   props<{ stateVariableId: number, enumerations: StateEnumeration[] }>()
@@ -145,6 +130,11 @@ export const setSelectedRelationship = createAction(
 export const setSelectedStateVariable = createAction(
   '[state variable] setSelectedStateVariable',
   props<{ stateVariable: StateVariable }>()
+);
+
+export const uploadStateVariables = createAction(
+  '[state variable] uploadStateVariables',
+  props<{ file: File }>()
 );
 
 export const uploadStateVariablesFailure = createAction(

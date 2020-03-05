@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface StateVariableService {
+    List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables);
+
     Map<Integer, Relationship> getRelationships();
 
     /**
@@ -31,13 +33,9 @@ public interface StateVariableService {
      */
     StateVariable modifyStateVariable(StateVariable stateVariable);
 
-    /**
-     * Takes a list of new state variables that should be created.
-     * @param stateVariables The new state variables.
-     * @return The entire list of state variables, or an empty array if there was a duplicate.
-     */
-    String createStateVariables(List<StateVariable> stateVariables);
     String getStateVariablesAsCsv();
+
+    Map<Integer, StateVariable> mapStateVariables(List<StateVariable> stateVariables);
 
     List<String> getIdentifiers();
 
