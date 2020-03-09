@@ -23,9 +23,9 @@ public class StateVariableQueries {
                                                    + " where id = ? ";
 
     public static String CREATE_STATE_VARIABLE = " insert into state_variables "
-                                               + " (identifier, displayName, type, units, source, description) "
+                                               + " (identifier, displayName, type, units, source, subsystem, description) "
                                                + " values "
-                                               + " (?, ?, ?, ?, ?, ?) ";
+                                               + " (?, ?, ?, ?, ?, ?, ?) ";
 
     public static String CREATE_RELATIONSHIP = " insert into relationships "
                                              + " (display_name, description, subject_state_id, target_state_id, type, target_name) "
@@ -48,6 +48,7 @@ public class StateVariableQueries {
                                                + " type = ?, "
                                                + " units = ?, "
                                                + " source = ?, "
+                                               + " subsystem = ?, "
                                                + " description = ? "
                                                + " where id = ? ";
 

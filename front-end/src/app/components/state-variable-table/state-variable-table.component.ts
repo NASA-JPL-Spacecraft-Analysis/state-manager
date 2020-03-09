@@ -24,6 +24,7 @@ export class StateVariableTableComponent implements OnChanges {
     'type',
     'units',
     'source',
+    'subsystem',
     'description'
   ];
 
