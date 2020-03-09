@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       #JDBC_URL: jdbc:mysql://host.docker.internal:3306/state-management-db
-      JDBC_URL: jdbc:mysql//eurc-dev-fspa-proto-db.cluster-cn3jpdgibyif.us-gov-west-1.rds.amazonaws.com:3306/state-management-db
+      JDBC_URL: jdbc:mysql://eurc-dev-fspa-proto-db.cluster-cn3jpdgibyif.us-gov-west-1.rds.amazonaws.com:3306/state-management-db
       JDBC_USER: "state-management-db-user"
       JDBC_PASS: "testing"
     ports:
