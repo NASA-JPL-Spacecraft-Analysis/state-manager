@@ -64,6 +64,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
                 stateVariable.setType(resultSet.getString("type"));
                 stateVariable.setUnits(resultSet.getString("units"));
                 stateVariable.setSource(resultSet.getString("source"));
+                stateVariable.setSubsystem(resultSet.getString("subsystem"));
                 stateVariable.setDescription(resultSet.getString("description"));
 
                 stateVariables.add(stateVariable);
@@ -351,11 +352,12 @@ public class StateVariableDaoImpl implements StateVariableDao {
             preparedStatement.setString(3, stateVariable.getType());
             preparedStatement.setString(4, stateVariable.getUnits());
             preparedStatement.setString(5, stateVariable.getSource());
-            preparedStatement.setString(6, stateVariable.getDescription());
+            preparedStatement.setString(6, stateVariable.getSubsystem());
+            preparedStatement.setString(7, stateVariable.getDescription());
 
             // If we're editing our state variable, we need to set the id.
             if (stateVariable.getId() != null) {
-                preparedStatement.setInt(7, stateVariable.getId());
+                preparedStatement.setInt(8, stateVariable.getId());
             }
         } catch (Exception exception) {
             exception.printStackTrace();
