@@ -75,6 +75,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
         type: '',
         units: '',
         source: '',
+        subsystem: '',
         description: ''
       };
     } else {
@@ -90,6 +91,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       type: new FormControl(this.newStateVariable.type, [ Validators.required ]),
       units: new FormControl(this.newStateVariable.units, [ Validators.required ]),
       source: new FormControl(this.newStateVariable.source, [ Validators.required ]),
+      subsystem: new FormControl(this.newStateVariable.subsystem, [ Validators.required ]),
       description: new FormControl(this.newStateVariable.description)
     });
   }

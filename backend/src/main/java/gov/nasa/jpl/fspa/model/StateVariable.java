@@ -19,6 +19,7 @@ public class StateVariable {
 
     @CsvBindByName(required = true)
     private String source; // enum?
+    private String subsystem;
     private String description;
 
     public Integer getId() {
@@ -67,6 +68,14 @@ public class StateVariable {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getSubsystem() {
+        return subsystem;
+    }
+
+    public void setSubsystem(String subsystem) {
+        this.subsystem = subsystem;
     }
 
     public String getDescription() {

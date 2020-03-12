@@ -29,6 +29,11 @@
       <td mat-cell *matCellDef="let stateVariable">{{stateVariable.source}}</td>
     </ng-container>
 
+    <ng-container matColumnDef="subsystem">
+      <th mat-header-cell *matHeaderCellDef>Subsystem</th>
+      <td mat-cell *matCellDef="let stateVariable">{{stateVariable.subsystem}}</td>
+    </ng-container>
+
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef>Description</th>
       <td mat-cell *matCellDef="let stateVariable">{{stateVariable.description}}</td>
