@@ -40,7 +40,7 @@ CSV Upload:
 In order to upload a `.csv` file, it needs to use the following format:
 
 ```
-identifier,displayName,type,units,source,description
+identifier,displayName,type,units,source,subsystem,description
 IDENTIFIER 1,Identifier 1,test type,test units,test source,identifier 1
 ```
 
