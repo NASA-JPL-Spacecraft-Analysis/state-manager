@@ -40,8 +40,8 @@ CSV Upload:
 In order to upload a `.csv` file, it needs to use the following format:
 
 ```
-"identifier","displayName","type","units","source","description"
-"IDENTIFIER 1","Identifier 1","test type","test units","test source","identifier 1"
+identifier,displayName,type,units,source,description
+IDENTIFIER 1,Identifier 1,test type,test units,test source,identifier 1
 ```
 
 You can upload more states by adding each one on a new line.  If any states you try and upload have identifiers that are already in the database the upload will fail.
