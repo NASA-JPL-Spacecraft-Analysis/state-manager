@@ -19,7 +19,11 @@ public class StateVariable {
 
     @CsvBindByName(required = true)
     private String source; // enum?
+
+    @CsvBindByName(required = true)
     private String subsystem;
+
+    @CsvBindByName
     private String description;
 
     public Integer getId() {

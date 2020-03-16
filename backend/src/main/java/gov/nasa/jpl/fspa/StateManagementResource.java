@@ -148,7 +148,7 @@ public class StateManagementResource {
             List<String> duplicateIdentifiers = stateVariableService.getDuplicateIdentifiers(parsedStateVariables);
 
             if (duplicateIdentifiers.size() == 0) {
-                Map<Integer, StateVariable> mappedStateVariables = stateVariableService.mapStateVariables(parsedStateVariables);
+                Map<Integer, StateVariable> mappedStateVariables = stateVariableService.saveStateVariables(parsedStateVariables);
 
                 return Response.status(Response.Status.CREATED).entity(mappedStateVariables).build();
             } else {

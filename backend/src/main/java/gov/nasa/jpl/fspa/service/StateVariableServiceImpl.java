@@ -166,4 +166,15 @@ public class StateVariableServiceImpl implements StateVariableService {
 
         return stateVariableDao.getStateEnumerations();
     }
+
+    public Map<Integer, StateVariable> saveStateVariables(List<StateVariable> stateVariables) {
+        List<StateVariable> savedStateVariables = new ArrayList<>();
+
+        for (StateVariable stateVariable: stateVariables) {
+
+            savedStateVariables.add(stateVariableDao.createStateVariable(stateVariable));
+        }
+
+        return mapStateVariables(stateVariables);
+    }
 }

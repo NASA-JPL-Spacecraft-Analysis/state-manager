@@ -26,6 +26,7 @@ public interface StateVariableService {
 
     Relationship modifyRelationship(Relationship relationship);
 
+
     /**
      * Takes a new or existing state variable that should be created or updated.
      * @param stateVariable The updated / new state variable.
@@ -40,4 +41,6 @@ public interface StateVariableService {
     List<String> getIdentifiers();
 
     List<StateEnumeration> saveStateEnumerations(int stateVariableId, List<StateEnumeration> stateEnumerations);
+
+    Map<Integer, StateVariable> saveStateVariables(List<StateVariable> stateVariables);
 }
