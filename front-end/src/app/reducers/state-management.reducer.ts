@@ -95,6 +95,13 @@ export const reducer = createReducer(
   on(StateVariableActions.setSelectedStateVariable, (state, action) => ({
     ...state,
     selectedStateVariable: action.stateVariable
+  })),
+  on(StateVariableActions.uploadStateVariablesSuccess, (state, action) => ({
+    ...state,
+    stateVariables: {
+      ...state.stateVariables,
+      ...action.stateVariables
+    }
   }))
 );
 

@@ -141,3 +141,8 @@ export const uploadStateVariablesFailure = createAction(
   '[state variable] uploadStateVariablesFailure',
   props<{ error: Error }>()
 );
+
+export const uploadStateVariablesSuccess = createAction(
+  '[state variable] uploadStateVariablesSuccess',
+  props<{ stateVariables: StateVariableMap }>()
+);

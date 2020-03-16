@@ -177,11 +177,11 @@ export class StateVariableEffects {
       ofType(StateVariableActions.uploadStateVariables),
       switchMap(({ file }) => {
         return this.stateManagementService.saveStateVariables(
-          file 
+          file
         ).pipe(
           switchMap(
             (stateVariables: StateVariableMap) => [
-              StateVariableActions.createStateVariablesSuccess({
+              StateVariableActions.uploadStateVariablesSuccess({
                 stateVariables
               }),
               ToastActions.showToast({
