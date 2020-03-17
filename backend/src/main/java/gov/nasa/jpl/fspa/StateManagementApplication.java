@@ -1,5 +1,6 @@
 package gov.nasa.jpl.fspa;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
@@ -9,5 +10,6 @@ public class StateManagementApplication extends ResourceConfig {
     public StateManagementApplication() {
         register(CorsFilter.class);
         register(StateManagementResource.class);
+        register(MultiPartFeature.class);
     }
 }

@@ -147,38 +147,6 @@ export class StateVariableEffects {
     );
   });
 
-  public parseUploadedStateVariables = createEffect(() => {
-    return this.actions.pipe(
-      ofType(StateVariableActions.parseStateVariablesFileSuccess),
-      switchMap(({ parsedStateVariables }) => {
-        return this.stateManagementService.createStateVariables(
-          parsedStateVariables
-        ).pipe(
-          switchMap(
-            (stateVariables: StateVariableMap) => [
-              StateVariableActions.createStateVariablesSuccess({
-                stateVariables
-              }),
-              ToastActions.showToast({
-                message: 'State variable(s) uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              StateVariableActions.uploadStateVariablesFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
-      })
-    );
-  });
-
   public saveEnumerations = createEffect(() => {
     return this.actions.pipe(
       ofType(StateVariableActions.saveEnumerations),
@@ -201,6 +169,38 @@ export class StateVariableEffects {
           )
         )
       )
+    );
+  });
+
+  public uploadStateVariables = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateVariableActions.uploadStateVariables),
+      switchMap(({ file }) => {
+        return this.stateManagementService.saveStateVariables(
+          file
+        ).pipe(
+          switchMap(
+            (stateVariables: StateVariableMap) => [
+              StateVariableActions.uploadStateVariablesSuccess({
+                stateVariables
+              }),
+              ToastActions.showToast({
+                message: 'State variable(s) uploaded',
+                toastType: 'success'
+              })
+            ]
+          ),
+          catchError(
+            (error: HttpErrorResponse) => [
+              StateVariableActions.uploadStateVariablesFailure({ error }),
+              ToastActions.showToast({
+                message: error.error,
+                toastType: 'error'
+              })
+            ]
+          )
+        );
+      })
     );
   });
 }

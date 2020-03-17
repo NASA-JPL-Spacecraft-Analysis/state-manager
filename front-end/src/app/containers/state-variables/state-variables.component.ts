@@ -110,11 +110,11 @@ export class StateVariablesComponent implements OnDestroy {
     const fileType = file.name.split('.').pop();
 
     if (file && fileType === 'csv') {
-      this.store.dispatch(StateVariableActions.parseStateVariablesFile({
+      this.store.dispatch(StateVariableActions.uploadStateVariables({
         file
       }));
     } else {
-      this.store.dispatch(StateVariableActions.parseStateVariablesFileFailure({
+      this.store.dispatch(StateVariableActions.uploadStateVariablesFailure({
         error: new Error('Wrong filetype supplied, only csv is supported.')
       }));
     }

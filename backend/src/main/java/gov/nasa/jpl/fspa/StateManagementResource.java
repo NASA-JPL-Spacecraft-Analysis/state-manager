@@ -3,24 +3,30 @@ package gov.nasa.jpl.fspa;
 import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.service.CsvService;
+import gov.nasa.jpl.fspa.service.CsvServiceImpl;
 import gov.nasa.jpl.fspa.service.StateVariableService;
 import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
 @Path("v1/")
 public class StateManagementResource {
+    private final CsvService<StateVariable> csvService;
     private final StateVariableService stateVariableService;
 
     public StateManagementResource() {
+        csvService = new CsvServiceImpl<>(StateVariable.class);
         stateVariableService = new StateVariableServiceImpl();
     }
 
@@ -132,17 +138,27 @@ public class StateManagementResource {
     }
 
     @POST
-    @Path("/state-variables")
+    @Path("/state-variables-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postStateVariables(List<StateVariable> stateVariables) {
-        String output = this.stateVariableService.createStateVariables(stateVariables);
+    public Response postStateVariables(@FormDataParam("file") InputStream inputStream) {
+        List<StateVariable> parsedStateVariables = csvService.parseCsv(inputStream);
 
-        // State variables not created successfully.
-        if (!output.equals("")) {
-            return Response.status(Response.Status.CONFLICT).entity(output).build();
+        if (parsedStateVariables.size() > 0) {
+            List<String> duplicateIdentifiers = stateVariableService.getDuplicateIdentifiers(parsedStateVariables);
+
+            if (duplicateIdentifiers.size() == 0) {
+                Map<Integer, StateVariable> mappedStateVariables = stateVariableService.saveStateVariables(parsedStateVariables);
+
+                return Response.status(Response.Status.CREATED).entity(mappedStateVariables).build();
+            } else {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
+                ).build();
+            }
         }
 
-        return Response.status(Response.Status.CREATED).entity(stateVariableService.getStateVariables()).build();
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @PUT
