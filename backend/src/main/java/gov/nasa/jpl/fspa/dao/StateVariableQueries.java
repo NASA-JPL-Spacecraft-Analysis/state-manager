@@ -3,8 +3,6 @@ package gov.nasa.jpl.fspa.dao;
 public class StateVariableQueries {
     public static int BATCH_SIZE = 1000;
 
-    public static String GET_RELATIONSHIPS = " select * from relationships ";
-
     public static String GET_STATE_VARIABLES = " select * from state_variables ";
 
     public static String GET_STATE_ENUMERATIONS = " select * from state_enumerations ";
@@ -26,20 +24,6 @@ public class StateVariableQueries {
                                                + " (identifier, displayName, type, units, source, subsystem, description) "
                                                + " values "
                                                + " (?, ?, ?, ?, ?, ?, ?) ";
-
-    public static String CREATE_RELATIONSHIP = " insert into relationships "
-                                             + " (display_name, description, subject_state_id, target_state_id, type, target_name) "
-                                             + " values "
-                                             + " (?, ?, ?, ?, ?, ?) ";
-
-    public static String UPDATE_RELATIONSHIP = " update relationships "
-                                             + " set "
-                                             + " display_name = ?, "
-                                             + " description = ?, "
-                                             + " subject_state_id = ?, "
-                                             + " target_state_id = ?, "
-                                             + " type = ?, "
-                                             + " target_name = ? ";
 
     public static String UPDATE_STATE_VARIABLE = " update state_variables "
                                                + " set "

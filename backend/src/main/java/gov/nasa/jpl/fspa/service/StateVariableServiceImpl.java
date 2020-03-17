@@ -1,5 +1,7 @@
 package gov.nasa.jpl.fspa.service;
 
+import gov.nasa.jpl.fspa.dao.RelationshipDao;
+import gov.nasa.jpl.fspa.dao.RelationshipDaoImpl;
 import gov.nasa.jpl.fspa.dao.StateVariableDao;
 import gov.nasa.jpl.fspa.dao.StateVariableDaoImpl;
 import gov.nasa.jpl.fspa.model.Identifier;
@@ -11,10 +13,12 @@ import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
     private final CsvServiceImpl<StateVariable> outputService;
+    private final RelationshipDao relationshipDao;
     private final StateVariableDao stateVariableDao;
 
     public StateVariableServiceImpl() {
         this.outputService = new CsvServiceImpl<>(StateVariable.class);
+        this.relationshipDao = new RelationshipDaoImpl();
         this.stateVariableDao = new StateVariableDaoImpl();
     }
 
@@ -45,7 +49,7 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public Map<Integer, Relationship> getRelationships() {
-        List<Relationship> relationships = stateVariableDao.getRelationships();
+        List<Relationship> relationships = relationshipDao.getRelationships();
         Map<Integer, Relationship> relationshipMap = new HashMap<>();
 
         for (Relationship relationship: relationships) {
@@ -98,7 +102,7 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public Relationship modifyRelationship(Relationship relationship) {
-        return stateVariableDao.modifyRelationship(relationship);
+        return relationshipDao.saveRelationship(relationship);
     }
 
     @Override
