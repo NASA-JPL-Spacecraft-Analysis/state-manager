@@ -1,8 +1,8 @@
-import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
+import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { RelationshipMap, Relationship, StateVariableMap } from 'src/app/models';
+import { RelationshipMap, Relationship, RelationshipHistoryMap, StateVariableMap } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -11,9 +11,11 @@ import { MaterialModule } from 'src/app/material';
   styleUrls: [ 'relationships-table.component.css' ],
   templateUrl: 'relationships-table.component.html'
 })
-export class RelationshipsTableComponent implements OnChanges {
-  @Input() public relationshipMap: RelationshipMap;
+export class RelationshipsTableComponent implements OnInit, OnChanges {
+  @Input() public relationshipMap: RelationshipMap | RelationshipHistoryMap;
   @Input() public stateVariableMap: StateVariableMap;
+  // True if we're looking at the history page.
+  @Input() public history: boolean;
 
   @Output() public relationshipSelected: EventEmitter<Relationship>;
 
@@ -30,6 +32,15 @@ export class RelationshipsTableComponent implements OnChanges {
 
   constructor() {
     this.relationshipSelected = new EventEmitter<Relationship>();
+  }
+
+  public ngOnInit(): void {
+    if (this.history) {
+      this.displayedColumns.push(
+        'relationshipId',
+        'updated'
+      );
+    }
   }
 
   public ngOnChanges(): void {

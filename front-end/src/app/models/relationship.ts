@@ -11,4 +11,11 @@ export interface Relationship {
   targetName: string;
 }
 
+export interface RelationshipHistory extends Relationship {
+  relationshipId: number;
+  updated: Date;
+}
+
 export type RelationshipMap = StringTMap<Relationship>;
+
+export type RelationshipHistoryMap = StringTMap<RelationshipHistory>;

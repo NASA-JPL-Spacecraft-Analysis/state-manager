@@ -15,6 +15,11 @@ export const getRelationships = createSelector(
   (state: StateManagementState) => state.relationships
 );
 
+export const getRelationshipHistory = createSelector(
+  getStatesState,
+  (state: StateManagementState) => state.relationshipHistory
+)
+
 export const getStateEnumerations = createSelector(
   getStatesState,
   (state: StateManagementState) => state.stateEnumerations

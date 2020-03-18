@@ -1,9 +1,15 @@
 <mat-toolbar class="relationships-toolbar">
   RELATIONSHIPS
 
-  <button mat-raised-button class="gray-button" (click)="onModifyRelationship()">
-    Create New Relationship
-  </button>
+  <div class="actions-container">
+    <button mat-button routerLink="/relationship-history">
+      History 
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="onModifyRelationship()">
+      Create New Relationship
+    </button>
+  </div>
 </mat-toolbar>
 
 <div class="relationships-content-container">
