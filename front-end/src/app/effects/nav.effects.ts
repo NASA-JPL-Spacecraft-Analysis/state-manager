@@ -99,4 +99,38 @@ export class NavEffects {
       )
     )
   );
+
+  public navRelationshipHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute('relationship-history'),
+      switchMap(_ =>
+        concat(
+          this.stateManagementService.getRelationshipHistory().pipe(
+            map(relationshipHistory => StateVariableActions.setRelationshipHistory({
+              relationshipHistory
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchRelationshipHistoryFailure({
+                  error
+                })
+              ]
+            )
+          ),
+          this.stateManagementService.getStateVariables().pipe(
+            map(stateVariables => StateVariableActions.setStateVariables({
+              stateVariables
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchStateVariablesFailure({
+                  error
+                })
+              ]
+            )
+          )
+        )
+      )
+    )
+  );
 }

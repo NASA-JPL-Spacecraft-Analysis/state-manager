@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { AppState } from 'src/app/app-store';
-import { StateVariableMap, RelationshipHistoryMap } from 'src/app/models';
+import { StateVariableMap, RelationshipMap } from 'src/app/models';
 import { getStateVariables, getRelationshipHistory } from 'src/app/selectors';
 
 @Component({
@@ -15,7 +15,7 @@ import { getStateVariables, getRelationshipHistory } from 'src/app/selectors';
   templateUrl: 'relationship-history.component.html'
 })
 export class RelationshipHistoryComponent implements OnDestroy {
-  public relationshipHistoryMap: RelationshipHistoryMap;
+  public relationshipHistoryMap: RelationshipMap;
   public stateVariableMap: StateVariableMap;
 
   private subscriptions = new SubSink();

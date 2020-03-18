@@ -4,10 +4,7 @@ import gov.nasa.jpl.fspa.dao.RelationshipDao;
 import gov.nasa.jpl.fspa.dao.RelationshipDaoImpl;
 import gov.nasa.jpl.fspa.dao.StateVariableDao;
 import gov.nasa.jpl.fspa.dao.StateVariableDaoImpl;
-import gov.nasa.jpl.fspa.model.Identifier;
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.StateEnumeration;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.util.*;
 
@@ -57,6 +54,18 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return relationshipMap;
+    }
+
+    @Override
+    public Map<Integer, RelationshipHistory> getRelationshipHistory() {
+        List<RelationshipHistory> relationshipHistoryList = relationshipDao.getRelationshipHistory();
+        Map<Integer, RelationshipHistory> relationshipHistoryMap = new HashMap<>();
+
+        for (RelationshipHistory relationshipHistory: relationshipHistoryList) {
+            relationshipHistoryMap.put(relationshipHistory.getId(), relationshipHistory);
+        }
+
+        return relationshipHistoryMap;
     }
 
     @Override

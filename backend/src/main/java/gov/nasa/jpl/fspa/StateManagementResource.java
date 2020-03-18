@@ -1,6 +1,7 @@
 package gov.nasa.jpl.fspa;
 
 import gov.nasa.jpl.fspa.model.Relationship;
+import gov.nasa.jpl.fspa.model.RelationshipHistory;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 import gov.nasa.jpl.fspa.service.CsvService;
@@ -41,6 +42,19 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.OK).entity(relationshipMap).build();
+    }
+
+    @GET
+    @Path("/relationship-history")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRelationshipHistory() {
+        Map<Integer, RelationshipHistory> relationshipHistoryMap = stateVariableService.getRelationshipHistory();
+
+        if (relationshipHistoryMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(relationshipHistoryMap).build();
     }
 
     @GET

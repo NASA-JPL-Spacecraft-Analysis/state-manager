@@ -1,6 +1,13 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateVariable, StateVariableMap, StateEnumerationMap, StateEnumeration, Relationship, RelationshipMap } from '../models';
+import {
+  StateVariable,
+  StateVariableMap,
+  StateEnumerationMap,
+  StateEnumeration,
+  Relationship,
+  RelationshipMap
+} from '../models';
 
 export const createStateVariable = createAction(
   '[state variable] createStateVariable',
@@ -77,6 +84,11 @@ export const fetchRelationshipsFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchRelationshipHistoryFailure = createAction(
+  '[state variable] fetchRelationshipHistoryFailure',
+  props<{ error: Error }>()
+);
+
 export const fetchStateEnumerationsFailure = createAction(
   '[state variable] fetchStateEnumerationsFailure',
   props<{ error: Error }>()
@@ -110,6 +122,11 @@ export const setIdentifiers = createAction(
 export const setRelationships = createAction(
   '[state variable] setRelationships',
   props<{ relationships: RelationshipMap }>()
+);
+
+export const setRelationshipHistory = createAction(
+  '[state variable] setRelationshipHistory',
+  props<{ relationshipHistory: RelationshipMap }>()
 );
 
 export const setStateEnumerations = createAction(

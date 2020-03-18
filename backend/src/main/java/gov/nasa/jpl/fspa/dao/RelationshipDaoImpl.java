@@ -1,6 +1,7 @@
 package gov.nasa.jpl.fspa.dao;
 
 import gov.nasa.jpl.fspa.model.Relationship;
+import gov.nasa.jpl.fspa.model.RelationshipHistory;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
 
 import java.sql.*;
@@ -19,28 +20,37 @@ public class RelationshipDaoImpl implements RelationshipDao {
             while (resultSet.next()) {
                 Relationship relationship = new Relationship();
 
-                relationship.setId(Integer.valueOf(resultSet.getString("id")));
-                relationship.setDisplayName(resultSet.getString("display_name"));
-                relationship.setDescription(resultSet.getString("description"));
-
-                if (resultSet.getString("subject_state_id") != null) {
-                    relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("subject_state_id")));
-                }
-
-                if (resultSet.getString("target_state_id") != null) {
-                    relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("target_state_id")));
-                }
-
-                relationship.setTargetName(resultSet.getString("target_name"));
-                relationship.setType(resultSet.getString("type"));
-
-                relationships.add(relationship);
+                relationships.add(setRelationship(resultSet, relationship));
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
         return relationships;
+    }
+
+    public List<RelationshipHistory> getRelationshipHistory() {
+        List<RelationshipHistory> relationshipHistoryList = new ArrayList<>();
+
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement statement = connection.prepareStatement(RelationshipQueries.GET_RELATIONSHIP_HISTORY);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                RelationshipHistory relationshipHistory = new RelationshipHistory();
+
+                setRelationship(resultSet, relationshipHistory);
+
+                relationshipHistory.setRelationshipId(Integer.valueOf(resultSet.getString("relationship_id")));
+                relationshipHistory.setUpdated(DatabaseUtil.convertMysqlDate(resultSet.getString("updated")));
+
+                relationshipHistoryList.add(relationshipHistory);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return relationshipHistoryList;
     }
 
     @Override
@@ -118,5 +128,28 @@ public class RelationshipDaoImpl implements RelationshipDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private Relationship setRelationship(ResultSet resultSet, Relationship relationship) {
+        try {
+            relationship.setId(Integer.parseInt(resultSet.getString("id")));
+            relationship.setDisplayName(resultSet.getString("display_name"));
+            relationship.setDescription(resultSet.getString("description"));
+
+            if (resultSet.getString("subject_state_id") != null) {
+                relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("subject_state_id")));
+            }
+
+            if (resultSet.getString("target_state_id") != null) {
+                relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("target_state_id")));
+            }
+
+            relationship.setTargetName(resultSet.getString("target_name"));
+            relationship.setType(resultSet.getString("type"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return relationship;
     }
 }
