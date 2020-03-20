@@ -7,6 +7,7 @@ import { RelationshipsTableModule } from 'src/app/components/relationships-table
 import { AppState } from 'src/app/app-store';
 import { StateVariableMap, RelationshipMap } from 'src/app/models';
 import { getStateVariables, getRelationshipHistory } from 'src/app/selectors';
+import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +52,7 @@ export class RelationshipHistoryComponent implements OnDestroy {
   imports: [
     RelationshipsTableModule,
     CommonModule,
+    MaterialModule
   ]
 })
 export class RelationshipHistoryModule {}
