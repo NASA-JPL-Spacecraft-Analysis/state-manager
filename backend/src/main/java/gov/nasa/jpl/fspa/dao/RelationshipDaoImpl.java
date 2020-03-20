@@ -145,7 +145,7 @@ public class RelationshipDaoImpl implements RelationshipDao {
             }
 
             if (resultSet.getString("target_state_id") != null) {
-                relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("target_state_id")));
+                relationship.setTargetStateId(Integer.valueOf(resultSet.getString("target_state_id")));
             }
 
             relationship.setTargetName(resultSet.getString("target_name"));

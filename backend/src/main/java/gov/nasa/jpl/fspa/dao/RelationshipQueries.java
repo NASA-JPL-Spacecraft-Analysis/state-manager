@@ -13,7 +13,7 @@ public class RelationshipQueries {
 
     public static String GET_RELATIONSHIPS = " select * from relationships ";
 
-    public static String GET_RELATIONSHIP_HISTORY = " select * from relationship_history ";
+    public static String GET_RELATIONSHIP_HISTORY = " select * from relationship_history order by updated desc ";
 
     public static String UPDATE_RELATIONSHIP = " update relationships "
                                              + " set "
