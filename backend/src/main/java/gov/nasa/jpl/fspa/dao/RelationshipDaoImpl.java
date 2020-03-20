@@ -86,6 +86,10 @@ public class RelationshipDaoImpl implements RelationshipDao {
             preparedStatement.setString(5, relationship.getTargetName());
             preparedStatement.setString(6, relationship.getType());
 
+            if (relationship.getId() != null) {
+                preparedStatement.setInt(7, relationship.getId());
+            }
+
             preparedStatement.executeUpdate();
 
             ResultSet resultSet = preparedStatement.getGeneratedKeys();

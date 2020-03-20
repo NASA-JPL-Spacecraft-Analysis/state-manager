@@ -22,5 +22,6 @@ public class RelationshipQueries {
                                              + " subject_state_id = ?, "
                                              + " target_state_id = ?, "
                                              + " target_name = ?, "
-                                             + " type = ? ";
+                                             + " type = ? "
+                                             + " where id = ? ";
 }

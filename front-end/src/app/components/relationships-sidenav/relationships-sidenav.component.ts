@@ -80,12 +80,18 @@ export class RelationshipsSidenavComponent implements OnChanges {
      * If the user is saving any other type of relationship, there shouldn't be a subject or state variable.
      */
     if (this.form.value.type === 'State') {
-      this.form.controls.targetName.setValue(null);
+      // Only null out targetName if it exists on the form.
+      if (this.form.controls.targetName !== undefined) {
+        this.form.controls.targetName.setValue(null);
+      }
 
       this.form.setErrors(this.subjectTargetStateValidator());
     } else {
-      this.form.controls.targetStateId.setValue(null);
-      this.form.controls.subjectStateId.setValue(null);
+      // Only null out targetStateId and subjectStateId if they exist on the form.
+      if (this.form.controls.targetStateId !== undefined) {
+        this.form.controls.targetStateId.setValue(null);
+        this.form.controls.subjectStateId.setValue(null);
+      }
 
       this.form.setErrors(this.targetNameValidator());
     }
