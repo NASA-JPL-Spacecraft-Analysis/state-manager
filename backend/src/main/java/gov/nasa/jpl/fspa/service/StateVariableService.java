@@ -43,4 +43,6 @@ public interface StateVariableService {
     List<StateEnumeration> saveStateEnumerations(int stateVariableId, List<StateEnumeration> stateEnumerations);
 
     Map<Integer, StateVariable> saveStateVariables(List<StateVariable> stateVariables);
+
+    Map<Integer, List<StateEnumeration>> saveUploadedEnumerations(List<StateEnumeration> enumerations);
 }

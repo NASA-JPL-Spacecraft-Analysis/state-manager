@@ -3,7 +3,6 @@ package gov.nasa.jpl.fspa;
 import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
-import gov.nasa.jpl.fspa.service.CsvService;
 import gov.nasa.jpl.fspa.service.CsvServiceImpl;
 import gov.nasa.jpl.fspa.service.StateVariableService;
 import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
@@ -22,11 +21,11 @@ import java.util.Map;
 
 @Path("v1/")
 public class StateManagementResource {
-    private final CsvService<StateVariable> csvService;
+    private final CsvServiceImpl csvService;
     private final StateVariableService stateVariableService;
 
     public StateManagementResource() {
-        csvService = new CsvServiceImpl<>(StateVariable.class);
+        csvService = new CsvServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
     }
 
@@ -138,11 +137,29 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/enumerations-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEnumerationsCsv(@FormDataParam("file") InputStream inputStream) {
+        List<StateEnumeration> parsedEnumerations = csvService.parseStateEnumerations(inputStream);
+
+        if (parsedEnumerations.size() > 0) {
+            Map<Integer, List<StateEnumeration>> mappedEnumerations = stateVariableService.saveUploadedEnumerations(parsedEnumerations);
+
+            if (mappedEnumerations.keySet().size() > 0) {
+                return Response.status(Response.Status.CREATED).entity(mappedEnumerations).build();
+            }
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @POST
     @Path("/state-variables-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postStateVariables(@FormDataParam("file") InputStream inputStream) {
-        List<StateVariable> parsedStateVariables = csvService.parseCsv(inputStream);
+    public Response postStateVariablesCsv(@FormDataParam("file") InputStream inputStream) {
+        List<StateVariable> parsedStateVariables = csvService.parseStateVariables(inputStream);
 
         if (parsedStateVariables.size() > 0) {
             List<String> duplicateIdentifiers = stateVariableService.getDuplicateIdentifiers(parsedStateVariables);

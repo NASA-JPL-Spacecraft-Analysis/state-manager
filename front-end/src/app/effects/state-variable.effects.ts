@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, switchMapTo } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { StateVariableActions, ToastActions } from '../actions';
-import { StateVariable, StateVariableMap, Relationship } from '../models';
+import { StateVariable, StateVariableMap, Relationship, StateEnumerationMap } from '../models';
 
 @Injectable()
 export class StateVariableEffects {
@@ -172,11 +172,39 @@ export class StateVariableEffects {
     );
   });
 
+  public uploadEnumerations = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateVariableActions.uploadEnumerations),
+      switchMap(({ file }) => {
+        return this.stateManagementService.saveEnumerationsFile(
+          file
+        ).pipe(
+          switchMap(
+            (enumerations: StateEnumerationMap) => [
+              StateVariableActions.uploadEnumerationsSuccess({
+                enumerations
+              }),
+            ]
+          ),
+          catchError(
+            (error: HttpErrorResponse) => [
+              StateVariableActions.uploadEnumerationsFailure({ error }),
+              ToastActions.showToast({
+                message: 'Uploading enumerations failed',
+                toastType: 'error'
+              })
+            ]
+          )
+        );
+      })
+    );
+  });
+
   public uploadStateVariables = createEffect(() => {
     return this.actions.pipe(
       ofType(StateVariableActions.uploadStateVariables),
       switchMap(({ file }) => {
-        return this.stateManagementService.saveStateVariables(
+        return this.stateManagementService.saveStateVariablesFile(
           file
         ).pipe(
           switchMap(

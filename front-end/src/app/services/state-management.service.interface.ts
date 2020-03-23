@@ -12,5 +12,6 @@ export interface StateManagementServiceInterface {
   getStateEnumerations(): Observable<StateEnumerationMap>;
   getStateVariables(): Observable<StateVariableMap>;
   saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]>;
-  saveStateVariables(file: File): Observable<StateVariableMap>;
+  saveEnumerationsFile(file: File): Observable<StateEnumerationMap>;
+  saveStateVariablesFile(file: File): Observable<StateVariableMap>;
 }

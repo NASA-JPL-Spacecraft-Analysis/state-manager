@@ -1,8 +1,9 @@
 package gov.nasa.jpl.fspa.service;
 
-import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import gov.nasa.jpl.fspa.model.StateEnumeration;
+import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,15 +13,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvServiceImpl<T> implements CsvService<T> {
-    private final Class<T> type;
-
-    public CsvServiceImpl(Class<T> type) {
-        this.type = type;
-    }
+public class CsvServiceImpl implements CsvService {
 
     @Override
-    public String outputAsCsv(List<T> objectList) {
+    public <T> String outputAsCsv(List<T> objectList, Class<T> type) {
         StringBuilder csvOutput = new StringBuilder();
 
         // Create columns for all the properties.
@@ -42,12 +38,23 @@ public class CsvServiceImpl<T> implements CsvService<T> {
     }
 
     @Override
-    public List<T> parseCsv(InputStream inputStream) {
-        List<T> parsedItems = new ArrayList<>();
+    public List<StateEnumeration> parseStateEnumerations(InputStream inputStream) {
+        List<StateEnumeration> parsedStateEnumerations = new ArrayList<>();
 
+        return parseCsv(inputStream, parsedStateEnumerations, StateEnumeration.class);
+    }
+
+    @Override
+    public List<StateVariable> parseStateVariables(InputStream inputStream) {
+        List<StateVariable> parsedStateVariables = new ArrayList<>();
+
+        return parseCsv(inputStream, parsedStateVariables, StateVariable.class);
+    }
+
+    private <T> List<T> parseCsv(InputStream inputStream, List<T> parsedItems, Class<T> type) {
         try {
             Reader reader = new InputStreamReader(inputStream);
-            CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(reader).withType(this.type).build();
+            CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(reader).withType(type).build();
 
             parsedItems.addAll(csvToBean.parse());
 
