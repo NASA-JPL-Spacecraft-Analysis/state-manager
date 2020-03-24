@@ -184,13 +184,17 @@ export class StateVariableEffects {
               StateVariableActions.uploadEnumerationsSuccess({
                 enumerations
               }),
+              ToastActions.showToast({
+                message: 'Enumerations uploaded',
+                toastType: 'success'
+              })
             ]
           ),
           catchError(
             (error: HttpErrorResponse) => [
               StateVariableActions.uploadEnumerationsFailure({ error }),
               ToastActions.showToast({
-                message: 'Uploading enumerations failed',
+                message: error.error,
                 toastType: 'error'
               })
             ]

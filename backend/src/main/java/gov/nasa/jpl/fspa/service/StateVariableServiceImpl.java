@@ -24,18 +24,12 @@ public class StateVariableServiceImpl implements StateVariableService {
      * @return A list of the duplicate identifiers.
      */
     public List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables) {
-        List<Identifier> identifiers = stateVariableDao.getIdentifiers();
         List<String> duplicateIdentifiers = new ArrayList<>();
-        Map<String, Integer> identifierMap = new HashMap<>();
-
-        // Create our map of state variable ids to identifiers, and populate our identifiers set.
-        for (Identifier identifier: identifiers) {
-            identifierMap.put(identifier.getIdentifier(), identifier.getStateVariableId());
-        }
+        Map<String, Integer> mappedIdentifiers = getMappedIdentifiers();
 
         for (StateVariable stateVariable: stateVariables) {
-            if (identifierMap.get(stateVariable.getIdentifier()) != null
-                    && !identifierMap.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
+            if (mappedIdentifiers.get(stateVariable.getIdentifier()) != null
+                    && !mappedIdentifiers.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
                 duplicateIdentifiers.add(stateVariable.getIdentifier());
             }
         }
@@ -103,6 +97,18 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return null;
+    }
+
+    @Override
+    public Map<String, Integer> getMappedIdentifiers() {
+        Map<String, Integer> mappedIdentifiers = new HashMap<>();
+        List<Identifier> identifiers = stateVariableDao.getIdentifiers();
+
+        for (Identifier identifier: identifiers) {
+            mappedIdentifiers.put(identifier.getIdentifier(), identifier.getStateVariableId());
+        }
+
+        return mappedIdentifiers;
     }
 
     @Override

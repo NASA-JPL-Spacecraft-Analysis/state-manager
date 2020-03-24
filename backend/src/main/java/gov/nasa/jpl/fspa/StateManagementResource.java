@@ -1,11 +1,7 @@
 package gov.nasa.jpl.fspa;
 
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.StateEnumeration;
-import gov.nasa.jpl.fspa.model.StateVariable;
-import gov.nasa.jpl.fspa.service.CsvServiceImpl;
-import gov.nasa.jpl.fspa.service.StateVariableService;
-import gov.nasa.jpl.fspa.service.StateVariableServiceImpl;
+import gov.nasa.jpl.fspa.model.*;
+import gov.nasa.jpl.fspa.service.*;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -22,10 +18,12 @@ import java.util.Map;
 @Path("v1/")
 public class StateManagementResource {
     private final CsvServiceImpl csvService;
+    private final EnumerationService enumerationService;
     private final StateVariableService stateVariableService;
 
     public StateManagementResource() {
         csvService = new CsvServiceImpl();
+        enumerationService = new EnumerationServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
     }
 
@@ -141,13 +139,24 @@ public class StateManagementResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postEnumerationsCsv(@FormDataParam("file") InputStream inputStream) {
-        List<StateEnumeration> parsedEnumerations = csvService.parseStateEnumerations(inputStream);
+        List<EnumerationCsv> parsedCsvEnumerations = csvService.parseStateEnumerations(inputStream);
 
-        if (parsedEnumerations.size() > 0) {
-            Map<Integer, List<StateEnumeration>> mappedEnumerations = stateVariableService.saveUploadedEnumerations(parsedEnumerations);
+        if (parsedCsvEnumerations.size() > 0) {
+            Map<String, Integer> identifierToVariableIdMap = stateVariableService.getMappedIdentifiers();
+            // A list to hold enumerations not tied to a valid identifier
+            List<String> invalidIdentifiers = enumerationService.invalidIdentifierCheck(parsedCsvEnumerations, identifierToVariableIdMap);
 
-            if (mappedEnumerations.keySet().size() > 0) {
-                return Response.status(Response.Status.CREATED).entity(mappedEnumerations).build();
+            if (invalidIdentifiers.size() == 0) {
+                List<StateEnumeration> parsedEnumerations = enumerationService.convertEnumerationCsvToEnumeration(parsedCsvEnumerations, identifierToVariableIdMap);
+                Map<Integer, List<StateEnumeration>> mappedEnumerations = stateVariableService.saveUploadedEnumerations(parsedEnumerations);
+
+                if (mappedEnumerations.keySet().size() > 0) {
+                    return Response.status(Response.Status.CREATED).entity(mappedEnumerations).build();
+                }
+            } else {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS + invalidIdentifiers.toString()
+                ).build();
             }
         }
 
