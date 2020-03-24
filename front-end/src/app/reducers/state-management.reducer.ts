@@ -6,6 +6,7 @@ import { RelationshipMap, StateVariable, StateEnumerationMap, StateVariableMap, 
 export interface StateManagementState {
   identifiers: Set<string>;
   relationships: RelationshipMap;
+  relationshipHistory: RelationshipMap;
   selectedRelationship: Relationship;
   selectedStateVariable: StateVariable;
   stateEnumerations: StateEnumerationMap;
@@ -15,6 +16,7 @@ export interface StateManagementState {
 export const initialState: StateManagementState = {
   identifiers: new Set<string>(),
   relationships: null,
+  relationshipHistory: null,
   selectedRelationship: null,
   selectedStateVariable: null,
   stateEnumerations: null,
@@ -79,6 +81,10 @@ export const reducer = createReducer(
   on(StateVariableActions.setRelationships, (state, action) => ({
     ...state,
     relationships: action.relationships
+  })),
+  on(StateVariableActions.setRelationshipHistory, (state, action) => ({
+    ...state,
+    relationshipHistory: action.relationshipHistory
   })),
   on(StateVariableActions.setStateEnumerations, (state, action) => ({
     ...state,

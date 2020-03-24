@@ -1,5 +1,17 @@
 <div *ngIf="relationshipMap && stateVariableMap && relationshipsList.length > 0; else noRelationships">
-  <table mat-table [dataSource]="dataSource">
+  <table mat-table [dataSource]="dataSource" [ngClass]="{ 'history': history }">
+    <ng-container *ngIf="history">
+      <ng-container matColumnDef="relationshipId">
+        <th mat-header-cell *matHeaderCellDef>Relationship Id</th>
+        <td mat-cell *matCellDef="let relationship">{{relationship.relationshipId}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="updated">
+        <th mat-header-cell *matHeaderCellDef>Updated</th>
+        <td mat-cell *matCellDef="let relationship">{{relationship.updated}}</td>
+      </ng-container>
+    </ng-container>
+
     <ng-container matColumnDef="displayName">
       <th mat-header-cell *matHeaderCellDef>Display Name</th>
       <td mat-cell *matCellDef="let relationship">{{relationship.displayName}}</td>

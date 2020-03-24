@@ -2,7 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { StateVariable, StateEnumerationMap, StateVariableMap, StateEnumeration, Relationship, RelationshipMap } from '../models';
+import {
+  StateVariable,
+  StateEnumerationMap,
+  StateVariableMap,
+  StateEnumeration,
+  Relationship,
+  RelationshipMap
+} from '../models';
 import { StateManagementServiceInterface } from './state-management.service.interface';
 import { environment } from 'src/environments/environment';
 
@@ -51,6 +58,12 @@ export class StateManagementService implements StateManagementServiceInterface {
   public getRelationships(): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
       baseUrl + '/relationships'
+    );
+  }
+
+  public getRelationshipHistory(): Observable<RelationshipMap> {
+    return this.http.get<RelationshipMap>(
+      baseUrl + '/relationship-history'
     );
   }
 

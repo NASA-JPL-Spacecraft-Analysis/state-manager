@@ -1,20 +1,21 @@
 package gov.nasa.jpl.fspa.service;
 
+import gov.nasa.jpl.fspa.dao.RelationshipDao;
+import gov.nasa.jpl.fspa.dao.RelationshipDaoImpl;
 import gov.nasa.jpl.fspa.dao.StateVariableDao;
 import gov.nasa.jpl.fspa.dao.StateVariableDaoImpl;
-import gov.nasa.jpl.fspa.model.Identifier;
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.StateEnumeration;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
     private final CsvServiceImpl<StateVariable> outputService;
+    private final RelationshipDao relationshipDao;
     private final StateVariableDao stateVariableDao;
 
     public StateVariableServiceImpl() {
         this.outputService = new CsvServiceImpl<>(StateVariable.class);
+        this.relationshipDao = new RelationshipDaoImpl();
         this.stateVariableDao = new StateVariableDaoImpl();
     }
 
@@ -45,7 +46,7 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public Map<Integer, Relationship> getRelationships() {
-        List<Relationship> relationships = stateVariableDao.getRelationships();
+        List<Relationship> relationships = relationshipDao.getRelationships();
         Map<Integer, Relationship> relationshipMap = new HashMap<>();
 
         for (Relationship relationship: relationships) {
@@ -53,6 +54,18 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return relationshipMap;
+    }
+
+    @Override
+    public Map<Integer, RelationshipHistory> getRelationshipHistory() {
+        List<RelationshipHistory> relationshipHistoryList = relationshipDao.getRelationshipHistory();
+        Map<Integer, RelationshipHistory> relationshipHistoryMap = new HashMap<>();
+
+        for (RelationshipHistory relationshipHistory: relationshipHistoryList) {
+            relationshipHistoryMap.put(relationshipHistory.getId(), relationshipHistory);
+        }
+
+        return relationshipHistoryMap;
     }
 
     @Override
@@ -98,7 +111,7 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public Relationship modifyRelationship(Relationship relationship) {
-        return stateVariableDao.modifyRelationship(relationship);
+        return relationshipDao.saveRelationship(relationship);
     }
 
     @Override

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { StateVariablesComponent, RelationshipsComponent } from './containers';
+import { StateVariablesComponent, RelationshipsComponent, RelationshipHistoryComponent } from './containers';
 
 export const routes: Routes = [
   {
@@ -13,6 +13,10 @@ export const routes: Routes = [
   {
     component: RelationshipsComponent,
     path: 'relationships'
+  },
+  {
+    component: RelationshipHistoryComponent,
+    path: 'relationship-history'
   },
   {
     component: StateVariablesComponent,
