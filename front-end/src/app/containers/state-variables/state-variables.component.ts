@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
 import { getStateVariables, getSelectedStateVariable } from '../../selectors';
-import { StateVariableActions, LayoutActions } from '../../actions';
+import { StateVariableActions, LayoutActions, ToastActions } from '../../actions';
 import { StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
@@ -132,10 +132,10 @@ export class StateVariablesComponent implements OnDestroy {
         default:
           break;
       }
-
     } else {
-      this.store.dispatch(StateVariableActions.uploadStateVariablesFailure({
-        error: new Error('Wrong filetype supplied, only csv is supported.')
+      this.store.dispatch(ToastActions.showToast({
+        message: 'Wrong filetype supplied, only csv is supported.',
+        toastType: 'error'
       }));
     }
   }
