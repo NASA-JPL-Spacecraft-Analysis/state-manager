@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, NgModule, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { SubSink } from 'subsink';
@@ -114,7 +115,8 @@ export class RelationshipsComponent implements OnDestroy {
     CommonModule,
     MaterialModule,
     RelationshipsSidenavModule,
-    RelationshipsTableModule
+    RelationshipsTableModule,
+    RouterModule
   ]
 })
 export class RelationshipsModule {}

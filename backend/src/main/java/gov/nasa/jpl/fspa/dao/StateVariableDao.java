@@ -1,7 +1,6 @@
 package gov.nasa.jpl.fspa.dao;
 
 import gov.nasa.jpl.fspa.model.Identifier;
-import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
@@ -9,8 +8,6 @@ import java.util.Collection;
 import java.util.List;
 
 public interface StateVariableDao {
-    List<Relationship> getRelationships();
-
     List<StateVariable> getStateVariables();
 
     /**
@@ -30,8 +27,6 @@ public interface StateVariableDao {
     List<StateEnumeration> getStateEnumerationsByStateVariableId(Integer id);
 
     List<Identifier> getIdentifiers();
-
-    Relationship modifyRelationship(Relationship relationship);
 
     void deleteStateEnumerations(Collection<StateEnumeration> stateEnumerations);
     void saveStateEnumerations(List<StateEnumeration> stateEnumerations);

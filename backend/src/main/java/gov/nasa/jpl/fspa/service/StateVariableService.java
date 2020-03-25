@@ -1,6 +1,7 @@
 package gov.nasa.jpl.fspa.service;
 
 import gov.nasa.jpl.fspa.model.Relationship;
+import gov.nasa.jpl.fspa.model.RelationshipHistory;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
@@ -11,6 +12,8 @@ public interface StateVariableService {
     List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables);
 
     Map<Integer, Relationship> getRelationships();
+
+    Map<Integer, RelationshipHistory> getRelationshipHistory();
 
     /**
      * Gets all our state enumerations.

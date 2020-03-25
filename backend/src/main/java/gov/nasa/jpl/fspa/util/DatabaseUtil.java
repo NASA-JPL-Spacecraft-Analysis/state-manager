@@ -4,9 +4,15 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class DatabaseUtil {
     private static ComboPooledDataSource dataSource;
+    private static String mysqlDateFormatString = "yyyy-MM-dd kk:mm:ss";
+    private static String outputFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     static {
         try {
@@ -32,5 +38,20 @@ public class DatabaseUtil {
 
     public static DataSource getDataSource() {
         return dataSource;
+    }
+
+    public static String convertMysqlDate(String date) {
+        DateFormat inputDateFormat = new SimpleDateFormat(mysqlDateFormatString, Locale.ENGLISH);
+        DateFormat outputDateFormat = new SimpleDateFormat(outputFormat, Locale.ENGLISH);
+
+        try {
+            Date parsedDate = inputDateFormat.parse(date);
+
+            return outputDateFormat.format(parsedDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

@@ -1,3 +1,7 @@
+button {
+  margin-left: 1em;
+}
+
 .relationships-content {
   flex-grow: 1;
   margin: 1em;

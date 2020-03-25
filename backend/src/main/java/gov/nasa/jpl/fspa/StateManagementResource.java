@@ -41,6 +41,19 @@ public class StateManagementResource {
     }
 
     @GET
+    @Path("/relationship-history")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRelationshipHistory() {
+        Map<Integer, RelationshipHistory> relationshipHistoryMap = stateVariableService.getRelationshipHistory();
+
+        if (relationshipHistoryMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(relationshipHistoryMap).build();
+    }
+
+    @GET
     @Path("/state-enumerations")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStateEnumerations() {

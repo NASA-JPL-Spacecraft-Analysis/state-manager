@@ -1,6 +1,13 @@
 import { Observable } from 'rxjs';
 
-import { StateVariableMap, StateEnumerationMap, StateVariable, StateEnumeration, Relationship, RelationshipMap } from '../models';
+import {
+  StateVariableMap,
+  StateEnumerationMap,
+  StateVariable,
+  StateEnumeration,
+  Relationship,
+  RelationshipMap
+} from '../models';
 
 export interface StateManagementServiceInterface {
   createRelationship(relationship: Relationship): Observable<Relationship>;
@@ -9,6 +16,7 @@ export interface StateManagementServiceInterface {
   editStateVariable(stateVariable: StateVariable): Observable<StateVariable>;
   getIdentifiers(): Observable<string[]>;
   getRelationships(): Observable<RelationshipMap>;
+  getRelationshipHistory(): Observable<RelationshipMap>;
   getStateEnumerations(): Observable<StateEnumerationMap>;
   getStateVariables(): Observable<StateVariableMap>;
   saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]>;

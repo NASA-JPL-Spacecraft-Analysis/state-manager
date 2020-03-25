@@ -1,4 +1,4 @@
-import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
+import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -11,37 +11,50 @@ import { MaterialModule } from 'src/app/material';
   styleUrls: [ 'relationships-table.component.css' ],
   templateUrl: 'relationships-table.component.html'
 })
-export class RelationshipsTableComponent implements OnChanges {
+export class RelationshipsTableComponent implements OnInit, OnChanges {
   @Input() public relationshipMap: RelationshipMap;
   @Input() public stateVariableMap: StateVariableMap;
+  // True if we're looking at the history page.
+  @Input() public history: boolean;
 
   @Output() public relationshipSelected: EventEmitter<Relationship>;
 
   public dataSource: MatTableDataSource<Relationship>;
-  public displayedColumns: string[] = [
-    'displayName',
-    'description',
-    'subjectState',
-    'targetState',
-    'type',
-    'targetName'
-  ];
+  public displayedColumns: string[] = [];
   public relationshipsList: Relationship[];
 
   constructor() {
     this.relationshipSelected = new EventEmitter<Relationship>();
   }
 
+  public ngOnInit(): void {
+    this.displayedColumns.push(
+      'displayName',
+      'description',
+      'subjectState',
+      'targetState',
+      'type',
+      'targetName'
+    );
+
+    if (this.history) {
+      this.displayedColumns.push(
+        'relationshipId',
+        'updated'
+      );
+    }
+  }
+
   public ngOnChanges(): void {
     this.relationshipsList = [];
 
-    if (this.relationshipMap) {
+    if (this.relationshipMap && this.displayedColumns) {
       for (const key of Object.keys(this.relationshipMap)) {
         this.relationshipsList.push(this.relationshipMap[key]);
       }
-    }
 
-    this.dataSource = new MatTableDataSource(this.relationshipsList);
+      this.dataSource = new MatTableDataSource(this.relationshipsList);
+    }
   }
 
   public getRelationshipStateName(id: number): string {
