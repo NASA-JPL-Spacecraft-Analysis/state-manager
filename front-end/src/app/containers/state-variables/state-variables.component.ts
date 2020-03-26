@@ -1,5 +1,6 @@
 import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
@@ -132,7 +133,8 @@ export class StateVariablesComponent implements OnDestroy {
     StateVariableSidenavModule,
     StateVariableTableModule,
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    RouterModule
   ]
 })
 export class StateVariablesModule {}
