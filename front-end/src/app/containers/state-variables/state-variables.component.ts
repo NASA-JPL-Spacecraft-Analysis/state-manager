@@ -5,12 +5,17 @@ import { SubSink } from 'subsink';
 
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
 import { getStateVariables, getSelectedStateVariable } from '../../selectors';
-import { StateVariableActions, LayoutActions } from '../../actions';
+import { StateVariableActions, LayoutActions, ToastActions } from '../../actions';
 import { StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
+
+enum UploadableTypes {
+  States,
+  Enumerations
+}
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +27,8 @@ export class StateVariablesComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateVariableMap: StateVariableMap;
   public stateVariable: StateVariable;
+  public statesUploadableType = UploadableTypes.States;
+  public enumerationsUploadableType = UploadableTypes.Enumerations;
 
   private subscriptions = new SubSink();
 
@@ -104,18 +111,31 @@ export class StateVariablesComponent implements OnDestroy {
    * Only dispatch a valid file, if file is null then we couldn't parse the file
    * due to a filetype issue.
    * @param fileEvent The Event for the current file.
+   * @param type The type of items that are being uploaded, either 'states', or 'enumerations'.
    */
-  public onUploadStates(fileEvent: Event): void {
+  public onFileUpload(fileEvent: Event, type: UploadableTypes): void {
     const file = (fileEvent.target as HTMLInputElement).files[0];
     const fileType = file.name.split('.').pop();
 
     if (file && fileType === 'csv') {
-      this.store.dispatch(StateVariableActions.uploadStateVariables({
-        file
-      }));
+      switch (type) {
+        case UploadableTypes.States:
+          this.store.dispatch(StateVariableActions.uploadStateVariables({
+            file
+          }));
+          break;
+        case UploadableTypes.Enumerations:
+          this.store.dispatch(StateVariableActions.uploadEnumerations({
+            file
+          }));
+          break;
+        default:
+          break;
+      }
     } else {
-      this.store.dispatch(StateVariableActions.uploadStateVariablesFailure({
-        error: new Error('Wrong filetype supplied, only csv is supported.')
+      this.store.dispatch(ToastActions.showToast({
+        message: 'Wrong filetype supplied, only csv is supported.',
+        toastType: 'error'
       }));
     }
   }

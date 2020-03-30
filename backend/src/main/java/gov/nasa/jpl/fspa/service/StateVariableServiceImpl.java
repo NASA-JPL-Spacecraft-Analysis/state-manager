@@ -9,12 +9,12 @@ import gov.nasa.jpl.fspa.model.*;
 import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
-    private final CsvServiceImpl<StateVariable> outputService;
+    private final CsvServiceImpl outputService;
     private final RelationshipDao relationshipDao;
     private final StateVariableDao stateVariableDao;
 
     public StateVariableServiceImpl() {
-        this.outputService = new CsvServiceImpl<>(StateVariable.class);
+        this.outputService = new CsvServiceImpl();
         this.relationshipDao = new RelationshipDaoImpl();
         this.stateVariableDao = new StateVariableDaoImpl();
     }
@@ -25,18 +25,12 @@ public class StateVariableServiceImpl implements StateVariableService {
      * @return A list of the duplicate identifiers.
      */
     public List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables) {
-        List<Identifier> identifiers = stateVariableDao.getIdentifiers();
         List<String> duplicateIdentifiers = new ArrayList<>();
-        Map<String, Integer> identifierMap = new HashMap<>();
-
-        // Create our map of state variable ids to identifiers, and populate our identifiers set.
-        for (Identifier identifier: identifiers) {
-            identifierMap.put(identifier.getIdentifier(), identifier.getStateVariableId());
-        }
+        Map<String, Integer> mappedIdentifiers = getMappedIdentifiers();
 
         for (StateVariable stateVariable: stateVariables) {
-            if (identifierMap.get(stateVariable.getIdentifier()) != null
-                    && !identifierMap.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
+            if (mappedIdentifiers.get(stateVariable.getIdentifier()) != null
+                    && !mappedIdentifiers.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
                 duplicateIdentifiers.add(stateVariable.getIdentifier());
             }
         }
@@ -70,18 +64,7 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public Map<Integer, List<StateEnumeration>> getStateEnumerations() {
-        List<StateEnumeration> stateEnumerations = stateVariableDao.getStateEnumerations();
-        Map<Integer, List<StateEnumeration>> stateEnumerationMap = new HashMap<>();
-
-        for (StateEnumeration stateEnumeration: stateEnumerations) {
-            if (stateEnumerationMap.get(stateEnumeration.getStateVariableId()) == null) {
-               stateEnumerationMap.put(stateEnumeration.getStateVariableId(), new ArrayList<StateEnumeration>());
-            }
-
-            stateEnumerationMap.get(stateEnumeration.getStateVariableId()).add(stateEnumeration);
-        }
-
-        return stateEnumerationMap;
+        return mapEnumerations(stateVariableDao.getStateEnumerations());
     }
 
     /**
@@ -95,7 +78,7 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public String getStateVariablesAsCsv() {
-        return outputService.outputAsCsv(stateVariableDao.getStateVariables());
+        return outputService.outputAsCsv(stateVariableDao.getStateVariables(), StateVariable.class);
     }
 
     @Override
@@ -127,6 +110,18 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return null;
+    }
+
+    @Override
+    public Map<String, Integer> getMappedIdentifiers() {
+        Map<String, Integer> mappedIdentifiers = new HashMap<>();
+        List<Identifier> identifiers = stateVariableDao.getIdentifiers();
+
+        for (Identifier identifier: identifiers) {
+            mappedIdentifiers.put(identifier.getIdentifier(), identifier.getStateVariableId());
+        }
+
+        return mappedIdentifiers;
     }
 
     @Override
@@ -180,14 +175,35 @@ public class StateVariableServiceImpl implements StateVariableService {
         return stateVariableDao.getStateEnumerations();
     }
 
+    @Override
     public Map<Integer, StateVariable> saveStateVariables(List<StateVariable> stateVariables) {
         List<StateVariable> savedStateVariables = new ArrayList<>();
 
         for (StateVariable stateVariable: stateVariables) {
-
             savedStateVariables.add(stateVariableDao.createStateVariable(stateVariable));
         }
 
-        return mapStateVariables(stateVariables);
+        return mapStateVariables(savedStateVariables);
+    }
+
+    @Override
+    public Map<Integer, List<StateEnumeration>> saveUploadedEnumerations(List<StateEnumeration> enumerations) {
+        stateVariableDao.saveStateEnumerations(enumerations);
+
+        return mapEnumerations(enumerations);
+    }
+
+    private Map<Integer, List<StateEnumeration>> mapEnumerations(List<StateEnumeration> enumerations) {
+        Map<Integer, List<StateEnumeration>> enumerationMap = new HashMap<>();
+
+        for (StateEnumeration stateEnumeration: enumerations) {
+            if (enumerationMap.get(stateEnumeration.getStateVariableId()) == null) {
+                enumerationMap.put(stateEnumeration.getStateVariableId(), new ArrayList<StateEnumeration>());
+            }
+
+            enumerationMap.get(stateEnumeration.getStateVariableId()).add(stateEnumeration);
+        }
+
+        return enumerationMap;
     }
 }
