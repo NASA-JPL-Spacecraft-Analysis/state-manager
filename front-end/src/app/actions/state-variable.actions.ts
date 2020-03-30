@@ -94,6 +94,11 @@ export const fetchStateEnumerationsFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchStateHistoryFailure = createAction(
+  '[state variable] fetchStateVariableHistoryFailure',
+  props<{ error: Error }>()
+);
+
 export const fetchStateVariablesFailure = createAction(
   '[state variable] fetchStateVariablesFailure',
   props<{ error: Error }>()
@@ -132,6 +137,11 @@ export const setRelationshipHistory = createAction(
 export const setStateEnumerations = createAction(
   '[state variable] setStateEnumerations',
   props<{ stateEnumerations: StateEnumerationMap }>()
+);
+
+export const setStateHistory = createAction(
+  '[state variable] setStateHistory',
+  props<{ stateHistory: StateVariableMap }>()
 );
 
 export const setStateVariables = createAction(

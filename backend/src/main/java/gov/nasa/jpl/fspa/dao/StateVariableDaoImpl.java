@@ -1,8 +1,6 @@
 package gov.nasa.jpl.fspa.dao;
 
-import gov.nasa.jpl.fspa.model.Identifier;
-import gov.nasa.jpl.fspa.model.StateEnumeration;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
 
 import java.sql.*;
@@ -20,18 +18,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                StateVariable stateVariable = new StateVariable();
-
-                stateVariable.setId(Integer.valueOf(resultSet.getString("id")));
-                stateVariable.setIdentifier(resultSet.getString("identifier"));
-                stateVariable.setDisplayName(resultSet.getString("displayName"));
-                stateVariable.setType(resultSet.getString("type"));
-                stateVariable.setUnits(resultSet.getString("units"));
-                stateVariable.setSource(resultSet.getString("source"));
-                stateVariable.setSubsystem(resultSet.getString("subsystem"));
-                stateVariable.setDescription(resultSet.getString("description"));
-
-                stateVariables.add(stateVariable);
+                stateVariables.add(setStateVariable(resultSet, new StateVariable()));
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -146,6 +133,28 @@ public class StateVariableDaoImpl implements StateVariableDao {
         return stateEnumerations;
     }
 
+    @Override
+    public List<StateHistory> getStateHistory() {
+        List<StateHistory> stateHistoryList = new ArrayList<>();
+
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement statement = connection.prepareStatement(StateVariableQueries.GET_STATE_HISTORY);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                StateHistory stateHistory = new StateHistory();
+
+                stateHistory.setStateId(Integer.valueOf(resultSet.getString("state_id")));
+                stateHistory.setUpdated(DatabaseUtil.convertMysqlDate(resultSet.getString("updated")));
+
+                stateHistoryList.add(stateHistory);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return stateHistoryList;
+    }
 
     @Override
     public List<Identifier> getIdentifiers() {
@@ -262,6 +271,24 @@ public class StateVariableDaoImpl implements StateVariableDao {
             exception.printStackTrace();
         }
     }
+
+    private StateVariable setStateVariable(ResultSet resultSet, StateVariable stateVariable) {
+        try {
+            stateVariable.setId(Integer.valueOf(resultSet.getString("id")));
+            stateVariable.setIdentifier(resultSet.getString("identifier"));
+            stateVariable.setDisplayName(resultSet.getString("displayName"));
+            stateVariable.setType(resultSet.getString("type"));
+            stateVariable.setUnits(resultSet.getString("units"));
+            stateVariable.setSource(resultSet.getString("source"));
+            stateVariable.setSubsystem(resultSet.getString("subsystem"));
+            stateVariable.setDescription(resultSet.getString("description"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return stateVariable;
+    }
+
     private void setStateVariablePreparedStatement(PreparedStatement preparedStatement, StateVariable stateVariable) {
         try {
             preparedStatement.setString(1, stateVariable.getIdentifier());

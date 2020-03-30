@@ -7,6 +7,8 @@ public class StateVariableQueries {
 
     public static String GET_STATE_ENUMERATIONS = " select * from state_enumerations ";
 
+    public static String GET_STATE_HISTORY = " select * from state_history ";
+
     public static String GET_STATE_ENUMERATIONS_BY_STATE_VARIABLE_ID = " select * from state_enumerations "
                                                                      + " where state_variable_id = ? ";
 

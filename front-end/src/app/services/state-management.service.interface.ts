@@ -18,6 +18,7 @@ export interface StateManagementServiceInterface {
   getRelationships(): Observable<RelationshipMap>;
   getRelationshipHistory(): Observable<RelationshipMap>;
   getStateEnumerations(): Observable<StateEnumerationMap>;
+  getStateHistory(): Observable<StateVariableMap>;
   getStateVariables(): Observable<StateVariableMap>;
   saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]>;
   saveStateVariables(file: File): Observable<StateVariableMap>;

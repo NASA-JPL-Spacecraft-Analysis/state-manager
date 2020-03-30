@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { MaterialModule } from 'src/app/material';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'state-history',
@@ -19,7 +21,8 @@ export class StateHistoryComponent {
     StateHistoryComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MaterialModule
   ]
 })
 export class StateHistoryModule {}

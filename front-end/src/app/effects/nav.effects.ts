@@ -133,4 +133,38 @@ export class NavEffects {
       )
     )
   );
+
+  public navStateHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute('state-history'),
+      switchMap(_ =>
+        concat(
+          this.stateManagementService.getStateHistory().pipe(
+            map(stateHistory => StateVariableActions.setStateHistory({
+              stateHistory 
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchStateHistoryFailure({
+                  error
+                })
+              ]
+            )
+          ),
+          this.stateManagementService.getStateVariables().pipe(
+            map(stateVariables => StateVariableActions.setStateVariables({
+              stateVariables
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchStateVariablesFailure({
+                  error
+                })
+              ]
+            )
+          )
+        )
+      )
+    )
+  );
 }

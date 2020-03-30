@@ -2,6 +2,7 @@ package gov.nasa.jpl.fspa.dao;
 
 import gov.nasa.jpl.fspa.model.Identifier;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
+import gov.nasa.jpl.fspa.model.StateHistory;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.util.Collection;
@@ -25,6 +26,8 @@ public interface StateVariableDao {
 
     List<StateEnumeration> getStateEnumerations();
     List<StateEnumeration> getStateEnumerationsByStateVariableId(Integer id);
+
+    List<StateHistory> getStateHistory();
 
     List<Identifier> getIdentifiers();
 
