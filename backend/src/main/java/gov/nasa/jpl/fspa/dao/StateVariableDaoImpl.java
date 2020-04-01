@@ -6,7 +6,6 @@ import gov.nasa.jpl.fspa.util.DatabaseUtil;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.List;
 
 public class StateVariableDaoImpl implements StateVariableDao {
@@ -59,31 +58,6 @@ public class StateVariableDaoImpl implements StateVariableDao {
         }
 
         return stateVariable;
-    }
-
-    @Override
-    public void createStateVariables(List<StateVariable> stateVariableList) {
-        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.CREATE_STATE_VARIABLE)) {
-            // some drivers have limits on batch length, so run batch every 1000
-            int stateVariableCounter = 0;
-
-            for (StateVariable stateVariable: stateVariableList) {
-                setStateVariablePreparedStatement(preparedStatement, stateVariable);
-
-                preparedStatement.addBatch();
-
-                stateVariableCounter++;
-
-                if (stateVariableCounter % StateVariableQueries.BATCH_SIZE == 0 || stateVariableCounter == stateVariableList.size()) {
-                    preparedStatement.executeBatch();
-                }
-            }
-
-            saveStateHistoryList(stateVariableList);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
     }
 
     @Override
@@ -259,32 +233,11 @@ public class StateVariableDaoImpl implements StateVariableDao {
              PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.CREATE_STATE_HISTORY)) {
             StateHistory stateHistory = new StateHistory(stateVariable);
 
+            stateHistory.setStateId(stateVariable.getId());
+
             setStateHistoryPreparedStatement(preparedStatement, stateHistory);
 
             preparedStatement.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveStateHistoryList(List<StateVariable> stateVariableList) {
-        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.CREATE_STATE_HISTORY)) {
-            int stateHistoryCounter = 0;
-
-            for (StateVariable stateVariable: stateVariableList) {
-                StateHistory stateHistory = new StateHistory(stateVariable);
-
-                setStateHistoryPreparedStatement(preparedStatement, stateHistory);
-
-                preparedStatement.addBatch();
-
-                stateHistoryCounter++;
-
-                if (stateHistoryCounter % StateVariableQueries.BATCH_SIZE == 0 || stateHistoryCounter == stateVariableList.size()) {
-                    preparedStatement.executeBatch();
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

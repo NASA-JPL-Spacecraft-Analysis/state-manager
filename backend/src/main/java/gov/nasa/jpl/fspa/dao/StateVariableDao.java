@@ -18,12 +18,6 @@ public interface StateVariableDao {
      */
     StateVariable createStateVariable(StateVariable stateVariable);
 
-    /**
-     * Creates a list of {@link StateVariable}s.
-     * @param stateVariables The list of state variables we are creating.
-     */
-    void createStateVariables(List<StateVariable> stateVariables);
-
     List<StateEnumeration> getStateEnumerations();
     List<StateEnumeration> getStateEnumerationsByStateVariableId(Integer id);
 
