@@ -68,3 +68,7 @@ table {
 .sidenav-actions {
   margin-top: 1em;
 }
+
+.history .table-row {
+  cursor: default;
+}

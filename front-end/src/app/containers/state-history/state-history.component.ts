@@ -1,7 +1,13 @@
-import { Component, ChangeDetectionStrategy, NgModule } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgModule, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Store, select } from '@ngrx/store';
+import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
+import { StateVariableMap } from 'src/app/models';
+import { AppState } from 'src/app/app-store';
+import { getStateHistory } from 'src/app/selectors';
+import { StateVariableTableModule } from 'src/app/components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,8 +15,26 @@ import { MaterialModule } from 'src/app/material';
   styleUrls: [ 'state-history.component.css' ],
   templateUrl: 'state-history.component.html'
 })
-export class StateHistoryComponent {
+export class StateHistoryComponent implements OnDestroy {
+  public stateHistoryMap: StateVariableMap;
 
+  private subscriptions = new SubSink();
+
+  constructor(
+    private store: Store<AppState>,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
+    this.subscriptions.add(
+      this.store.pipe(select(getStateHistory)).subscribe(stateHistoryMap => {
+        this.stateHistoryMap = stateHistoryMap;
+        this.changeDetectorRef.markForCheck();
+      })
+    );
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 }
 
 @NgModule({
@@ -22,7 +46,8 @@ export class StateHistoryComponent {
   ],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    StateVariableTableModule
   ]
 })
 export class StateHistoryModule {}

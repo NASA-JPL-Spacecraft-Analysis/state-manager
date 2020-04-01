@@ -25,6 +25,11 @@ export const getStateEnumerations = createSelector(
   (state: StateManagementState) => state.stateEnumerations
 );
 
+export const getStateHistory = createSelector(
+  getStatesState,
+  (state: StateManagementState) => state.stateHistory
+);
+
 export const getSelectedRelationship = createSelector(
   getStatesState,
   (state: StateManagementState) => state.selectedRelationship
