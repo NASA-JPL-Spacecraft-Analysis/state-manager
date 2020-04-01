@@ -7,7 +7,6 @@ public class StateHistory extends StateVariable{
     public StateHistory() {}
 
     public StateHistory(StateVariable stateVariable) {
-        this.setStateId(stateVariable.getId());
         this.setIdentifier(stateVariable.getIdentifier());
         this.setDisplayName(stateVariable.getDisplayName());
         this.setType(stateVariable.getType());

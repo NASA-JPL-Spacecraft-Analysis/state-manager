@@ -136,6 +136,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
                 StateHistory stateHistory = new StateHistory(setStateVariable(resultSet, new StateVariable()));
 
                 stateHistory.setId(Integer.parseInt(resultSet.getString("id")));
+                stateHistory.setStateId(Integer.parseInt(resultSet.getString("state_id")));
                 stateHistory.setUpdated(DatabaseUtil.convertMysqlDate(resultSet.getString("updated")));
 
                 stateHistoryList.add(stateHistory);
