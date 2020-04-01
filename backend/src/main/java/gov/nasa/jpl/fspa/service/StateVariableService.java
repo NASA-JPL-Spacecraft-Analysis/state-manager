@@ -40,9 +40,13 @@ public interface StateVariableService {
 
     Map<Integer, StateVariable> mapStateVariables(List<StateVariable> stateVariables);
 
+    Map<String, Integer> getMappedIdentifiers();
+
     List<String> getIdentifiers();
 
     List<StateEnumeration> saveStateEnumerations(int stateVariableId, List<StateEnumeration> stateEnumerations);
 
     Map<Integer, StateVariable> saveStateVariables(List<StateVariable> stateVariables);
+
+    Map<Integer, List<StateEnumeration>> saveUploadedEnumerations(List<StateEnumeration> enumerations);
 }

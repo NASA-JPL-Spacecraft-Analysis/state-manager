@@ -1,26 +1,22 @@
 package gov.nasa.jpl.fspa.service;
 
-import com.opencsv.CSVWriter;
+import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import gov.nasa.jpl.fspa.model.EnumerationCsv;
+import gov.nasa.jpl.fspa.model.StateEnumeration;
+import gov.nasa.jpl.fspa.model.StateVariable;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class CsvServiceImpl<T> implements CsvService<T> {
-    private final Class<T> type;
-
-    public CsvServiceImpl(Class<T> type) {
-        this.type = type;
-    }
+public class CsvServiceImpl implements CsvService {
 
     @Override
-    public String outputAsCsv(List<T> objectList) {
+    public <T> String outputAsCsv(List<T> objectList, Class<T> type) {
         StringBuilder csvOutput = new StringBuilder();
 
         // Create columns for all the properties.
@@ -42,12 +38,32 @@ public class CsvServiceImpl<T> implements CsvService<T> {
     }
 
     @Override
-    public List<T> parseCsv(InputStream inputStream) {
-        List<T> parsedItems = new ArrayList<>();
+    public List<EnumerationCsv> parseStateEnumerations(InputStream inputStream) {
+        List<EnumerationCsv> parsedStateEnumerations = new ArrayList<>();
 
+        return parseCsv(inputStream, parsedStateEnumerations, EnumerationCsv.class);
+    }
+
+    @Override
+    public List<StateVariable> parseStateVariables(InputStream inputStream) {
+        List<StateVariable> parsedStateVariables = new ArrayList<>();
+
+        return parseCsv(inputStream, parsedStateVariables, StateVariable.class);
+    }
+
+    /**
+     * Generic csv to bean parser.
+     * Will only parse into existing classes we have defined.
+     * @param inputStream The inputStream from the uploaded .csv file.
+     * @param parsedItems The list we want to parse the items into.
+     * @param type The type we want to parse into.
+     * @param <T> The type we want to parse into.
+     * @return The list of parsed items.
+     */
+    private <T> List<T> parseCsv(InputStream inputStream, List<T> parsedItems, Class<T> type) {
         try {
             Reader reader = new InputStreamReader(inputStream);
-            CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(reader).withType(this.type).build();
+            CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(reader).withType(type).build();
 
             parsedItems.addAll(csvToBean.parse());
 

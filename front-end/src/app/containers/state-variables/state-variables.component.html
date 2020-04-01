@@ -10,11 +10,15 @@
       Create New State 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="fileUpload.click()">
+    <button mat-raised-button class="gray-button" (click)="statesFileUpload.click()">
       Upload States
     </button>
+    <input #statesFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, statesUploadableType)" />
 
-    <input #fileUpload class="file-upload-input" type="file" (input)="onUploadStates($event)" />
+    <button mat-raised-button class="gray-button" (click)="enumerationsFileUpload.click()">
+      Upload Enumerations 
+    </button>
+    <input #enumerationsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, enumerationsUploadableType)" />
   </div>
 </mat-toolbar>
 
