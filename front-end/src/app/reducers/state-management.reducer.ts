@@ -10,6 +10,7 @@ export interface StateManagementState {
   selectedRelationship: Relationship;
   selectedStateVariable: StateVariable;
   stateEnumerations: StateEnumerationMap;
+  stateHistory: StateVariableMap;
   stateVariables: StateVariableMap;
 }
 
@@ -20,6 +21,7 @@ export const initialState: StateManagementState = {
   selectedRelationship: null,
   selectedStateVariable: null,
   stateEnumerations: null,
+  stateHistory: null,
   stateVariables: null
 };
 
@@ -89,6 +91,10 @@ export const reducer = createReducer(
   on(StateVariableActions.setStateEnumerations, (state, action) => ({
     ...state,
     stateEnumerations: action.stateEnumerations
+  })),
+  on(StateVariableActions.setStateHistory, (state, action) => ({
+    ...state,
+    stateHistory: action.stateHistory
   })),
   on(StateVariableActions.setStateVariables, (state, action) => ({
     ...state,

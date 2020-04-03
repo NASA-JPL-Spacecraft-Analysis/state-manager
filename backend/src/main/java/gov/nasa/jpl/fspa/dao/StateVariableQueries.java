@@ -7,6 +7,8 @@ public class StateVariableQueries {
 
     public static String GET_STATE_ENUMERATIONS = " select * from state_enumerations ";
 
+    public static String GET_STATE_HISTORY = " select * from state_history ";
+
     public static String GET_STATE_ENUMERATIONS_BY_STATE_VARIABLE_ID = " select * from state_enumerations "
                                                                      + " where state_variable_id = ? ";
 
@@ -21,14 +23,19 @@ public class StateVariableQueries {
                                                    + " where id = ? ";
 
     public static String CREATE_STATE_VARIABLE = " insert into state_variables "
-                                               + " (identifier, displayName, type, units, source, subsystem, description) "
+                                               + " (identifier, display_name, type, units, source, subsystem, description) "
                                                + " values "
                                                + " (?, ?, ?, ?, ?, ?, ?) ";
+
+    public static String CREATE_STATE_HISTORY = " insert into state_history"
+                                              + " (state_id, identifier, display_name, type, units, source, subsystem, description, updated) "
+                                              + " values "
+                                              + " (?, ?, ?, ?, ?, ?, ?, ?, now()) ";
 
     public static String UPDATE_STATE_VARIABLE = " update state_variables "
                                                + " set "
                                                + " identifier = ?, "
-                                               + " displayName = ?, "
+                                               + " display_name = ?, "
                                                + " type = ?, "
                                                + " units = ?, "
                                                + " source = ?, "

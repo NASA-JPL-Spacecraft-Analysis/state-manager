@@ -2,6 +2,7 @@ package gov.nasa.jpl.fspa;
 
 import gov.nasa.jpl.fspa.model.*;
 import gov.nasa.jpl.fspa.service.*;
+
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -64,6 +65,19 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.OK).entity(stateEnumerationMap).build();
+    }
+
+    @GET
+    @Path("/state-history")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStateHistory() {
+        Map<Integer, StateHistory> stateHistoryMap = stateVariableService.getStateHistory();
+
+        if (stateHistoryMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(stateHistoryMap).build();
     }
 
     @GET

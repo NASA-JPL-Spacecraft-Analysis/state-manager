@@ -1,8 +1,6 @@
 package gov.nasa.jpl.fspa.dao;
 
-import gov.nasa.jpl.fspa.model.Identifier;
-import gov.nasa.jpl.fspa.model.StateEnumeration;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
 
 import java.sql.*;
@@ -20,18 +18,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                StateVariable stateVariable = new StateVariable();
-
-                stateVariable.setId(Integer.valueOf(resultSet.getString("id")));
-                stateVariable.setIdentifier(resultSet.getString("identifier"));
-                stateVariable.setDisplayName(resultSet.getString("displayName"));
-                stateVariable.setType(resultSet.getString("type"));
-                stateVariable.setUnits(resultSet.getString("units"));
-                stateVariable.setSource(resultSet.getString("source"));
-                stateVariable.setSubsystem(resultSet.getString("subsystem"));
-                stateVariable.setDescription(resultSet.getString("description"));
-
-                stateVariables.add(stateVariable);
+                stateVariables.add(setStateVariable(resultSet, new StateVariable()));
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -64,34 +51,13 @@ public class StateVariableDaoImpl implements StateVariableDao {
             if (resultSet.next()) {
                 stateVariable.setId(resultSet.getInt(1));
             }
+
+            saveStateHistory(stateVariable);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return stateVariable;
-    }
-
-    @Override
-    public void createStateVariables(List<StateVariable> stateVariables) {
-        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.CREATE_STATE_VARIABLE)) {
-            // some drivers have limits on batch length, so run batch every 1000
-            int stateVariableCounter = 0;
-
-            for (StateVariable stateVariable: stateVariables) {
-                setStateVariablePreparedStatement(preparedStatement, stateVariable);
-
-                preparedStatement.addBatch();
-
-                stateVariableCounter++;
-
-                if (stateVariableCounter % StateVariableQueries.BATCH_SIZE == 0 || stateVariableCounter == stateVariables.size()) {
-                    preparedStatement.executeBatch();
-                }
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
     }
 
     @Override
@@ -103,14 +69,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                StateEnumeration stateEnumeration = new StateEnumeration();
-
-                stateEnumeration.setId(Integer.parseInt(resultSet.getString("id")));
-                stateEnumeration.setStateVariableId(Integer.parseInt(resultSet.getString("state_variable_id")));
-                stateEnumeration.setLabel(resultSet.getString("label"));
-                stateEnumeration.setValue(Integer.parseInt(resultSet.getString("value")));
-
-                stateEnumerations.add(stateEnumeration);
+                stateEnumerations.add(setStateEnumeration(resultSet));
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -130,14 +89,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                StateEnumeration stateEnumeration = new StateEnumeration();
-
-                stateEnumeration.setId(Integer.parseInt(resultSet.getString("id")));
-                stateEnumeration.setStateVariableId(Integer.parseInt(resultSet.getString("state_variable_id")));
-                stateEnumeration.setLabel(resultSet.getString("label"));
-                stateEnumeration.setValue(Integer.parseInt(resultSet.getString("value")));
-
-                stateEnumerations.add(stateEnumeration);
+                stateEnumerations.add(setStateEnumeration(resultSet));
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -146,6 +98,29 @@ public class StateVariableDaoImpl implements StateVariableDao {
         return stateEnumerations;
     }
 
+    @Override
+    public List<StateHistory> getStateHistory() {
+        List<StateHistory> stateHistoryList = new ArrayList<>();
+
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement statement = connection.prepareStatement(StateVariableQueries.GET_STATE_HISTORY);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                StateHistory stateHistory = new StateHistory(setStateVariable(resultSet, new StateVariable()));
+
+                stateHistory.setId(Integer.parseInt(resultSet.getString("id")));
+                stateHistory.setStateId(Integer.parseInt(resultSet.getString("state_id")));
+                stateHistory.setUpdated(DatabaseUtil.convertMysqlDate(resultSet.getString("updated")));
+
+                stateHistoryList.add(stateHistory);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return stateHistoryList;
+    }
 
     @Override
     public List<Identifier> getIdentifiers() {
@@ -253,6 +228,21 @@ public class StateVariableDaoImpl implements StateVariableDao {
         }
     }
 
+    private void saveStateHistory(StateVariable stateVariable) {
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(StateVariableQueries.CREATE_STATE_HISTORY)) {
+            StateHistory stateHistory = new StateHistory(stateVariable);
+
+            stateHistory.setStateId(stateVariable.getId());
+
+            setStateHistoryPreparedStatement(preparedStatement, stateHistory);
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setStateEnumerationPreparedStatement(PreparedStatement preparedStatement, StateEnumeration stateEnumeration) {
         try {
             preparedStatement.setInt(1, stateEnumeration.getStateVariableId());
@@ -262,6 +252,54 @@ public class StateVariableDaoImpl implements StateVariableDao {
             exception.printStackTrace();
         }
     }
+
+    private void setStateHistoryPreparedStatement(PreparedStatement preparedStatement, StateHistory stateHistory) {
+        try {
+            preparedStatement.setInt(1, stateHistory.getStateId());
+            preparedStatement.setString(2, stateHistory.getIdentifier());
+            preparedStatement.setString(3, stateHistory.getDisplayName());
+            preparedStatement.setString(4, stateHistory.getType());
+            preparedStatement.setString(5, stateHistory.getUnits());
+            preparedStatement.setString(6, stateHistory.getSource());
+            preparedStatement.setString(7, stateHistory.getSubsystem());
+            preparedStatement.setString(8, stateHistory.getDescription());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private StateEnumeration setStateEnumeration(ResultSet resultSet) {
+        StateEnumeration stateEnumeration = new StateEnumeration();
+
+        try {
+            stateEnumeration.setId(Integer.parseInt(resultSet.getString("id")));
+            stateEnumeration.setStateVariableId(Integer.parseInt(resultSet.getString("state_variable_id")));
+            stateEnumeration.setLabel(resultSet.getString("label"));
+            stateEnumeration.setValue(Integer.parseInt(resultSet.getString("value")));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return stateEnumeration;
+    }
+
+    private StateVariable setStateVariable(ResultSet resultSet, StateVariable stateVariable) {
+        try {
+            stateVariable.setId(Integer.valueOf(resultSet.getString("id")));
+            stateVariable.setIdentifier(resultSet.getString("identifier"));
+            stateVariable.setDisplayName(resultSet.getString("display_name"));
+            stateVariable.setType(resultSet.getString("type"));
+            stateVariable.setUnits(resultSet.getString("units"));
+            stateVariable.setSource(resultSet.getString("source"));
+            stateVariable.setSubsystem(resultSet.getString("subsystem"));
+            stateVariable.setDescription(resultSet.getString("description"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return stateVariable;
+    }
+
     private void setStateVariablePreparedStatement(PreparedStatement preparedStatement, StateVariable stateVariable) {
         try {
             preparedStatement.setString(1, stateVariable.getIdentifier());

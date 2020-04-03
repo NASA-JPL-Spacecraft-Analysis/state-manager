@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -11,25 +11,37 @@ import { MaterialModule } from 'src/app/material';
   styleUrls: [ 'state-variable-table.component.css' ],
   templateUrl: 'state-variable-table.component.html'
 })
-export class StateVariableTableComponent implements OnChanges {
+export class StateVariableTableComponent implements OnChanges, OnInit {
   @Input() public stateVariableMap: StateVariableMap;
+  @Input() public history: boolean;
 
   @Output() public stateVariableSelected: EventEmitter<StateVariable>;
 
   public dataSource: MatTableDataSource<StateVariable>;
   public stateVariableMapSize: number;
-  public displayedColumns: string[] = [
-    'identifier',
-    'displayName',
-    'type',
-    'units',
-    'source',
-    'subsystem',
-    'description'
-  ];
+  public displayedColumns: string[] = [];
 
   constructor() {
     this.stateVariableSelected = new EventEmitter<StateVariable>();
+  }
+
+  public ngOnInit(): void {
+    this.displayedColumns.push(
+      'identifier',
+      'displayName',
+      'type',
+      'units',
+      'source',
+      'subsystem',
+      'description'
+    );
+
+    if (this.history) {
+      this.displayedColumns.push(
+        'stateId',
+        'updated'
+      );
+    }
   }
 
   public ngOnChanges(): void {

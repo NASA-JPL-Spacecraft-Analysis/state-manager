@@ -2,6 +2,7 @@ package gov.nasa.jpl.fspa.dao;
 
 import gov.nasa.jpl.fspa.model.Identifier;
 import gov.nasa.jpl.fspa.model.StateEnumeration;
+import gov.nasa.jpl.fspa.model.StateHistory;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.util.Collection;
@@ -17,14 +18,10 @@ public interface StateVariableDao {
      */
     StateVariable createStateVariable(StateVariable stateVariable);
 
-    /**
-     * Creates a list of {@link StateVariable}s.
-     * @param stateVariables The list of state variables we are creating.
-     */
-    void createStateVariables(List<StateVariable> stateVariables);
-
     List<StateEnumeration> getStateEnumerations();
     List<StateEnumeration> getStateEnumerationsByStateVariableId(Integer id);
+
+    List<StateHistory> getStateHistory();
 
     List<Identifier> getIdentifiers();
 

@@ -73,6 +73,12 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
+  public getStateHistory(): Observable<StateVariableMap> {
+    return this.http.get<StateVariableMap>(
+      baseUrl + '/state-history'
+    );
+  }
+
   public getStateVariables(): Observable<StateVariableMap> {
     return this.http.get<StateVariableMap>(
       baseUrl + '/state-variables'

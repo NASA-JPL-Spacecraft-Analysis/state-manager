@@ -67,6 +67,18 @@ public class StateVariableServiceImpl implements StateVariableService {
         return mapEnumerations(stateVariableDao.getStateEnumerations());
     }
 
+    @Override
+    public Map<Integer, StateHistory> getStateHistory() {
+        List<StateHistory> stateHistoryList = stateVariableDao.getStateHistory();
+        Map<Integer, StateHistory> stateHistoryMap = new HashMap<>();
+
+        for (StateHistory stateHistory: stateHistoryList) {
+            stateHistoryMap.put(stateHistory.getId(), stateHistory);
+        }
+
+        return stateHistoryMap;
+    }
+
     /**
      * Gets our state variables sets their list of enumerations if they exist.
      * @return The list of state variables with their enumerations.
