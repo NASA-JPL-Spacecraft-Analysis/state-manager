@@ -6,7 +6,8 @@ import {
   StateEnumerationMap,
   StateEnumeration,
   Relationship,
-  RelationshipMap
+  RelationshipMap,
+  InformationTypesMap
 } from '../models';
 
 export const createStateVariable = createAction(
@@ -157,6 +158,21 @@ export const setSelectedRelationship = createAction(
 export const setSelectedStateVariable = createAction(
   '[state variable] setSelectedStateVariable',
   props<{ stateVariable: StateVariable }>()
+);
+
+export const uploadInformationTypes = createAction(
+  '[state variable] uploadInfomrationTypes',
+  props<{ file: File }>()
+);
+
+export const uploadInformationTypesFailure = createAction(
+  '[state variable] uploadInformationTypesFailure',
+  props<{ error: Error }>()
+);
+
+export const uploadInformationTypesSuccess = createAction(
+  '[state variable] uploadInformationTypesSuccess',
+  props<{ informationTypes: InformationTypesMap }>()
 );
 
 export const uploadEnumerations = createAction(

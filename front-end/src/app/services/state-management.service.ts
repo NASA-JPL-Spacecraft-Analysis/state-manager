@@ -8,7 +8,8 @@ import {
   StateVariableMap,
   StateEnumeration,
   Relationship,
-  RelationshipMap
+  RelationshipMap,
+  InformationTypesMap
 } from '../models';
 import { StateManagementServiceInterface } from './state-management.service.interface';
 import { environment } from 'src/environments/environment';
@@ -92,10 +93,17 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
-  public saveEnumerationsFile(file: File): Observable<StateEnumerationMap> {
-    const formData = new FormData();
+  public saveInformationTypesFile(file: File): Observable<InformationTypesMap> {
+    const formData = this.setFormData(file);
 
-    formData.append('file', file);
+    return this.http.post<InformationTypesMap>(
+      baseUrl + '/information-types-csv',
+      formData
+    );
+  }
+
+  public saveEnumerationsFile(file: File): Observable<StateEnumerationMap> {
+    const formData = this.setFormData(file);
 
     return this.http.post<StateEnumerationMap>(
       baseUrl + '/enumerations-csv',
@@ -104,13 +112,19 @@ export class StateManagementService implements StateManagementServiceInterface {
   }
 
   public saveStateVariablesFile(file: File): Observable<StateVariableMap> {
-    const formData = new FormData();
-
-    formData.append('file', file);
+    const formData = this.setFormData(file);
 
     return this.http.post<StateVariableMap>(
       baseUrl + '/state-variables-csv',
       formData
     );
+  }
+
+  private setFormData(file: File): FormData {
+    const formData = new FormData();
+
+    formData.append('file', file);
+
+    return formData;
   }
 }
