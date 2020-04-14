@@ -71,6 +71,18 @@ export class NavEffects {
           of(LayoutActions.toggleSidenav({
             showSidenav: false
           })),
+          this.stateManagementService.getInformationTypes().pipe(
+            map(informationTypes => StateVariableActions.setInformationTypes({
+              informationTypes
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchInformationTypesFailure({
+                  error
+                })
+              ]
+            )
+          ),
           this.stateManagementService.getRelationships().pipe(
             map(relationships => StateVariableActions.setRelationships({
               relationships
@@ -141,7 +153,7 @@ export class NavEffects {
         concat(
           this.stateManagementService.getStateHistory().pipe(
             map(stateHistory => StateVariableActions.setStateHistory({
-              stateHistory 
+              stateHistory
             })),
             catchError(
               (error: Error) => [

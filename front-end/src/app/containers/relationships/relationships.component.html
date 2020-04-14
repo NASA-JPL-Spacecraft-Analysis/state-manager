@@ -23,6 +23,7 @@
 
   <div class="sidenav" *ngIf="showSidenav">
     <relationships-sidenav
+      [informationTypesMap]="informationTypesMap"
       [relationship]="relationship"
       [stateVariableMap]="stateVariableMap"
       (formError)="onFormErrorOutput($event)"

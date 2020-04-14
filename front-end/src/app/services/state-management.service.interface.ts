@@ -16,6 +16,7 @@ export interface StateManagementServiceInterface {
   editRelationship(relationship: Relationship): Observable<Relationship>;
   editStateVariable(stateVariable: StateVariable): Observable<StateVariable>;
   getIdentifiers(): Observable<string[]>;
+  getInformationTypes(): Observable<InformationTypesMap>;
   getRelationships(): Observable<RelationshipMap>;
   getRelationshipHistory(): Observable<RelationshipMap>;
   getStateEnumerations(): Observable<StateEnumerationMap>;

@@ -33,8 +33,7 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
       'description',
       'subjectState',
       'targetState',
-      'type',
-      'targetName'
+      'type'
     );
 
     if (this.history) {

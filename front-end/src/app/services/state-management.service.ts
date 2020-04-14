@@ -56,6 +56,12 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
+  public getInformationTypes(): Observable<InformationTypesMap> {
+    return this.http.get<InformationTypesMap>(
+      baseUrl + '/information-types'
+    );
+  }
+
   public getRelationships(): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
       baseUrl + '/relationships'
