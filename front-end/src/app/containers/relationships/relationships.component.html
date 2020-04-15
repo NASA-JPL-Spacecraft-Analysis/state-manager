@@ -15,6 +15,7 @@
 <div class="relationships-content-container">
   <div class="relationships-content">
     <relationships-table
+      [informationTypesMap]="informationTypesMap"
       [relationshipMap]="relationshipMap"
       [stateVariableMap]="stateVariableMap"
       (relationshipSelected)="onModifyRelationship($event)">

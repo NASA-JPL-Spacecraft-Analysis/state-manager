@@ -4,5 +4,6 @@ public enum InformationTypesEnum {
     Activity,
     Command,
     Model,
-    FlightRule
+    FlightRule,
+    State
 }

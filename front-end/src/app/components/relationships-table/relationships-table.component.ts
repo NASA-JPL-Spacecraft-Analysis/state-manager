@@ -2,7 +2,7 @@ import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEm
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { RelationshipMap, Relationship, StateVariableMap } from 'src/app/models';
+import { RelationshipMap, Relationship, StateVariableMap, InformationTypesMap, InformationTypeEnum } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -12,10 +12,11 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'relationships-table.component.html'
 })
 export class RelationshipsTableComponent implements OnInit, OnChanges {
-  @Input() public relationshipMap: RelationshipMap;
-  @Input() public stateVariableMap: StateVariableMap;
   // True if we're looking at the history page.
   @Input() public history: boolean;
+  @Input() public informationTypesMap: InformationTypesMap;
+  @Input() public relationshipMap: RelationshipMap;
+  @Input() public stateVariableMap: StateVariableMap;
 
   @Output() public relationshipSelected: EventEmitter<Relationship>;
 
@@ -31,9 +32,10 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
     this.displayedColumns.push(
       'displayName',
       'description',
-      'subjectState',
-      'targetState',
-      'type'
+      'subjectType',
+      'targetType',
+      'subject',
+      'target'
     );
 
     if (this.history) {
@@ -56,12 +58,12 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
     }
   }
 
-  public getRelationshipStateName(id: number): string {
-    if (id !== null) {
+  public getTypeIdentifier(id: number, type: string): string {
+    if (type === InformationTypeEnum[InformationTypeEnum.State]) {
       return this.stateVariableMap[id].identifier;
     }
 
-    return null;
+    return this.informationTypesMap[type][id].identifier;
   }
 
   public onRowClick(relationship: Relationship): void {

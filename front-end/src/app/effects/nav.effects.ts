@@ -117,6 +117,18 @@ export class NavEffects {
       ofRoute('relationship-history'),
       switchMap(_ =>
         concat(
+          this.stateManagementService.getInformationTypes().pipe(
+            map(informationTypes => StateVariableActions.setInformationTypes({
+              informationTypes
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchInformationTypesFailure({
+                  error
+                })
+              ]
+            )
+          ),
           this.stateManagementService.getRelationshipHistory().pipe(
             map(relationshipHistory => StateVariableActions.setRelationshipHistory({
               relationshipHistory

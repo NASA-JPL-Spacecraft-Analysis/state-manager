@@ -1,5 +1,6 @@
 package gov.nasa.jpl.fspa.dao;
 
+import gov.nasa.jpl.fspa.model.InformationTypesEnum;
 import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.RelationshipHistory;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
@@ -70,21 +71,10 @@ public class RelationshipDaoImpl implements RelationshipDao {
                      Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, relationship.getDisplayName());
             preparedStatement.setString(2, relationship.getDescription());
-
-            if (relationship.getSubjectStateId() == null) {
-                preparedStatement.setNull(3, Types.INTEGER);
-            } else {
-                preparedStatement.setInt(3, relationship.getSubjectStateId());
-            }
-
-            if (relationship.getTargetStateId() == null) {
-                preparedStatement.setNull(4, Types.INTEGER);
-            } else {
-                preparedStatement.setInt(4, relationship.getTargetStateId());
-            }
-
-            preparedStatement.setString(5, relationship.getTargetName());
-            preparedStatement.setString(6, relationship.getType());
+            preparedStatement.setInt(3, relationship.getSubjectType().ordinal());
+            preparedStatement.setInt(4, relationship.getTargetType().ordinal());
+            preparedStatement.setInt(5, relationship.getSubjectTypeId());
+            preparedStatement.setInt(6, relationship.getTargetTypeId());
 
             if (relationship.getId() != null) {
                 preparedStatement.setInt(7, relationship.getId());
@@ -112,21 +102,10 @@ public class RelationshipDaoImpl implements RelationshipDao {
             preparedStatement.setInt(1, relationship.getId());
             preparedStatement.setString(2, relationship.getDisplayName());
             preparedStatement.setString(3, relationship.getDescription());
-
-            if (relationship.getSubjectStateId() == null) {
-                preparedStatement.setNull(4, Types.INTEGER);
-            } else {
-                preparedStatement.setInt(4, relationship.getSubjectStateId());
-            }
-
-            if (relationship.getTargetStateId() == null) {
-                preparedStatement.setNull(5, Types.INTEGER);
-            } else {
-                preparedStatement.setInt(5, relationship.getTargetStateId());
-            }
-
-            preparedStatement.setString(6, relationship.getTargetName());
-            preparedStatement.setString(7, relationship.getType());
+            preparedStatement.setInt(4, relationship.getSubjectType().ordinal());
+            preparedStatement.setInt(5, relationship.getTargetType().ordinal());
+            preparedStatement.setInt(6, relationship.getSubjectTypeId());
+            preparedStatement.setInt(7, relationship.getTargetTypeId());
 
             preparedStatement.executeUpdate();
         } catch (Exception e) {
@@ -136,20 +115,15 @@ public class RelationshipDaoImpl implements RelationshipDao {
 
     private Relationship setRelationship(ResultSet resultSet, Relationship relationship) {
         try {
+            InformationTypesEnum[] informationTypesEnumValues = InformationTypesEnum.values();
+
             relationship.setId(Integer.parseInt(resultSet.getString("id")));
             relationship.setDisplayName(resultSet.getString("display_name"));
             relationship.setDescription(resultSet.getString("description"));
-
-            if (resultSet.getString("subject_state_id") != null) {
-                relationship.setSubjectStateId(Integer.valueOf(resultSet.getString("subject_state_id")));
-            }
-
-            if (resultSet.getString("target_state_id") != null) {
-                relationship.setTargetStateId(Integer.valueOf(resultSet.getString("target_state_id")));
-            }
-
-            relationship.setTargetName(resultSet.getString("target_name"));
-            relationship.setType(resultSet.getString("type"));
+            relationship.setSubjectType(informationTypesEnumValues[Integer.parseInt(resultSet.getString("subject_type"))]);
+            relationship.setTargetType(informationTypesEnumValues[Integer.parseInt(resultSet.getString("target_type"))]);
+            relationship.setSubjectTypeId(Integer.valueOf(resultSet.getString("subject_type_id")));
+            relationship.setTargetTypeId(Integer.valueOf(resultSet.getString("target_type_id")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
