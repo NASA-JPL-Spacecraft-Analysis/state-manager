@@ -19,9 +19,9 @@ public class RelationshipQueries {
                                              + " set "
                                              + " display_name = ?, "
                                              + " description = ?, "
-                                             + " subject_type = ? "
-                                             + " target_type = ? "
+                                             + " subject_type = ?, "
+                                             + " target_type = ?, "
                                              + " subject_type_id = ?, "
-                                             + " target_type_id = ?, "
+                                             + " target_type_id = ? "
                                              + " where id = ? ";
 }

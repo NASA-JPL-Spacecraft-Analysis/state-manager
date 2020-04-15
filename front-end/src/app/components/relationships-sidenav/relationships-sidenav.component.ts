@@ -1,5 +1,5 @@
 import { Component, NgModule, ChangeDetectionStrategy, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -7,7 +7,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { Relationship } from '../../models/relationship';
 import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
 import { MaterialModule } from 'src/app/material';
-import { StateVariableMap, InformationTypesMap, InformationTypeEnum } from 'src/app/models';
+import { StateVariableMap, InformationTypesMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -57,6 +57,9 @@ export class RelationshipsSidenavComponent implements OnChanges {
       this.newRelationship = {
         ...this.relationship
       };
+
+      this.subjectType = this.newRelationship.subjectType.toString();
+      this.targetType = this.newRelationship.targetType.toString();
     }
 
     this.form = new FormGroup({
@@ -73,35 +76,14 @@ export class RelationshipsSidenavComponent implements OnChanges {
   }
 
   public onSubmit(): void {
-    // TODO: Fix all this
-    if (this.form.value.type === 'State') {
-      this.form.setErrors(this.subjectTargetStateValidator());
-    } else {
-      // Only null out targetStateId and subjectStateId if they exist on the form.
-      if (this.form.controls.targetStateId !== undefined) {
-        this.form.controls.targetStateId.setValue(null);
-        this.form.controls.subjectStateId.setValue(null);
-      }
-    }
+    this.form.controls.subjectType.setValue(this.subjectType);
+    this.form.controls.targetType.setValue(this.targetType);
 
     if (this.form.valid) {
       this.modifyRelationship.emit(this.form.value);
     } else {
-      this.formError.emit('Please fill in required form fields, including selecting a subject and target state, or a target name');
+      this.formError.emit('Please fill in required form fields, including selecting a subject and a target');
     }
-  }
-
-  private subjectTargetStateValidator(): ValidationErrors {
-    const formValue = this.form.value;
-
-    if (formValue.subjectStateId !== null
-        && formValue.targetStateId !== null) {
-      return null;
-    }
-
-    return {
-      subjectTargetStateError: true
-    };
   }
 }
 
