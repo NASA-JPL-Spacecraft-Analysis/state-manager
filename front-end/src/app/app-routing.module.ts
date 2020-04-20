@@ -2,13 +2,23 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterStateSerializer } from '@ngrx/router-store';
 
-import { StateVariablesComponent, StateHistoryComponent, RelationshipsComponent, RelationshipHistoryComponent } from './containers';
+import {
+  StateVariablesComponent,
+  StateHistoryComponent,
+  RelationshipsComponent,
+  RelationshipHistoryComponent,
+  FaqComponent
+} from './containers';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
     redirectTo: 'states'
+  },
+  {
+    component: FaqComponent,
+    path: 'faqs'
   },
   {
     component: RelationshipsComponent,

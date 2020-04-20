@@ -1,0 +1,107 @@
+<div class="faq-container">
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          API Reference
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-divider></mat-divider>
+
+      <code>GET {{url}}/information-types</code>
+
+      <p>Gets all information types, mapped by Activity, Command, Flight Rule, and Model.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>GET {{url}}/relationships</code>
+
+      <p>Gets all relationships, mapped by id.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>GET {{url}}/relationship-history</code>
+
+      <p>Gets all the relationship history, mapped by id.
+
+      <mat-divider></mat-divider>
+  
+      <code>GET {{url}}/state-enumerations</code>
+
+      <p>Gets all state enumerations, mapped by id.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>GET {{url}}/state-history</code>
+
+      <p>Gets all state history, mapped by id.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>GET {{url}}/state-variables</code>
+
+      <p>Gets all state variables, mapped by id.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>GET {{url}}/state-variable-csv</code>
+
+      <p>Gets all state variables as a .csv file.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>GET {{url}}/state-identifiers</code>
+
+      <p>Gets all state identifiers as a list of strings.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>POST {{url}}/relationship</code>
+
+      <p>Creates a new relationship.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>POST {{url}}/state-enumerations/{{ '{' }}stateVariableId{{ '}' }}</code>
+
+      <p>Creates one ore more state enumerations for a given state variable, by id.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>POST {{url}}/state-variable</code>
+
+      <p>Creates a new state variable.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>POST {{url}}/information-types-csv</code>
+
+      <p>Creates one or multiple information types by csv.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>POST {{url}}/enumerations-csv</code>
+
+      <p>Creates one or multiple state enumerations by csv.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>POST {{url}}/state-variable-csv</code>
+
+      <p>Creates one or multiple state variables by csv.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>PUT {{url}}/relationship</code>
+
+      <p>Updates an existing relationship.</p>
+
+      <mat-divider></mat-divider>
+  
+      <code>PUT {{url}}/state-variable</code>
+
+      <p>Updates an existing state variable.</p>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
