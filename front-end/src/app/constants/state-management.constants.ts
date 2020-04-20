@@ -1,3 +1,5 @@
+import { InformationTypeEnum } from '../models';
+
 export class StateManagementConstants {
   /**
    * TODO: We'll need a better way to store this in the future. We'll need this list
@@ -5,9 +7,10 @@ export class StateManagementConstants {
    * the user is passing a correct type.
    */
   public static relationshipTypes: string[] = [
-    'Activity',
-    'Command',
-    'Model',
-    'State'
+    InformationTypeEnum[InformationTypeEnum.Activity],
+    InformationTypeEnum[InformationTypeEnum.Command],
+    InformationTypeEnum[InformationTypeEnum.FlightRule],
+    InformationTypeEnum[InformationTypeEnum.Model],
+    InformationTypeEnum[InformationTypeEnum.State]
   ];
 }

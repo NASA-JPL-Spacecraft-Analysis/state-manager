@@ -6,7 +6,8 @@ import {
   StateVariable,
   StateEnumeration,
   Relationship,
-  RelationshipMap
+  RelationshipMap,
+  InformationTypesMap
 } from '../models';
 
 export interface StateManagementServiceInterface {
@@ -15,12 +16,14 @@ export interface StateManagementServiceInterface {
   editRelationship(relationship: Relationship): Observable<Relationship>;
   editStateVariable(stateVariable: StateVariable): Observable<StateVariable>;
   getIdentifiers(): Observable<string[]>;
+  getInformationTypes(): Observable<InformationTypesMap>;
   getRelationships(): Observable<RelationshipMap>;
   getRelationshipHistory(): Observable<RelationshipMap>;
   getStateEnumerations(): Observable<StateEnumerationMap>;
   getStateHistory(): Observable<StateVariableMap>;
   getStateVariables(): Observable<StateVariableMap>;
   saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]>;
+  saveInformationTypesFile(file: File): Observable<InformationTypesMap>;
   saveEnumerationsFile(file: File): Observable<StateEnumerationMap>;
   saveStateVariablesFile(file: File): Observable<StateVariableMap>;
 }

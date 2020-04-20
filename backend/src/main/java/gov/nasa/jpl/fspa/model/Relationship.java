@@ -4,10 +4,10 @@ public class Relationship {
     private Integer id;
     private String displayName;
     private String description;
-    private Integer subjectStateId;
-    private Integer targetStateId;
-    private String type;
-    private String targetName;
+    private InformationTypesEnum subjectType;
+    private InformationTypesEnum targetType;
+    private Integer subjectTypeId;
+    private Integer targetTypeId;
 
     public Integer getId() {
         return id;
@@ -33,35 +33,35 @@ public class Relationship {
         this.description = description;
     }
 
-    public Integer getSubjectStateId() {
-        return subjectStateId;
+    public InformationTypesEnum getSubjectType() {
+        return subjectType;
     }
 
-    public void setSubjectStateId(Integer subjectStateId) {
-        this.subjectStateId = subjectStateId;
+    public void setSubjectType(InformationTypesEnum subjectType) {
+        this.subjectType = subjectType;
     }
 
-    public Integer getTargetStateId() {
-        return targetStateId;
+    public InformationTypesEnum getTargetType() {
+        return targetType;
     }
 
-    public void setTargetStateId(Integer targetStateId) {
-        this.targetStateId = targetStateId;
+    public void setTargetType(InformationTypesEnum targetType) {
+        this.targetType = targetType;
     }
 
-    public String getType() {
-        return type;
+    public Integer getSubjectTypeId() {
+        return subjectTypeId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setSubjectTypeId(Integer subjectTypeId) {
+        this.subjectTypeId = subjectTypeId;
     }
 
-    public String getTargetName() {
-        return targetName;
+    public Integer getTargetTypeId() {
+        return targetTypeId;
     }
 
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
+    public void setTargetTypeId(Integer targetTypeId) {
+        this.targetTypeId = targetTypeId;
     }
 }

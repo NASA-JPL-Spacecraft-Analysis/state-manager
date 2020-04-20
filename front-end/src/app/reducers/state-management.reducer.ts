@@ -1,10 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { StateVariableActions } from '../actions';
-import { RelationshipMap, StateVariable, StateEnumerationMap, StateVariableMap, Relationship } from '../models';
+import { RelationshipMap, StateVariable, StateEnumerationMap, StateVariableMap, Relationship, InformationTypesMap } from '../models';
 
 export interface StateManagementState {
   identifiers: Set<string>;
+  informationTypes: InformationTypesMap;
   relationships: RelationshipMap;
   relationshipHistory: RelationshipMap;
   selectedRelationship: Relationship;
@@ -16,6 +17,7 @@ export interface StateManagementState {
 
 export const initialState: StateManagementState = {
   identifiers: new Set<string>(),
+  informationTypes: null,
   relationships: null,
   relationshipHistory: null,
   selectedRelationship: null,
@@ -80,6 +82,10 @@ export const reducer = createReducer(
       identifiers
     };
   }),
+  on(StateVariableActions.setInformationTypes, (state, action) => ({
+    ...state,
+    informationTypes: action.informationTypes
+  })),
   on(StateVariableActions.setRelationships, (state, action) => ({
     ...state,
     relationships: action.relationships

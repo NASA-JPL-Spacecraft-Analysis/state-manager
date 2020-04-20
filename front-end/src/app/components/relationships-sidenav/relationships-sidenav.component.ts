@@ -1,13 +1,13 @@
 import { Component, NgModule, ChangeDetectionStrategy, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
 import { Relationship } from '../../models/relationship';
-import { StatePickerModule } from '../state-picker/state-picker.component';
+import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
 import { MaterialModule } from 'src/app/material';
-import { StateVariableMap } from 'src/app/models';
+import { StateVariableMap, InformationTypesMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -17,6 +17,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
   templateUrl: 'relationships-sidenav.component.html'
 })
 export class RelationshipsSidenavComponent implements OnChanges {
+  @Input() public informationTypesMap: InformationTypesMap;
   @Input() public relationship: Relationship;
   @Input() public stateVariableMap: StateVariableMap;
 
@@ -25,8 +26,9 @@ export class RelationshipsSidenavComponent implements OnChanges {
 
   public newRelationship: Relationship;
   public form: FormGroup;
-  public relationshipTypes: string[];
-  public selectedType: string;
+  public informationTypes: string[];
+  public subjectType: string;
+  public targetType: string;
 
   constructor(
     private iconRegistry: MatIconRegistry,
@@ -37,7 +39,7 @@ export class RelationshipsSidenavComponent implements OnChanges {
     this.formError = new EventEmitter<string>();
     this.modifyRelationship = new EventEmitter<Relationship>();
 
-    this.relationshipTypes = StateManagementConstants.relationshipTypes;
+    this.informationTypes = StateManagementConstants.relationshipTypes;
   }
 
   public ngOnChanges(): void {
@@ -46,25 +48,26 @@ export class RelationshipsSidenavComponent implements OnChanges {
         id: null,
         displayName: '',
         description: '',
-        subjectStateId: null,
-        targetStateId: null,
-        type: '',
-        targetName: ''
+        subjectType: null,
+        targetType: null,
+        subjectTypeId: null,
+        targetTypeId: null
       };
     } else {
       this.newRelationship = {
         ...this.relationship
       };
 
-      this.selectedType = this.newRelationship.type;
+      this.subjectType = this.newRelationship.subjectType.toString();
+      this.targetType = this.newRelationship.targetType.toString();
     }
 
     this.form = new FormGroup({
       id: new FormControl(this.newRelationship.id),
       displayName: new FormControl(this.newRelationship.displayName, [ Validators.required ]),
       description: new FormControl(this.newRelationship.description),
-      type: new FormControl(this.newRelationship.type, [ Validators.required ]),
-      targetName: new FormControl(this.newRelationship.targetName)
+      subjectType: new FormControl(this.newRelationship.subjectType, [ Validators.required ]),
+      targetType: new FormControl(this.newRelationship.targetType, [ Validators.required ])
     });
   }
 
@@ -73,61 +76,14 @@ export class RelationshipsSidenavComponent implements OnChanges {
   }
 
   public onSubmit(): void {
-    this.form.controls.type.setValue(this.selectedType);
-
-    /**
-     * If the user is saving a state relationship, there shouldn't be a targetName.
-     * If the user is saving any other type of relationship, there shouldn't be a subject or state variable.
-     */
-    if (this.form.value.type === 'State') {
-      // Only null out targetName if it exists on the form.
-      if (this.form.controls.targetName !== undefined) {
-        this.form.controls.targetName.setValue(null);
-      }
-
-      this.form.setErrors(this.subjectTargetStateValidator());
-    } else {
-      // Only null out targetStateId and subjectStateId if they exist on the form.
-      if (this.form.controls.targetStateId !== undefined) {
-        this.form.controls.targetStateId.setValue(null);
-        this.form.controls.subjectStateId.setValue(null);
-      }
-
-      this.form.setErrors(this.targetNameValidator());
-    }
+    this.form.controls.subjectType.setValue(this.subjectType);
+    this.form.controls.targetType.setValue(this.targetType);
 
     if (this.form.valid) {
       this.modifyRelationship.emit(this.form.value);
     } else {
-      this.formError.emit('Please fill in required form fields, including selecting a subject and target state, or a target name');
+      this.formError.emit('Please fill in required form fields, including selecting a subject and a target');
     }
-  }
-
-  private subjectTargetStateValidator(): ValidationErrors {
-    const formValue = this.form.value;
-
-    if (formValue.subjectStateId !== null
-        && formValue.targetStateId !== null) {
-      return null;
-    }
-
-    return {
-      subjectTargetStateError: true
-    };
-  }
-
-  private targetNameValidator(): ValidationErrors {
-    const formValue = this.form.value;
-
-    if (formValue.targetName !== null
-      && formValue.targetName !== undefined
-      && formValue.targetName !== '') {
-      return null;
-    }
-
-    return {
-      targetNameError: true
-    };
   }
 }
 
@@ -143,7 +99,7 @@ export class RelationshipsSidenavComponent implements OnChanges {
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    StatePickerModule
+    RelationshipTypePickerModule
   ]
 })
 export class RelationshipsSidenavModule {}

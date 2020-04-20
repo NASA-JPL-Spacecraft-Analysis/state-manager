@@ -1,5 +1,7 @@
 package gov.nasa.jpl.fspa;
 
+import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesService;
+import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesServiceImpl;
 import gov.nasa.jpl.fspa.model.*;
 import gov.nasa.jpl.fspa.service.*;
 
@@ -20,12 +22,27 @@ import java.util.Map;
 public class StateManagementResource {
     private final CsvServiceImpl csvService;
     private final EnumerationService enumerationService;
+    private final InformationTypesService informationTypesService;
     private final StateVariableService stateVariableService;
 
     public StateManagementResource() {
         csvService = new CsvServiceImpl();
         enumerationService = new EnumerationServiceImpl();
+        informationTypesService = new InformationTypesServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
+    }
+
+    @GET
+    @Path("/information-types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInformationTypes() {
+        Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap = informationTypesService.getInformationTypes();
+
+        if (informationTypesMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(informationTypesMap).build();
     }
 
     @GET
@@ -159,6 +176,24 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.CREATED).entity(createdStateVariable).build();
+    }
+
+    @POST
+    @Path("/information-types-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream) {
+        List<InformationTypes> parsedInformationTypesList = csvService.parseInformationTypes(inputStream);
+
+        if (parsedInformationTypesList.size() > 0) {
+            // TODO: Check information type identifiers for duplicates.
+            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
+                    informationTypesService.saveUploadedInformationTypes(parsedInformationTypesList);
+
+            return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @POST

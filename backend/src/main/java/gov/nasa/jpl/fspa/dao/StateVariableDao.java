@@ -1,9 +1,6 @@
 package gov.nasa.jpl.fspa.dao;
 
-import gov.nasa.jpl.fspa.model.Identifier;
-import gov.nasa.jpl.fspa.model.StateEnumeration;
-import gov.nasa.jpl.fspa.model.StateHistory;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.util.Collection;
 import java.util.List;

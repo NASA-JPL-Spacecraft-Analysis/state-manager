@@ -14,8 +14,9 @@ import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 
 enum UploadableTypes {
-  States,
-  Enumerations
+  InformationTypes,
+  Enumerations,
+  States
 }
 
 @Component({
@@ -28,8 +29,9 @@ export class StateVariablesComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateVariableMap: StateVariableMap;
   public stateVariable: StateVariable;
-  public statesUploadableType = UploadableTypes.States;
+  public informationTypesUploadableType = UploadableTypes.InformationTypes;
   public enumerationsUploadableType = UploadableTypes.Enumerations;
+  public statesUploadableType = UploadableTypes.States;
 
   private subscriptions = new SubSink();
 
@@ -120,13 +122,18 @@ export class StateVariablesComponent implements OnDestroy {
 
     if (file && fileType === 'csv') {
       switch (type) {
-        case UploadableTypes.States:
-          this.store.dispatch(StateVariableActions.uploadStateVariables({
+        case UploadableTypes.InformationTypes:
+          this.store.dispatch(StateVariableActions.uploadInformationTypes({
             file
           }));
           break;
         case UploadableTypes.Enumerations:
           this.store.dispatch(StateVariableActions.uploadEnumerations({
+            file
+          }));
+          break;
+        case UploadableTypes.States:
+          this.store.dispatch(StateVariableActions.uploadStateVariables({
             file
           }));
           break;

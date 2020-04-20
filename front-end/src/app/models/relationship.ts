@@ -1,4 +1,5 @@
 import { StringTMap } from './string-t-map';
+import { InformationTypeEnum } from './information-types';
 
 // TODO: Figure out final types.
 export interface Relationship {
@@ -6,10 +7,10 @@ export interface Relationship {
   relationshipId?: number;
   displayName: string;
   description: string;
-  subjectStateId: number;
-  targetStateId: number;
-  type: string;
-  targetName: string;
+  subjectType: InformationTypeEnum;
+  targetType: InformationTypeEnum;
+  subjectTypeId: number;
+  targetTypeId: number;
   updated?: Date;
 }
 

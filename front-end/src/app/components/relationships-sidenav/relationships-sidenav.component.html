@@ -24,28 +24,37 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="Type" [(value)]="selectedType">
-        <mat-option *ngFor="let relationshipType of relationshipTypes" [value]="relationshipType">
-          {{relationshipType}}
+      <mat-select placeholder="Subject Type" [(value)]="subjectType">
+        <mat-option *ngFor="let informationType of informationTypes" [value]="informationType">
+          {{informationType}}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
-    <state-picker *ngIf="selectedType === 'State'; else targetName"
+    <relationship-type-picker
+      [informationTypesMap]="informationTypesMap"
+      [isSubject]="true"
       [parentFormGroup]="form"
       [relationship]="newRelationship"
-      [stateVariableMap]="stateVariableMap">
-    </state-picker>
+      [stateVariableMap]="stateVariableMap"
+      [type]="subjectType">
+    </relationship-type-picker>
 
-    <ng-template #targetName>
-      <mat-form-field>
-        <input matInput
-          placeholder="Target Name"
-          type="text"
-          formControlName="targetName"
-        />
-      </mat-form-field>
-    </ng-template>
+    <mat-form-field class="target-type-picker">
+      <mat-select placeholder="Target Type" [(value)]="targetType">
+        <mat-option *ngFor="let informationType of informationTypes" [value]="informationType">
+          {{informationType}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <relationship-type-picker
+      [informationTypesMap]="informationTypesMap"
+      [parentFormGroup]="form"
+      [relationship]="newRelationship"
+      [stateVariableMap]="stateVariableMap"
+      [type]="targetType">
+    </relationship-type-picker>
 
     <div class="sidenav-actions">
       <button mat-raised-button color="primary" type="submit">Save</button>

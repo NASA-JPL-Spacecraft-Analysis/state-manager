@@ -5,7 +5,7 @@ import { switchMap, catchError, switchMapTo } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { StateVariableActions, ToastActions } from '../actions';
-import { StateVariable, StateVariableMap, Relationship, StateEnumerationMap } from '../models';
+import { StateVariable, StateVariableMap, Relationship, StateEnumerationMap, InformationTypesMap } from '../models';
 
 @Injectable()
 export class StateVariableEffects {
@@ -169,6 +169,38 @@ export class StateVariableEffects {
           )
         )
       )
+    );
+  });
+
+  public uploadInformationTypes = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateVariableActions.uploadInformationTypes),
+      switchMap(({ file }) => {
+        return this.stateManagementService.saveInformationTypesFile(
+          file
+        ).pipe(
+          switchMap(
+            (informationTypes: InformationTypesMap) => [
+              StateVariableActions.uploadInformationTypesSuccess({
+                informationTypes
+              }),
+              ToastActions.showToast({
+                message: 'Information types uploaded',
+                toastType: 'success'
+              })
+            ]
+          ),
+          catchError(
+            (error: HttpErrorResponse) => [
+              StateVariableActions.uploadInformationTypesFailure({ error }),
+              ToastActions.showToast({
+                message: error.error,
+                toastType: 'error'
+              })
+            ]
+          )
+        );
+      })
     );
   });
 

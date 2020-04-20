@@ -1,17 +1,15 @@
 package gov.nasa.jpl.fspa.service;
 
-import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import gov.nasa.jpl.fspa.model.EnumerationCsv;
-import gov.nasa.jpl.fspa.model.StateEnumeration;
+import gov.nasa.jpl.fspa.model.InformationTypes;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CsvServiceImpl implements CsvService {
 
@@ -35,6 +33,13 @@ public class CsvServiceImpl implements CsvService {
         }
 
         return csvOutput.toString();
+    }
+
+    @Override
+    public List<InformationTypes> parseInformationTypes(InputStream inputStream) {
+        List<InformationTypes> parsedInformationTypes = new ArrayList<>();
+
+        return parseCsv(inputStream, parsedInformationTypes, InformationTypes.class);
     }
 
     @Override

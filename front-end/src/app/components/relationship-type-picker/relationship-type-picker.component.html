@@ -1,0 +1,26 @@
+<div *ngIf="type">
+  <div class="form-input" *ngIf="type === stateEnumName; else informationType">
+    <mat-select
+      [(value)]="relationship[formProperty]"
+      (selectionChange)="onValueChange($event)">
+      <mat-option *ngFor="let value of stateVariableMap | keyvalue"
+        [value]="stateVariableMap[value.key].id">
+        {{stateVariableMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
+  </div>
+
+  <ng-template #informationType>
+    <div class="form-input">
+      <mat-select
+        *ngIf="currentTypeMap"
+        [(value)]="relationship[formProperty]"
+        (selectionChange)="onValueChange($event)">
+        <mat-option *ngFor="let value of currentTypeMap | keyvalue"
+          [value]="currentTypeMap[value.key].id">
+          {{currentTypeMap[value.key].identifier}}
+        </mat-option>
+      </mat-select>
+    </div>
+  </ng-template>
+</div>
