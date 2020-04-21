@@ -1,3 +1,4 @@
+export * from './faq/faq.component';
 export * from './relationship-history/relationship-history.component';
 export * from './relationships/relationships.component';
 export * from './state-history/state-history.component';
