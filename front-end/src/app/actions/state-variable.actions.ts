@@ -199,18 +199,3 @@ export const uploadEnumerationsSuccess = createAction(
   '[state variable] uploadEnumerationsSuccess',
   props<{ enumerations: StateEnumerationMap }>()
 );
-
-export const uploadStateVariables = createAction(
-  '[state variable] uploadStateVariables',
-  props<{ file: File }>()
-);
-
-export const uploadStateVariablesFailure = createAction(
-  '[state variable] uploadStateVariablesFailure',
-  props<{ error: Error }>()
-);
-
-export const uploadStateVariablesSuccess = createAction(
-  '[state variable] uploadStateVariablesSuccess',
-  props<{ stateVariables: StateVariableMap }>()
-);

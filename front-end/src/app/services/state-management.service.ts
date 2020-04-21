@@ -117,11 +117,20 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
-  public saveStateVariablesFile(file: File): Observable<StateVariableMap> {
+  public saveStateVariablesCsv(file: File): Observable<StateVariableMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<StateVariableMap>(
       baseUrl + '/state-variables-csv',
+      formData
+    );
+  }
+
+  public saveStateVariablesJson(file: File): Observable<StateVariableMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<StateVariableMap>(
+      baseUrl + '/state-variables-json',
       formData
     );
   }
