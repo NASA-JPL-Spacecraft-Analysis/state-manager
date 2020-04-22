@@ -130,7 +130,7 @@ export class StateManagementService implements StateManagementServiceInterface {
     const formData = this.setFormData(file);
 
     return this.http.post<StateVariableMap>(
-      baseUrl + '/state-variables-json',
+      baseUrl + '/test',
       formData
     );
   }

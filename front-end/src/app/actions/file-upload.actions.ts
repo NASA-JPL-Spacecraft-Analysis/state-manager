@@ -3,16 +3,16 @@ import { createAction, props } from '@ngrx/store';
 import { StateVariableMap } from '../models';
 
 export const uploadStateVariablesFailure = createAction(
-  '[state variable] uploadStateVariablesCsvFailure',
+  '[state variable] uploadStateVariablesFailure',
   props<{ error: Error }>()
 );
 
 export const uploadStateVariablesSuccess = createAction(
-  '[state variable] uploadStateVariablesCsvSuccess',
+  '[state variable] uploadStateVariablesSuccess',
   props<{ stateVariableMap: StateVariableMap }>()
 );
 
 export const uploadStateVariables = createAction(
-  '[state variable] uploadStateVariablesCsv',
+  '[state variable] uploadStateVariables',
   props<{ file: File, fileType: string }>()
 );

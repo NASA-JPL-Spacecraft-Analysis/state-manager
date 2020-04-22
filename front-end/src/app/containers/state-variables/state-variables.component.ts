@@ -126,11 +126,13 @@ export class StateVariablesComponent implements OnDestroy {
           this.store.dispatch(StateVariableActions.uploadInformationTypes({
             file
           }));
+
           break;
         case UploadableTypes.Enumerations:
           this.store.dispatch(StateVariableActions.uploadEnumerations({
             file
           }));
+
           break;
         case UploadableTypes.States:
           this.store.dispatch(FileUploadActions.uploadStateVariables({

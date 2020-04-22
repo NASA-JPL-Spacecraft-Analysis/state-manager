@@ -9,12 +9,12 @@ import gov.nasa.jpl.fspa.model.*;
 import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
-    private final CsvServiceImpl outputService;
+    private final CsvParseServiceImpl outputService;
     private final RelationshipDao relationshipDao;
     private final StateVariableDao stateVariableDao;
 
     public StateVariableServiceImpl() {
-        this.outputService = new CsvServiceImpl();
+        this.outputService = new CsvParseServiceImpl();
         this.relationshipDao = new RelationshipDaoImpl();
         this.stateVariableDao = new StateVariableDaoImpl();
     }
@@ -90,7 +90,7 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public String getStateVariablesAsCsv() {
-        return outputService.outputAsCsv(stateVariableDao.getStateVariables(), StateVariable.class);
+        return outputService.output(stateVariableDao.getStateVariables(), StateVariable.class);
     }
 
     @Override
