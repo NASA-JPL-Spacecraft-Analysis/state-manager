@@ -12,30 +12,13 @@ public class StateVariableServiceImpl implements StateVariableService {
     private final CsvParseServiceImpl outputService;
     private final RelationshipDao relationshipDao;
     private final StateVariableDao stateVariableDao;
+    private final ValidationService validationService;
 
     public StateVariableServiceImpl() {
-        this.outputService = new CsvParseServiceImpl();
-        this.relationshipDao = new RelationshipDaoImpl();
-        this.stateVariableDao = new StateVariableDaoImpl();
-    }
-
-    /**
-     * Checks for duplicate identifiers.
-     * @param stateVariables The new list of state variables we are checking for duplicates.
-     * @return A list of the duplicate identifiers.
-     */
-    public List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables) {
-        List<String> duplicateIdentifiers = new ArrayList<>();
-        Map<String, Integer> mappedIdentifiers = getMappedIdentifiers();
-
-        for (StateVariable stateVariable: stateVariables) {
-            if (mappedIdentifiers.get(stateVariable.getIdentifier()) != null
-                    && !mappedIdentifiers.get(stateVariable.getIdentifier()).equals(stateVariable.getId())) {
-                duplicateIdentifiers.add(stateVariable.getIdentifier());
-            }
-        }
-
-        return duplicateIdentifiers;
+        outputService = new CsvParseServiceImpl();
+        relationshipDao = new RelationshipDaoImpl();
+        stateVariableDao = new StateVariableDaoImpl();
+        validationService = new ValidationServiceImpl();
     }
 
     @Override
@@ -111,11 +94,11 @@ public class StateVariableServiceImpl implements StateVariableService {
 
     @Override
     public StateVariable modifyStateVariable(StateVariable stateVariable) {
-        List<StateVariable> stateVariables = new ArrayList<>();
+        List<StateVariable> stateVariableList = new ArrayList<>();
 
-        stateVariables.add(stateVariable);
+        stateVariableList.add(stateVariable);
 
-        List<String> duplicateIdentifiers = getDuplicateIdentifiers(stateVariables);
+        List<String> duplicateIdentifiers = validationService.getDuplicateIdentifiers(stateVariableList, getMappedIdentifiers());
 
         if (duplicateIdentifiers.isEmpty()) {
             return stateVariableDao.createStateVariable(stateVariable);

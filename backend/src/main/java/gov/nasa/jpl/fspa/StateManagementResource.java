@@ -23,6 +23,7 @@ public class StateManagementResource {
     private final InformationTypesService informationTypesService;
     private final JsonParseServiceImpl jsonParseServiceImpl;
     private final StateVariableService stateVariableService;
+    private final ValidationService validationService;
 
     public StateManagementResource() {
         csvParseServiceImpl = new CsvParseServiceImpl();
@@ -30,6 +31,7 @@ public class StateManagementResource {
         informationTypesService = new InformationTypesServiceImpl();
         jsonParseServiceImpl = new JsonParseServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
+        validationService = new ValidationServiceImpl();
     }
 
     @GET
@@ -284,18 +286,22 @@ public class StateManagementResource {
 
     private Response saveParsedStateVariables(List<StateVariable> parsedStateVariables) {
         if (parsedStateVariables.size() > 0) {
-            List<String> duplicateIdentifiers = stateVariableService.getDuplicateIdentifiers(parsedStateVariables);
-            // TODO: Check to make sure that our state variables have all their required fields before saving.
 
-            if (duplicateIdentifiers.size() == 0) {
-                Map<Integer, StateVariable> mappedStateVariables = stateVariableService.saveStateVariables(parsedStateVariables);
+            if (validationService.hasInvalidStateVariables(parsedStateVariables)) {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.INVALID_STATE_VARIABLES
+                ).build();
+            }
 
-                return Response.status(Response.Status.CREATED).entity(mappedStateVariables).build();
-            } else {
+            List<String> duplicateIdentifiers = validationService.getDuplicateIdentifiers(parsedStateVariables, stateVariableService.getMappedIdentifiers());
+
+            if (duplicateIdentifiers.size() > 0) {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
                 ).build();
             }
+
+            return Response.status(Response.Status.CREATED).entity(stateVariableService.saveStateVariables(parsedStateVariables)).build();
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();

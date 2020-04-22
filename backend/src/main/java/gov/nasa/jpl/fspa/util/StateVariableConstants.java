@@ -9,4 +9,7 @@ public class StateVariableConstants {
 
     public static final String INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS = "You tried to upload a list of enumeration(s) "
             + "with the following invalid identifiers: ";
+
+    public static final String INVALID_STATE_VARIABLES = " You tried to upload some invalid state variable(s), please fix "
+            + "then and reupload";
 }
