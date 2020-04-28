@@ -12,7 +12,7 @@ import { MockStateManagementService } from '../services/mock-state-management.se
 import { StateVariableActions, LayoutActions } from '../actions';
 import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
-import { identifierList, informationTypesMap, relationshipMap, stateVariableMap, stateEnumerationMap } from '../mocks';
+import { identifierList, informationTypesMap, relationshipMap, stateVariableMap, stateEnumerationMap, relationshipHistoryMap } from '../mocks';
 
 function getRouterNavigatedAction(url: string, path?: string, params = {}): RouterNavigatedAction<RouterState> {
   return {
@@ -96,4 +96,37 @@ describe('NavEffects', () => {
       });
     });
   });
+
+  /*
+  describe('navRelationshipHistory', () => {
+    it('should dispatch the correct actions when navigating to /relationship-history', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('relationship-history');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navRelationshipHistory).toBe('-(bcd)', {
+          b: StateVariableActions.setInformationTypes({ informationTypes: informationTypesMap }),
+          c: StateVariableActions.setRelationshipHistory({ relationshipHistory: relationshipHistoryMap }),
+          d: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
+        });
+      });
+    });
+  });
+
+  describe('navStateHistory', () => {
+    it('should dispatch the correct actions when navigating to /state-history', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('state-history');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navStateHistory).toBe('-(bc)', {
+          b: StateVariableActions.setStateHistory({ stateHistory: stateVariableMap }),
+          c: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
+        });
+      });
+    });
+  });
+  */
 });

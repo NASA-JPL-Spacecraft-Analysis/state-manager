@@ -27,6 +27,13 @@ export class MockStateManagementService {
     });
   }
 
+  public getRelationshipHistory(): Observable<RelationshipMap> {
+    return new Observable((observer: Observer<RelationshipMap>) => {
+      observer.next(relationshipMap);
+      observer.complete();
+    });
+  }
+
   public getStateEnumerations(): Observable<StateEnumerationMap> {
     return new Observable((observer: Observer<StateEnumerationMap>) => {
       observer.next(stateEnumerationMap);
