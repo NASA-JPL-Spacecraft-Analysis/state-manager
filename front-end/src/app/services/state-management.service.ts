@@ -11,7 +11,6 @@ import {
   RelationshipMap,
   InformationTypesMap
 } from '../models';
-import { StateManagementServiceInterface } from './state-management.service.interface';
 import { environment } from 'src/environments/environment';
 
 const { baseUrl } = environment;
@@ -19,7 +18,7 @@ const { baseUrl } = environment;
 @Injectable({
   providedIn: 'root'
 })
-export class StateManagementService implements StateManagementServiceInterface {
+export class StateManagementService {
   constructor(private http: HttpClient) {}
 
   public createRelationship(relationship: Relationship): Observable<Relationship> {
