@@ -7,8 +7,8 @@ import gov.nasa.jpl.fspa.model.StateVariable;
 import java.io.InputStream;
 import java.util.List;
 
-public interface CsvService {
-    <T> String outputAsCsv(List<T> objectList, Class<T> type);
+public interface FileParseService {
+    <T> String output(List<T> objectList, Class<T> type);
 
     List<InformationTypes> parseInformationTypes(InputStream inputStream);
 

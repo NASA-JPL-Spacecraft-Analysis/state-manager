@@ -12,24 +12,26 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
 @Path("v1/")
 public class StateManagementResource {
-    private final CsvServiceImpl csvService;
+    private final CsvParseServiceImpl csvParseServiceImpl;
     private final EnumerationService enumerationService;
     private final InformationTypesService informationTypesService;
+    private final JsonParseServiceImpl jsonParseServiceImpl;
     private final StateVariableService stateVariableService;
+    private final ValidationService validationService;
 
     public StateManagementResource() {
-        csvService = new CsvServiceImpl();
+        csvParseServiceImpl = new CsvParseServiceImpl();
         enumerationService = new EnumerationServiceImpl();
         informationTypesService = new InformationTypesServiceImpl();
+        jsonParseServiceImpl = new JsonParseServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
+        validationService = new ValidationServiceImpl();
     }
 
     @GET
@@ -183,7 +185,7 @@ public class StateManagementResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream) {
-        List<InformationTypes> parsedInformationTypesList = csvService.parseInformationTypes(inputStream);
+        List<InformationTypes> parsedInformationTypesList = csvParseServiceImpl.parseInformationTypes(inputStream);
 
         if (parsedInformationTypesList.size() > 0) {
             // TODO: Check information type identifiers for duplicates.
@@ -201,7 +203,7 @@ public class StateManagementResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postEnumerationsCsv(@FormDataParam("file") InputStream inputStream) {
-        List<EnumerationCsv> parsedCsvEnumerations = csvService.parseStateEnumerations(inputStream);
+        List<EnumerationCsv> parsedCsvEnumerations = csvParseServiceImpl.parseStateEnumerations(inputStream);
 
         if (parsedCsvEnumerations.size() > 0) {
             Map<String, Integer> identifierToVariableIdMap = stateVariableService.getMappedIdentifiers();
@@ -230,23 +232,15 @@ public class StateManagementResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postStateVariablesCsv(@FormDataParam("file") InputStream inputStream) {
-        List<StateVariable> parsedStateVariables = csvService.parseStateVariables(inputStream);
+        return saveParsedStateVariables(csvParseServiceImpl.parseStateVariables(inputStream));
+    }
 
-        if (parsedStateVariables.size() > 0) {
-            List<String> duplicateIdentifiers = stateVariableService.getDuplicateIdentifiers(parsedStateVariables);
-
-            if (duplicateIdentifiers.size() == 0) {
-                Map<Integer, StateVariable> mappedStateVariables = stateVariableService.saveStateVariables(parsedStateVariables);
-
-                return Response.status(Response.Status.CREATED).entity(mappedStateVariables).build();
-            } else {
-                return Response.status(Response.Status.CONFLICT).entity(
-                        StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
-                ).build();
-            }
-        }
-
-        return Response.status(Response.Status.NO_CONTENT).build();
+    @POST
+    @Path("/test")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postStateVariablesJson(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedStateVariables(jsonParseServiceImpl.parseStateVariables(inputStream));
     }
 
     @PUT
@@ -289,4 +283,28 @@ public class StateManagementResource {
             }
         };
     }
+
+    private Response saveParsedStateVariables(List<StateVariable> parsedStateVariables) {
+        if (parsedStateVariables.size() > 0) {
+
+            if (validationService.hasInvalidStateVariables(parsedStateVariables)) {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.INVALID_STATE_VARIABLES
+                ).build();
+            }
+
+            List<String> duplicateIdentifiers = validationService.getDuplicateIdentifiers(parsedStateVariables, stateVariableService.getMappedIdentifiers());
+
+            if (duplicateIdentifiers.size() > 0) {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
+                ).build();
+            }
+
+            return Response.status(Response.Status.CREATED).entity(stateVariableService.saveStateVariables(parsedStateVariables)).build();
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
 }

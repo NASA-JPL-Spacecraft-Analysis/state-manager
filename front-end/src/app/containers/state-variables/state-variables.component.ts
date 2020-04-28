@@ -6,7 +6,7 @@ import { SubSink } from 'subsink';
 
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
 import { getStateVariables, getSelectedStateVariable } from '../../selectors';
-import { StateVariableActions, LayoutActions, ToastActions } from '../../actions';
+import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
 import { StateVariableTableModule } from '../../components';
 import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
@@ -118,24 +118,28 @@ export class StateVariablesComponent implements OnDestroy {
    */
   public onFileUpload(fileEvent: Event, type: UploadableTypes): void {
     const file = (fileEvent.target as HTMLInputElement).files[0];
-    const fileType = file.name.split('.').pop();
+    const fileType = file.name.split('.').pop().toLowerCase();
 
-    if (file && fileType === 'csv') {
+    if (file && (fileType === 'csv' || fileType === 'json')) {
       switch (type) {
         case UploadableTypes.InformationTypes:
           this.store.dispatch(StateVariableActions.uploadInformationTypes({
             file
           }));
+
           break;
         case UploadableTypes.Enumerations:
           this.store.dispatch(StateVariableActions.uploadEnumerations({
             file
           }));
+
           break;
         case UploadableTypes.States:
-          this.store.dispatch(StateVariableActions.uploadStateVariables({
-            file
+          this.store.dispatch(FileUploadActions.uploadStateVariables({
+            file,
+            fileType
           }));
+
           break;
         default:
           break;

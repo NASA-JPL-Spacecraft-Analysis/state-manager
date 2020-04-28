@@ -11,10 +11,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvServiceImpl implements CsvService {
+public class CsvParseServiceImpl implements FileParseService {
 
     @Override
-    public <T> String outputAsCsv(List<T> objectList, Class<T> type) {
+    public <T> String output(List<T> objectList, Class<T> type) {
         StringBuilder csvOutput = new StringBuilder();
 
         // Create columns for all the properties.

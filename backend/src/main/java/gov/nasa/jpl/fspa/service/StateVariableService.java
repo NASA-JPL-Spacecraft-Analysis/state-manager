@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface StateVariableService {
-    List<String> getDuplicateIdentifiers(List<StateVariable> stateVariables);
-
     Map<Integer, Relationship> getRelationships();
 
     Map<Integer, RelationshipHistory> getRelationshipHistory();

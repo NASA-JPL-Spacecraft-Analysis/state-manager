@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { StateVariableActions } from '../actions';
+import { StateVariableActions, FileUploadActions } from '../actions';
 import { RelationshipMap, StateVariable, StateEnumerationMap, StateVariableMap, Relationship, InformationTypesMap } from '../models';
 
 export interface StateManagementState {
@@ -120,11 +120,11 @@ export const reducer = createReducer(
       ...action.enumerations
     }
   })),
-  on(StateVariableActions.uploadStateVariablesSuccess, (state, action) => ({
+  on(FileUploadActions.uploadStateVariablesSuccess, (state, action) => ({
     ...state,
     stateVariables: {
       ...state.stateVariables,
-      ...action.stateVariables
+      ...action.stateVariableMap
     }
   }))
 );

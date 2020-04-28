@@ -16,7 +16,13 @@ export class ToastEffects {
     this.actions.pipe(
       ofType(ToastActions.showToast),
       mergeMap(action => {
-        this.toastrService[action.toastType](action.message, '', {
+        let message = action.message;
+
+        if (typeof message !== 'string') {
+          message = 'An unexpected error occured';
+        }
+
+        this.toastrService[action.toastType](message, '', {
           positionClass: 'toast-bottom-center',
           timeOut: 5000
         });

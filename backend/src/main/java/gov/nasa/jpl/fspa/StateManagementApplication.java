@@ -9,7 +9,7 @@ import javax.ws.rs.ApplicationPath;
 public class StateManagementApplication extends ResourceConfig {
     public StateManagementApplication() {
         register(CorsFilter.class);
-        register(StateManagementResource.class);
         register(MultiPartFeature.class);
+        register(StateManagementResource.class);
     }
 }
