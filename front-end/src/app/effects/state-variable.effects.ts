@@ -241,7 +241,6 @@ export class StateVariableEffects {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
       switchMap(({ file, fileType }) => {
-        console.log(file, fileType);
         return this.stateManagementService.saveRelationshipsJson(file).pipe(
           switchMap(
             (relationshipMap: RelationshipMap) => [
