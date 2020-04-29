@@ -3,6 +3,8 @@ package gov.nasa.jpl.fspa;
 import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesService;
 import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesServiceImpl;
 import gov.nasa.jpl.fspa.model.*;
+import gov.nasa.jpl.fspa.relationships.service.RelationshipService;
+import gov.nasa.jpl.fspa.relationships.service.RelationshipServiceImpl;
 import gov.nasa.jpl.fspa.service.*;
 
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
@@ -22,6 +24,7 @@ public class StateManagementResource {
     private final EnumerationService enumerationService;
     private final InformationTypesService informationTypesService;
     private final JsonParseServiceImpl jsonParseServiceImpl;
+    private final RelationshipService relationshipService;
     private final StateVariableService stateVariableService;
     private final ValidationService validationService;
 
@@ -30,6 +33,7 @@ public class StateManagementResource {
         enumerationService = new EnumerationServiceImpl();
         informationTypesService = new InformationTypesServiceImpl();
         jsonParseServiceImpl = new JsonParseServiceImpl();
+        relationshipService = new RelationshipServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
         validationService = new ValidationServiceImpl();
     }
@@ -51,7 +55,7 @@ public class StateManagementResource {
     @Path("/relationships")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRelationships() {
-        Map<Integer, Relationship> relationshipMap = stateVariableService.getRelationships();
+        Map<Integer, Relationship> relationshipMap = relationshipService.getRelationships();
 
         if (relationshipMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -64,7 +68,7 @@ public class StateManagementResource {
     @Path("/relationship-history")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRelationshipHistory() {
-        Map<Integer, RelationshipHistory> relationshipHistoryMap = stateVariableService.getRelationshipHistory();
+        Map<Integer, RelationshipHistory> relationshipHistoryMap = relationshipService.getRelationshipHistory();
 
         if (relationshipHistoryMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -145,7 +149,7 @@ public class StateManagementResource {
     @Path("/relationship")
     @Produces(MediaType.APPLICATION_JSON)
     public Response postRelationship(Relationship relationship) {
-        Relationship createdRelationship = stateVariableService.modifyRelationship(relationship);
+        Relationship createdRelationship = relationshipService.modifyRelationship(relationship);
 
         if (createdRelationship == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -228,6 +232,14 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/relationships-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationshipsJson(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedRelationships(jsonParseServiceImpl.parseRelationships(inputStream));
+    }
+
+    @POST
     @Path("/state-variables-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -236,7 +248,7 @@ public class StateManagementResource {
     }
 
     @POST
-    @Path("/test")
+    @Path("/state-variables-json")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postStateVariablesJson(@FormDataParam("file") InputStream inputStream) {
@@ -247,7 +259,7 @@ public class StateManagementResource {
     @Path("/relationship")
     @Produces(MediaType.APPLICATION_JSON)
     public Response putRelationship(Relationship relationship) {
-        Relationship editedRelationship = stateVariableService.modifyRelationship(relationship);
+        Relationship editedRelationship = relationshipService.modifyRelationship(relationship);
 
         if (editedRelationship == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -284,9 +296,24 @@ public class StateManagementResource {
         };
     }
 
+    private Response saveParsedRelationships(List<Relationship> parsedRelationships) {
+        if (parsedRelationships.size() > 0) {
+            // If we have invalid relationships, return an error.
+            if (validationService.validateRelationships(parsedRelationships, stateVariableService.getStateVariables(),
+                    informationTypesService.getInformationTypes()).size() > 0) {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.INVALID_RELATIONSHIPS
+                ).build();
+            }
+
+            return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
     private Response saveParsedStateVariables(List<StateVariable> parsedStateVariables) {
         if (parsedStateVariables.size() > 0) {
-
             if (validationService.hasInvalidStateVariables(parsedStateVariables)) {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.INVALID_STATE_VARIABLES
@@ -306,5 +333,4 @@ public class StateManagementResource {
 
         return Response.status(Response.Status.NO_CONTENT).build();
     }
-
 }

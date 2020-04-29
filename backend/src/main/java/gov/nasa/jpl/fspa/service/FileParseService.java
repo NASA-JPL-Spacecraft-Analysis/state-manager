@@ -2,6 +2,7 @@ package gov.nasa.jpl.fspa.service;
 
 import gov.nasa.jpl.fspa.model.EnumerationCsv;
 import gov.nasa.jpl.fspa.model.InformationTypes;
+import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.io.InputStream;
@@ -11,6 +12,8 @@ public interface FileParseService {
     <T> String output(List<T> objectList, Class<T> type);
 
     List<InformationTypes> parseInformationTypes(InputStream inputStream);
+
+    List<Relationship> parseRelationships(InputStream inputStream);
 
     List<EnumerationCsv> parseStateEnumerations(InputStream inputStream);
 

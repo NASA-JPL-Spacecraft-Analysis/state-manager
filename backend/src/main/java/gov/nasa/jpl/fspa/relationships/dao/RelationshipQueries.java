@@ -1,4 +1,4 @@
-package gov.nasa.jpl.fspa.dao;
+package gov.nasa.jpl.fspa.relationships.dao;
 
 public class RelationshipQueries {
     public static String CREATE_RELATIONSHIP = " insert into relationships "
