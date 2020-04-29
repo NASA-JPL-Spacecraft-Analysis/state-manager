@@ -8,17 +8,11 @@ import { Observable } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 
 import { NavEffects } from './nav.effects';
-import {
-  MockStateManagementService,
-  getMockStateVariables,
-  getMockStateEnumerations,
-  getMockIdentifiersArray,
-  getMockRelationships
-} from '../services/mock-state-management.service';
+import { MockStateManagementService } from '../services/mock-state-management.service';
 import { StateVariableActions, LayoutActions } from '../actions';
-import { StateVariableMap, StateEnumerationMap } from '../models';
 import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
+import { identifierList, informationTypesMap, relationshipMap, stateVariableMap, stateEnumerationMap, relationshipHistoryMap } from '../mocks';
 
 function getRouterNavigatedAction(url: string, path?: string, params = {}): RouterNavigatedAction<RouterState> {
   return {
@@ -44,12 +38,6 @@ describe('NavEffects', () => {
   let effects: NavEffects;
   let testScheduler: TestScheduler;
   let stateManagementService: StateManagementService;
-
-  // Mock data
-  const identifiers: string[] = getMockIdentifiersArray();
-  const relationships = getMockRelationships();
-  const stateEnumerations: StateEnumerationMap = getMockStateEnumerations();
-  const stateVariables: StateVariableMap = getMockStateVariables();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -84,9 +72,9 @@ describe('NavEffects', () => {
 
         expectObservable(effects.navState).toBe('-(bcde)', {
           b: LayoutActions.toggleSidenav({ showSidenav: false }),
-          c: StateVariableActions.setStateVariables({ stateVariables }),
-          d: StateVariableActions.setStateEnumerations({ stateEnumerations }),
-          e: StateVariableActions.setIdentifiers({ identifiers })
+          c: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap }),
+          d: StateVariableActions.setStateEnumerations({ stateEnumerations: stateEnumerationMap }),
+          e: StateVariableActions.setIdentifiers({ identifiers: identifierList })
         });
       });
     });
@@ -99,12 +87,46 @@ describe('NavEffects', () => {
 
         actions = hot('-a', { a: action });
 
-        expectObservable(effects.navRelationships).toBe('-(bcd)', {
+        expectObservable(effects.navRelationships).toBe('-(bcde)', {
           b: LayoutActions.toggleSidenav({ showSidenav: false }),
-          c: StateVariableActions.setRelationships({ relationships }),
-          d: StateVariableActions.setStateVariables({ stateVariables })
+          c: StateVariableActions.setInformationTypes({ informationTypes: informationTypesMap }),
+          d: StateVariableActions.setRelationships({ relationships: relationshipMap }),
+          e: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
         });
       });
     });
   });
+
+  /*
+  describe('navRelationshipHistory', () => {
+    it('should dispatch the correct actions when navigating to /relationship-history', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('relationship-history');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navRelationshipHistory).toBe('-(bcd)', {
+          b: StateVariableActions.setInformationTypes({ informationTypes: informationTypesMap }),
+          c: StateVariableActions.setRelationshipHistory({ relationshipHistory: relationshipHistoryMap }),
+          d: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
+        });
+      });
+    });
+  });
+
+  describe('navStateHistory', () => {
+    it('should dispatch the correct actions when navigating to /state-history', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('state-history');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navStateHistory).toBe('-(bc)', {
+          b: StateVariableActions.setStateHistory({ stateHistory: stateVariableMap }),
+          c: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
+        });
+      });
+    });
+  });
+  */
 });
