@@ -11,7 +11,6 @@ import {
   RelationshipMap,
   InformationTypesMap
 } from '../models';
-import { StateManagementServiceInterface } from './state-management.service.interface';
 import { environment } from 'src/environments/environment';
 
 const { baseUrl } = environment;
@@ -19,7 +18,7 @@ const { baseUrl } = environment;
 @Injectable({
   providedIn: 'root'
 })
-export class StateManagementService implements StateManagementServiceInterface {
+export class StateManagementService {
   constructor(private http: HttpClient) {}
 
   public createRelationship(relationship: Relationship): Observable<Relationship> {
@@ -117,6 +116,15 @@ export class StateManagementService implements StateManagementServiceInterface {
     );
   }
 
+  public saveRelationshipsJson(file: File): Observable<RelationshipMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<RelationshipMap>(
+      baseUrl + '/relationships-json',
+      formData
+    );
+  }
+
   public saveStateVariablesCsv(file: File): Observable<StateVariableMap> {
     const formData = this.setFormData(file);
 
@@ -130,7 +138,7 @@ export class StateManagementService implements StateManagementServiceInterface {
     const formData = this.setFormData(file);
 
     return this.http.post<StateVariableMap>(
-      baseUrl + '/test',
+      baseUrl + '/state-variables-json',
       formData
     );
   }

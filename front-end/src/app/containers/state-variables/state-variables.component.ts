@@ -12,6 +12,7 @@ import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
+import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 enum UploadableTypes {
   InformationTypes,
@@ -146,7 +147,7 @@ export class StateVariablesComponent implements OnDestroy {
       }
     } else {
       this.store.dispatch(ToastActions.showToast({
-        message: 'Wrong filetype supplied, only csv is supported.',
+        message: StateManagementConstants.wrongFiletypeUploadMessage,
         toastType: 'error'
       }));
     }

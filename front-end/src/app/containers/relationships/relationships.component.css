@@ -2,6 +2,10 @@ button {
   margin-left: 1em;
 }
 
+.file-upload-input {
+  display: none;
+}
+
 .relationships-content {
   flex-grow: 1;
   margin: 1em;

@@ -9,10 +9,11 @@ import { RelationshipMap, Relationship } from 'src/app/models/relationship';
 import { getRelationships, getSelectedRelationship, getStateVariables, getInformationTypes } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { getShowSidenav } from 'src/app/selectors/layout.selector';
-import { StateVariableActions, LayoutActions, ToastActions } from 'src/app/actions';
+import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
 import { RelationshipsSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
-import { StateVariableMap, InformationTypeEnum, InformationTypesMap } from 'src/app/models';
+import { StateVariableMap, InformationTypesMap } from 'src/app/models';
+import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +60,24 @@ export class RelationshipsComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  public onFileUpload(fileEvent: Event): void {
+    const file = (fileEvent.target as HTMLInputElement).files[0];
+    const fileType = file.name.split('.').pop().toLowerCase();
+
+    // TODO: Support csv uploads later
+    if (file && (fileType === 'json')) {
+      this.store.dispatch(FileUploadActions.uploadRelationships({
+        file,
+        fileType
+      }));
+    } else {
+      this.store.dispatch(ToastActions.showToast({
+        message: StateManagementConstants.wrongFiletypeUploadMessage,
+        toastType: 'error'
+      }));
+    }
   }
 
   public onFormErrorOutput(error: string): void {
