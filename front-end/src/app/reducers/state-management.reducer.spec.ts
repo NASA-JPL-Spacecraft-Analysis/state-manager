@@ -1,27 +1,13 @@
 import { initialState, reducer, StateManagementState } from './state-management.reducer';
 import { StateVariableActions } from '../actions';
-import {
-  getMockStateVariables,
-  getMockIdentifiersSet,
-  getMockIdentifiersArray,
-  getMockRelationships,
-  getMockStateEnumerations,
-  getMockStateEnumerationsArray
-} from '../services/mock-state-management.service';
 import { StateVariableMap, RelationshipMap, StateEnumerationMap, StateEnumeration } from '../models';
+import { relationshipMap, stateVariableMap, stateEnumerationList, stateEnumerationMap, identifierSet, identifierList } from '../mocks';
 
 describe('StateManagementReducer', () => {
-  const mockEnumerations: StateEnumerationMap = getMockStateEnumerations();
-  const mockEnumerationsArray: StateEnumeration[] = getMockStateEnumerationsArray();
-  const mockIdentifiersArray: string[] = getMockIdentifiersArray();
-  const mockIdentifiersSet: Set<string> = getMockIdentifiersSet();
-  const mockRelationships: RelationshipMap = getMockRelationships();
-  const mockStateVariables: StateVariableMap = getMockStateVariables();
-
   describe('createRelationshipSuccess', () => {
     it('should set relationships and selectedRelationship after creating a relationship', () => {
       const relationships: RelationshipMap = {
-        ...mockRelationships
+        ...relationshipMap
       };
       const relationshipId = 1;
       const relationship = relationships[relationshipId];
@@ -48,7 +34,7 @@ describe('StateManagementReducer', () => {
   describe('createStateVariableSuccess', () => {
     it('should set the selectedStateVariable, and created stateVariable after a create', () => {
       const stateVariables: StateVariableMap = {
-        ...mockStateVariables
+        ...stateVariableMap
       };
       const stateVariableId = 1;
       const stateVariable = stateVariables[stateVariableId];
@@ -75,7 +61,7 @@ describe('StateManagementReducer', () => {
   describe('createStateVariablesSuccess', () => {
     it('should set stateVariables when we create a batch of new stateVariables', () => {
       const stateVariables: StateVariableMap = {
-        ...mockStateVariables
+        ...stateVariableMap
       };
 
       const state: StateManagementState = reducer(
@@ -97,7 +83,7 @@ describe('StateManagementReducer', () => {
   describe('editRelationshipSuccess', () => {
     it('should set relationships and selectedRelationship after editing a relationship', () => {
       const relationships: RelationshipMap = {
-        ...mockRelationships
+        ...relationshipMap
       };
       const relationshipId = 1;
       const relationship = relationships[relationshipId];
@@ -122,7 +108,7 @@ describe('StateManagementReducer', () => {
   describe('editStateVariableSuccess', () => {
     it('should set the selectedStateVariable, and edited state variables after an edit', () => {
       const stateVariables: StateVariableMap = {
-        ...mockStateVariables
+        ...stateVariableMap
       };
       const stateVariableId = 1;
       const stateVariable = stateVariables[stateVariableId];
@@ -148,28 +134,28 @@ describe('StateManagementReducer', () => {
 
   describe('saveEnumerationsSuccess', () => {
     it('should set enumerations after saving enumerations', () => {
-      const enumerationsArray: StateEnumeration[] = mockEnumerationsArray;
-      const enumerations: StateEnumerationMap = mockEnumerations;
+      const enumerationsList: StateEnumeration[] = stateEnumerationList;
+      const enumerationMap: StateEnumerationMap = stateEnumerationMap;
 
       const state: StateManagementState = reducer(
         { ...initialState },
-        StateVariableActions.saveEnumerationsSuccess({ enumerations: enumerationsArray })
+        StateVariableActions.saveEnumerationsSuccess({ enumerations: enumerationsList })
       );
 
       expect(state).toEqual({
         ...initialState,
-        stateEnumerations: enumerations
+        stateEnumerations: enumerationMap
       });
     });
   });
 
   describe('setIdentifiers', () => {
     it('should set identifiers', () => {
-      const identifiers: Set<string> = new Set(mockIdentifiersSet);
+      const identifiers: Set<string> = new Set(identifierSet);
 
       const state: StateManagementState = reducer(
         { ...initialState },
-        StateVariableActions.setIdentifiers({ identifiers: mockIdentifiersArray })
+        StateVariableActions.setIdentifiers({ identifiers: identifierList })
       );
 
       expect(state).toEqual({
@@ -181,7 +167,7 @@ describe('StateManagementReducer', () => {
 
   describe('setRelationships', () => {
     it('should set relationships', () => {
-      const relationships = mockRelationships;
+      const relationships: RelationshipMap = relationshipMap;
 
       const state: StateManagementState = reducer(
         { ...initialState },
@@ -197,23 +183,21 @@ describe('StateManagementReducer', () => {
 
   describe('setStateEnumerations', () => {
     it('should set stateEnumerations', () => {
-      const enumerations = mockEnumerations;
-
       const state: StateManagementState = reducer(
         { ...initialState },
-        StateVariableActions.setStateEnumerations({ stateEnumerations: enumerations })
+        StateVariableActions.setStateEnumerations({ stateEnumerations: stateEnumerationMap })
       );
 
       expect(state).toEqual({
         ...initialState,
-        stateEnumerations: enumerations
+        stateEnumerations: stateEnumerationMap
       });
     });
   });
 
   describe('setSelectedRelationship', () => {
     it('should set selectedRelationship', () => {
-      const relationship = mockRelationships[1];
+      const relationship = relationshipMap[1];
 
       const state: StateManagementState = reducer(
         { ...initialState },
@@ -229,7 +213,7 @@ describe('StateManagementReducer', () => {
 
   describe('setSelectedStateVariable', () => {
     it('should set selectedStateVariable', () => {
-      const stateVariable = mockStateVariables[1];
+      const stateVariable = stateVariableMap[1];
 
       const state: StateManagementState = reducer(
         { ...initialState },
@@ -245,7 +229,7 @@ describe('StateManagementReducer', () => {
 
   describe('setStateVariables', () => {
     it('should set stateVariables', () => {
-      const stateVariables = mockStateVariables;
+      const stateVariables = stateVariableMap;
 
       const state: StateManagementState = reducer(
         { ...initialState },

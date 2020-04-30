@@ -14,45 +14,21 @@ export class NavEffects {
     private stateManagementService: StateManagementService
   ) {}
 
-  public navState = createEffect(() =>
+  public navInformationTypes = createEffect(() =>
     this.actions.pipe(
-      ofRoute('states'),
+      ofRoute('information-types'),
       switchMap(_ =>
         concat(
           of(LayoutActions.toggleSidenav({
             showSidenav: false
           })),
-          this.stateManagementService.getStateVariables().pipe(
-            map(stateVariables => StateVariableActions.setStateVariables({
-              stateVariables
+          this.stateManagementService.getInformationTypes().pipe(
+            map(informationTypes => StateVariableActions.setInformationTypes({
+              informationTypes
             })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchStateVariablesFailure({
-                  error
-                })
-              ]
-            )
-          ),
-          this.stateManagementService.getStateEnumerations().pipe(
-            map(stateEnumerations => StateVariableActions.setStateEnumerations({
-              stateEnumerations
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchStateEnumerationsFailure({
-                  error
-                })
-              ]
-            )
-          ),
-          this.stateManagementService.getIdentifiers().pipe(
-            map(identifiers => StateVariableActions.setIdentifiers({
-              identifiers
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchIdentifiersFailure({
+                StateVariableActions.fetchInformationTypesFailure({
                   error
                 })
               ]
@@ -148,6 +124,55 @@ export class NavEffects {
             catchError(
               (error: Error) => [
                 StateVariableActions.fetchStateVariablesFailure({
+                  error
+                })
+              ]
+            )
+          )
+        )
+      )
+    )
+  );
+
+  public navState = createEffect(() =>
+    this.actions.pipe(
+      ofRoute('states'),
+      switchMap(_ =>
+        concat(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.stateManagementService.getStateVariables().pipe(
+            map(stateVariables => StateVariableActions.setStateVariables({
+              stateVariables
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchStateVariablesFailure({
+                  error
+                })
+              ]
+            )
+          ),
+          this.stateManagementService.getStateEnumerations().pipe(
+            map(stateEnumerations => StateVariableActions.setStateEnumerations({
+              stateEnumerations
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchStateEnumerationsFailure({
+                  error
+                })
+              ]
+            )
+          ),
+          this.stateManagementService.getIdentifiers().pipe(
+            map(identifiers => StateVariableActions.setIdentifiers({
+              identifiers
+            })),
+            catchError(
+              (error: Error) => [
+                StateVariableActions.fetchIdentifiersFailure({
                   error
                 })
               ]

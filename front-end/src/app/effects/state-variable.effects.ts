@@ -175,14 +175,14 @@ export class StateVariableEffects {
 
   public uploadInformationTypes = createEffect(() => {
     return this.actions.pipe(
-      ofType(StateVariableActions.uploadInformationTypes),
+      ofType(FileUploadActions.uploadInformationTypes),
       switchMap(({ file }) => {
         return this.stateManagementService.saveInformationTypesFile(
           file
         ).pipe(
           switchMap(
             (informationTypes: InformationTypesMap) => [
-              StateVariableActions.uploadInformationTypesSuccess({
+              FileUploadActions.uploadInformationTypesSuccess({
                 informationTypes
               }),
               ToastActions.showToast({
@@ -193,7 +193,7 @@ export class StateVariableEffects {
           ),
           catchError(
             (error: HttpErrorResponse) => [
-              StateVariableActions.uploadInformationTypesFailure({ error }),
+              FileUploadActions.uploadInformationTypesFailure({ error }),
               ToastActions.showToast({
                 message: error.error,
                 toastType: 'error'

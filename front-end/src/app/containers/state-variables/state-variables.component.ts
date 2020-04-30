@@ -15,7 +15,6 @@ import { MaterialModule } from 'src/app/material';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 enum UploadableTypes {
-  InformationTypes,
   Enumerations,
   States
 }
@@ -30,7 +29,6 @@ export class StateVariablesComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateVariableMap: StateVariableMap;
   public stateVariable: StateVariable;
-  public informationTypesUploadableType = UploadableTypes.InformationTypes;
   public enumerationsUploadableType = UploadableTypes.Enumerations;
   public statesUploadableType = UploadableTypes.States;
 
@@ -123,12 +121,6 @@ export class StateVariablesComponent implements OnDestroy {
 
     if (file && (fileType === 'csv' || fileType === 'json')) {
       switch (type) {
-        case UploadableTypes.InformationTypes:
-          this.store.dispatch(StateVariableActions.uploadInformationTypes({
-            file
-          }));
-
-          break;
         case UploadableTypes.Enumerations:
           this.store.dispatch(StateVariableActions.uploadEnumerations({
             file

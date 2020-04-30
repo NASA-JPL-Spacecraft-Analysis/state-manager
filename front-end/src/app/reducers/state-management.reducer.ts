@@ -120,12 +120,18 @@ export const reducer = createReducer(
       ...action.enumerations
     }
   })),
+  on(FileUploadActions.uploadInformationTypesSuccess, (state, action) => ({
+    ...state,
+    informationTypes: {
+      ...state.informationTypes,
+      ...action.informationTypes
+    }
+  })),
   on(FileUploadActions.uploadRelationshipsSuccess, (state, action) => ({
     ...state,
     relationships: {
       ...state.relationships,
       ...action.relationshipMap
-    }
   })),
   on(FileUploadActions.uploadStateVariablesSuccess, (state, action) => ({
     ...state,
