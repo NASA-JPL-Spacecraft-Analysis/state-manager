@@ -298,9 +298,12 @@ public class StateManagementResource {
 
     private Response saveParsedRelationships(List<Relationship> parsedRelationships) {
         if (parsedRelationships.size() > 0) {
+            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypes();
+
             // If we have invalid relationships, return an error.
-            if (validationService.validateRelationships(parsedRelationships, stateVariableService.getStateVariables(),
-                    informationTypesService.getInformationTypes()).size() > 0) {
+            if (validationService.hasInvalidRelationships(parsedRelationships, informationTypesEnumMap)
+                || validationService.validateRelationships(parsedRelationships, stateVariableService.getStateVariables(),
+                    informationTypesEnumMap).size() > 0) {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.INVALID_RELATIONSHIPS
                 ).build();

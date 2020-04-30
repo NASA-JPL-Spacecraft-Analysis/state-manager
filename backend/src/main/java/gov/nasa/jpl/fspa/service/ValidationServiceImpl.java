@@ -8,6 +8,29 @@ import gov.nasa.jpl.fspa.model.StateVariable;
 import java.util.*;
 
 public class ValidationServiceImpl implements ValidationService {
+    /**
+     * Checks each relationship to see if each field is valid.
+     * @param relationshipList The relationships we are checking.
+     * @param informationTypesEnumMap The enum map so we can see if the user is trying to create an invalid type.
+     * @return True if there's an invalid relationship, otherwise false.
+     */
+    @Override
+    public boolean hasInvalidRelationships(List<Relationship> relationshipList,
+                                            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesEnumMap) {
+        for (Relationship relationship: relationshipList) {
+            if (isPropertyInvalid(relationship.getDisplayName())
+                    || (relationship.getSubjectType() == null || informationTypesEnumMap.get(relationship.getSubjectType()) == null)
+                    || relationship.getSubjectTypeId() == null
+                    || (relationship.getTargetType() == null || informationTypesEnumMap.get(relationship.getTargetType()) == null)
+                    || relationship.getTargetTypeId() == null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean hasInvalidStateVariables(List<StateVariable> stateVariableList) {
         for (StateVariable stateVariable: stateVariableList) {
             if (isPropertyInvalid(stateVariable.getIdentifier())
@@ -29,6 +52,7 @@ public class ValidationServiceImpl implements ValidationService {
      * @param identifierMap The list of current identifiers to check against.
      * @return A list of the duplicate identifiers.
      */
+    @Override
     public List<String> getDuplicateIdentifiers(List<StateVariable> stateVariableList, Map<String, Integer> identifierMap) {
         List<String> duplicateIdentifiers = new ArrayList<>();
         Set<String> uploadedIdentifierSet = new HashSet<>();

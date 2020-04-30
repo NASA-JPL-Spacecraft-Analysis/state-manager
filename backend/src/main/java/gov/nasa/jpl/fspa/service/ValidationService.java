@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface ValidationService {
+    boolean hasInvalidRelationships(List<Relationship> relationshipList,
+                                    Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesEnumMap);
+
     boolean hasInvalidStateVariables(List<StateVariable> stateVariableList);
 
     List<String> getDuplicateIdentifiers(List<StateVariable> stateVariableList, Map<String, Integer> identifierMap);
