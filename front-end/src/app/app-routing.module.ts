@@ -7,7 +7,8 @@ import {
   StateHistoryComponent,
   RelationshipsComponent,
   RelationshipHistoryComponent,
-  FaqComponent
+  FaqComponent,
+  InformationTypesComponent
 } from './containers';
 
 export const routes: Routes = [
@@ -19,6 +20,10 @@ export const routes: Routes = [
   {
     component: FaqComponent,
     path: 'faqs'
+  },
+  {
+    component: InformationTypesComponent,
+    path: 'information-types'
   },
   {
     component: RelationshipsComponent,
