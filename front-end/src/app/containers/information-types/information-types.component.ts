@@ -8,6 +8,7 @@ import { AppState } from 'src/app/app-store';
 import { InformationTypesMap } from 'src/app/models';
 import { getInformationTypes } from 'src/app/selectors';
 import { InformationTypesTableModule } from 'src/app/components/information-types-table/information-types-table.component';
+import { FileUploadActions } from 'src/app/actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +35,17 @@ export class InformationTypesComponent implements OnDestroy {
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  public onFileUpload(fileEvent: Event): void {
+    const file = (fileEvent.target as HTMLInputElement).files[0];
+    const fileType = file.name.split('.').pop().toLowerCase();
+
+    if (file && (fileType === 'csv' || fileType === 'json')) {
+      this.store.dispatch(FileUploadActions.uploadInformationTypes({
+        file
+      }));
+    }
   }
 }
 
