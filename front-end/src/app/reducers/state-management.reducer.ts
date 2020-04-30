@@ -132,6 +132,7 @@ export const reducer = createReducer(
     relationships: {
       ...state.relationships,
       ...action.relationshipMap
+    }
   })),
   on(FileUploadActions.uploadStateVariablesSuccess, (state, action) => ({
     ...state,
