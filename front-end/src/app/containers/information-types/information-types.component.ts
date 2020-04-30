@@ -8,7 +8,7 @@ import { AppState } from 'src/app/app-store';
 import { InformationTypesMap } from 'src/app/models';
 import { getInformationTypes } from 'src/app/selectors';
 import { InformationTypesTableModule } from 'src/app/components/information-types-table/information-types-table.component';
-import { FileUploadActions } from 'src/app/actions';
+import { FileUploadActions, ToastActions } from 'src/app/actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,9 +41,14 @@ export class InformationTypesComponent implements OnDestroy {
     const file = (fileEvent.target as HTMLInputElement).files[0];
     const fileType = file.name.split('.').pop().toLowerCase();
 
-    if (file && (fileType === 'csv' || fileType === 'json')) {
+    if (file && (fileType === 'csv')) {
       this.store.dispatch(FileUploadActions.uploadInformationTypes({
         file
+      }));
+    } else {
+      this.store.dispatch(ToastActions.showToast({
+        message: 'Wrong filetype supplied, only csv is supported.',
+        toastType: 'error'
       }));
     }
   }
