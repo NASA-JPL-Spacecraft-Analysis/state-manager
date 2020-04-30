@@ -12,7 +12,13 @@ import { MockStateManagementService } from '../services/mock-state-management.se
 import { StateVariableActions, LayoutActions } from '../actions';
 import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
-import { identifierList, informationTypesMap, relationshipMap, stateVariableMap, stateEnumerationMap, relationshipHistoryMap } from '../mocks';
+import {
+  identifierList,
+  informationTypesMap,
+  relationshipMap,
+  stateVariableMap,
+  stateEnumerationMap
+} from '../mocks';
 
 function getRouterNavigatedAction(url: string, path?: string, params = {}): RouterNavigatedAction<RouterState> {
   return {
@@ -60,6 +66,21 @@ describe('NavEffects', () => {
 
     testScheduler = new TestScheduler((actual, expected) => {
       expect(actual).toEqual(expected);
+    });
+  });
+
+  describe('navInformationTypes', () => {
+    it('should dispatch the correct actions when navigating to /information-types', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('information-types');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navInformationTypes).toBe('-(bc)', {
+          b: LayoutActions.toggleSidenav({ showSidenav: false }),
+          c: StateVariableActions.setInformationTypes({ informationTypes: informationTypesMap })
+        });
+      });
     });
   });
 
