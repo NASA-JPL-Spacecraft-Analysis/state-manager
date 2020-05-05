@@ -1,4 +1,5 @@
 export * from './information-types';
+export * from './mock-file';
 export * from './relationships';
 export * from './state-enumeration';
 export * from './state-variable';
