@@ -11,5 +11,8 @@ public class StateVariableConstants {
             + "with the following invalid identifiers: ";
 
     public static final String INVALID_STATE_VARIABLES = " You tried to upload some invalid state variable(s), please fix "
-            + "then and reupload";
+            + "them and reupload";
+
+    public static final String INVALID_RELATIONSHIPS = " You tried to upload some invalid relationship(s), please fix "
+            + "them and reupload";
 }

@@ -1,48 +1,63 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateVariableMap, InformationTypesMap, StateEnumerationMap } from '../models';
+import { StateVariableMap, InformationTypesMap, RelationshipMap, StateEnumerationMap } from '../models';
 
 export const uploadEnumerations = createAction(
-  '[state variable] uploadEnumerations',
+  '[file upload] uploadEnumerations',
   props<{ file: File, fileType: string }>()
 );
 
 export const uploadEnumerationsFailure = createAction(
-  '[state variable] uploadEnumerationsFailure',
+  '[file upload] uploadEnumerationsFailure',
   props<{ error: Error }>()
 );
 
 export const uploadEnumerationsSuccess = createAction(
-  '[state variable] uploadEnumerationsSuccess',
+  '[file upload] uploadEnumerationsSuccess',
   props<{ enumerations: StateEnumerationMap }>()
 );
 
 export const uploadInformationTypes = createAction(
-  '[state variable] uploadInfomrationTypes',
+  '[file upload] uploadInfomrationTypes',
   props<{ file: File }>()
 );
 
 export const uploadInformationTypesFailure = createAction(
-  '[state variable] uploadInformationTypesFailure',
+  '[file upload] uploadInformationTypesFailure',
   props<{ error: Error }>()
 );
 
 export const uploadInformationTypesSuccess = createAction(
-  '[state variable] uploadInformationTypesSuccess',
+  '[file upload] uploadInformationTypesSuccess',
   props<{ informationTypes: InformationTypesMap }>()
 );
 
+export const uploadRelationships = createAction(
+  '[file upload] uploadRelationships',
+  props<{ file: File, fileType: string }>()
+);
+
+export const uploadRelationshipsFailure = createAction(
+  '[file upload] uploadRelationshipsFailure',
+  props<{ error: Error }>()
+);
+
+export const uploadRelationshipsSuccess = createAction(
+  '[file upload] uploadRelationshipsSuccess',
+  props<{ relationshipMap: RelationshipMap }>()
+);
+
+export const uploadStateVariables = createAction(
+  '[file upload] uploadStateVariables',
+  props<{ file: File, fileType: string }>()
+);
+
 export const uploadStateVariablesFailure = createAction(
-  '[state variable] uploadStateVariablesFailure',
+  '[file upload] uploadStateVariablesFailure',
   props<{ error: Error }>()
 );
 
 export const uploadStateVariablesSuccess = createAction(
-  '[state variable] uploadStateVariablesSuccess',
+  '[file upload] uploadStateVariablesSuccess',
   props<{ stateVariableMap: StateVariableMap }>()
-);
-
-export const uploadStateVariables = createAction(
-  '[state variable] uploadStateVariables',
-  props<{ file: File, fileType: string }>()
 );

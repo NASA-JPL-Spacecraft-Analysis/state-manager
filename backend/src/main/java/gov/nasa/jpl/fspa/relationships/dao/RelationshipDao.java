@@ -1,4 +1,4 @@
-package gov.nasa.jpl.fspa.dao;
+package gov.nasa.jpl.fspa.relationships.dao;
 
 import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.RelationshipHistory;
@@ -10,5 +10,7 @@ public interface RelationshipDao {
 
     List<RelationshipHistory> getRelationshipHistory();
 
-    Relationship saveRelationship(Relationship relationship);
+    Relationship modifyRelationship(Relationship relationship);
+
+    void saveRelationshipList(List<Relationship> relationshipList);
 }

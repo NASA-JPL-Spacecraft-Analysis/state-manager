@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import gov.nasa.jpl.fspa.model.StateEnumerationUpload;
 import gov.nasa.jpl.fspa.model.InformationTypes;
+import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.io.IOException;
@@ -32,7 +33,13 @@ public class JsonParseServiceImpl implements FileParseService {
     public List<StateEnumerationUpload> parseStateEnumerations(InputStream inputStream) {
         List<StateEnumerationUpload> parsedStateEnumerationUploadList = new ArrayList<>();
 
-        return parseJson(inputStream, parsedStateEnumerationUploadList, new TypeToken<List<StateEnumerationUpload>>(){}.getType());
+        return parseJson(inputStream, parsedStateEnumerationUploadList, new TypeToken<List<StateEnumerationUpload>>() {}.getType());
+    }
+
+    public List<Relationship> parseRelationships(InputStream inputStream) {
+        List<Relationship> parsedRelationships = new ArrayList<>();
+
+        return parseJson(inputStream, parsedRelationships, new TypeToken<List<Relationship>>(){}.getType());
     }
 
     @Override

@@ -125,6 +125,15 @@ export class StateManagementService {
     );
   }
 
+  public saveRelationshipsJson(file: File): Observable<RelationshipMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<RelationshipMap>(
+      baseUrl + '/relationships-json',
+      formData
+    );
+  }
+
   public saveStateVariablesCsv(file: File): Observable<StateVariableMap> {
     const formData = this.setFormData(file);
 
@@ -138,7 +147,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<StateVariableMap>(
-      baseUrl + '/test',
+      baseUrl + '/state-variables-json',
       formData
     );
   }
