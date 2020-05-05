@@ -114,7 +114,7 @@ export const reducer = createReducer(
     ...state,
     selectedStateVariable: action.stateVariable
   })),
-  on(StateVariableActions.uploadEnumerationsSuccess, (state, action) => ({
+  on(FileUploadActions.uploadEnumerationsSuccess, (state, action) => ({
     ...state,
     stateEnumerations: {
       ...action.enumerations

@@ -1,6 +1,21 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateVariableMap, InformationTypesMap } from '../models';
+import { StateVariableMap, InformationTypesMap, StateEnumerationMap } from '../models';
+
+export const uploadEnumerations = createAction(
+  '[state variable] uploadEnumerations',
+  props<{ file: File, fileType: string }>()
+);
+
+export const uploadEnumerationsFailure = createAction(
+  '[state variable] uploadEnumerationsFailure',
+  props<{ error: Error }>()
+);
+
+export const uploadEnumerationsSuccess = createAction(
+  '[state variable] uploadEnumerationsSuccess',
+  props<{ enumerations: StateEnumerationMap }>()
+);
 
 export const uploadInformationTypes = createAction(
   '[state variable] uploadInfomrationTypes',
