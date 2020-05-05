@@ -2,7 +2,7 @@ package gov.nasa.jpl.fspa.model;
 
 import com.opencsv.bean.CsvBindByName;
 
-public class EnumerationCsv {
+public class StateEnumerationUpload {
     @CsvBindByName(required = true)
     private String identifier;
 

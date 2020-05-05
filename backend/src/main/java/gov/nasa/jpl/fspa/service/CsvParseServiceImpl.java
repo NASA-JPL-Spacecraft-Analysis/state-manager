@@ -2,7 +2,7 @@ package gov.nasa.jpl.fspa.service;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import gov.nasa.jpl.fspa.model.EnumerationCsv;
+import gov.nasa.jpl.fspa.model.StateEnumerationUpload;
 import gov.nasa.jpl.fspa.model.InformationTypes;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
@@ -43,10 +43,10 @@ public class CsvParseServiceImpl implements FileParseService {
     }
 
     @Override
-    public List<EnumerationCsv> parseStateEnumerations(InputStream inputStream) {
-        List<EnumerationCsv> parsedStateEnumerations = new ArrayList<>();
+    public List<StateEnumerationUpload> parseStateEnumerations(InputStream inputStream) {
+        List<StateEnumerationUpload> parsedStateEnumerations = new ArrayList<>();
 
-        return parseCsv(inputStream, parsedStateEnumerations, EnumerationCsv.class);
+        return parseCsv(inputStream, parsedStateEnumerations, StateEnumerationUpload.class);
     }
 
     @Override
