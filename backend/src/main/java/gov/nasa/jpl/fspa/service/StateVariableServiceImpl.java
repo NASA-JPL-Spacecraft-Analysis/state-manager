@@ -1,7 +1,5 @@
 package gov.nasa.jpl.fspa.service;
 
-import gov.nasa.jpl.fspa.dao.RelationshipDao;
-import gov.nasa.jpl.fspa.dao.RelationshipDaoImpl;
 import gov.nasa.jpl.fspa.dao.StateVariableDao;
 import gov.nasa.jpl.fspa.dao.StateVariableDaoImpl;
 import gov.nasa.jpl.fspa.model.*;
@@ -10,39 +8,13 @@ import java.util.*;
 
 public class StateVariableServiceImpl implements StateVariableService {
     private final CsvParseServiceImpl outputService;
-    private final RelationshipDao relationshipDao;
     private final StateVariableDao stateVariableDao;
     private final ValidationService validationService;
 
     public StateVariableServiceImpl() {
         outputService = new CsvParseServiceImpl();
-        relationshipDao = new RelationshipDaoImpl();
         stateVariableDao = new StateVariableDaoImpl();
         validationService = new ValidationServiceImpl();
-    }
-
-    @Override
-    public Map<Integer, Relationship> getRelationships() {
-        List<Relationship> relationships = relationshipDao.getRelationships();
-        Map<Integer, Relationship> relationshipMap = new HashMap<>();
-
-        for (Relationship relationship: relationships) {
-            relationshipMap.put(relationship.getId(), relationship);
-        }
-
-        return relationshipMap;
-    }
-
-    @Override
-    public Map<Integer, RelationshipHistory> getRelationshipHistory() {
-        List<RelationshipHistory> relationshipHistoryList = relationshipDao.getRelationshipHistory();
-        Map<Integer, RelationshipHistory> relationshipHistoryMap = new HashMap<>();
-
-        for (RelationshipHistory relationshipHistory: relationshipHistoryList) {
-            relationshipHistoryMap.put(relationshipHistory.getId(), relationshipHistory);
-        }
-
-        return relationshipHistoryMap;
     }
 
     @Override
@@ -85,11 +57,6 @@ public class StateVariableServiceImpl implements StateVariableService {
         }
 
         return stateVariableMap;
-    }
-
-    @Override
-    public Relationship modifyRelationship(Relationship relationship) {
-        return relationshipDao.saveRelationship(relationship);
     }
 
     @Override

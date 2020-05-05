@@ -127,6 +127,13 @@ export const reducer = createReducer(
       ...action.informationTypes
     }
   })),
+  on(FileUploadActions.uploadRelationshipsSuccess, (state, action) => ({
+    ...state,
+    relationships: {
+      ...state.relationships,
+      ...action.relationshipMap
+    }
+  })),
   on(FileUploadActions.uploadStateVariablesSuccess, (state, action) => ({
     ...state,
     stateVariables: {

@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateVariableMap, InformationTypesMap } from '../models';
+import { StateVariableMap, InformationTypesMap, RelationshipMap } from '../models';
 
 export const uploadInformationTypes = createAction(
   '[state variable] uploadInfomrationTypes',
@@ -17,17 +17,32 @@ export const uploadInformationTypesSuccess = createAction(
   props<{ informationTypes: InformationTypesMap }>()
 );
 
+export const uploadRelationships = createAction(
+  '[file upload] uploadRelationships',
+  props<{ file: File, fileType: string }>()
+);
+
+export const uploadRelationshipsFailure = createAction(
+  '[file upload] uploadRelationshipsFailure',
+  props<{ error: Error }>()
+);
+
+export const uploadRelationshipsSuccess = createAction(
+  '[file upload] uploadRelationshipsSuccess',
+  props<{ relationshipMap: RelationshipMap }>()
+);
+
+export const uploadStateVariables = createAction(
+  '[file upload] uploadStateVariables',
+  props<{ file: File, fileType: string }>()
+);
+
 export const uploadStateVariablesFailure = createAction(
-  '[state variable] uploadStateVariablesFailure',
+  '[file upload] uploadStateVariablesFailure',
   props<{ error: Error }>()
 );
 
 export const uploadStateVariablesSuccess = createAction(
-  '[state variable] uploadStateVariablesSuccess',
+  '[file upload] uploadStateVariablesSuccess',
   props<{ stateVariableMap: StateVariableMap }>()
-);
-
-export const uploadStateVariables = createAction(
-  '[state variable] uploadStateVariables',
-  props<{ file: File, fileType: string }>()
 );

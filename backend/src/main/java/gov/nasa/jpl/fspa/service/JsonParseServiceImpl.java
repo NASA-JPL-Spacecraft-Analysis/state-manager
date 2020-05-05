@@ -1,11 +1,10 @@
 package gov.nasa.jpl.fspa.service;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import gov.nasa.jpl.fspa.model.EnumerationCsv;
 import gov.nasa.jpl.fspa.model.InformationTypes;
+import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -29,6 +27,13 @@ public class JsonParseServiceImpl implements FileParseService {
     @Override
     public List<InformationTypes> parseInformationTypes(InputStream inputStream) {
         return null;
+    }
+
+    @Override
+    public List<Relationship> parseRelationships(InputStream inputStream) {
+        List<Relationship> parsedRelationships = new ArrayList<>();
+
+        return parseJson(inputStream, parsedRelationships, new TypeToken<List<Relationship>>(){}.getType());
     }
 
     @Override

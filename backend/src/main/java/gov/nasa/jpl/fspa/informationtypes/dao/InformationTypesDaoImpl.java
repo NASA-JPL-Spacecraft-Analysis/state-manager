@@ -48,8 +48,6 @@ public class InformationTypesDaoImpl implements InformationTypesDao {
             int informationTypesCounter = 0;
 
             for (InformationTypes informationTypes: informationTypesList) {
-                System.out.println(informationTypes.getType().ordinal());
-
                 preparedStatement.setInt(1, informationTypes.getType().ordinal());
                 preparedStatement.setString(2, informationTypes.getIdentifier());
                 preparedStatement.setString(3, informationTypes.getDisplayName());

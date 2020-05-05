@@ -1,8 +1,7 @@
-package gov.nasa.jpl.fspa.dao;
+package gov.nasa.jpl.fspa.relationships.dao;
 
-import gov.nasa.jpl.fspa.model.InformationTypesEnum;
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.RelationshipHistory;
+import gov.nasa.jpl.fspa.dao.StateVariableQueries;
+import gov.nasa.jpl.fspa.model.*;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
 
 import java.sql.*;
@@ -55,7 +54,7 @@ public class RelationshipDaoImpl implements RelationshipDao {
     }
 
     @Override
-    public Relationship saveRelationship(Relationship relationship) {
+    public Relationship modifyRelationship(Relationship relationship) {
         String query;
 
         if (relationship.getId() == null) {
@@ -67,14 +66,8 @@ public class RelationshipDaoImpl implements RelationshipDao {
         }
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query,
-                     Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, relationship.getDisplayName());
-            preparedStatement.setString(2, relationship.getDescription());
-            preparedStatement.setInt(3, relationship.getSubjectType().ordinal());
-            preparedStatement.setInt(4, relationship.getTargetType().ordinal());
-            preparedStatement.setInt(5, relationship.getSubjectTypeId());
-            preparedStatement.setInt(6, relationship.getTargetTypeId());
+             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            setRelationshipPreparedStatement(preparedStatement, relationship);
 
             if (relationship.getId() != null) {
                 preparedStatement.setInt(7, relationship.getId());
@@ -94,6 +87,28 @@ public class RelationshipDaoImpl implements RelationshipDao {
         }
 
         return relationship;
+    }
+
+    @Override
+    public void saveRelationshipList(List<Relationship> relationshipList) {
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(RelationshipQueries.CREATE_RELATIONSHIP, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            int relationshipCounter = 0;
+
+            for (Relationship relationship: relationshipList) {
+                setRelationshipPreparedStatement(preparedStatement, relationship);
+
+                preparedStatement.addBatch();
+
+                relationshipCounter++;
+
+                if (relationshipCounter % StateVariableQueries.BATCH_SIZE == 0 || relationshipCounter == relationshipList.size()) {
+                    preparedStatement.executeBatch();
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     private void saveRelationshipHistory(Relationship relationship) {
@@ -129,5 +144,18 @@ public class RelationshipDaoImpl implements RelationshipDao {
         }
 
         return relationship;
+    }
+
+    private void setRelationshipPreparedStatement(PreparedStatement preparedStatement, Relationship relationship) {
+        try {
+            preparedStatement.setString(1, relationship.getDisplayName());
+            preparedStatement.setString(2, relationship.getDescription());
+            preparedStatement.setInt(3, relationship.getSubjectType().ordinal());
+            preparedStatement.setInt(4, relationship.getTargetType().ordinal());
+            preparedStatement.setInt(5, relationship.getSubjectTypeId());
+            preparedStatement.setInt(6, relationship.getTargetTypeId());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

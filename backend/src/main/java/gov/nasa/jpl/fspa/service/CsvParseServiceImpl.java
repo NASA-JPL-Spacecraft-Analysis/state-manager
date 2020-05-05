@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import gov.nasa.jpl.fspa.model.EnumerationCsv;
 import gov.nasa.jpl.fspa.model.InformationTypes;
+import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.io.*;
@@ -40,6 +41,11 @@ public class CsvParseServiceImpl implements FileParseService {
         List<InformationTypes> parsedInformationTypes = new ArrayList<>();
 
         return parseCsv(inputStream, parsedInformationTypes, InformationTypes.class);
+    }
+
+    @Override
+    public List<Relationship> parseRelationships(InputStream inputStream) {
+        return null;
     }
 
     @Override

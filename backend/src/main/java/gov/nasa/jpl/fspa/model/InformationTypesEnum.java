@@ -2,8 +2,8 @@ package gov.nasa.jpl.fspa.model;
 
 public enum InformationTypesEnum {
     Activity,
-    FlightRule,
     Command,
+    FlightRule,
     Model,
     State
 }
