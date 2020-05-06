@@ -44,7 +44,7 @@ Each type has a different format listed below:
 
 CSV:
 ```
-identifier,label,value
+stateIdentifier,label,value
 upload1,Off,0
 upload1,On,1
 ```
@@ -53,12 +53,12 @@ JSON:
 ```
 [
   {
-    "identifier": "test_state_identifier",
+    "stateIdentifier": "test_state_identifier",
     "label": "Off",
     "value": 0
   },
   {
-    "identifier": "test_state_identifier",
+    "stateIdentifier": "test_state_identifier",
     "label": "On",
     "value": 1
   }
