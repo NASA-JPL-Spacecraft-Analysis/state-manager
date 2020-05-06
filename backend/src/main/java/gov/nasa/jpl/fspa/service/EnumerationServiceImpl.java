@@ -11,10 +11,10 @@ public class EnumerationServiceImpl implements EnumerationService {
     public List<StateEnumeration> convertEnumerationCsvToEnumeration(List<StateEnumerationUpload> stateEnumerationUploadList, Map<String, Integer> identifierToVariableIdMap) {
         List<StateEnumeration> enumerations = new ArrayList<>();
 
-        for (StateEnumerationUpload stateEnumerationUpload : stateEnumerationUploadList) {
+        for (StateEnumerationUpload stateEnumerationUpload: stateEnumerationUploadList) {
             StateEnumeration enumeration = new StateEnumeration();
 
-            enumeration.setStateVariableId(identifierToVariableIdMap.get(stateEnumerationUpload.getIdentifier()));
+            enumeration.setStateVariableId(identifierToVariableIdMap.get(stateEnumerationUpload.getStateIdentifier()));
             enumeration.setLabel(stateEnumerationUpload.getLabel());
             enumeration.setValue(stateEnumerationUpload.getValue());
 
@@ -27,9 +27,9 @@ public class EnumerationServiceImpl implements EnumerationService {
     public List<String> invalidIdentifierCheck(List<StateEnumerationUpload> stateEnumerationUploadList, Map<String, Integer> identifierToVariableIdMap) {
         List<String> invalidIdentifierList = new ArrayList<>();
 
-        for (StateEnumerationUpload stateEnumerationUpload : stateEnumerationUploadList) {
-            if (identifierToVariableIdMap.get(stateEnumerationUpload.getIdentifier()) == null) {
-                invalidIdentifierList.add(stateEnumerationUpload.getIdentifier());
+        for (StateEnumerationUpload stateEnumerationUpload: stateEnumerationUploadList) {
+            if (identifierToVariableIdMap.get(stateEnumerationUpload.getStateIdentifier()) == null) {
+                invalidIdentifierList.add(stateEnumerationUpload.getStateIdentifier());
             }
         }
 
