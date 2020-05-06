@@ -169,18 +169,3 @@ export const setSelectedStateVariable = createAction(
   '[state variable] setSelectedStateVariable',
   props<{ stateVariable: StateVariable }>()
 );
-
-export const uploadEnumerations = createAction(
-  '[state variable] uploadEnumerations',
-  props<{ file: File }>()
-);
-
-export const uploadEnumerationsFailure = createAction(
-  '[state variable] uploadEnumerationsFailure',
-  props<{ error: Error }>()
-);
-
-export const uploadEnumerationsSuccess = createAction(
-  '[state variable] uploadEnumerationsSuccess',
-  props<{ enumerations: StateEnumerationMap }>()
-);

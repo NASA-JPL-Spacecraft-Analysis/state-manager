@@ -98,20 +98,29 @@ export class StateManagementService {
     );
   }
 
+  public saveEnumerationsCsv(file: File): Observable<StateEnumerationMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<StateEnumerationMap>(
+      baseUrl + '/enumerations-csv',
+      formData
+    );
+  }
+
+  public saveEnumerationsJson(file: File): Observable<StateEnumerationMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<StateEnumerationMap>(
+      baseUrl + '/enumerations-json',
+      formData
+    );
+  }
+
   public saveInformationTypesFile(file: File): Observable<InformationTypesMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
       baseUrl + '/information-types-csv',
-      formData
-    );
-  }
-
-  public saveEnumerationsFile(file: File): Observable<StateEnumerationMap> {
-    const formData = this.setFormData(file);
-
-    return this.http.post<StateEnumerationMap>(
-      baseUrl + '/enumerations-csv',
       formData
     );
   }

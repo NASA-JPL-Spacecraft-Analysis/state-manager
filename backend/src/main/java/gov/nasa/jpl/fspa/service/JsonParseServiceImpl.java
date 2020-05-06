@@ -2,7 +2,7 @@ package gov.nasa.jpl.fspa.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import gov.nasa.jpl.fspa.model.EnumerationCsv;
+import gov.nasa.jpl.fspa.model.StateEnumerationUpload;
 import gov.nasa.jpl.fspa.model.InformationTypes;
 import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateVariable;
@@ -30,15 +30,16 @@ public class JsonParseServiceImpl implements FileParseService {
     }
 
     @Override
+    public List<StateEnumerationUpload> parseStateEnumerations(InputStream inputStream) {
+        List<StateEnumerationUpload> parsedStateEnumerationUploadList = new ArrayList<>();
+
+        return parseJson(inputStream, parsedStateEnumerationUploadList, new TypeToken<List<StateEnumerationUpload>>() {}.getType());
+    }
+
     public List<Relationship> parseRelationships(InputStream inputStream) {
         List<Relationship> parsedRelationships = new ArrayList<>();
 
         return parseJson(inputStream, parsedRelationships, new TypeToken<List<Relationship>>(){}.getType());
-    }
-
-    @Override
-    public List<EnumerationCsv> parseStateEnumerations(InputStream inputStream) {
-        return null;
     }
 
     @Override

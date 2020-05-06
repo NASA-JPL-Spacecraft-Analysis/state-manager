@@ -207,28 +207,15 @@ public class StateManagementResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postEnumerationsCsv(@FormDataParam("file") InputStream inputStream) {
-        List<EnumerationCsv> parsedCsvEnumerations = csvParseServiceImpl.parseStateEnumerations(inputStream);
+        return saveParsedStateEnumerations(csvParseServiceImpl.parseStateEnumerations(inputStream));
+    }
 
-        if (parsedCsvEnumerations.size() > 0) {
-            Map<String, Integer> identifierToVariableIdMap = stateVariableService.getMappedIdentifiers();
-            // A list to hold enumerations not tied to a valid identifier
-            List<String> invalidIdentifiers = enumerationService.invalidIdentifierCheck(parsedCsvEnumerations, identifierToVariableIdMap);
-
-            if (invalidIdentifiers.size() == 0) {
-                List<StateEnumeration> parsedEnumerations = enumerationService.convertEnumerationCsvToEnumeration(parsedCsvEnumerations, identifierToVariableIdMap);
-                Map<Integer, List<StateEnumeration>> mappedEnumerations = stateVariableService.saveUploadedEnumerations(parsedEnumerations);
-
-                if (mappedEnumerations.keySet().size() > 0) {
-                    return Response.status(Response.Status.CREATED).entity(mappedEnumerations).build();
-                }
-            } else {
-                return Response.status(Response.Status.CONFLICT).entity(
-                        StateVariableConstants.INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS + invalidIdentifiers.toString()
-                ).build();
-            }
-        }
-
-        return Response.status(Response.Status.NO_CONTENT).build();
+    @POST
+    @Path("/enumerations-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEnumerationsJson(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedStateEnumerations(jsonParseServiceImpl.parseStateEnumerations(inputStream));
     }
 
     @POST
@@ -294,6 +281,29 @@ public class StateManagementResource {
                 out.write(csvBytes);
             }
         };
+    }
+
+    private Response saveParsedStateEnumerations(List<StateEnumerationUpload> parsedStateEnumerationUploads) {
+        if (parsedStateEnumerationUploads.size() > 0) {
+            Map<String, Integer> identifierToVariableIdMap = stateVariableService.getMappedIdentifiers();
+            // A list to hold enumerations not tied to a valid identifier
+            List<String> invalidIdentifiers = enumerationService.invalidIdentifierCheck(parsedStateEnumerationUploads, identifierToVariableIdMap);
+
+            if (invalidIdentifiers.size() == 0) {
+                List<StateEnumeration> parsedEnumerations = enumerationService.convertEnumerationCsvToEnumeration(parsedStateEnumerationUploads, identifierToVariableIdMap);
+                Map<Integer, List<StateEnumeration>> mappedEnumerations = stateVariableService.saveUploadedEnumerations(parsedEnumerations);
+
+                if (mappedEnumerations.keySet().size() > 0) {
+                    return Response.status(Response.Status.CREATED).entity(mappedEnumerations).build();
+                }
+            } else {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS + invalidIdentifiers.toString()
+                ).build();
+            }
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     private Response saveParsedRelationships(List<Relationship> parsedRelationships) {

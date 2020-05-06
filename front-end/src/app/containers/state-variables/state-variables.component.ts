@@ -122,8 +122,9 @@ export class StateVariablesComponent implements OnDestroy {
     if (file && (fileType === 'csv' || fileType === 'json')) {
       switch (type) {
         case UploadableTypes.Enumerations:
-          this.store.dispatch(StateVariableActions.uploadEnumerations({
-            file
+          this.store.dispatch(FileUploadActions.uploadEnumerations({
+            file,
+            fileType
           }));
 
           break;

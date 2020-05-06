@@ -36,12 +36,85 @@ If you're changing the backend, after you've made your changes the `.war` file n
 
 ## Usage
 
-CSV Upload:
-In order to upload a `.csv` file, it needs to use the following format:
+CSV / Json Upload
 
+Each type has a different format listed below:
+
+### State Enumeration Upload
+
+CSV:
+```
+stateIdentifier,label,value
+upload1,Off,0
+upload1,On,1
+```
+
+JSON:
+```
+[
+  {
+    "stateIdentifier": "test_state_identifier",
+    "label": "Off",
+    "value": 0
+  },
+  {
+    "stateIdentifier": "test_state_identifier",
+    "label": "On",
+    "value": 1
+  }
+]
+```
+
+### Information Types Upload
+
+CSV:
+```
+type,identifier,displayName,description,externalLink
+1,test_command,Test Command,,
+```
+
+### Relationships Upload
+
+JSON:
+```
+[
+  {
+    "displayName": "Test upload relationship 1",
+    "description": "test",
+    "subjectType": "Model",
+    "targetType": "State",
+    "subjectTypeId": 4,
+    "targetTypeId": 83
+  },
+  {
+    ...
+  }
+]
+```
+
+### State Variable Upload
+
+CSV:
 ```
 identifier,displayName,type,units,source,subsystem,description
 IDENTIFIER 1,Identifier 1,test type,test units,test source,identifier 1
+```
+
+JSON:
+```
+[
+  {
+    "identifier": "test json upload",
+    "displayName": "Test",
+    "type": "asd",
+    "units": "asd",
+    "source": "asd",
+    "subsystem": "asd"
+  },
+  {
+    ...
+  }
+]
 ```
 
 You can upload more states by adding each one on a new line.  If any states you try and upload have identifiers that are already in the database the upload will fail.

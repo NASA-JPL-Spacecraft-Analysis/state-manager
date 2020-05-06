@@ -1,6 +1,6 @@
 package gov.nasa.jpl.fspa.service;
 
-import gov.nasa.jpl.fspa.model.EnumerationCsv;
+import gov.nasa.jpl.fspa.model.StateEnumerationUpload;
 import gov.nasa.jpl.fspa.model.InformationTypes;
 import gov.nasa.jpl.fspa.model.Relationship;
 import gov.nasa.jpl.fspa.model.StateVariable;
@@ -13,9 +13,9 @@ public interface FileParseService {
 
     List<InformationTypes> parseInformationTypes(InputStream inputStream);
 
-    List<Relationship> parseRelationships(InputStream inputStream);
+    List<StateEnumerationUpload> parseStateEnumerations(InputStream inputStream);
 
-    List<EnumerationCsv> parseStateEnumerations(InputStream inputStream);
+    List<Relationship> parseRelationships(InputStream inputStream);
 
     List<StateVariable> parseStateVariables(InputStream inputStream);
 }

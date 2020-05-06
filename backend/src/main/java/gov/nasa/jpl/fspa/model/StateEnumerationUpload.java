@@ -2,9 +2,9 @@ package gov.nasa.jpl.fspa.model;
 
 import com.opencsv.bean.CsvBindByName;
 
-public class EnumerationCsv {
+public class StateEnumerationUpload {
     @CsvBindByName(required = true)
-    private String identifier;
+    private String stateIdentifier;
 
     @CsvBindByName(required = true)
     private String label;
@@ -12,12 +12,12 @@ public class EnumerationCsv {
     @CsvBindByName(required = true)
     private int value;
 
-    public String getIdentifier() {
-        return identifier;
+    public String getStateIdentifier() {
+        return stateIdentifier;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setStateIdentifier(String stateIdentifier) {
+        this.stateIdentifier = stateIdentifier;
     }
 
     public String getLabel() {
