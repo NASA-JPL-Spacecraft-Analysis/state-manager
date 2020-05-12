@@ -4,7 +4,7 @@ CREATE TABLE `information_types` (
   `identifier` varchar(45) NOT NULL,
   `display_name` varchar(45) DEFAULT NULL,
   `description` text,
-  `external_link` varchar(45) DEFAULT NULL,
+  `external_link` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

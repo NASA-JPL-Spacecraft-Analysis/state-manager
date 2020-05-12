@@ -193,6 +193,14 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/information-types-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postInformationTypesJson(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedInformationTypes(jsonParseServiceImpl.parseInformationTypes(inputStream));
+    }
+
+    @POST
     @Path("/enumerations-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)

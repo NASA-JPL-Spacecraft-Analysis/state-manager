@@ -41,9 +41,10 @@ export class InformationTypesComponent implements OnDestroy {
     const file = (fileEvent.target as HTMLInputElement).files[0];
     const fileType = file.name.split('.').pop().toLowerCase();
 
-    if (file && (fileType === 'csv')) {
+    if (file && (fileType === 'csv' || fileType === 'json')) {
       this.store.dispatch(FileUploadActions.uploadInformationTypes({
-        file
+        file,
+        fileType
       }));
     } else {
       this.store.dispatch(ToastActions.showToast({

@@ -69,8 +69,24 @@ JSON:
 
 CSV:
 ```
-type,identifier,displayName,description,externalLink
-1,test_command,Test Command,,
+informationType,identifier,displayName,description,externalLink
+Command,test_command,Test Command,,
+```
+
+JSON:
+```
+[
+  {
+    "informationType": "Command",
+    "identifier": "TEST_COMMAND",
+    "displayName": "Test Command",
+    "description": "",
+    "externalLink": ""
+  },
+  {
+    ...
+  }
+]
 ```
 
 ### Relationships Upload
