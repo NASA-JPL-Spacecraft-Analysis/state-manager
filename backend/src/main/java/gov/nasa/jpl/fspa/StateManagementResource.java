@@ -189,17 +189,7 @@ public class StateManagementResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream) {
-        List<InformationTypes> parsedInformationTypesList = csvParseServiceImpl.parseInformationTypes(inputStream);
-
-        if (parsedInformationTypesList.size() > 0) {
-            // TODO: Check information type identifiers for duplicates.
-            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
-                    informationTypesService.saveUploadedInformationTypes(parsedInformationTypesList);
-
-            return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
-        }
-
-        return Response.status(Response.Status.NO_CONTENT).build();
+        return saveParsedInformationTypes(csvParseServiceImpl.parseInformationTypes(inputStream));
     }
 
     @POST
@@ -281,6 +271,25 @@ public class StateManagementResource {
                 out.write(csvBytes);
             }
         };
+    }
+
+    private Response saveParsedInformationTypes(List<InformationTypesUpload> parsedInformationTypesUploadList) {
+        if (parsedInformationTypesUploadList.size() > 0) {
+            List<String> invalidInformationTypesList = validationService.validateInformationTypes(parsedInformationTypesUploadList);
+
+            if (invalidInformationTypesList.size() == 0) {
+                Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
+                        informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList));
+
+                return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
+            } else {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.INVALID_INFORMATION_TYPES + invalidInformationTypesList.toString()
+                ).build();
+            }
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     private Response saveParsedStateEnumerations(List<StateEnumerationUpload> parsedStateEnumerationUploads) {

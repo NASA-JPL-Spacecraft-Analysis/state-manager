@@ -1,9 +1,6 @@
 package gov.nasa.jpl.fspa.service;
 
-import gov.nasa.jpl.fspa.model.InformationTypes;
-import gov.nasa.jpl.fspa.model.InformationTypesEnum;
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.util.*;
 
@@ -76,6 +73,29 @@ public class ValidationServiceImpl implements ValidationService {
         }
 
         return duplicateIdentifiers;
+    }
+
+    /**
+     * Looks at each information type and checks to make sure the type provided is valid inside our {@link InformationTypesEnum}.
+     * @param informationTypesUploadList The uploaded information types.
+     * @return A list of the invalid upload information types.
+     */
+    @Override
+    public List<String> validateInformationTypes(List<InformationTypesUpload> informationTypesUploadList) {
+        List<String> invalidInformationTypesList = new ArrayList<>();
+        Set<String> informationTypesEnumMap = new HashSet<>();
+
+        for (InformationTypesEnum informationTypesEnum: InformationTypesEnum.values()) {
+            informationTypesEnumMap.add(informationTypesEnum.name());
+        }
+
+        for (InformationTypesUpload informationTypesUpload: informationTypesUploadList) {
+            if (!informationTypesEnumMap.contains(informationTypesUpload.getInformationType())) {
+                invalidInformationTypesList.add(informationTypesUpload.getInformationType());
+            }
+        }
+
+        return invalidInformationTypesList;
     }
 
     /**
