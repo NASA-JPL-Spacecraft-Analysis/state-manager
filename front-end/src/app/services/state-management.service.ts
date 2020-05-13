@@ -134,6 +134,15 @@ export class StateManagementService {
     );
   }
 
+  public saveRelationshipsCsv(file: File): Observable<RelationshipMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<RelationshipMap>(
+      baseUrl + '/relationships-csv',
+      formData
+    );
+  }
+
   public saveRelationshipsJson(file: File): Observable<RelationshipMap> {
     const formData = this.setFormData(file);
 

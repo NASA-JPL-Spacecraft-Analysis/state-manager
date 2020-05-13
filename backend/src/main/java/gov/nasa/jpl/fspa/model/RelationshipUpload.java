@@ -1,11 +1,24 @@
 package gov.nasa.jpl.fspa.model;
 
+import com.opencsv.bean.CsvBindByName;
+
 public class RelationshipUpload {
+    @CsvBindByName(required = true)
     private String displayName;
+
+    @CsvBindByName()
     private String description;
+
+    @CsvBindByName(required = true)
     private String subjectType;
+
+    @CsvBindByName(required = true)
     private String subjectIdentifier;
+
+    @CsvBindByName(required = true)
     private String targetType;
+
+    @CsvBindByName(required = true)
     private String targetIdentifier;
 
     public String getDisplayName() {

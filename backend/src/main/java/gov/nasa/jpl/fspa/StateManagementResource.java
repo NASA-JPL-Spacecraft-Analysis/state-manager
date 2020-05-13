@@ -217,6 +217,14 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/relationships-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationshipsCsv(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedRelationships(csvParseServiceImpl.parseRelationships(inputStream));
+    }
+
+    @POST
     @Path("/relationships-json")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)

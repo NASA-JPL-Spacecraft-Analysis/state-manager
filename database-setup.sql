@@ -11,8 +11,8 @@ CREATE TABLE `information_types` (
 CREATE TABLE `relationship_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `relationship_id` int(11) NOT NULL,
-  `display_name` varchar(45) NOT NULL,
-  `description` varchar(45) DEFAULT NULL,
+  `display_name` text NOT NULL,
+  `description` text DEFAULT NULL,
   `subject_type` int(11) NOT NULL,
   `target_type` int(11) NOT NULL,
   `subject_type_id` int(11) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `relationship_history` (
 
 CREATE TABLE `relationships` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `display_name` varchar(45) NOT NULL,
+  `display_name` text NOT NULL,
   `description` text,
   `subject_type` int(11) NOT NULL,
   `target_type` int(11) NOT NULL,

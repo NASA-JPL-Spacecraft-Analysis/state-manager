@@ -98,6 +98,7 @@ export class FileUploadEffects {
         let saveRelationships: Observable<RelationshipMap>;
 
         if (fileType === 'csv') {
+          saveRelationships = this.stateManagementService.saveRelationshipsCsv(file);
         } else {
           saveRelationships = this.stateManagementService.saveRelationshipsJson(file);
         }
