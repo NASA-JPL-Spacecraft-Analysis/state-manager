@@ -91,6 +91,12 @@ JSON:
 
 ### Relationships Upload
 
+CSV:
+```
+displayName,description,subjectType,subjectIdentifier,targetType,targetIdentifier
+Test upload relationship 1,test json relationship 1,COMMAND,TEST_COMMAND,State,STATE_IDENTIFIER_1
+```
+
 JSON:
 ```
 [
@@ -113,14 +119,14 @@ JSON:
 CSV:
 ```
 identifier,displayName,type,units,source,subsystem,description
-IDENTIFIER_1,Identifier 1,test type,test units,test source,identifier 1
+STATE_IDENTIFIER_1,State Identifier 1,test type,test units,test source,identifier 1
 ```
 
 JSON:
 ```
 [
   {
-    "identifier": "test json upload",
+    "identifier": "STATE_IDENTIFIER_1",
     "displayName": "Test",
     "type": "asd",
     "units": "asd",
