@@ -323,20 +323,23 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedRelationships(List<Relationship> parsedRelationships) {
-        if (parsedRelationships.size() > 0) {
-            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypes();
+    private Response saveParsedRelationships(List<RelationshipUpload> parsedRelationshipUploadList) {
+        if (parsedRelationshipUploadList.size() > 0) {
+            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier();
+            Map<String, Integer> stateVariableIdentifierMap = stateVariableService.getMappedIdentifiers() ;
 
             // If we have invalid relationships, return an error.
-            if (validationService.hasInvalidRelationships(parsedRelationships, informationTypesEnumMap)
-                || validationService.validateRelationships(parsedRelationships, stateVariableService.getStateVariables(),
-                    informationTypesEnumMap).size() > 0) {
+            if (validationService.hasInvalidRelationships(parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap)) {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.INVALID_RELATIONSHIPS
                 ).build();
-            }
+            } else {
+                List<Relationship> parsedRelationships = relationshipService.convertRelationshipUploads(parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap);
 
-            return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
+                if (parsedRelationships.size() > 0) {
+                    return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
+                }
+            }
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();

@@ -41,7 +41,7 @@ public class CsvParseServiceImpl implements FileParseService {
     }
 
     @Override
-    public List<Relationship> parseRelationships(InputStream inputStream) {
+    public List<RelationshipUpload> parseRelationships(InputStream inputStream) {
         return null;
     }
 

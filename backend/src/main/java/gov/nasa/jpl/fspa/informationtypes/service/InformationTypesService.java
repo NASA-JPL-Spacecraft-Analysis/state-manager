@@ -12,5 +12,7 @@ public interface InformationTypesService {
 
     Map<InformationTypesEnum, Map<Integer, InformationTypes>> getInformationTypes();
 
+    Map<InformationTypesEnum, Map<String, InformationTypes>> getInformationTypesByIdentifier();
+
     Map<InformationTypesEnum, Map<Integer, InformationTypes>> saveUploadedInformationTypes(List<InformationTypes> informationTypesList);
 }

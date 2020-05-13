@@ -12,7 +12,7 @@ public interface FileParseService {
 
     List<StateEnumerationUpload> parseStateEnumerations(InputStream inputStream);
 
-    List<Relationship> parseRelationships(InputStream inputStream);
+    List<RelationshipUpload> parseRelationships(InputStream inputStream);
 
     List<StateVariable> parseStateVariables(InputStream inputStream);
 }

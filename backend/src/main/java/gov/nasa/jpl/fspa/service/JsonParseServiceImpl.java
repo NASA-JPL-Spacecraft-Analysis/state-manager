@@ -35,10 +35,10 @@ public class JsonParseServiceImpl implements FileParseService {
         return parseJson(inputStream, parsedStateEnumerationUploadList, new TypeToken<List<StateEnumerationUpload>>() {}.getType());
     }
 
-    public List<Relationship> parseRelationships(InputStream inputStream) {
-        List<Relationship> parsedRelationships = new ArrayList<>();
+    public List<RelationshipUpload> parseRelationships(InputStream inputStream) {
+        List<RelationshipUpload> parsedRelationships = new ArrayList<>();
 
-        return parseJson(inputStream, parsedRelationships, new TypeToken<List<Relationship>>(){}.getType());
+        return parseJson(inputStream, parsedRelationships, new TypeToken<List<RelationshipUpload>>(){}.getType());
     }
 
     @Override

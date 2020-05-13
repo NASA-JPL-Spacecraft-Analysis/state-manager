@@ -55,6 +55,25 @@ public class InformationTypesServiceImpl implements InformationTypesService {
     }
 
     @Override
+    public Map<InformationTypesEnum, Map<String, InformationTypes>> getInformationTypesByIdentifier() {
+        List<InformationTypes> informationTypesList = informationTypesDao.getInformationTypes();
+        Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesMap = new HashMap<>();
+
+        if (informationTypesList.size() > 0) {
+            // Populate our map with each type of Information Type.
+            for (InformationTypesEnum informationTypesEnumValue: InformationTypesEnum.values()) {
+                informationTypesMap.put(informationTypesEnumValue, new HashMap<String, InformationTypes>());
+            }
+
+            for (InformationTypes informationTypes: informationTypesList) {
+                informationTypesMap.get(informationTypes.getType()).put(informationTypes.getIdentifier(), informationTypes);
+            }
+        }
+
+        return informationTypesMap;
+    }
+
+    @Override
     public Map<InformationTypesEnum, Map<Integer, InformationTypes>> saveUploadedInformationTypes(List<InformationTypes> informationTypesList) {
         informationTypesDao.saveInformationTypes(informationTypesList);
 

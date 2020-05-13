@@ -97,10 +97,10 @@ JSON:
   {
     "displayName": "Test upload relationship 1",
     "description": "test",
-    "subjectType": "Model",
+    "subjectType": "Command",
+    "subjectIdentifier": "TEST_COMMAND"
     "targetType": "State",
-    "subjectTypeId": 4,
-    "targetTypeId": 83
+    "targetIdentifier": "IDENTIFIER_1"
   },
   {
     ...
@@ -113,7 +113,7 @@ JSON:
 CSV:
 ```
 identifier,displayName,type,units,source,subsystem,description
-IDENTIFIER 1,Identifier 1,test type,test units,test source,identifier 1
+IDENTIFIER_1,Identifier 1,test type,test units,test source,identifier 1
 ```
 
 JSON:
