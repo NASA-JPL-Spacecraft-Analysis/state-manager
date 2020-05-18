@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 
 import { StateVariableMap, StateEnumerationMap, RelationshipMap, InformationTypesMap } from '../models';
-import { identifierList, relationshipMap, stateEnumerationMap, stateVariableMap, informationTypesMap } from './../mocks';
+import { identifierList, relationshipMap, stateEnumerationMap, stateVariableMap, mockInformationTypesMap } from './../mocks';
 
 @Injectable()
 export class MockStateManagementService {
@@ -15,7 +15,7 @@ export class MockStateManagementService {
 
   public getInformationTypes(): Observable<InformationTypesMap> {
     return new Observable((observer: Observer<InformationTypesMap>) => {
-      observer.next(informationTypesMap);
+      observer.next(mockInformationTypesMap);
       observer.complete();
     });
   }
@@ -62,9 +62,16 @@ export class MockStateManagementService {
     });
   }
 
-  public saveInformationTypesFile(file: File): Observable<InformationTypesMap> {
+  public saveInformationTypesCsv(file: File): Observable<InformationTypesMap> {
     return new Observable((observer: Observer<InformationTypesMap>) => {
-      observer.next(informationTypesMap);
+      observer.next(mockInformationTypesMap);
+      observer.complete();
+    });
+  }
+
+  public saveInformationTypesJson(file: File): Observable<InformationTypesMap> {
+    return new Observable((observer: Observer<InformationTypesMap>) => {
+      observer.next(mockInformationTypesMap);
       observer.complete();
     });
   }

@@ -10,7 +10,7 @@ import { FileUploadEffects } from './file-upload.effects';
 import { StateManagementService } from '../services/state-management.service';
 import { MockStateManagementService } from '../services/mock-state-management.service';
 import { FileUploadActions, ToastActions } from '../actions';
-import { mockCsvFile, mockJsonFile, informationTypesMap, stateEnumerationMap, stateVariableMap } from '../mocks';
+import { mockCsvFile, mockJsonFile, mockInformationTypesMap, stateEnumerationMap, stateVariableMap } from '../mocks';
 
 describe('FileUploadEffects', () => {
   let actions: Observable<Action>;
@@ -46,14 +46,15 @@ describe('FileUploadEffects', () => {
     it('should dispatch uploadInformationTypesSuccess and show a success toast on success when a .csv file is uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
         const action = FileUploadActions.uploadInformationTypes({
-          file: mockCsvFile
+          file: mockCsvFile,
+          fileType: 'csv'
         });
 
         actions = hot('-a', { a: action });
 
         expectObservable(effects.uploadInformationTypes).toBe('-(bc)', {
           b: FileUploadActions.uploadInformationTypesSuccess({
-            informationTypes: informationTypesMap
+            informationTypes: mockInformationTypesMap
           }),
           c: ToastActions.showToast({
             message: 'Information types uploaded',
