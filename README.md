@@ -69,11 +69,33 @@ JSON:
 
 CSV:
 ```
-type,identifier,displayName,description,externalLink
-1,test_command,Test Command,,
+informationType,identifier,displayName,description,externalLink
+Command,test_command,Test Command,,
+```
+
+JSON:
+```
+[
+  {
+    "informationType": "Command",
+    "identifier": "TEST_COMMAND",
+    "displayName": "Test Command",
+    "description": "",
+    "externalLink": ""
+  },
+  {
+    ...
+  }
+]
 ```
 
 ### Relationships Upload
+
+CSV:
+```
+displayName,description,subjectType,subjectIdentifier,targetType,targetIdentifier
+Test upload relationship 1,test json relationship 1,COMMAND,TEST_COMMAND,State,STATE_IDENTIFIER_1
+```
 
 JSON:
 ```
@@ -81,10 +103,10 @@ JSON:
   {
     "displayName": "Test upload relationship 1",
     "description": "test",
-    "subjectType": "Model",
+    "subjectType": "Command",
+    "subjectIdentifier": "TEST_COMMAND"
     "targetType": "State",
-    "subjectTypeId": 4,
-    "targetTypeId": 83
+    "targetIdentifier": "IDENTIFIER_1"
   },
   {
     ...
@@ -97,14 +119,14 @@ JSON:
 CSV:
 ```
 identifier,displayName,type,units,source,subsystem,description
-IDENTIFIER 1,Identifier 1,test type,test units,test source,identifier 1
+STATE_IDENTIFIER_1,State Identifier 1,test type,test units,test source,identifier 1
 ```
 
 JSON:
 ```
 [
   {
-    "identifier": "test json upload",
+    "identifier": "STATE_IDENTIFIER_1",
     "displayName": "Test",
     "type": "asd",
     "units": "asd",

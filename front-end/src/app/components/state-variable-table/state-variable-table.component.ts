@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { StateVariable, StateVariableMap } from '../../models';
 import { MaterialModule } from 'src/app/material';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,6 +17,8 @@ export class StateVariableTableComponent implements OnChanges, OnInit {
   @Input() public history: boolean;
 
   @Output() public stateVariableSelected: EventEmitter<StateVariable>;
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<StateVariable>;
   public stateVariableMapSize: number;
@@ -56,6 +59,8 @@ export class StateVariableTableComponent implements OnChanges, OnInit {
       }
 
       this.dataSource = new MatTableDataSource(stateVariables);
+
+      this.dataSource.paginator = this.paginator;
 
       this.dataSource.filterPredicate = this.filter;
     }

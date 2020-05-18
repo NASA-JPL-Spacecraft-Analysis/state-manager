@@ -1,12 +1,14 @@
 package gov.nasa.jpl.fspa.relationships.service;
 
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.RelationshipHistory;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.util.List;
 import java.util.Map;
 
 public interface RelationshipService {
+    List<Relationship> convertRelationshipUploads(List<RelationshipUpload> relationshipUploadList, Map<String, Integer> stateVariableIdentifierMap,
+                                                         Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap);
+
     Map<Integer, Relationship> getRelationships();
 
     Map<Integer, RelationshipHistory> getRelationshipHistory();

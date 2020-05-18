@@ -1,13 +1,10 @@
 package gov.nasa.jpl.fspa.model;
 
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvCustomBindByName;
-import gov.nasa.jpl.fspa.util.ConvertIntegerToEnum;
 
 public class InformationTypes {
     private Integer id;
 
-    @CsvCustomBindByName(converter = ConvertIntegerToEnum.class)
     private InformationTypesEnum type;
 
     @CsvBindByName(required = true)

@@ -2,10 +2,7 @@ package gov.nasa.jpl.fspa.service;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import gov.nasa.jpl.fspa.model.StateEnumerationUpload;
-import gov.nasa.jpl.fspa.model.InformationTypes;
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -37,15 +34,17 @@ public class CsvParseServiceImpl implements FileParseService {
     }
 
     @Override
-    public List<InformationTypes> parseInformationTypes(InputStream inputStream) {
-        List<InformationTypes> parsedInformationTypes = new ArrayList<>();
+    public List<InformationTypesUpload> parseInformationTypes(InputStream inputStream) {
+        List<InformationTypesUpload> parsedInformationTypes = new ArrayList<>();
 
-        return parseCsv(inputStream, parsedInformationTypes, InformationTypes.class);
+        return parseCsv(inputStream, parsedInformationTypes, InformationTypesUpload.class);
     }
 
     @Override
-    public List<Relationship> parseRelationships(InputStream inputStream) {
-        return null;
+    public List<RelationshipUpload> parseRelationships(InputStream inputStream) {
+        List<RelationshipUpload> parsedRelationshipUploadList = new ArrayList<>();
+
+        return parseCsv(inputStream, parsedRelationshipUploadList, RelationshipUpload.class);
     }
 
     @Override

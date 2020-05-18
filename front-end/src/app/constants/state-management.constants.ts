@@ -14,5 +14,5 @@ export class StateManagementConstants {
     InformationTypeEnum[InformationTypeEnum.State]
   ];
 
-  public static wrongFiletypeUploadMessage = 'Wrong filetype supplied, only csv is supported.';
+  public static wrongFiletypeUploadMessage = 'Wrong filetype supplied, only csv and json are supported.';
 }

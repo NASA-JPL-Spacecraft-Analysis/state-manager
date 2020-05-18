@@ -66,8 +66,7 @@ export class RelationshipsComponent implements OnDestroy {
     const file = (fileEvent.target as HTMLInputElement).files[0];
     const fileType = file.name.split('.').pop().toLowerCase();
 
-    // TODO: Support csv uploads later
-    if (file && (fileType === 'json')) {
+    if (file && (fileType === 'csv' || fileType === 'json')) {
       this.store.dispatch(FileUploadActions.uploadRelationships({
         file,
         fileType

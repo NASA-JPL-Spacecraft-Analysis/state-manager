@@ -1,9 +1,6 @@
 package gov.nasa.jpl.fspa.service;
 
-import gov.nasa.jpl.fspa.model.InformationTypes;
-import gov.nasa.jpl.fspa.model.InformationTypesEnum;
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.util.*;
 
@@ -15,14 +12,20 @@ public class ValidationServiceImpl implements ValidationService {
      * @return True if there's an invalid relationship, otherwise false.
      */
     @Override
-    public boolean hasInvalidRelationships(List<Relationship> relationshipList,
-                                            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesEnumMap) {
-        for (Relationship relationship: relationshipList) {
-            if (isPropertyInvalid(relationship.getDisplayName())
-                    || (relationship.getSubjectType() == null || informationTypesEnumMap.get(relationship.getSubjectType()) == null)
-                    || relationship.getSubjectTypeId() == null
-                    || (relationship.getTargetType() == null || informationTypesEnumMap.get(relationship.getTargetType()) == null)
-                    || relationship.getTargetTypeId() == null) {
+    public boolean hasInvalidRelationships(List<RelationshipUpload> relationshipList, Map<String, Integer> stateVariableMap,
+                                            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap) {
+        for (RelationshipUpload relationshipUpload: relationshipList) {
+            // Check required properties first.
+            if (isPropertyInvalid(relationshipUpload.getDisplayName())) {
+                return true;
+            }
+
+            if ((relationshipUpload.getSubjectType() == null ||
+                    isRelationshipInvalid(relationshipUpload.getSubjectType(), relationshipUpload.getSubjectIdentifier(),
+                            stateVariableMap, informationTypesEnumMap))
+                || (relationshipUpload.getTargetType() == null ||
+                    isRelationshipInvalid(relationshipUpload.getTargetType(), relationshipUpload.getTargetIdentifier(),
+                            stateVariableMap, informationTypesEnumMap))) {
                 return true;
             }
         }
@@ -79,49 +82,56 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     /**
-     * Looks at each relationship, and ensures that they are tied to valid states or information types.
-     * @param relationshipList The provided relationships.
-     * @param stateVariableMap the map of state variables.
-     * @param informationTypesEnumMap The map of information types.
-     * @return A list of invalid relationships.
+     * Looks at each information type and checks to make sure the type provided is valid inside our {@link InformationTypesEnum}.
+     * @param informationTypesUploadList The uploaded information types.
+     * @return A list of the invalid upload information types.
      */
     @Override
-    public List<Relationship> validateRelationships(List<Relationship> relationshipList, Map<Integer, StateVariable> stateVariableMap,
-                                                    Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesEnumMap) {
-        List<Relationship> invalidRelationshipList = new ArrayList<>();
+    public List<String> validateInformationTypes(List<InformationTypesUpload> informationTypesUploadList) {
+        List<String> invalidInformationTypesList = new ArrayList<>();
+        Set<String> informationTypesEnumMap = new HashSet<>();
 
-        for (Relationship relationship: relationshipList) {
-            // Check the subject type, it's either a state or information type.
-            if (relationship.getSubjectType().equals(InformationTypesEnum.State)) {
-                if (stateVariableMap.get(relationship.getSubjectTypeId()) == null) {
-                    invalidRelationshipList.add(relationship);
-                }
-            } else {
-                Map<Integer, InformationTypes> subjectMap = informationTypesEnumMap.get(relationship.getSubjectType());
+        for (InformationTypesEnum informationTypesEnum: InformationTypesEnum.values()) {
+            informationTypesEnumMap.add(informationTypesEnum.name());
+        }
 
-                if (subjectMap.get(relationship.getSubjectTypeId()) == null) {
-                    invalidRelationshipList.add(relationship);
-                }
-            }
-
-            // Check the target type, it's either a state or information type.
-            if (relationship.getTargetType().equals(InformationTypesEnum.State)) {
-                if (stateVariableMap.get(relationship.getTargetTypeId()) == null) {
-                    invalidRelationshipList.add(relationship);
-                }
-            } else {
-                Map<Integer, InformationTypes> targetMap = informationTypesEnumMap.get(relationship.getTargetType());
-
-                if (targetMap.get(relationship.getTargetTypeId()) == null) {
-                    invalidRelationshipList.add(relationship);
-                }
+        for (InformationTypesUpload informationTypesUpload: informationTypesUploadList) {
+            if (!informationTypesEnumMap.contains(informationTypesUpload.getInformationType())) {
+                invalidInformationTypesList.add(informationTypesUpload.getInformationType());
             }
         }
 
-        return invalidRelationshipList;
+        return invalidInformationTypesList;
     }
+
 
     private boolean isPropertyInvalid(String property) {
         return property == null || property.equals("");
+    }
+
+    /**
+     * Checks a state or information type to make sure it's valid.
+     * TODO: Currently this check is case sensitive for identifiers and types. Do we want to eventually allow the user to upload
+     * case insensitive types and identifiers?
+     * TODO: Check and make sure we're not doing a circular relationship?
+     * @param type The type we're checking.
+     * @param identifier The identifier of the uploaded item we're checking.
+     * @param stateVariableMap A map of state identifiers to their ids.
+     * @param informationTypesEnumMap A map of information types to information type identifiers.
+     * @return True if the relationship is invalid, otherwise false.
+     */
+    private boolean isRelationshipInvalid(String type, String identifier, Map<String, Integer> stateVariableMap,
+            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap) {
+        if (type != null && identifier != null) {
+            // If we have a state, check and make sure it's valid.
+            if (InformationTypesEnum.valueOf(type) == InformationTypesEnum.State) {
+                return stateVariableMap.get(identifier) == null;
+            } else if (informationTypesEnumMap.get(InformationTypesEnum.valueOf(type)) != null) {
+                // Otherwise we have an information type, so check and make sure that's valid.
+                return informationTypesEnumMap.get(InformationTypesEnum.valueOf(type)).get(identifier) == null;
+            }
+        }
+
+        return true;
     }
 }

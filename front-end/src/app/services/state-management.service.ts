@@ -116,11 +116,29 @@ export class StateManagementService {
     );
   }
 
-  public saveInformationTypesFile(file: File): Observable<InformationTypesMap> {
+  public saveInformationTypesCsv(file: File): Observable<InformationTypesMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
       baseUrl + '/information-types-csv',
+      formData
+    );
+  }
+
+  public saveInformationTypesJson(file: File): Observable<InformationTypesMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<InformationTypesMap>(
+      baseUrl + '/information-types-json',
+      formData
+    );
+  }
+
+  public saveRelationshipsCsv(file: File): Observable<RelationshipMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<RelationshipMap>(
+      baseUrl + '/relationships-csv',
       formData
     );
   }

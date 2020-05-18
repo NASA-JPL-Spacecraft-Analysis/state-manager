@@ -2,10 +2,7 @@ package gov.nasa.jpl.fspa.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import gov.nasa.jpl.fspa.model.StateEnumerationUpload;
-import gov.nasa.jpl.fspa.model.InformationTypes;
-import gov.nasa.jpl.fspa.model.Relationship;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +22,10 @@ public class JsonParseServiceImpl implements FileParseService {
     }
 
     @Override
-    public List<InformationTypes> parseInformationTypes(InputStream inputStream) {
-        return null;
+    public List<InformationTypesUpload> parseInformationTypes(InputStream inputStream) {
+        List<InformationTypesUpload> parsedInformationTypesUploadList = new ArrayList<>();
+
+        return parseJson(inputStream, parsedInformationTypesUploadList, new TypeToken<List<InformationTypesUpload>>() {}.getType()) ;
     }
 
     @Override
@@ -36,10 +35,10 @@ public class JsonParseServiceImpl implements FileParseService {
         return parseJson(inputStream, parsedStateEnumerationUploadList, new TypeToken<List<StateEnumerationUpload>>() {}.getType());
     }
 
-    public List<Relationship> parseRelationships(InputStream inputStream) {
-        List<Relationship> parsedRelationships = new ArrayList<>();
+    public List<RelationshipUpload> parseRelationships(InputStream inputStream) {
+        List<RelationshipUpload> parsedRelationships = new ArrayList<>();
 
-        return parseJson(inputStream, parsedRelationships, new TypeToken<List<Relationship>>(){}.getType());
+        return parseJson(inputStream, parsedRelationships, new TypeToken<List<RelationshipUpload>>(){}.getType());
     }
 
     @Override

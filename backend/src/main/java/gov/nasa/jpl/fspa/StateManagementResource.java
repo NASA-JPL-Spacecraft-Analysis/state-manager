@@ -189,17 +189,15 @@ public class StateManagementResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream) {
-        List<InformationTypes> parsedInformationTypesList = csvParseServiceImpl.parseInformationTypes(inputStream);
+        return saveParsedInformationTypes(csvParseServiceImpl.parseInformationTypes(inputStream));
+    }
 
-        if (parsedInformationTypesList.size() > 0) {
-            // TODO: Check information type identifiers for duplicates.
-            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
-                    informationTypesService.saveUploadedInformationTypes(parsedInformationTypesList);
-
-            return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
-        }
-
-        return Response.status(Response.Status.NO_CONTENT).build();
+    @POST
+    @Path("/information-types-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postInformationTypesJson(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedInformationTypes(jsonParseServiceImpl.parseInformationTypes(inputStream));
     }
 
     @POST
@@ -216,6 +214,14 @@ public class StateManagementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response postEnumerationsJson(@FormDataParam("file") InputStream inputStream) {
         return saveParsedStateEnumerations(jsonParseServiceImpl.parseStateEnumerations(inputStream));
+    }
+
+    @POST
+    @Path("/relationships-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationshipsCsv(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedRelationships(csvParseServiceImpl.parseRelationships(inputStream));
     }
 
     @POST
@@ -283,6 +289,25 @@ public class StateManagementResource {
         };
     }
 
+    private Response saveParsedInformationTypes(List<InformationTypesUpload> parsedInformationTypesUploadList) {
+        if (parsedInformationTypesUploadList.size() > 0) {
+            List<String> invalidInformationTypesList = validationService.validateInformationTypes(parsedInformationTypesUploadList);
+
+            if (invalidInformationTypesList.size() == 0) {
+                Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
+                        informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList));
+
+                return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
+            } else {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateVariableConstants.INVALID_INFORMATION_TYPES + invalidInformationTypesList.toString()
+                ).build();
+            }
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
     private Response saveParsedStateEnumerations(List<StateEnumerationUpload> parsedStateEnumerationUploads) {
         if (parsedStateEnumerationUploads.size() > 0) {
             Map<String, Integer> identifierToVariableIdMap = stateVariableService.getMappedIdentifiers();
@@ -306,20 +331,23 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedRelationships(List<Relationship> parsedRelationships) {
-        if (parsedRelationships.size() > 0) {
-            Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypes();
+    private Response saveParsedRelationships(List<RelationshipUpload> parsedRelationshipUploadList) {
+        if (parsedRelationshipUploadList.size() > 0) {
+            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier();
+            Map<String, Integer> stateVariableIdentifierMap = stateVariableService.getMappedIdentifiers() ;
 
             // If we have invalid relationships, return an error.
-            if (validationService.hasInvalidRelationships(parsedRelationships, informationTypesEnumMap)
-                || validationService.validateRelationships(parsedRelationships, stateVariableService.getStateVariables(),
-                    informationTypesEnumMap).size() > 0) {
+            if (validationService.hasInvalidRelationships(parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap)) {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.INVALID_RELATIONSHIPS
                 ).build();
-            }
+            } else {
+                List<Relationship> parsedRelationships = relationshipService.convertRelationshipUploads(parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap);
 
-            return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
+                if (parsedRelationships.size() > 0) {
+                    return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
+                }
+            }
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();
