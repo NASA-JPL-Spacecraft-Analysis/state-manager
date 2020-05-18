@@ -15,12 +15,14 @@ export type InformationTypesMap = Map<number, StringTMap<InformationTypes>>;
 export class Activity extends InformationTypes {}
 export class Command extends InformationTypes {}
 export class FlightRule extends InformationTypes {}
+export class FSWParameter extends InformationTypes {}
 export class Model extends InformationTypes {}
 
 export enum InformationTypeEnum {
   Activity,
   Command,
   FlightRule,
+  FSWParameter,
   Model,
   State
 }

@@ -4,6 +4,7 @@ public enum InformationTypesEnum {
     Activity,
     Command,
     FlightRule,
+    FSWParameter,
     Model,
     State
 }
