@@ -1,8 +1,14 @@
 package gov.nasa.jpl.fspa.model;
 
+import com.opencsv.bean.CsvBindByName;
+
 public class Event {
     private Integer id;
+
+    @CsvBindByName(required = true)
     private String identifier;
+
+    @CsvBindByName(required = true)
     private String displayName;
     private String description;
     private String externalLink;

@@ -1,7 +1,5 @@
 package gov.nasa.jpl.fspa.model;
 
-import java.util.Date;
-
 public class EventHistory extends Event {
     private Integer eventId;
     private String updated;

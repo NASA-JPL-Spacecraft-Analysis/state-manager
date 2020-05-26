@@ -4,6 +4,7 @@ import gov.nasa.jpl.fspa.events.dao.EventDao;
 import gov.nasa.jpl.fspa.events.dao.EventDaoImpl;
 import gov.nasa.jpl.fspa.model.Event;
 import gov.nasa.jpl.fspa.model.EventHistory;
+import gov.nasa.jpl.fspa.model.StateVariable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,5 +44,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event modifyEvent(Event event) {
         return eventDao.modifyEvent(event);
+    }
+
+    @Override
+    public Map<Integer, Event> saveUploadedEvents(List<Event> eventList) {
+        for (Event event: eventList) {
+            modifyEvent(event);
+        }
+
+        return getEventMap();
     }
 }

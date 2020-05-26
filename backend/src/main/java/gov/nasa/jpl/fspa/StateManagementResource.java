@@ -260,6 +260,22 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/events-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEventsCsv(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(csvParseServiceImpl.parseEvents(inputStream));
+    }
+
+    @POST
+    @Path("/events-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEventsJson(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(jsonParseServiceImpl.parseEvents(inputStream));
+    }
+
+    @POST
     @Path("/relationships-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -368,6 +384,18 @@ public class StateManagementResource {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS + invalidIdentifiers.toString()
                 ).build();
+            }
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    private Response saveParsedEvents(List<Event> parsedEventList) {
+        if (parsedEventList.size() > 0) {
+            Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList);
+
+            if (eventMap.keySet().size() > 0) {
+                return Response.status(Response.Status.CREATED).entity(eventMap).build();
             }
         }
 

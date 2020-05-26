@@ -6,7 +6,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { FileUploadActions, ToastActions } from '../actions';
-import { InformationTypesMap, StateEnumerationMap, StateVariableMap, RelationshipMap } from '../models';
+import { InformationTypesMap, StateEnumerationMap, StateVariableMap, RelationshipMap, EventMap } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -80,6 +80,44 @@ export class FileUploadEffects {
           catchError(
             (error: HttpErrorResponse) => [
               FileUploadActions.uploadEnumerationsFailure({ error }),
+              ToastActions.showToast({
+                message: error.error,
+                toastType: 'error'
+              })
+            ]
+          )
+        );
+      })
+    );
+  });
+
+  public uploadEvents = createEffect(() => {
+    return this.actions.pipe(
+      ofType(FileUploadActions.uploadEvents),
+      switchMap(({ file, fileType }) => {
+        let saveEvents: Observable<EventMap>;
+
+        if (fileType === 'csv') {
+          saveEvents = this.stateManagementService.saveEventsCsv(file);
+        } else {
+          saveEvents = this.stateManagementService.saveEventsJson(file);
+        }
+
+        return saveEvents.pipe(
+          switchMap(
+            (eventMap: EventMap) => [
+              FileUploadActions.uploadEventsSuccess({
+                eventMap
+              }),
+              ToastActions.showToast({
+                message: 'Events uploaded',
+                toastType: 'success'
+              })
+            ]
+          ),
+          catchError(
+            (error: HttpErrorResponse) => [
+              FileUploadActions.uploadEventsFailure({ error }),
               ToastActions.showToast({
                 message: error.error,
                 toastType: 'error'

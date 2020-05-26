@@ -137,6 +137,24 @@ export class StateManagementService {
     );
   }
 
+  public saveEventsCsv(file: File): Observable<EventMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<EventMap>(
+      baseUrl + '/events-csv',
+      formData
+    );
+  }
+
+  public saveEventsJson(file: File): Observable<EventMap> {
+    const formData = this.setFormData(file);
+
+    return this.http.post<EventMap>(
+      baseUrl + '/events-json',
+      formData
+    );
+  }
+
   public saveInformationTypesCsv(file: File): Observable<InformationTypesMap> {
     const formData = this.setFormData(file);
 

@@ -65,6 +65,29 @@ JSON:
 ]
 ```
 
+### Events Upload
+
+CSV:
+```
+identifier,displayName,description,externalLink
+UPLOADED_EVENT_1,Uploaded Event 1,,
+```
+
+JSON:
+```
+[
+  {
+    "identifier": "UPLOADED_EVENT_1",
+    "displayName": "Uploaded Event 1",
+    "description": "",
+    "externalLink": ""
+  },
+  {
+    ...
+  }
+]
+```
+
 ### Information Types Upload
 
 CSV:

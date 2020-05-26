@@ -154,6 +154,12 @@ export const reducer = createReducer(
       ...action.enumerations
     }
   })),
+  on(FileUploadActions.uploadEventsSuccess, (state, action) => ({
+    ...state,
+    eventMap: {
+      ...action.eventMap
+    }
+  })),
   on(FileUploadActions.uploadInformationTypesSuccess, (state, action) => ({
     ...state,
     informationTypes: {
