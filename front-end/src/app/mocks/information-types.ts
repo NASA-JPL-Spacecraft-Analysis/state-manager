@@ -1,6 +1,6 @@
 import { InformationTypesMap } from '../models';
 
-export const informationTypesMap: InformationTypesMap = new Map(
+export const mockInformationTypesMap: InformationTypesMap = new Map(
   [
     [1, {
       [1]: {

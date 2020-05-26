@@ -14,7 +14,7 @@ import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
 import {
   identifierList,
-  informationTypesMap,
+  mockInformationTypesMap,
   relationshipMap,
   stateVariableMap,
   stateEnumerationMap
@@ -78,7 +78,7 @@ describe('NavEffects', () => {
 
         expectObservable(effects.navInformationTypes).toBe('-(bc)', {
           b: LayoutActions.toggleSidenav({ showSidenav: false }),
-          c: StateVariableActions.setInformationTypes({ informationTypes: informationTypesMap })
+          c: StateVariableActions.setInformationTypes({ informationTypes: mockInformationTypesMap })
         });
       });
     });
@@ -110,7 +110,7 @@ describe('NavEffects', () => {
 
         expectObservable(effects.navRelationships).toBe('-(bcde)', {
           b: LayoutActions.toggleSidenav({ showSidenav: false }),
-          c: StateVariableActions.setInformationTypes({ informationTypes: informationTypesMap }),
+          c: StateVariableActions.setInformationTypes({ informationTypes: mockInformationTypesMap }),
           d: StateVariableActions.setRelationships({ relationships: relationshipMap }),
           e: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
         });
