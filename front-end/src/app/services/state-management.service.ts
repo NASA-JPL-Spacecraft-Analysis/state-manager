@@ -9,7 +9,9 @@ import {
   StateEnumeration,
   Relationship,
   RelationshipMap,
-  InformationTypesMap
+  InformationTypesMap,
+  EventMap,
+  Event
 } from '../models';
 import { environment } from 'src/environments/environment';
 
@@ -20,6 +22,13 @@ const { baseUrl } = environment;
 })
 export class StateManagementService {
   constructor(private http: HttpClient) {}
+
+  public createEvent(event: Event): Observable<Event> {
+    return this.http.post<Event>(
+      baseUrl + '/event',
+      event
+    );
+  }
 
   public createRelationship(relationship: Relationship): Observable<Relationship> {
     return this.http.post<Relationship>(
@@ -46,6 +55,12 @@ export class StateManagementService {
     return this.http.put<StateVariable>(
       baseUrl + '/state-variable',
       stateVariable
+    );
+  }
+
+  public getEventMap(): Observable<EventMap> {
+    return this.http.get<EventMap>(
+      baseUrl + '/event-map'
     );
   }
 

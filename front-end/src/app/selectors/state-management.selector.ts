@@ -5,6 +5,11 @@ import { StateEnumeration, StateEnumerationMap, StateVariable } from '../models'
 
 const getStatesState = createFeatureSelector<StateManagementState>('states');
 
+export const getEventMap = createSelector(
+  getStatesState,
+  (state: StateManagementState) => state.eventMap
+);
+
 export const getIdentifiers = createSelector(
   getStatesState,
   (state: StateManagementState) => state.identifiers
@@ -33,6 +38,11 @@ export const getStateEnumerations = createSelector(
 export const getStateHistory = createSelector(
   getStatesState,
   (state: StateManagementState) => state.stateHistory
+);
+
+export const getSelectedEvent = createSelector(
+  getStatesState,
+  (state: StateManagementState) => state.selectedEvent
 );
 
 export const getSelectedRelationship = createSelector(

@@ -1,0 +1,30 @@
+<mat-toolbar class="events-toolbar">
+  EVENTS
+
+  <div>
+    <button mat-raised-button class="gray-button" (click)="onModifyEvent()">
+      Create New Event
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="eventsFileUpload.click()">
+      Upload Events
+    </button>
+    <input #eventsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
+  </div>
+</mat-toolbar>
+
+<div class="events-content-container">
+  <div class="events-content">
+    <event-table
+      [eventMap]="eventMap"
+      (eventSelected)="onModifyEvent($event)">
+    </event-table>
+  </div>
+
+  <div class="sidenav" *ngIf="showSidenav">
+    <event-sidenav
+      [event]="event"
+      (modifyEvent)="onSidenavOutput($event)">
+    </event-sidenav>
+  </div>
+</div>

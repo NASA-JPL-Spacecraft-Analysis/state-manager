@@ -1,18 +1,18 @@
-button {
-  margin-left: 1em;
+.mat-toolbar button:not(:last-child) {
+  margin-right: 1em;
 }
 
-.relationships-content {
+.events-content {
   flex-grow: 1;
   margin: 1em;
 }
 
-.relationships-content-container {
+.events-content-container {
   display: flex;
   flex-flow: row nowrap;
 }
 
-.relationships-toolbar {
+.events-toolbar {
   display: flex;
   justify-content: space-between;
 }

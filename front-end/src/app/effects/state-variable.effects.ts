@@ -3,8 +3,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
-import { StateVariableActions, ToastActions } from '../actions';
-import { StateVariable, Relationship } from '../models';
+import { StateVariableActions, ToastActions, EventActions } from '../actions';
+import { StateVariable, Event, Relationship } from '../models';
 
 @Injectable()
 export class StateVariableEffects {
@@ -12,6 +12,38 @@ export class StateVariableEffects {
     private actions: Actions,
     private stateManagementService: StateManagementService
   ) {}
+
+  public createEvent = createEffect(() => {
+    return this.actions.pipe(
+      ofType(EventActions.createEvent),
+      switchMap(({ event }) =>
+        this.stateManagementService.createEvent(
+          event
+        ).pipe(
+          switchMap(
+            (createdEvent: Event) => [
+              EventActions.createEventSuccess({
+                event: createdEvent
+              }),
+              ToastActions.showToast({
+                message: 'Event created',
+                toastType: 'success'
+              })
+            ]
+          ),
+          catchError(
+            (error: Error) => [
+              EventActions.createEventFailure({ error }),
+              ToastActions.showToast({
+                message: 'Event creation failed',
+                toastType: 'error'
+              })
+            ]
+          )
+        )
+      )
+    );
+  });
 
   public createRelationship = createEffect(() => {
     return this.actions.pipe(

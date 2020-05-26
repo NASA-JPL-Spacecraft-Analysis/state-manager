@@ -72,3 +72,7 @@ table {
 .history .table-row {
   cursor: default;
 }
+
+.file-upload-input {
+  display: none;
+}
