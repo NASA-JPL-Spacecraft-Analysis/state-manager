@@ -27,6 +27,16 @@ export const setEventMap = createAction(
   props<{ eventMap: EventMap }>()
 );
 
+export const fetchEventHistoryMapFailure = createAction(
+  '[event] fetchEventHistoryMapFailure',
+  props<{ error: Error }>()
+);
+
+export const setEventHistoryMap = createAction(
+  '[event] setEventHistoryMap',
+  props<{ eventHistoryMap: EventMap }>()
+);
+
 export const setSelectedEvent = createAction(
   '[event] setSelectedEvent',
   props<{ event: Event}>()

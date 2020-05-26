@@ -10,6 +10,11 @@ export const getEventMap = createSelector(
   (state: StateManagementState) => state.eventMap
 );
 
+export const getEventHistoryMap = createSelector(
+  getStatesState,
+  (state: StateManagementState) => state.eventHistoryMap
+);
+
 export const getIdentifiers = createSelector(
   getStatesState,
   (state: StateManagementState) => state.identifiers
@@ -28,7 +33,7 @@ export const getRelationships = createSelector(
 export const getRelationshipHistory = createSelector(
   getStatesState,
   (state: StateManagementState) => state.relationshipHistory
-)
+);
 
 export const getStateEnumerations = createSelector(
   getStatesState,

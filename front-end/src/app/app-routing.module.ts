@@ -9,7 +9,8 @@ import {
   RelationshipHistoryComponent,
   FaqComponent,
   InformationTypesComponent,
-  EventsComponent
+  EventsComponent,
+  EventHistoryComponent
 } from './containers';
 
 export const routes: Routes = [
@@ -21,6 +22,10 @@ export const routes: Routes = [
   {
     component: EventsComponent,
     path: 'events'
+  },
+  {
+    component: EventHistoryComponent,
+    path: 'event-history'
   },
   {
     component: FaqComponent,

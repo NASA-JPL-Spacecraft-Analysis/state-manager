@@ -1,3 +1,4 @@
+export * from './event-history/event-history.component';
 export * from './events/events.component';
 export * from './faq/faq.component';
 export * from './information-types/information-types.component';

@@ -17,7 +17,7 @@ public class EventDaoImpl implements EventDao {
         List<EventHistory> eventHistoryList = new ArrayList<>();
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_LIST);
+             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_HISTORY_LIST);
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {

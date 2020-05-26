@@ -1,5 +1,6 @@
 import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
@@ -105,7 +106,8 @@ export class EventsComponent implements OnDestroy {
     CommonModule,
     EventSidenavModule,
     EventTableModule,
-    MaterialModule
+    MaterialModule,
+    RouterModule
   ]
 })
 export class EventsModule {}

@@ -17,10 +17,9 @@ CREATE TABLE `state-management-db`.`event_history` (
   `description` TEXT NULL,
   `external_link` TEXT NULL,
   `editable` TINYINT(4) NOT NULL,
-  `updated` INT NOT NULL,
+  `updated` timestamp NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `information_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

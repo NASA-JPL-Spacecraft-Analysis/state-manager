@@ -64,6 +64,12 @@ export class StateManagementService {
     );
   }
 
+  public getEventHistoryMap(): Observable<EventMap> {
+    return this.http.get<EventMap>(
+      baseUrl + '/event-history-map'
+    );
+  }
+
   public getIdentifiers(): Observable<string[]> {
     return this.http.get<string[]>(
       baseUrl + '/state-identifiers'

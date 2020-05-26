@@ -14,6 +14,7 @@ import {
 
 export interface StateManagementState {
   eventMap: EventMap;
+  eventHistoryMap: EventMap;
   identifiers: Set<string>;
   informationTypes: InformationTypesMap;
   relationships: RelationshipMap;
@@ -28,6 +29,7 @@ export interface StateManagementState {
 
 export const initialState: StateManagementState = {
   eventMap: null,
+  eventHistoryMap: null,
   identifiers: new Set<string>(),
   informationTypes: null,
   relationships: null,
@@ -46,6 +48,12 @@ export const reducer = createReducer(
     ...state,
     eventMap: {
       ...action.eventMap
+    }
+  })),
+  on(EventActions.setEventHistoryMap, (state, action) => ({
+    ...state,
+    eventHistoryMap: {
+      ...action.eventHistoryMap
     }
   })),
   on(EventActions.createEventSuccess, (state, action) => {
