@@ -10,7 +10,11 @@ public class Event {
 
     @CsvBindByName(required = true)
     private String displayName;
+
+    @CsvBindByName
     private String description;
+
+    @CsvBindByName
     private String externalLink;
     private boolean editable;
 
