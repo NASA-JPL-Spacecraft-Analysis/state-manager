@@ -16,6 +16,8 @@ public class EventQueries {
 
     public static String GET_EVENT_LIST = " select * from events ";
 
+    public static String GET_IDENTIFIERS = " select id, identifier from events ";
+
     public static String UPDATE_EVENT = " update events "
                                       + " set "
                                       + " identifier = ?, "

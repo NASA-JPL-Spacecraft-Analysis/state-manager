@@ -127,7 +127,7 @@ JSON:
     "displayName": "Test upload relationship 1",
     "description": "test",
     "subjectType": "Command",
-    "subjectIdentifier": "TEST_COMMAND"
+    "subjectIdentifier": "TEST_COMMAND",
     "targetType": "State",
     "targetIdentifier": "IDENTIFIER_1"
   },

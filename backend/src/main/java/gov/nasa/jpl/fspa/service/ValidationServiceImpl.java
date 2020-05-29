@@ -7,12 +7,13 @@ import java.util.*;
 public class ValidationServiceImpl implements ValidationService {
     /**
      * Checks each relationship to see if each field is valid.
+     * @param eventIdentifierMap A map of identifiers to ids for events.
      * @param relationshipList The relationships we are checking.
      * @param informationTypesEnumMap The enum map so we can see if the user is trying to create an invalid type.
      * @return True if there's an invalid relationship, otherwise false.
      */
     @Override
-    public boolean hasInvalidRelationships(List<RelationshipUpload> relationshipList, Map<String, Integer> stateVariableMap,
+    public boolean hasInvalidRelationships(Map<String, Integer> eventIdentifierMap, List<RelationshipUpload> relationshipList, Map<String, Integer> stateVariableMap,
                                             Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap) {
         for (RelationshipUpload relationshipUpload: relationshipList) {
             // Check required properties first.
@@ -22,10 +23,10 @@ public class ValidationServiceImpl implements ValidationService {
 
             if ((relationshipUpload.getSubjectType() == null ||
                     isRelationshipInvalid(relationshipUpload.getSubjectType(), relationshipUpload.getSubjectIdentifier(),
-                            stateVariableMap, informationTypesEnumMap))
+                            stateVariableMap, eventIdentifierMap, informationTypesEnumMap))
                 || (relationshipUpload.getTargetType() == null ||
                     isRelationshipInvalid(relationshipUpload.getTargetType(), relationshipUpload.getTargetIdentifier(),
-                            stateVariableMap, informationTypesEnumMap))) {
+                            stateVariableMap, eventIdentifierMap, informationTypesEnumMap))) {
                 return true;
             }
         }
@@ -121,11 +122,13 @@ public class ValidationServiceImpl implements ValidationService {
      * @return True if the relationship is invalid, otherwise false.
      */
     private boolean isRelationshipInvalid(String type, String identifier, Map<String, Integer> stateVariableMap,
-            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap) {
+            Map<String, Integer> eventIdentifierMap, Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap) {
         if (type != null && identifier != null) {
             // If we have a state, check and make sure it's valid.
             if (InformationTypesEnum.valueOf(type) == InformationTypesEnum.State) {
                 return stateVariableMap.get(identifier) == null;
+            } else if (InformationTypesEnum.valueOf(type) == InformationTypesEnum.Event) {
+                return eventIdentifierMap.get(identifier) == null;
             } else if (informationTypesEnumMap.get(InformationTypesEnum.valueOf(type)) != null) {
                 // Otherwise we have an information type, so check and make sure that's valid.
                 return informationTypesEnumMap.get(InformationTypesEnum.valueOf(type)).get(identifier) == null;

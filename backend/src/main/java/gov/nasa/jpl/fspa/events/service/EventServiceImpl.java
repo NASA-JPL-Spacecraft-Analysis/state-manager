@@ -4,7 +4,7 @@ import gov.nasa.jpl.fspa.events.dao.EventDao;
 import gov.nasa.jpl.fspa.events.dao.EventDaoImpl;
 import gov.nasa.jpl.fspa.model.Event;
 import gov.nasa.jpl.fspa.model.EventHistory;
-import gov.nasa.jpl.fspa.model.StateVariable;
+import gov.nasa.jpl.fspa.model.Identifier;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +39,18 @@ public class EventServiceImpl implements EventService {
         }
 
         return eventMap;
+    }
+
+    @Override
+    public Map<String, Integer> getMappedIdentifiers() {
+        Map<String, Integer> mappedIdentifiers = new HashMap<>();
+        List<Identifier> identifiers = eventDao.getIdentifiers();
+
+        for (Identifier identifier: identifiers) {
+            mappedIdentifiers.put(identifier.getIdentifier(), identifier.getItemId());
+        }
+
+        return mappedIdentifiers;
     }
 
     @Override

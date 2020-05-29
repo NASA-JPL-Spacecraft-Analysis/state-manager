@@ -404,16 +404,18 @@ public class StateManagementResource {
 
     private Response saveParsedRelationships(List<RelationshipUpload> parsedRelationshipUploadList) {
         if (parsedRelationshipUploadList.size() > 0) {
+            Map<String, Integer> eventIdentifierMap = eventService.getMappedIdentifiers();
             Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier();
-            Map<String, Integer> stateVariableIdentifierMap = stateVariableService.getMappedIdentifiers() ;
+            Map<String, Integer> stateVariableIdentifierMap = stateVariableService.getMappedIdentifiers();
 
             // If we have invalid relationships, return an error.
-            if (validationService.hasInvalidRelationships(parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap)) {
+            if (validationService.hasInvalidRelationships(eventIdentifierMap, parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap)) {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.INVALID_RELATIONSHIPS
                 ).build();
             } else {
-                List<Relationship> parsedRelationships = relationshipService.convertRelationshipUploads(parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap);
+                List<Relationship> parsedRelationships = relationshipService.convertRelationshipUploads(
+                        parsedRelationshipUploadList, stateVariableIdentifierMap, eventIdentifierMap, informationTypesEnumMap);
 
                 if (parsedRelationships.size() > 0) {
                     return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
