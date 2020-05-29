@@ -6,13 +6,13 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { RelationshipMap, Relationship } from 'src/app/models/relationship';
-import { getRelationships, getSelectedRelationship, getStateVariables, getInformationTypes } from 'src/app/selectors';
+import { getRelationships, getSelectedRelationship, getStateVariables, getInformationTypes, getEventMap } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { getShowSidenav } from 'src/app/selectors/layout.selector';
 import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
 import { RelationshipsSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
-import { StateVariableMap, InformationTypesMap } from 'src/app/models';
+import { StateVariableMap, InformationTypesMap, EventMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -22,6 +22,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
   templateUrl: 'relationships.component.html'
 })
 export class RelationshipsComponent implements OnDestroy {
+  public eventMap: EventMap;
   public informationTypesMap: InformationTypesMap;
   public relationshipMap: RelationshipMap;
   public relationship: Relationship;
@@ -35,6 +36,10 @@ export class RelationshipsComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
+      this.store.pipe(select(getEventMap)).subscribe(eventMap => {
+        this.eventMap = eventMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getInformationTypes)).subscribe(informationTypesMap => {
         this.informationTypesMap = informationTypesMap;
         this.changeDetectorRef.markForCheck();

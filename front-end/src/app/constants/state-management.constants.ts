@@ -9,6 +9,7 @@ export class StateManagementConstants {
   public static relationshipTypes: string[] = [
     InformationTypeEnum[InformationTypeEnum.Activity],
     InformationTypeEnum[InformationTypeEnum.Command],
+    InformationTypeEnum[InformationTypeEnum.Event],
     InformationTypeEnum[InformationTypeEnum.FlightRule],
     InformationTypeEnum[InformationTypeEnum.Model],
     InformationTypeEnum[InformationTypeEnum.State]
