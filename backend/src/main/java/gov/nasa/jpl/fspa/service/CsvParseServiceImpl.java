@@ -34,6 +34,13 @@ public class CsvParseServiceImpl implements FileParseService {
     }
 
     @Override
+    public List<Event> parseEvents(InputStream inputStream) {
+        List<Event> parsedEventList = new ArrayList<>();
+
+        return parseCsv(inputStream, parsedEventList, Event.class);
+    }
+
+    @Override
     public List<InformationTypesUpload> parseInformationTypes(InputStream inputStream) {
         List<InformationTypesUpload> parsedInformationTypes = new ArrayList<>();
 

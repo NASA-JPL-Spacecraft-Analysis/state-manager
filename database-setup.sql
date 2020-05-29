@@ -1,3 +1,26 @@
+CREATE TABLE `events` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `identifier` VARCHAR(255) NOT NULL,
+  `display_name` VARCHAR(255) NULL,
+  `description` TEXT NULL,
+  `external_link` TEXT NULL,
+  `editable` TINYINT(4) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `identifier_UNIQUE` (`identifier` ASC)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `state-management-db`.`event_history` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `event_id` INT NOT NULL,
+  `identifier` VARCHAR(255) NOT NULL,
+  `display_name` VARCHAR(255) NULL,
+  `description` TEXT NULL,
+  `external_link` TEXT NULL,
+  `editable` TINYINT(4) NOT NULL,
+  `updated` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 CREATE TABLE `information_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` int(11) NOT NULL,

@@ -8,6 +8,8 @@ import java.util.List;
 public interface FileParseService {
     <T> String output(List<T> objectList, Class<T> type);
 
+    List<Event> parseEvents(InputStream inputStream);
+
     List<InformationTypesUpload> parseInformationTypes(InputStream inputStream);
 
     List<StateEnumerationUpload> parseStateEnumerations(InputStream inputStream);

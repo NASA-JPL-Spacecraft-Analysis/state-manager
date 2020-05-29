@@ -22,6 +22,13 @@ public class JsonParseServiceImpl implements FileParseService {
     }
 
     @Override
+    public List<Event> parseEvents(InputStream inputStream) {
+        List<Event> parsedEventList = new ArrayList<>();
+
+        return parseJson(inputStream, parsedEventList, new TypeToken<List<Event>>() {}.getType());
+    }
+
+    @Override
     public List<InformationTypesUpload> parseInformationTypes(InputStream inputStream) {
         List<InformationTypesUpload> parsedInformationTypesUploadList = new ArrayList<>();
 

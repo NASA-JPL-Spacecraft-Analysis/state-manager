@@ -5,7 +5,7 @@ import { concat, of } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from '../functions/router';
-import { StateVariableActions, LayoutActions } from '../actions';
+import { StateVariableActions, LayoutActions, EventActions } from '../actions';
 
 @Injectable()
 export class NavEffects {
@@ -13,6 +13,56 @@ export class NavEffects {
     private actions: Actions,
     private stateManagementService: StateManagementService
   ) {}
+
+  public navEvents = createEffect(() =>
+    this.actions.pipe(
+      ofRoute('events'),
+      switchMap(_ =>
+        concat(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.stateManagementService.getEventMap().pipe(
+            map(eventMap => EventActions.setEventMap({
+              eventMap
+            })),
+            catchError(
+              (error: Error) => [
+                EventActions.fetchEventMapFailure({
+                  error
+                })
+              ]
+            )
+          )
+        )
+      )
+    )
+  );
+
+  public navEventHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute('event-history'),
+      switchMap(_ =>
+        concat(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.stateManagementService.getEventHistoryMap().pipe(
+            map(eventHistoryMap => EventActions.setEventHistoryMap({
+              eventHistoryMap
+            })),
+            catchError(
+              (error: Error) => [
+                EventActions.fetchEventHistoryMapFailure({
+                  error
+                })
+              ]
+            )
+          )
+        )
+      )
+    )
+  );
 
   public navInformationTypes = createEffect(() =>
     this.actions.pipe(

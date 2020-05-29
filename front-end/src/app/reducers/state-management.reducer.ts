@@ -1,13 +1,25 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { StateVariableActions, FileUploadActions } from '../actions';
-import { RelationshipMap, StateVariable, StateEnumerationMap, StateVariableMap, Relationship, InformationTypesMap } from '../models';
+import { StateVariableActions, EventActions, FileUploadActions } from '../actions';
+import {
+  RelationshipMap,
+  StateVariable,
+  StateEnumerationMap,
+  StateVariableMap,
+  Relationship,
+  InformationTypesMap,
+  EventMap,
+  Event
+} from '../models';
 
 export interface StateManagementState {
+  eventMap: EventMap;
+  eventHistoryMap: EventMap;
   identifiers: Set<string>;
   informationTypes: InformationTypesMap;
   relationships: RelationshipMap;
   relationshipHistory: RelationshipMap;
+  selectedEvent: Event;
   selectedRelationship: Relationship;
   selectedStateVariable: StateVariable;
   stateEnumerations: StateEnumerationMap;
@@ -16,10 +28,13 @@ export interface StateManagementState {
 }
 
 export const initialState: StateManagementState = {
+  eventMap: null,
+  eventHistoryMap: null,
   identifiers: new Set<string>(),
   informationTypes: null,
   relationships: null,
   relationshipHistory: null,
+  selectedEvent: null,
   selectedRelationship: null,
   selectedStateVariable: null,
   stateEnumerations: null,
@@ -29,6 +44,21 @@ export const initialState: StateManagementState = {
 
 export const reducer = createReducer(
   initialState,
+  on(EventActions.setEventMap, (state, action) => ({
+    ...state,
+    eventMap: {
+      ...action.eventMap
+    }
+  })),
+  on(EventActions.setEventHistoryMap, (state, action) => ({
+    ...state,
+    eventHistoryMap: {
+      ...action.eventHistoryMap
+    }
+  })),
+  on(EventActions.createEventSuccess, (state, action) => {
+    return modifyEvent(state, action.event);
+  }),
   on(StateVariableActions.createRelationshipSuccess, (state, action) => {
     return modifyRelationship(state, action.relationship);
   }),
@@ -106,6 +136,10 @@ export const reducer = createReducer(
     ...state,
     stateVariables: action.stateVariables
   })),
+  on(EventActions.setSelectedEvent, (state, action) => ({
+    ...state,
+    selectedEvent: action.event
+  })),
   on(StateVariableActions.setSelectedRelationship, (state, action) => ({
     ...state,
     selectedRelationship: action.relationship
@@ -118,6 +152,12 @@ export const reducer = createReducer(
     ...state,
     stateEnumerations: {
       ...action.enumerations
+    }
+  })),
+  on(FileUploadActions.uploadEventsSuccess, (state, action) => ({
+    ...state,
+    eventMap: {
+      ...action.eventMap
     }
   })),
   on(FileUploadActions.uploadInformationTypesSuccess, (state, action) => ({
@@ -142,6 +182,19 @@ export const reducer = createReducer(
     }
   }))
 );
+
+function modifyEvent(state: StateManagementState, event: Event): StateManagementState {
+  return {
+    ...state,
+    selectedEvent: event,
+    eventMap: {
+      ...state.eventMap,
+      [event.id]: {
+        ...event
+      }
+    }
+  };
+}
 
 function modifyRelationship(state: StateManagementState, relationship: Relationship): StateManagementState {
   return {

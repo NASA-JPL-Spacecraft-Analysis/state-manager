@@ -1,5 +1,7 @@
 package gov.nasa.jpl.fspa;
 
+import gov.nasa.jpl.fspa.events.service.EventService;
+import gov.nasa.jpl.fspa.events.service.EventServiceImpl;
 import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesService;
 import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesServiceImpl;
 import gov.nasa.jpl.fspa.model.*;
@@ -22,6 +24,7 @@ import java.util.Map;
 public class StateManagementResource {
     private final CsvParseServiceImpl csvParseServiceImpl;
     private final EnumerationService enumerationService;
+    private final EventService eventService;
     private final InformationTypesService informationTypesService;
     private final JsonParseServiceImpl jsonParseServiceImpl;
     private final RelationshipService relationshipService;
@@ -31,11 +34,38 @@ public class StateManagementResource {
     public StateManagementResource() {
         csvParseServiceImpl = new CsvParseServiceImpl();
         enumerationService = new EnumerationServiceImpl();
+        eventService = new EventServiceImpl();
         informationTypesService = new InformationTypesServiceImpl();
         jsonParseServiceImpl = new JsonParseServiceImpl();
         relationshipService = new RelationshipServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
         validationService = new ValidationServiceImpl();
+    }
+
+    @GET
+    @Path("/event-history-map")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventHistoryMap() {
+        Map<Integer, EventHistory> eventHistoryMap = eventService.getEventHistoryMap();
+
+        if (eventHistoryMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(eventHistoryMap).build();
+    }
+
+    @GET
+    @Path("/event-map")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventMap() {
+        Map<Integer, Event> eventMap = eventService.getEventMap();
+
+        if (eventMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(eventMap).build();
     }
 
     @GET
@@ -146,6 +176,19 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/event")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEvent(Event event) {
+        Event createdEvent = eventService.modifyEvent(event);
+
+        if (createdEvent == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(createdEvent).build();
+    }
+
+    @POST
     @Path("/relationship")
     @Produces(MediaType.APPLICATION_JSON)
     public Response postRelationship(Relationship relationship) {
@@ -214,6 +257,22 @@ public class StateManagementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response postEnumerationsJson(@FormDataParam("file") InputStream inputStream) {
         return saveParsedStateEnumerations(jsonParseServiceImpl.parseStateEnumerations(inputStream));
+    }
+
+    @POST
+    @Path("/events-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEventsCsv(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(csvParseServiceImpl.parseEvents(inputStream));
+    }
+
+    @POST
+    @Path("/events-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEventsJson(@FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(jsonParseServiceImpl.parseEvents(inputStream));
     }
 
     @POST
@@ -325,6 +384,18 @@ public class StateManagementResource {
                 return Response.status(Response.Status.CONFLICT).entity(
                         StateVariableConstants.INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS + invalidIdentifiers.toString()
                 ).build();
+            }
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    private Response saveParsedEvents(List<Event> parsedEventList) {
+        if (parsedEventList.size() > 0) {
+            Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList);
+
+            if (eventMap.keySet().size() > 0) {
+                return Response.status(Response.Status.CREATED).entity(eventMap).build();
             }
         }
 
