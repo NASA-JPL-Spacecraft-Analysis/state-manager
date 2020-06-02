@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ValidationService {
-    boolean hasInvalidRelationships(List<RelationshipUpload> relationshipList, Map<String, Integer> stateVariableMap,
+    boolean hasInvalidRelationships(Map<String, Integer> eventIdentifierMap, List<RelationshipUpload> relationshipList, Map<String, Integer> stateVariableMap,
                                     Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap);
 
     boolean hasInvalidStateVariables(List<StateVariable> stateVariableList);

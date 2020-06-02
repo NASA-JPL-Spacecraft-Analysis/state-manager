@@ -5,8 +5,8 @@ import { SubSink } from 'subsink';
 
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { AppState } from 'src/app/app-store';
-import { StateVariableMap, RelationshipMap, InformationTypesMap } from 'src/app/models';
-import { getStateVariables, getRelationshipHistory, getInformationTypes } from 'src/app/selectors';
+import { StateVariableMap, RelationshipMap, InformationTypesMap, EventMap } from 'src/app/models';
+import { getStateVariables, getRelationshipHistory, getInformationTypes, getEventMap } from 'src/app/selectors';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -16,6 +16,7 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'relationship-history.component.html'
 })
 export class RelationshipHistoryComponent implements OnDestroy {
+  public eventMap: EventMap;
   public informationTypesMap: InformationTypesMap;
   public relationshipHistoryMap: RelationshipMap;
   public stateVariableMap: StateVariableMap;
@@ -27,6 +28,10 @@ export class RelationshipHistoryComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
+      this.store.pipe(select(getEventMap)).subscribe(eventMap => {
+        this.eventMap = eventMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getInformationTypes)).subscribe(informationTypesMap => {
         this.informationTypesMap = informationTypesMap;
         this.changeDetectorRef.markForCheck();

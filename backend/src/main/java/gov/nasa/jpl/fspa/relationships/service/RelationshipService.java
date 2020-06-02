@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface RelationshipService {
     List<Relationship> convertRelationshipUploads(List<RelationshipUpload> relationshipUploadList, Map<String, Integer> stateVariableIdentifierMap,
-                                                         Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap);
+                                                         Map<String, Integer> eventIdentifierMap, Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap);
 
     Map<Integer, Relationship> getRelationships();
 

@@ -97,6 +97,18 @@ export class NavEffects {
           of(LayoutActions.toggleSidenav({
             showSidenav: false
           })),
+          this.stateManagementService.getEventMap().pipe(
+            map(eventMap => EventActions.setEventMap({
+              eventMap
+            })),
+            catchError(
+              (error: Error) => [
+                EventActions.fetchEventMapFailure({
+                  error
+                })
+              ]
+            )
+          ),
           this.stateManagementService.getInformationTypes().pipe(
             map(informationTypes => StateVariableActions.setInformationTypes({
               informationTypes
@@ -143,6 +155,18 @@ export class NavEffects {
       ofRoute('relationship-history'),
       switchMap(_ =>
         concat(
+          this.stateManagementService.getEventMap().pipe(
+            map(eventMap => EventActions.setEventMap({
+              eventMap
+            })),
+            catchError(
+              (error: Error) => [
+                EventActions.fetchEventMapFailure({
+                  error
+                })
+              ]
+            )
+          ),
           this.stateManagementService.getInformationTypes().pipe(
             map(informationTypes => StateVariableActions.setInformationTypes({
               informationTypes

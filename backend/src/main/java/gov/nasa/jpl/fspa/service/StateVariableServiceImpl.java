@@ -80,7 +80,7 @@ public class StateVariableServiceImpl implements StateVariableService {
         List<Identifier> identifiers = stateVariableDao.getIdentifiers();
 
         for (Identifier identifier: identifiers) {
-            mappedIdentifiers.put(identifier.getIdentifier(), identifier.getStateVariableId());
+            mappedIdentifiers.put(identifier.getIdentifier(), identifier.getItemId());
         }
 
         return mappedIdentifiers;

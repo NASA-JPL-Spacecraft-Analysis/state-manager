@@ -21,6 +21,7 @@ export class Model extends InformationTypes {}
 export enum InformationTypeEnum {
   Activity,
   Command,
+  Event,
   FlightRule,
   FSWParameter,
   Model,

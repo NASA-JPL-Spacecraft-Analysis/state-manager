@@ -20,6 +20,7 @@
 <div class="relationships-content-container">
   <div class="relationships-content">
     <relationships-table
+      [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [relationshipMap]="relationshipMap"
       [stateVariableMap]="stateVariableMap"
@@ -29,6 +30,7 @@
 
   <div class="sidenav" *ngIf="showSidenav">
     <relationships-sidenav
+      [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [relationship]="relationship"
       [stateVariableMap]="stateVariableMap"

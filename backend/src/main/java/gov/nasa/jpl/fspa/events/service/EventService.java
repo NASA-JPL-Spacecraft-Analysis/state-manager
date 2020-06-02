@@ -11,6 +11,8 @@ public interface EventService {
 
     Map<Integer, Event> getEventMap();
 
+    Map<String, Integer> getMappedIdentifiers();
+
     Event modifyEvent(Event event);
 
     Map<Integer, Event> saveUploadedEvents(List<Event> eventList);

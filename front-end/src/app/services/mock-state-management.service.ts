@@ -1,11 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 
-import { StateVariableMap, StateEnumerationMap, RelationshipMap, InformationTypesMap } from '../models';
-import { identifierList, relationshipMap, stateEnumerationMap, stateVariableMap, mockInformationTypesMap } from './../mocks';
+import { StateVariableMap, StateEnumerationMap, RelationshipMap, InformationTypesMap, EventMap } from '../models';
+import { mockEventMap, identifierList, relationshipMap, stateEnumerationMap, stateVariableMap, mockInformationTypesMap } from './../mocks';
 
 @Injectable()
 export class MockStateManagementService {
+  public getEventMap(): Observable<EventMap> {
+    return new Observable((observer: Observer<EventMap>) => {
+      observer.next(mockEventMap);
+      observer.complete();
+    });
+  }
+
+  public getEventHistoryMap(): Observable<EventMap> {
+    return new Observable((observer: Observer<EventMap>) => {
+      observer.next(mockEventMap);
+      observer.complete();
+    });
+  }
+
   public getIdentifiers(): Observable<string[]> {
     return new Observable((observer: Observer<string[]>) => {
       observer.next(identifierList);

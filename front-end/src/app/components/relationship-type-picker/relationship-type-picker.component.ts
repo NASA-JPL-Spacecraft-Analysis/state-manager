@@ -4,7 +4,15 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { MatSelectChange } from '@angular/material/select';
 
 import { MaterialModule } from 'src/app/material';
-import { InformationTypes, InformationTypeEnum, StateVariableMap, Relationship, InformationTypesMap, StringTMap } from 'src/app/models';
+import {
+  InformationTypes,
+  InformationTypeEnum,
+  StateVariableMap,
+  Relationship,
+  InformationTypesMap,
+  StringTMap,
+  EventMap
+} from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,6 +21,7 @@ import { InformationTypes, InformationTypeEnum, StateVariableMap, Relationship, 
   templateUrl: 'relationship-type-picker.component.html'
 })
 export class RelationshipTypePickerComponent implements OnChanges {
+  @Input() public eventMap: EventMap;
   @Input() public informationTypesMap: InformationTypesMap;
   @Input() public isSubject: boolean;
   @Input() public parentFormGroup: FormGroup;
@@ -21,6 +30,7 @@ export class RelationshipTypePickerComponent implements OnChanges {
   @Input() public type: string;
 
   public currentTypeMap: StringTMap<InformationTypes>;
+  public eventEnumName: string = InformationTypeEnum[InformationTypeEnum.Event];
   public formProperty: string;
   public title: string;
   public stateEnumName: string = InformationTypeEnum[InformationTypeEnum.State];

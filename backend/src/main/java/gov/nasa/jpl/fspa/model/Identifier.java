@@ -1,15 +1,15 @@
 package gov.nasa.jpl.fspa.model;
 
 public class Identifier {
-    private int stateVariableId;
+    private int itemId;
     private String identifier;
 
-    public int getStateVariableId() {
-        return stateVariableId;
+    public int getItemId() {
+        return itemId;
     }
 
-    public void setStateVariableId(int stateVariableId) {
-        this.stateVariableId = stateVariableId;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 
     public String getIdentifier() {

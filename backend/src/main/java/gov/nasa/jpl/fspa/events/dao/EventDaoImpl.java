@@ -1,7 +1,9 @@
 package gov.nasa.jpl.fspa.events.dao;
 
+import gov.nasa.jpl.fspa.dao.StateVariableQueries;
 import gov.nasa.jpl.fspa.model.Event;
 import gov.nasa.jpl.fspa.model.EventHistory;
+import gov.nasa.jpl.fspa.model.Identifier;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
 
 import java.sql.Connection;
@@ -57,6 +59,29 @@ public class EventDaoImpl implements EventDao {
         }
 
         return eventList;
+    }
+
+    @Override
+    public List<Identifier> getIdentifiers() {
+        List<Identifier> identifiers = new ArrayList<>();
+
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_IDENTIFIERS);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Identifier identifier = new Identifier();
+
+                identifier.setItemId(Integer.parseInt(resultSet.getString("id")));
+                identifier.setIdentifier(resultSet.getString("identifier"));
+
+                identifiers.add(identifier);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return identifiers;
     }
 
     @Override

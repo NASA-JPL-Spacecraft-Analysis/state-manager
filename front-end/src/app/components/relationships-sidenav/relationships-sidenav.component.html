@@ -32,6 +32,7 @@
     </mat-form-field>
 
     <relationship-type-picker
+      [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [isSubject]="true"
       [parentFormGroup]="form"
@@ -49,6 +50,7 @@
     </mat-form-field>
 
     <relationship-type-picker
+      [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [parentFormGroup]="form"
       [relationship]="newRelationship"

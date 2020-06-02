@@ -133,7 +133,7 @@ public class StateVariableDaoImpl implements StateVariableDao {
             while (resultSet.next()) {
                 Identifier identifier = new Identifier();
 
-                identifier.setStateVariableId(Integer.parseInt(resultSet.getString("id")));
+                identifier.setItemId(Integer.parseInt(resultSet.getString("id")));
                 identifier.setIdentifier(resultSet.getString("identifier"));
 
                 identifiers.add(identifier);

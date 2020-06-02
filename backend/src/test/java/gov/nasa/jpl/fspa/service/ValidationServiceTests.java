@@ -17,6 +17,7 @@ public class ValidationServiceTests {
     @InjectMocks
     ValidationServiceImpl validationService;
 
+    public Map<String, Integer> eventIdentifierMap;
     public Map<String, Integer> identifierMap;
     public Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap;
     public List<InformationTypesUpload> informationTypesUploadList;
@@ -31,6 +32,7 @@ public class ValidationServiceTests {
 
     @Before
     public void before() {
+        eventIdentifierMap = new HashMap<>();
         identifierMap = new HashMap<>();
         informationTypesEnumMap = new HashMap<>();
         informationTypesUploadList = new ArrayList<>();
@@ -50,7 +52,7 @@ public class ValidationServiceTests {
         RelationshipUpload relationshipUpload = new RelationshipUpload();
         relationshipUploadList.add(relationshipUpload);
 
-        assertTrue(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertTrue(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
     }
 
     @Test
@@ -62,7 +64,7 @@ public class ValidationServiceTests {
         relationshipUpload.setTargetIdentifier("TEST_STATE");
         relationshipUploadList.add(relationshipUpload);
 
-        assertTrue(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertTrue(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
     }
 
     @Test
@@ -75,7 +77,7 @@ public class ValidationServiceTests {
         relationshipUploadList.add(relationshipUpload);
         stateVariableMap.put("TEST_STATE", 1);
 
-        assertTrue(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertTrue(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
     }
 
     @Test
@@ -84,18 +86,18 @@ public class ValidationServiceTests {
         relationshipUpload.setDisplayName("Test Relationship");
         relationshipUploadList.add(relationshipUpload);
 
-        assertTrue(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertTrue(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
 
         relationshipUpload.setSubjectType("Activity");
         // Identifier is case sensitive so this will fail.
         relationshipUpload.setSubjectIdentifier("TEST_ACTIVITY");
         informationTypesEnumMap.get(InformationTypesEnum.Activity).put("TEST_Activity", new InformationTypes());
 
-        assertTrue(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertTrue(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
     }
 
     @Test
-    public void validRelationship() {
+    public void validRelationshipTwoInformationTypes() {
         // Information types only
         RelationshipUpload relationshipUpload = new RelationshipUpload();
         relationshipUpload.setDisplayName("Test Relationship");
@@ -108,36 +110,87 @@ public class ValidationServiceTests {
         informationTypesEnumMap.get(InformationTypesEnum.Activity).put("TEST_ACTIVITY", new InformationTypes());
         informationTypesEnumMap.get(InformationTypesEnum.Command).put("TEST_COMMAND", new InformationTypes());
 
-        assertFalse(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertFalse(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+    }
 
-        // State and information type
+    @Test
+    public void validRelationshipEventAndInformationType() {
+        RelationshipUpload relationshipUpload = new RelationshipUpload();
+        relationshipUpload.setDisplayName("Test Relationship");
+        relationshipUpload.setSubjectType("Event");
+        relationshipUpload.setSubjectIdentifier("TEST_EVENT");
+        relationshipUpload.setTargetType("Command");
+        relationshipUpload.setTargetIdentifier("TEST_COMMAND");
+        relationshipUploadList.add(relationshipUpload);
 
-        RelationshipUpload relationshipUpload1 = new RelationshipUpload();
-        relationshipUpload1.setDisplayName("Test Relationship 1");
-        relationshipUpload1.setSubjectType("Activity");
-        relationshipUpload1.setSubjectIdentifier("TEST_ACTIVITY");
-        relationshipUpload1.setTargetType("State");
-        relationshipUpload1.setTargetIdentifier("TEST_STATE");
+        eventIdentifierMap.put("TEST_EVENT", 1);
+        informationTypesEnumMap.get(InformationTypesEnum.Command).put("TEST_COMMAND", new InformationTypes());
+
+        assertFalse(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+    }
+
+    @Test
+    public void validRelationshipEventAndState() {
+        RelationshipUpload relationshipUpload = new RelationshipUpload();
+        relationshipUpload.setDisplayName("Test Relationship");
+        relationshipUpload.setSubjectType("Event");
+        relationshipUpload.setSubjectIdentifier("TEST_EVENT");
+        relationshipUpload.setTargetType("State");
+        relationshipUpload.setTargetIdentifier("TEST_STATE");
+        relationshipUploadList.add(relationshipUpload);
+
+        eventIdentifierMap.put("TEST_EVENT", 1);
+        stateVariableMap.put("TEST_STATE", 1);
+
+        assertFalse(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+    }
+
+    @Test
+    public void validRelationshipTwoEvents() {
+        RelationshipUpload relationshipUpload = new RelationshipUpload();
+        relationshipUpload.setDisplayName("Test Relationship");
+        relationshipUpload.setSubjectType("Event");
+        relationshipUpload.setSubjectIdentifier("TEST_EVENT_1");
+        relationshipUpload.setTargetType("Event");
+        relationshipUpload.setTargetIdentifier("TEST_EVENT_2");
+        relationshipUploadList.add(relationshipUpload);
+
+        eventIdentifierMap.put("TEST_EVENT_1", 1);
+        eventIdentifierMap.put("TEST_EVENT_2", 2);
+
+        assertFalse(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+    }
+
+    @Test
+    public void validRelationshipStateAndInformationType() {
+        RelationshipUpload relationshipUpload = new RelationshipUpload();
+        relationshipUpload.setDisplayName("Test Relationship");
+        relationshipUpload.setSubjectType("Activity");
+        relationshipUpload.setSubjectIdentifier("TEST_ACTIVITY");
+        relationshipUpload.setTargetType("State");
+        relationshipUpload.setTargetIdentifier("TEST_STATE");
         relationshipUploadList.add(relationshipUpload);
 
         stateVariableMap.put("TEST_STATE", 1);
+        informationTypesEnumMap.get(InformationTypesEnum.Activity).put("TEST_ACTIVITY", new InformationTypes());
 
-        assertFalse(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertFalse(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+    }
 
-        // Both states
-
-        RelationshipUpload relationshipUpload2 = new RelationshipUpload();
-        relationshipUpload2.setDisplayName("Test Relationship 2");
-        relationshipUpload2.setSubjectType("State");
-        relationshipUpload2.setSubjectIdentifier("TEST_STATE");
-        relationshipUpload2.setTargetType("State");
-        relationshipUpload2.setTargetIdentifier("TEST_STATE_1");
+    @Test
+    public void validRelationshipTwoStates() {
+        RelationshipUpload relationshipUpload = new RelationshipUpload();
+        relationshipUpload.setDisplayName("Test Relationship");
+        relationshipUpload.setSubjectType("State");
+        relationshipUpload.setSubjectIdentifier("TEST_STATE");
+        relationshipUpload.setTargetType("State");
+        relationshipUpload.setTargetIdentifier("TEST_STATE_1");
         relationshipUploadList.add(relationshipUpload);
 
         stateVariableMap.put("TEST_STATE", 1);
         stateVariableMap.put("TEST_STATE_1", 2);
 
-        assertFalse(validationService.hasInvalidRelationships(relationshipUploadList, stateVariableMap, informationTypesEnumMap));
+        assertFalse(validationService.hasInvalidRelationships(eventIdentifierMap, relationshipUploadList, stateVariableMap, informationTypesEnumMap));
     }
 
     // hasInvalidStates

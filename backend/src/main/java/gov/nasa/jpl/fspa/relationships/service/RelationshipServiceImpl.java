@@ -18,7 +18,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Override
     public List<Relationship> convertRelationshipUploads(List<RelationshipUpload> relationshipUploadList, Map<String, Integer> stateVariableIdentifierMap,
-                                                         Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap) {
+                                                         Map<String, Integer> eventIdentifierMap, Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap) {
         List<Relationship> relationshipList = new ArrayList<>();
 
         for (RelationshipUpload relationshipUpload: relationshipUploadList) {
@@ -27,10 +27,13 @@ public class RelationshipServiceImpl implements RelationshipService {
             relationship.setDisplayName(relationshipUpload.getDisplayName());
             relationship.setDescription(relationshipUpload.getDescription());
 
-            // Check the subject type, it's either a state or information type.
+            // Check the subject type, it's either a state, event or information type.
             if (InformationTypesEnum.valueOf(relationshipUpload.getSubjectType()) == InformationTypesEnum.State) {
                 relationship.setSubjectType(InformationTypesEnum.State);
                 relationship.setSubjectTypeId(stateVariableIdentifierMap.get(relationshipUpload.getSubjectIdentifier()));
+            } else if (InformationTypesEnum.valueOf(relationshipUpload.getSubjectType()) == InformationTypesEnum.Event) {
+                relationship.setSubjectType(InformationTypesEnum.Event);
+                relationship.setSubjectTypeId(eventIdentifierMap.get(relationshipUpload.getSubjectIdentifier()));
             } else {
                 InformationTypesEnum currentType = InformationTypesEnum.valueOf(relationshipUpload.getSubjectType());
 
@@ -42,10 +45,13 @@ public class RelationshipServiceImpl implements RelationshipService {
 
             }
 
-            // Check the target type, it's either a state or information type.
+            // Check the target type, it's either a state, identifier or information type.
             if (InformationTypesEnum.valueOf(relationshipUpload.getTargetType()) == InformationTypesEnum.State) {
                 relationship.setTargetType(InformationTypesEnum.State);
                 relationship.setTargetTypeId(stateVariableIdentifierMap.get(relationshipUpload.getTargetIdentifier()));
+            } else if (InformationTypesEnum.valueOf(relationshipUpload.getTargetType()) == InformationTypesEnum.Event) {
+                relationship.setTargetType(InformationTypesEnum.Event);
+                relationship.setTargetTypeId(eventIdentifierMap.get(relationshipUpload.getTargetIdentifier()));
             } else {
                 InformationTypesEnum currentType = InformationTypesEnum.valueOf(relationshipUpload.getTargetType());
 

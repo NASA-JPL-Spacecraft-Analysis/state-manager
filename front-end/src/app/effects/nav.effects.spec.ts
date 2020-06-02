@@ -9,11 +9,13 @@ import { TestScheduler } from 'rxjs/testing';
 
 import { NavEffects } from './nav.effects';
 import { MockStateManagementService } from '../services/mock-state-management.service';
-import { StateVariableActions, LayoutActions } from '../actions';
+import { StateVariableActions, EventActions, LayoutActions } from '../actions';
 import { RouterState } from 'src/app/app-routing.module';
 import { StateManagementService } from '../services/state-management.service';
 import {
   identifierList,
+  mockEventMap,
+  mockEventHistoryMap,
   mockInformationTypesMap,
   relationshipMap,
   stateVariableMap,
@@ -69,6 +71,21 @@ describe('NavEffects', () => {
     });
   });
 
+  describe('navEvents', () => {
+    it('should dispatch the correct actions when navigating to /events', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('events');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navEvents).toBe('-(bc)', {
+          b: LayoutActions.toggleSidenav({ showSidenav: false }),
+          c: EventActions.setEventMap({ eventMap: mockEventMap })
+        });
+      });
+    });
+  });
+
   describe('navInformationTypes', () => {
     it('should dispatch the correct actions when navigating to /information-types', () => {
       testScheduler.run(({ hot, expectObservable }) => {
@@ -79,6 +96,24 @@ describe('NavEffects', () => {
         expectObservable(effects.navInformationTypes).toBe('-(bc)', {
           b: LayoutActions.toggleSidenav({ showSidenav: false }),
           c: StateVariableActions.setInformationTypes({ informationTypes: mockInformationTypesMap })
+        });
+      });
+    });
+  });
+
+  describe('navRelationships', () => {
+    it('should dispatch the correct actions when navigating to /relationships', () => {
+      testScheduler.run(({ hot, expectObservable }) => {
+        const action = getRouterNavigatedAction('relationships');
+
+        actions = hot('-a', { a: action });
+
+        expectObservable(effects.navRelationships).toBe('-(bcdef)', {
+          b: LayoutActions.toggleSidenav({ showSidenav: false }),
+          c: EventActions.setEventMap({ eventMap: mockEventMap }),
+          d: StateVariableActions.setInformationTypes({ informationTypes: mockInformationTypesMap }),
+          e: StateVariableActions.setRelationships({ relationships: relationshipMap }),
+          f: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
         });
       });
     });
@@ -96,23 +131,6 @@ describe('NavEffects', () => {
           c: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap }),
           d: StateVariableActions.setStateEnumerations({ stateEnumerations: stateEnumerationMap }),
           e: StateVariableActions.setIdentifiers({ identifiers: identifierList })
-        });
-      });
-    });
-  });
-
-  describe('navRelationships', () => {
-    it('should dispatch the correct actions when navigating to /relationships', () => {
-      testScheduler.run(({ hot, expectObservable }) => {
-        const action = getRouterNavigatedAction('relationships');
-
-        actions = hot('-a', { a: action });
-
-        expectObservable(effects.navRelationships).toBe('-(bcde)', {
-          b: LayoutActions.toggleSidenav({ showSidenav: false }),
-          c: StateVariableActions.setInformationTypes({ informationTypes: mockInformationTypesMap }),
-          d: StateVariableActions.setRelationships({ relationships: relationshipMap }),
-          e: StateVariableActions.setStateVariables({ stateVariables: stateVariableMap })
         });
       });
     });
