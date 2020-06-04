@@ -1,5 +1,7 @@
 package gov.nasa.jpl.fspa;
 
+import gov.nasa.jpl.fspa.collections.service.CollectionService;
+import gov.nasa.jpl.fspa.collections.service.CollectionServiceImpl;
 import gov.nasa.jpl.fspa.events.service.EventService;
 import gov.nasa.jpl.fspa.events.service.EventServiceImpl;
 import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesService;
@@ -22,6 +24,7 @@ import java.util.Map;
 
 @Path("v1/")
 public class StateManagementResource {
+    private final CollectionService collectionService;
     private final CsvParseServiceImpl csvParseServiceImpl;
     private final EnumerationService enumerationService;
     private final EventService eventService;
@@ -32,6 +35,7 @@ public class StateManagementResource {
     private final ValidationService validationService;
 
     public StateManagementResource() {
+        collectionService = new CollectionServiceImpl();
         csvParseServiceImpl = new CsvParseServiceImpl();
         enumerationService = new EnumerationServiceImpl();
         eventService = new EventServiceImpl();
@@ -40,6 +44,19 @@ public class StateManagementResource {
         relationshipService = new RelationshipServiceImpl();
         stateVariableService = new StateVariableServiceImpl();
         validationService = new ValidationServiceImpl();
+    }
+
+    @GET
+    @Path("/collections")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCollections() {
+        Map<Integer, Collection> collectionMap = collectionService.getCollections();
+
+        if (collectionMap.keySet().isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(collectionMap).build();
     }
 
     @GET
