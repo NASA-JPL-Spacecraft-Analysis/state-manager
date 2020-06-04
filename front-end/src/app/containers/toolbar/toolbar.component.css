@@ -3,6 +3,12 @@ button {
   color: white;
 }
 
+.collection-dropdown {
+  font-size: .75em;
+  width: 20em;
+  margin-left: 4em;
+}
+
 .mat-toolbar {
   display: flex;
   justify-content: space-between;
