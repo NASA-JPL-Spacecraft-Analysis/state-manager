@@ -1,6 +1,14 @@
 <mat-toolbar>
   State Management
 
+  <mat-form-field>
+    <mat-select (selectionChange)="onCollectionChange($event.value)">
+      <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
+        {{collection.value.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <div class="navigation-container">
     <button mat-button routerLink="/states" routerLinkActive="active">
       States

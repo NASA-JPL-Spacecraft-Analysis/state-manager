@@ -6,12 +6,11 @@ import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
-import { getShowSidenav } from 'src/app/selectors/layout.selector';
 import { EventActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
 import { Event as StateEvent, EventMap } from 'src/app/models';
-import { getEventMap, getSelectedEvent } from 'src/app/selectors';
+import { getShowSidenav, getEventMap, getSelectedEvent } from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 
 @Component({

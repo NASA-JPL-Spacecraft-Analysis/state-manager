@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect } from '@ngrx/effects';
+import { Actions, createEffect, ROOT_EFFECTS_INIT, ofType } from '@ngrx/effects';
 import { switchMap, map, catchError } from 'rxjs/operators';
-import { concat, of } from 'rxjs';
+import { concat, of, merge } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from '../functions/router';
-import { StateVariableActions, LayoutActions, EventActions } from '../actions';
+import { StateVariableActions, LayoutActions, EventActions, CollectionActions } from '../actions';
 
 @Injectable()
 export class NavEffects {
@@ -13,6 +13,31 @@ export class NavEffects {
     private actions: Actions,
     private stateManagementService: StateManagementService
   ) {}
+
+  public navAll = createEffect(() =>
+    this.actions.pipe(
+      ofType(ROOT_EFFECTS_INIT),
+      switchMap(_ =>
+        merge(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.stateManagementService.getCollections().pipe(
+            map(collectionMap => CollectionActions.fetchCollectionsSuccess({
+              collectionMap
+            })),
+            catchError(
+              (error: Error) => [
+                CollectionActions.fetchCollectionsFailure({
+                  error
+                })
+              ]
+            )
+          )
+        )
+      )
+    )
+  );
 
   public navEvents = createEffect(() =>
     this.actions.pipe(

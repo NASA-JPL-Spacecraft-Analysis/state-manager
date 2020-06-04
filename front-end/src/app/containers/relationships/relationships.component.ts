@@ -6,9 +6,15 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { RelationshipMap, Relationship } from 'src/app/models/relationship';
-import { getRelationships, getSelectedRelationship, getStateVariables, getInformationTypes, getEventMap } from 'src/app/selectors';
+import {
+  getRelationships,
+  getSelectedRelationship,
+  getStateVariables,
+  getInformationTypes,
+  getEventMap,
+  getShowSidenav
+} from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
-import { getShowSidenav } from 'src/app/selectors/layout.selector';
 import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
 import { RelationshipsSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';

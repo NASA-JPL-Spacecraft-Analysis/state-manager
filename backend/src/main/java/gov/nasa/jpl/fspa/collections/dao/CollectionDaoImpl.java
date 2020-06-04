@@ -23,6 +23,8 @@ public class CollectionDaoImpl implements CollectionDao {
 
                 collection.setId(Integer.valueOf(resultSet.getString("id")));
                 collection.setName(resultSet.getString("name"));
+
+                collectionList.add(collection);
             }
         } catch (Exception exception) {
             exception.printStackTrace();

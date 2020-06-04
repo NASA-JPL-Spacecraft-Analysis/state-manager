@@ -11,7 +11,8 @@ import {
   RelationshipMap,
   InformationTypesMap,
   EventMap,
-  Event
+  Event,
+  CollectionMap
 } from '../models';
 import { environment } from 'src/environments/environment';
 
@@ -55,6 +56,12 @@ export class StateManagementService {
     return this.http.put<StateVariable>(
       baseUrl + '/state-variable',
       stateVariable
+    );
+  }
+
+  public getCollections(): Observable<CollectionMap> {
+    return this.http.get<CollectionMap>(
+      baseUrl + '/collections'
     );
   }
 

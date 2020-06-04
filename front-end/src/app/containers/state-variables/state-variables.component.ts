@@ -5,10 +5,9 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
-import { getStateVariables, getSelectedStateVariable } from '../../selectors';
+import { getStateVariables, getSelectedStateVariable, getShowSidenav } from '../../selectors';
 import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
 import { StateVariableTableModule } from '../../components';
-import { getShowSidenav } from '../../selectors/layout.selector';
 import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';

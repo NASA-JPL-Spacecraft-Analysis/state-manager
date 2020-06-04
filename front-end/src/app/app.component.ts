@@ -11,8 +11,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
-import { ToolbarModule } from './components';
 import { MaterialModule } from './material';
+import { ToolbarModule } from './containers';
 
 @Component({
   selector: 'app-root',
