@@ -8,7 +8,7 @@ import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
-import { getCollectionMap } from 'src/app/selectors';
+import { getCollectionMap, getSelectedCollectionId } from 'src/app/selectors';
 import { CollectionMap } from 'src/app/models';
 import { CollectionActions } from 'src/app/actions';
 
@@ -20,6 +20,7 @@ import { CollectionActions } from 'src/app/actions';
 })
 export class ToolbarComponent implements OnDestroy {
   public collectionMap: CollectionMap;
+  public selectedCollectionId: number;
 
   private subscriptions = new SubSink();
 
@@ -32,6 +33,10 @@ export class ToolbarComponent implements OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(getCollectionMap)).subscribe(collectionMap => {
         this.collectionMap = collectionMap;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
+        this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
       })
     );

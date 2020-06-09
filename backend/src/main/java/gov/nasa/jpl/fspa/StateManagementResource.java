@@ -14,6 +14,7 @@ import gov.nasa.jpl.fspa.service.*;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -60,10 +61,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/event-history-map")
+    @Path("/event-history-map/{collectionId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventHistoryMap() {
-        Map<Integer, EventHistory> eventHistoryMap = eventService.getEventHistoryMap();
+    public Response getEventHistoryMap(@PathParam("collectionId") Integer collectionId) {
+        Map<Integer, EventHistory> eventHistoryMap = eventService.getEventHistoryMap(collectionId);
 
         if (eventHistoryMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -73,10 +74,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/event-map")
+    @Path("/event-map/{collectionId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventMap() {
-        Map<Integer, Event> eventMap = eventService.getEventMap();
+    public Response getEventMap(@PathParam("collectionId") Integer collectionId) {
+        Map<Integer, Event> eventMap = eventService.getEventMap(collectionId);
 
         if (eventMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -322,6 +323,19 @@ public class StateManagementResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response postStateVariablesJson(@FormDataParam("file") InputStream inputStream) {
         return saveParsedStateVariables(jsonParseServiceImpl.parseStateVariables(inputStream));
+    }
+
+    @PUT
+    @Path("/event")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editEvent(Event event) {
+        Event editedEvent = eventService.modifyEvent(event);
+
+        if (editedEvent == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(editedEvent).build();
     }
 
     @PUT

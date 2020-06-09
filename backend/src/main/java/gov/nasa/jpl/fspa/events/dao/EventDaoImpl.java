@@ -1,6 +1,5 @@
 package gov.nasa.jpl.fspa.events.dao;
 
-import gov.nasa.jpl.fspa.dao.StateVariableQueries;
 import gov.nasa.jpl.fspa.model.Event;
 import gov.nasa.jpl.fspa.model.EventHistory;
 import gov.nasa.jpl.fspa.model.Identifier;
@@ -15,12 +14,14 @@ import java.util.List;
 
 public class EventDaoImpl implements EventDao {
     @Override
-    public List<EventHistory> getEventHistoryList() {
+    public List<EventHistory> getEventHistoryList(Integer collectionId) {
         List<EventHistory> eventHistoryList = new ArrayList<>();
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_HISTORY_LIST);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_HISTORY_LIST)) {
+            statement.setInt(1, collectionId);
+
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 EventHistory eventHistory = new EventHistory();
@@ -40,12 +41,14 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public List<Event> getEventList() {
+    public List<Event> getEvents(Integer collectionId) {
         List<Event> eventList = new ArrayList<>();
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_LIST);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_LIST)) {
+            statement.setInt(1, collectionId);
+
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Event event = new Event();
@@ -98,12 +101,13 @@ public class EventDaoImpl implements EventDao {
              PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, event.getIdentifier());
-            preparedStatement.setString(2, event.getDisplayName());
-            preparedStatement.setString(3, event.getDescription());
-            preparedStatement.setString(4, event.getExternalLink());
+            preparedStatement.setInt(2, event.getCollectionId());
+            preparedStatement.setString(3, event.getDisplayName());
+            preparedStatement.setString(4, event.getDescription());
+            preparedStatement.setString(5, event.getExternalLink());
 
             if (event.getId() != null) {
-                preparedStatement.setInt(5, event.getId());
+                preparedStatement.setInt(6, event.getId());
             }
 
             preparedStatement.executeUpdate();
@@ -126,11 +130,12 @@ public class EventDaoImpl implements EventDao {
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(EventQueries.CREATE_EVENT_HISTORY)) {
             preparedStatement.setInt(1, event.getId());
-            preparedStatement.setString(2, event.getIdentifier());
-            preparedStatement.setString(3, event.getDisplayName());
-            preparedStatement.setString(4, event.getDescription());
-            preparedStatement.setString(5, event.getExternalLink());
-            preparedStatement.setBoolean(6, event.getEditable());
+            preparedStatement.setInt(2, event.getCollectionId());
+            preparedStatement.setString(3, event.getIdentifier());
+            preparedStatement.setString(4, event.getDisplayName());
+            preparedStatement.setString(5, event.getDescription());
+            preparedStatement.setString(6, event.getExternalLink());
+            preparedStatement.setBoolean(7, event.getEditable());
 
             preparedStatement.executeUpdate();
         } catch (Exception e) {
@@ -141,6 +146,7 @@ public class EventDaoImpl implements EventDao {
     private void setEvent(ResultSet resultSet, Event event) {
         try {
             event.setId(Integer.valueOf(resultSet.getString("id")));
+            event.setCollectionId(Integer.valueOf(resultSet.getString("collection_id")));
             event.setIdentifier(resultSet.getString("identifier"));
             event.setDisplayName(resultSet.getString("display_name"));
             event.setDescription(resultSet.getString("description"));

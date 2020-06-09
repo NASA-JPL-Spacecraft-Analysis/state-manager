@@ -45,6 +45,13 @@ export class StateManagementService {
     );
   }
 
+  public editEvent(event: Event): Observable<Event> {
+    return this.http.put<Event>(
+      baseUrl + '/event',
+      event
+    );
+  }
+
   public editRelationship(relationship: Relationship): Observable<Relationship> {
     return this.http.put<Relationship>(
       baseUrl + '/relationship',
@@ -66,14 +73,18 @@ export class StateManagementService {
   }
 
   public getEventMap(): Observable<EventMap> {
+    // TODO: Fix this.
+    const collectionId = 1;
     return this.http.get<EventMap>(
-      baseUrl + '/event-map'
+      baseUrl + '/event-map/' + collectionId
     );
   }
 
   public getEventHistoryMap(): Observable<EventMap> {
+    // TODO: Fix this.
+    const collectionId = 1;
     return this.http.get<EventMap>(
-      baseUrl + '/event-history-map'
+      baseUrl + '/event-history-map/' + collectionId
     );
   }
 

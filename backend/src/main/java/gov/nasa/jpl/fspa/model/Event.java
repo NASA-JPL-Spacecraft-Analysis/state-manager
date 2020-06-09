@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 
 public class Event {
     private Integer id;
+    private Integer collectionId;
 
     @CsvBindByName(required = true)
     private String identifier;
@@ -24,6 +25,14 @@ public class Event {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCollectionId() {
+        return collectionId;
+    }
+
+    public void setCollectionId(Integer collectionId) {
+        this.collectionId = collectionId;
     }
 
     public String getIdentifier() {
