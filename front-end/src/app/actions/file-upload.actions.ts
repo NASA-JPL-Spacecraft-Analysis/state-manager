@@ -19,7 +19,7 @@ export const uploadEnumerationsSuccess = createAction(
 
 export const uploadEvents = createAction(
   '[file upload] uploadEvents',
-  props<{ file: File, fileType: string }>()
+  props<{ file: File, fileType: string, collectionId: number }>()
 );
 
 export const uploadEventsFailure  = createAction(

@@ -46,10 +46,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Map<Integer, Event> saveUploadedEvents(List<Event> eventList) {
+    public Map<Integer, Event> saveUploadedEvents(List<Event> eventList, int collectionId) {
         List<Event> savedEventList = new ArrayList<>();
 
         for (Event event: eventList) {
+            // Before saving each event, set the collection id.
+            event.setCollectionId(collectionId);
+
             savedEventList.add(modifyEvent(event));
         }
 

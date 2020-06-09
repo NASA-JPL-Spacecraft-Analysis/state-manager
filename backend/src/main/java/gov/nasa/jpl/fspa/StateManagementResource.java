@@ -14,7 +14,6 @@ import gov.nasa.jpl.fspa.service.*;
 import gov.nasa.jpl.fspa.util.StateVariableConstants;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -278,19 +277,19 @@ public class StateManagementResource {
     }
 
     @POST
-    @Path("/events-csv")
+    @Path("/collection/{collectionId}/events-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postEventsCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedEvents(csvParseServiceImpl.parseEvents(inputStream));
+    public Response postEventsCsv(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(csvParseServiceImpl.parseEvents(inputStream), collectionId);
     }
 
     @POST
-    @Path("/events-json")
+    @Path("/collection/{collectionId}/events-json")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postEventsJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedEvents(jsonParseServiceImpl.parseEvents(inputStream));
+    public Response postEventsJson(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(jsonParseServiceImpl.parseEvents(inputStream), collectionId);
     }
 
     @POST
@@ -421,9 +420,9 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedEvents(List<Event> parsedEventList) {
+    private Response saveParsedEvents(List<Event> parsedEventList, int collectionId) {
         if (parsedEventList.size() > 0) {
-            Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList);
+            Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList, collectionId);
 
             if (eventMap.keySet().size() > 0) {
                 return Response.status(Response.Status.CREATED).entity(eventMap).build();

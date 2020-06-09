@@ -8,13 +8,9 @@ import {
   StateVariableMap,
   Relationship,
   InformationTypesMap,
-  EventMap,
-  Event
 } from '../models';
 
 export interface StateManagementState {
-  eventMap: EventMap;
-  eventHistoryMap: EventMap;
   identifiers: Set<string>;
   informationTypes: InformationTypesMap;
   relationships: RelationshipMap;
@@ -27,8 +23,6 @@ export interface StateManagementState {
 }
 
 export const initialState: StateManagementState = {
-  eventMap: null,
-  eventHistoryMap: null,
   identifiers: new Set<string>(),
   informationTypes: null,
   relationships: null,
@@ -131,12 +125,6 @@ export const reducer = createReducer(
     ...state,
     stateEnumerations: {
       ...action.enumerations
-    }
-  })),
-  on(FileUploadActions.uploadEventsSuccess, (state, action) => ({
-    ...state,
-    eventMap: {
-      ...action.eventMap
     }
   })),
   on(FileUploadActions.uploadInformationTypesSuccess, (state, action) => ({

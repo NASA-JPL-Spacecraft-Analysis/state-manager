@@ -74,7 +74,8 @@ export class EventsComponent implements OnDestroy {
     if (file && (fileType === 'csv' || fileType === 'json')) {
       this.store.dispatch(FileUploadActions.uploadEvents({
         file,
-        fileType
+        fileType,
+        collectionId: this.selectedCollectionId
       }));
     } else {
       this.store.dispatch(ToastActions.showToast({

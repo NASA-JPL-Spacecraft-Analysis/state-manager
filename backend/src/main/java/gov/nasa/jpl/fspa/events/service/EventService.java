@@ -15,5 +15,5 @@ public interface EventService {
 
     Event modifyEvent(Event event);
 
-    Map<Integer, Event> saveUploadedEvents(List<Event> eventList);
+    Map<Integer, Event> saveUploadedEvents(List<Event> eventList, int collectionId);
 }

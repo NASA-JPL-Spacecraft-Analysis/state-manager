@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { EventActions } from '../actions';
+import { EventActions, FileUploadActions } from '../actions';
 import { EventMap, Event } from '../models';
 
 export interface EventState {
@@ -23,6 +23,13 @@ export const reducer = createReducer(
   on(EventActions.editEventSuccess, (state, { event }) => {
     return modifyEvent(state, event);
   }),
+  on(FileUploadActions.uploadEventsSuccess, (state, { eventMap }) => ({
+    ...state,
+    eventMap: {
+      ...state.eventMap,
+      ...eventMap
+    }
+  })),
   on(EventActions.setEventMap, (state, { eventMap }) => ({
     ...state,
     eventMap: {

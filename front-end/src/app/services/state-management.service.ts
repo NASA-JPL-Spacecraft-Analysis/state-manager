@@ -155,20 +155,20 @@ export class StateManagementService {
     );
   }
 
-  public saveEventsCsv(file: File): Observable<EventMap> {
+  public saveEventsCsv(file: File, collectionId: number): Observable<EventMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<EventMap>(
-      baseUrl + '/events-csv',
+      baseUrl + '/collection/' + collectionId + '/events-csv',
       formData
     );
   }
 
-  public saveEventsJson(file: File): Observable<EventMap> {
+  public saveEventsJson(file: File, collectionId: number): Observable<EventMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<EventMap>(
-      baseUrl + '/events-json',
+      baseUrl + '/collection/' + collectionId + '/events-json',
       formData
     );
   }

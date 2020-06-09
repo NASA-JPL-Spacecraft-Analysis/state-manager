@@ -94,13 +94,13 @@ export class FileUploadEffects {
   public uploadEvents = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadEvents),
-      switchMap(({ file, fileType }) => {
+      switchMap(({ file, fileType, collectionId }) => {
         let saveEvents: Observable<EventMap>;
 
         if (fileType === 'csv') {
-          saveEvents = this.stateManagementService.saveEventsCsv(file);
+          saveEvents = this.stateManagementService.saveEventsCsv(file, collectionId);
         } else {
-          saveEvents = this.stateManagementService.saveEventsJson(file);
+          saveEvents = this.stateManagementService.saveEventsJson(file, collectionId);
         }
 
         return saveEvents.pipe(
