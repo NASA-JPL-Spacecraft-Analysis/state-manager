@@ -60,7 +60,7 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/event-history-map/{collectionId}")
+    @Path("/collection/{collectionId}/event-history-map")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEventHistoryMap(@PathParam("collectionId") Integer collectionId) {
         Map<Integer, EventHistory> eventHistoryMap = eventService.getEventHistoryMap(collectionId);
@@ -73,7 +73,7 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/event-map/{collectionId}")
+    @Path("/collection/{collectionId}/event-map")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEventMap(@PathParam("collectionId") Integer collectionId) {
         Map<Integer, Event> eventMap = eventService.getEventMap(collectionId);

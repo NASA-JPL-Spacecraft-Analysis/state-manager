@@ -72,19 +72,15 @@ export class StateManagementService {
     );
   }
 
-  public getEventMap(): Observable<EventMap> {
-    // TODO: Fix this.
-    const collectionId = 1;
+  public getEventMap(collectionId: number): Observable<EventMap> {
     return this.http.get<EventMap>(
-      baseUrl + '/event-map/' + collectionId
+      baseUrl + '/collection/' + collectionId + '/event-map'
     );
   }
 
-  public getEventHistoryMap(): Observable<EventMap> {
-    // TODO: Fix this.
-    const collectionId = 1;
+  public getEventHistoryMap(collectionId: number): Observable<EventMap> {
     return this.http.get<EventMap>(
-      baseUrl + '/event-history-map/' + collectionId
+      baseUrl + '/collection/' + collectionId + '/event-history-map'
     );
   }
 

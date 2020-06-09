@@ -1,4 +1,5 @@
 export * from './collection.effects';
+export * from './event.effects';
 export * from './file-upload.effects';
 export * from './state-variable.effects';
 export * from './toast.effects';

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { CollectionActions } from '../actions';
 import { switchMap } from 'rxjs/operators';
+
+import { CollectionActions } from '../actions';
 
 @Injectable()
 export class CollectionEffects {

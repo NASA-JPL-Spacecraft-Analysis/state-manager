@@ -1,90 +1,49 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Actions, createEffect, ROOT_EFFECTS_INIT, ofType } from '@ngrx/effects';
-import { switchMap, map, catchError } from 'rxjs/operators';
-import { concat, of, merge } from 'rxjs';
+import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
+import { concat, of } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from '../functions/router';
 import { StateVariableActions, LayoutActions, EventActions, CollectionActions } from '../actions';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class NavEffects {
   constructor(
     private actions: Actions,
+    private store: Store<AppState>,
     private stateManagementService: StateManagementService
   ) {}
 
-  public navAll = createEffect(() =>
+  public effectsInit = createEffect(() =>
     this.actions.pipe(
       ofType(ROOT_EFFECTS_INIT),
       switchMap(_ =>
-        merge(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
+        this.stateManagementService.getCollections().pipe(
+          map(collectionMap => CollectionActions.fetchCollectionsSuccess({
+            collectionMap
           })),
-          this.stateManagementService.getCollections().pipe(
-            map(collectionMap => CollectionActions.fetchCollectionsSuccess({
-              collectionMap
-            })),
-            catchError(
-              (error: Error) => [
-                CollectionActions.fetchCollectionsFailure({
-                  error
-                })
-              ]
-            )
+          catchError(
+            (error: Error) => [
+              CollectionActions.fetchCollectionsFailure({
+                error
+              })
+            ]
           )
         )
       )
     )
   );
 
-  public navEvents = createEffect(() =>
+  public navAll = createEffect(() =>
     this.actions.pipe(
-      ofRoute('events'),
+      ofRoute(/\*/),
       switchMap(_ =>
-        concat(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
-          this.stateManagementService.getEventMap().pipe(
-            map(eventMap => EventActions.setEventMap({
-              eventMap
-            })),
-            catchError(
-              (error: Error) => [
-                EventActions.fetchEventMapFailure({
-                  error
-                })
-              ]
-            )
-          )
-        )
-      )
-    )
-  );
-
-  public navEventHistory = createEffect(() =>
-    this.actions.pipe(
-      ofRoute('event-history'),
-      switchMap(_ =>
-        concat(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
-          this.stateManagementService.getEventHistoryMap().pipe(
-            map(eventHistoryMap => EventActions.setEventHistoryMap({
-              eventHistoryMap
-            })),
-            catchError(
-              (error: Error) => [
-                EventActions.fetchEventHistoryMapFailure({
-                  error
-                })
-              ]
-            )
-          )
-        )
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        }))
       )
     )
   );
@@ -117,12 +76,16 @@ export class NavEffects {
   public navRelationships = createEffect(() =>
     this.actions.pipe(
       ofRoute('relationships'),
-      switchMap(_ =>
+      withLatestFrom(this.store),
+      map(([_, state]) => state),
+      switchMap(state =>
         concat(
           of(LayoutActions.toggleSidenav({
             showSidenav: false
           })),
-          this.stateManagementService.getEventMap().pipe(
+          this.stateManagementService.getEventMap(
+            state.collection.selectedCollectionId
+          ).pipe(
             map(eventMap => EventActions.setEventMap({
               eventMap
             })),
@@ -178,9 +141,13 @@ export class NavEffects {
   public navRelationshipHistory = createEffect(() =>
     this.actions.pipe(
       ofRoute('relationship-history'),
-      switchMap(_ =>
+      withLatestFrom(this.store),
+      map(([_, state]) => state),
+      switchMap(state =>
         concat(
-          this.stateManagementService.getEventMap().pipe(
+          this.stateManagementService.getEventMap(
+            state.collection.selectedCollectionId
+          ).pipe(
             map(eventMap => EventActions.setEventMap({
               eventMap
             })),

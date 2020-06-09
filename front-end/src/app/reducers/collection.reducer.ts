@@ -15,12 +15,22 @@ export const initialState: CollectionState = {
 
 export const reducer = createReducer(
   initialState,
-  on(CollectionActions.fetchCollectionsSuccess, (state, { collectionMap }) => ({
-    ...state,
-    collectionMap: {
-      ...collectionMap
+  on(CollectionActions.fetchCollectionsSuccess, (state, { collectionMap }) => {
+    const keys = Object.keys(collectionMap);
+    let selectedCollectionId: number;
+
+    if (keys.length > 0) {
+      selectedCollectionId = Number(keys[0]);
     }
-  })),
+
+    return {
+      ...state,
+      collectionMap: {
+        ...collectionMap
+      },
+      selectedCollectionId
+    };
+  }),
   on(CollectionActions.setSelectedCollection, (state, { id }) => ({
     ...state,
     selectedCollectionId: id
