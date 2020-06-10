@@ -6,8 +6,7 @@ import {
   StateEnumerationMap,
   StateEnumeration,
   Relationship,
-  RelationshipMap,
-  InformationTypesMap
+  RelationshipMap
 } from '../models';
 
 export const createStateVariable = createAction(
@@ -80,11 +79,6 @@ export const fetchIdentifiersFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const fetchInformationTypesFailure = createAction(
-  '[state variable] fetchInformationTypesFailure',
-  props<{ error: Error }>()
-);
-
 export const fetchRelationshipsFailure = createAction(
   '[state variable] fetchRelationshipsFailure',
   props<{ error: Error }>()
@@ -128,11 +122,6 @@ export const saveEnumerationsFailure = createAction(
 export const setIdentifiers = createAction(
   '[state variable] setIdentifiers',
   props<{ identifiers: string[] }>()
-);
-
-export const setInformationTypes = createAction(
-  '[state variable] setInformationTypes',
-  props<{ informationTypes: InformationTypesMap }>()
 );
 
 export const setRelationships = createAction(

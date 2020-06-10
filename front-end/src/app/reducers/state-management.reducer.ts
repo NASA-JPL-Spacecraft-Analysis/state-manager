@@ -6,13 +6,11 @@ import {
   StateVariable,
   StateEnumerationMap,
   StateVariableMap,
-  Relationship,
-  InformationTypesMap,
+  Relationship
 } from '../models';
 
 export interface StateManagementState {
   identifiers: Set<string>;
-  informationTypes: InformationTypesMap;
   relationships: RelationshipMap;
   relationshipHistory: RelationshipMap;
   selectedRelationship: Relationship;
@@ -24,7 +22,6 @@ export interface StateManagementState {
 
 export const initialState: StateManagementState = {
   identifiers: new Set<string>(),
-  informationTypes: null,
   relationships: null,
   relationshipHistory: null,
   selectedRelationship: null,
@@ -89,10 +86,6 @@ export const reducer = createReducer(
       identifiers
     };
   }),
-  on(StateVariableActions.setInformationTypes, (state, action) => ({
-    ...state,
-    informationTypes: action.informationTypes
-  })),
   on(StateVariableActions.setRelationships, (state, action) => ({
     ...state,
     relationships: action.relationships
@@ -125,13 +118,6 @@ export const reducer = createReducer(
     ...state,
     stateEnumerations: {
       ...action.enumerations
-    }
-  })),
-  on(FileUploadActions.uploadInformationTypesSuccess, (state, action) => ({
-    ...state,
-    informationTypes: {
-      ...state.informationTypes,
-      ...action.informationTypes
     }
   })),
   on(FileUploadActions.uploadRelationshipsSuccess, (state, action) => ({

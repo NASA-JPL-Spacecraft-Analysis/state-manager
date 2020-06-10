@@ -10,11 +10,6 @@ export const getIdentifiers = createSelector(
   (state: StateManagementState) => state.identifiers
 );
 
-export const getInformationTypes = createSelector(
-  getStatesState,
-  (state: StateManagementState) => state.informationTypes
-);
-
 export const getRelationships = createSelector(
   getStatesState,
   (state: StateManagementState) => state.relationships

@@ -6,7 +6,7 @@ import { concat, of } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from '../functions/router';
-import { StateVariableActions, LayoutActions, EventActions, CollectionActions } from '../actions';
+import { InformationTypesActions, StateVariableActions, LayoutActions, EventActions, CollectionActions } from '../actions';
 import { AppState } from '../app-store';
 
 @Injectable()
@@ -48,31 +48,6 @@ export class NavEffects {
     )
   );
 
-  public navInformationTypes = createEffect(() =>
-    this.actions.pipe(
-      ofRoute('information-types'),
-      switchMap(_ =>
-        concat(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
-          this.stateManagementService.getInformationTypes().pipe(
-            map(informationTypes => StateVariableActions.setInformationTypes({
-              informationTypes
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchInformationTypesFailure({
-                  error
-                })
-              ]
-            )
-          )
-        )
-      )
-    )
-  );
-
   public navRelationships = createEffect(() =>
     this.actions.pipe(
       ofRoute('relationships'),
@@ -98,12 +73,12 @@ export class NavEffects {
             )
           ),
           this.stateManagementService.getInformationTypes().pipe(
-            map(informationTypes => StateVariableActions.setInformationTypes({
+            map(informationTypes => InformationTypesActions.setInformationTypes({
               informationTypes
             })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchInformationTypesFailure({
+                InformationTypesActions.fetchInformationTypesFailure({
                   error
                 })
               ]
@@ -160,12 +135,12 @@ export class NavEffects {
             )
           ),
           this.stateManagementService.getInformationTypes().pipe(
-            map(informationTypes => StateVariableActions.setInformationTypes({
+            map(informationTypes => InformationTypesActions.setInformationTypes({
               informationTypes
             })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchInformationTypesFailure({
+                InformationTypesActions.fetchInformationTypesFailure({
                   error
                 })
               ]
