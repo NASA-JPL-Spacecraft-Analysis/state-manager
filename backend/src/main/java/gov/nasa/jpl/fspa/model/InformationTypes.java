@@ -4,7 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 
 public class InformationTypes {
     private Integer id;
-
+    private Integer collectionId;
     private InformationTypesEnum type;
 
     @CsvBindByName(required = true)
@@ -19,20 +19,28 @@ public class InformationTypes {
     @CsvBindByName
     private String externalLink;
 
-    public InformationTypesEnum getType() {
-        return type;
-    }
-
-    public void setType(InformationTypesEnum type) {
-        this.type = type;
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCollectionId() {
+        return collectionId;
+    }
+
+    public void setCollectionId(Integer collectionId) {
+        this.collectionId = collectionId;
+    }
+
+    public InformationTypesEnum getType() {
+        return type;
+    }
+
+    public void setType(InformationTypesEnum type) {
+        this.type = type;
     }
 
     public String getIdentifier() {

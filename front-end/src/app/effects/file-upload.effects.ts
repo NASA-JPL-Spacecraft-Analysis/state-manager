@@ -18,13 +18,13 @@ export class FileUploadEffects {
   public uploadInformationTypes = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
-      switchMap(({ file, fileType }) => {
+      switchMap(({ file, fileType, collectionId }) => {
         let saveInformationTypes: Observable<InformationTypesMap>;
 
         if (fileType === 'csv') {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesCsv(file);
+          saveInformationTypes = this.stateManagementService.saveInformationTypesCsv(file, collectionId);
         } else {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesJson(file);
+          saveInformationTypes = this.stateManagementService.saveInformationTypesJson(file, collectionId);
         }
 
         return saveInformationTypes.pipe(

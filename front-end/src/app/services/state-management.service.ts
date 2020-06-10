@@ -90,9 +90,9 @@ export class StateManagementService {
     );
   }
 
-  public getInformationTypes(): Observable<InformationTypesMap> {
+  public getInformationTypes(collectionId: number): Observable<InformationTypesMap> {
     return this.http.get<InformationTypesMap>(
-      baseUrl + '/information-types'
+      baseUrl + '/collection/' + collectionId + '/information-types'
     );
   }
 
@@ -169,20 +169,20 @@ export class StateManagementService {
     );
   }
 
-  public saveInformationTypesCsv(file: File): Observable<InformationTypesMap> {
+  public saveInformationTypesCsv(file: File, collectionId: number): Observable<InformationTypesMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
-      baseUrl + '/information-types-csv',
+      baseUrl + '/collection/' + collectionId + '/information-types-csv',
       formData
     );
   }
 
-  public saveInformationTypesJson(file: File): Observable<InformationTypesMap> {
+  public saveInformationTypesJson(file: File, collectionId: number): Observable<InformationTypesMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
-      baseUrl + '/information-types-json',
+      baseUrl + '/collection/' + collectionId + '/information-types-json',
       formData
     );
   }

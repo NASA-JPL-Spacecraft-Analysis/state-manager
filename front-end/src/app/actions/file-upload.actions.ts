@@ -34,7 +34,7 @@ export const uploadEventsSuccess = createAction(
 
 export const uploadInformationTypes = createAction(
   '[file upload] uploadInfomrationTypes',
-  props<{ file: File, fileType: string }>()
+  props<{ file: File, fileType: string, collectionId: number }>()
 );
 
 export const uploadInformationTypesFailure = createAction(

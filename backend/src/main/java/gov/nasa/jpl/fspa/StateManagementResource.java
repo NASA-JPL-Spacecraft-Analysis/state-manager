@@ -75,7 +75,7 @@ public class StateManagementResource {
     @GET
     @Path("/collection/{collectionId}/event-map")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventMap(@PathParam("collectionId") Integer collectionId) {
+    public Response getEventMap(@PathParam("collectionId") int collectionId) {
         Map<Integer, Event> eventMap = eventService.getEventMap(collectionId);
 
         if (eventMap.keySet().size() == 0) {
@@ -86,10 +86,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/information-types")
+    @Path("/collection/{collectionId}/information-types")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInformationTypes() {
-        Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap = informationTypesService.getInformationTypes();
+    public Response getInformationTypes(@PathParam("collectionId") int collectionId) {
+        Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap = informationTypesService.getInformationTypes(collectionId);
 
         if (informationTypesMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -245,19 +245,19 @@ public class StateManagementResource {
     }
 
     @POST
-    @Path("/information-types-csv")
+    @Path("/collection/{collectionId}/information-types-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedInformationTypes(csvParseServiceImpl.parseInformationTypes(inputStream));
+    public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream, @PathParam("collectionId") int collectionId) {
+        return saveParsedInformationTypes(csvParseServiceImpl.parseInformationTypes(inputStream), collectionId);
     }
 
     @POST
-    @Path("/information-types-json")
+    @Path("/collection/{collectionId}/information-types-json")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postInformationTypesJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedInformationTypes(jsonParseServiceImpl.parseInformationTypes(inputStream));
+    public Response postInformationTypesJson(@FormDataParam("file") InputStream inputStream, @PathParam("collectionId") int collectionId) {
+        return saveParsedInformationTypes(jsonParseServiceImpl.parseInformationTypes(inputStream), collectionId);
     }
 
     @POST
@@ -293,19 +293,19 @@ public class StateManagementResource {
     }
 
     @POST
-    @Path("/relationships-csv")
+    @Path("/collection/{collectionId}/relationships-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postRelationshipsCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedRelationships(csvParseServiceImpl.parseRelationships(inputStream));
+    public Response postRelationshipsCsv(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedRelationships(csvParseServiceImpl.parseRelationships(inputStream), collectionId);
     }
 
     @POST
-    @Path("/relationships-json")
+    @Path("/collection/{collectionId}/relationships-json")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postRelationshipsJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedRelationships(jsonParseServiceImpl.parseRelationships(inputStream));
+    public Response postRelationshipsJson(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedRelationships(jsonParseServiceImpl.parseRelationships(inputStream), collectionId);
     }
 
     @POST
@@ -378,13 +378,13 @@ public class StateManagementResource {
         };
     }
 
-    private Response saveParsedInformationTypes(List<InformationTypesUpload> parsedInformationTypesUploadList) {
+    private Response saveParsedInformationTypes(List<InformationTypesUpload> parsedInformationTypesUploadList, int collectionId) {
         if (parsedInformationTypesUploadList.size() > 0) {
             List<String> invalidInformationTypesList = validationService.validateInformationTypes(parsedInformationTypesUploadList);
 
             if (invalidInformationTypesList.size() == 0) {
                 Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
-                        informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList));
+                        informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList), collectionId);
 
                 return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
             } else {
@@ -432,10 +432,10 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedRelationships(List<RelationshipUpload> parsedRelationshipUploadList) {
+    private Response saveParsedRelationships(List<RelationshipUpload> parsedRelationshipUploadList, int collectionId) {
         if (parsedRelationshipUploadList.size() > 0) {
             Map<String, Integer> eventIdentifierMap = eventService.getMappedIdentifiers();
-            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier();
+            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier(collectionId);
             Map<String, Integer> stateVariableIdentifierMap = stateVariableService.getMappedIdentifiers();
 
             // If we have invalid relationships, return an error.
