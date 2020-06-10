@@ -72,7 +72,9 @@ export class NavEffects {
               ]
             )
           ),
-          this.stateManagementService.getInformationTypes().pipe(
+          this.stateManagementService.getInformationTypes(
+            state.collection.selectedCollectionId
+          ).pipe(
             map(informationTypes => InformationTypesActions.setInformationTypes({
               informationTypes
             })),
@@ -134,7 +136,9 @@ export class NavEffects {
               ]
             )
           ),
-          this.stateManagementService.getInformationTypes().pipe(
+          this.stateManagementService.getInformationTypes(
+            state.collection.selectedCollectionId
+          ).pipe(
             map(informationTypes => InformationTypesActions.setInformationTypes({
               informationTypes
             })),
