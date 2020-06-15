@@ -1,58 +1,58 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-import { StateManagementState } from '../reducers/state-management.reducer';
-import { StateEnumeration, StateEnumerationMap, StateVariable } from '../models';
+import { StateState } from '../reducers/state.reducer';
+import { StateEnumeration, StateEnumerationMap, State } from '../models';
 
-const getStatesState = createFeatureSelector<StateManagementState>('states');
+const getStatesState = createFeatureSelector<StateState>('states');
 
 export const getIdentifiers = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.identifiers
+  (stateState: StateState) => stateState.stateIdentifiers
 );
 
 export const getRelationships = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.relationships
+  (stateState: StateState) => stateState.relationships
 );
 
 export const getRelationshipHistory = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.relationshipHistory
+  (stateState: StateState) => stateState.relationshipHistory
 );
 
 export const getStateEnumerations = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.stateEnumerations
+  (stateState: StateState) => stateState.stateEnumerationMap
 );
 
 export const getStateHistory = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.stateHistory
+  (stateState: StateState) => stateState.stateHistoryMap
 );
 
 export const getSelectedRelationship = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.selectedRelationship
+  (stateState: StateState) => stateState.selectedRelationship
 );
 
-export const getSelectedStateVariable = createSelector(
+export const getSelectedState = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.selectedStateVariable
+  (stateState: StateState) => stateState.selectedState
 );
 
 /**
- * Gets the enumerations for the selected state variable.
- * Only look for enumerations if we have enumerations, a selected state variable,
- * and we have enumerations for the selected state variable.
+ * Gets the enumerations for the selected state.
+ * Only look for enumerations if we have enumerations, a selected state,
+ * and we have enumerations for the selected state.
  */
-export const getStateEnumerationsForSelectedStateVariable = createSelector(
+export const getStateEnumerationsForSelectedState = createSelector(
   getStateEnumerations,
-  getSelectedStateVariable,
-  (stateEnumerations: StateEnumerationMap, selectedStateVariable: StateVariable): StateEnumeration[] => {
+  getSelectedState,
+  (stateEnumerations: StateEnumerationMap, selectedState: State): StateEnumeration[] => {
     const selectedStateEnumerations: StateEnumeration[] = [];
 
-    if (stateEnumerations && selectedStateVariable && stateEnumerations[selectedStateVariable.id]) {
-      for (const enumeration of stateEnumerations[selectedStateVariable.id]) {
+    if (stateEnumerations && selectedState && stateEnumerations[selectedState.id]) {
+      for (const enumeration of stateEnumerations[selectedState.id]) {
         selectedStateEnumerations.push({
           ...enumeration
         });
@@ -63,7 +63,7 @@ export const getStateEnumerationsForSelectedStateVariable = createSelector(
   }
 );
 
-export const getStateVariables = createSelector(
+export const getStates = createSelector(
   getStatesState,
-  (state: StateManagementState) => state.stateVariables
+  (stateState: StateState) => stateState.stateMap
 );

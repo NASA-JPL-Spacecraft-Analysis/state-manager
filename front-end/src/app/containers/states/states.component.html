@@ -6,7 +6,7 @@
       History 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="onModifyStateVariable()">
+    <button mat-raised-button class="gray-button" (click)="onModifyState()">
       Create New State 
     </button>
 
@@ -24,17 +24,17 @@
 
 <div class="states-content-container">
   <div class="states-content">
-    <state-variable-table
-      [stateVariableMap]="stateVariableMap"
-      (stateVariableSelected)="onModifyStateVariable($event)">
-    </state-variable-table>
+    <state-table
+      [stateMap]="stateMap"
+      (stateSelected)="onModifyState($event)">
+    </state-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav">
-    <state-variable-sidenav
-      [stateVariable]="stateVariable"
-      (modifyStateVariable)="onSidenavOutput($event)"
+    <state-sidenav
+      [state]="state"
+      (modifyState)="onSidenavOutput($event)"
       (modifyEnumerations)="onEnumerationsOutput($event)">
-    </state-variable-sidenav>
+    </state-sidenav>
   </div>
 </div>

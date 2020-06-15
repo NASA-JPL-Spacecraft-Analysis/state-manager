@@ -4,14 +4,14 @@ import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { StateVariable, StateVariableMap, StateEnumeration } from '../../models';
-import { getStateVariables, getSelectedStateVariable, getShowSidenav } from '../../selectors';
-import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
-import { StateVariableTableModule } from '../../components';
-import { StateVariableSidenavModule } from '../state-variable-sidenav/state-variable-sidenav.component';
+import { State, StateMap, StateEnumeration } from '../../models';
+import { getStates, getSelectedState, getShowSidenav } from '../../selectors';
+import { StateActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
+import { StateTableModule } from '../../components';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
+import { StateSidenavModule } from '../state-sidenav/state-sidenav.component';
 
 enum UploadableTypes {
   Enumerations,
@@ -20,14 +20,14 @@ enum UploadableTypes {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'state-variables',
-  styleUrls: [ 'state-variables.component.css' ],
-  templateUrl: 'state-variables.component.html'
+  selector: 'states',
+  styleUrls: [ 'states.component.css' ],
+  templateUrl: 'states.component.html'
 })
-export class StateVariablesComponent implements OnDestroy {
+export class StateComponent implements OnDestroy {
   public showSidenav: boolean;
-  public stateVariableMap: StateVariableMap;
-  public stateVariable: StateVariable;
+  public stateMap: StateMap;
+  public state: State;
   public enumerationsUploadableType = UploadableTypes.Enumerations;
   public statesUploadableType = UploadableTypes.States;
 
@@ -42,12 +42,12 @@ export class StateVariablesComponent implements OnDestroy {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateVariables)).subscribe(stateVariableMap => {
-        this.stateVariableMap = stateVariableMap;
+      this.store.pipe(select(getStates)).subscribe(stateMap => {
+        this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getSelectedStateVariable)).subscribe(selectedStateVariable => {
-        this.stateVariable = selectedStateVariable;
+      this.store.pipe(select(getSelectedState)).subscribe(selectedState => {
+        this.state = selectedState;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -58,20 +58,20 @@ export class StateVariablesComponent implements OnDestroy {
   }
 
   public onEnumerationsOutput(enumerations: StateEnumeration[]): void {
-    this.store.dispatch(StateVariableActions.saveEnumerations({
-      stateVariableId: this.stateVariable.id,
+    this.store.dispatch(StateActions.saveEnumerations({
+      stateId: this.state.id,
       enumerations
     }));
   }
 
   /**
-   * Called on creation or edit of a state variable.
-   * @param stateVariable The state variable that we're creating or modifing. Can be undefined
-   * if the user is creating a new state variable.
+   * Called on creation or edit of a state.
+   * @param state The state that we're creating or modifing. Can be undefined
+   * if the user is creating a new state.
    */
-  public onModifyStateVariable(stateVariable?: StateVariable): void {
-    this.store.dispatch(StateVariableActions.setSelectedStateVariable({
-      stateVariable
+  public onModifyState(state?: State): void {
+    this.store.dispatch(StateActions.setSelectedState({
+      state
     }));
 
     this.store.dispatch(LayoutActions.toggleSidenav({
@@ -79,29 +79,29 @@ export class StateVariablesComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { stateVariable?: StateVariable, stateEnumerations: StateEnumeration[] }): void {
+  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[] }): void {
     if (result === undefined) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
     } else {
-      const { stateVariable } = result;
+      const { state} = result;
       const { stateEnumerations } = result;
 
-      if (stateVariable !== undefined) {
-        // Try and set the state variable id so we don't get duplicate identifier errors.
-        if (stateVariable.id === null && this.stateVariable) {
-          stateVariable.id = this.stateVariable.id;
+      if (state !== undefined) {
+        // Try and set the state id so we don't get duplicate identifier errors.
+        if (state.id === null && this.state) {
+          state.id = this.state.id;
         }
 
-        if (stateVariable.id === null) {
-          this.store.dispatch(StateVariableActions.createStateVariable({
-            stateVariable,
+        if (state.id === null) {
+          this.store.dispatch(StateActions.createState({
+            state,
             stateEnumerations
           }));
         } else {
-          this.store.dispatch(StateVariableActions.editStateVariable({
-            stateVariable
+          this.store.dispatch(StateActions.editState({
+            state
           }));
         }
       }
@@ -128,7 +128,7 @@ export class StateVariablesComponent implements OnDestroy {
 
           break;
         case UploadableTypes.States:
-          this.store.dispatch(FileUploadActions.uploadStateVariables({
+          this.store.dispatch(FileUploadActions.uploadStates({
             file,
             fileType
           }));
@@ -148,17 +148,17 @@ export class StateVariablesComponent implements OnDestroy {
 
 @NgModule({
   declarations: [
-    StateVariablesComponent
+    StateComponent
   ],
   exports: [
-    StateVariablesComponent
+    StateComponent
   ],
   imports: [
-    StateVariableSidenavModule,
-    StateVariableTableModule,
+    StateSidenavModule,
+    StateTableModule,
     CommonModule,
     MaterialModule,
     RouterModule
   ]
 })
-export class StateVariablesModule {}
+export class StateModule {}

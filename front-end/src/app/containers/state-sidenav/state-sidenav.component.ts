@@ -8,8 +8,8 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { SubSink } from 'subsink';
 
-import { StateVariable, StateEnumeration } from '../../models';
-import { getIdentifiers, getStateEnumerationsForSelectedStateVariable } from '../../selectors';
+import { State, StateEnumeration } from '../../models';
+import { getIdentifiers, getStateEnumerationsForSelectedState } from '../../selectors';
 import { ToastActions } from '../../actions';
 import { EnumFormModule } from '../../components';
 import { AppState } from 'src/app/app-store';
@@ -17,19 +17,19 @@ import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'state-variable-sidenav',
-  styleUrls: [ 'state-variable-sidenav.component.css' ],
-  templateUrl: 'state-variable-sidenav.component.html'
+  selector: 'state-sidenav',
+  styleUrls: [ 'state-sidenav.component.css' ],
+  templateUrl: 'state-sidenav.component.html'
 })
-export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
-  @Input() public stateVariable: StateVariable;
+export class StateSidenavComponent implements OnChanges, OnDestroy {
+  @Input() public state: State;
 
-  @Output() public modifyStateVariable: EventEmitter<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>;
+  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>;
   @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
-  public newStateVariable: StateVariable;
+  public newState: State;
   public enumerations: StateEnumeration[];
   public identifierIcon: string;
   public identifierTooltipText: string;
@@ -47,7 +47,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     this.iconRegistry.addSvgIcon('done', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/done.svg'));
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.modifyStateVariable = new EventEmitter<{ stateVariable: StateVariable, stateEnumerations: StateEnumeration[] }>();
+    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(
@@ -55,7 +55,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
         this.identifiers = identifiers;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateEnumerationsForSelectedStateVariable)).subscribe(enumerations => {
+      this.store.pipe(select(getStateEnumerationsForSelectedState)).subscribe(enumerations => {
         this.enumerations = enumerations;
         this.changeDetectorRef.markForCheck();
       })
@@ -67,8 +67,8 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   }
 
   public ngOnChanges(): void {
-    if (this.stateVariable === undefined) {
-      this.newStateVariable = {
+    if (this.state === undefined) {
+      this.newState = {
         id: undefined,
         identifier: '',
         displayName: '',
@@ -79,20 +79,20 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
         description: ''
       };
     } else {
-      this.newStateVariable = {
-        ...this.stateVariable
+      this.newState = {
+        ...this.state
       };
     }
 
     this.form = new FormGroup({
-      id: new FormControl(this.newStateVariable.id),
-      identifier: new FormControl(this.newStateVariable.identifier, [ Validators.required ]),
-      displayName: new FormControl(this.newStateVariable.displayName, [ Validators.required ]),
-      type: new FormControl(this.newStateVariable.type, [ Validators.required ]),
-      units: new FormControl(this.newStateVariable.units, [ Validators.required ]),
-      source: new FormControl(this.newStateVariable.source, [ Validators.required ]),
-      subsystem: new FormControl(this.newStateVariable.subsystem, [ Validators.required ]),
-      description: new FormControl(this.newStateVariable.description)
+      id: new FormControl(this.newState.id),
+      identifier: new FormControl(this.newState.identifier, [ Validators.required ]),
+      displayName: new FormControl(this.newState.displayName, [ Validators.required ]),
+      type: new FormControl(this.newState.type, [ Validators.required ]),
+      units: new FormControl(this.newState.units, [ Validators.required ]),
+      source: new FormControl(this.newState.source, [ Validators.required ]),
+      subsystem: new FormControl(this.newState.subsystem, [ Validators.required ]),
+      description: new FormControl(this.newState.description)
     });
   }
 
@@ -102,12 +102,12 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
    * 1) That our identifier is unique (when trimmed)
    */
   public onSubmit(): void {
-    // Process our enumerations before trying to save our state variable.
+    // Process our enumerations before trying to save our state.
     if (this.processEnumerations()) {
       if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
-        // Emit both values, but we'll only use the enumeraion list on creating a new state variable.
-        this.modifyStateVariable.emit({
-          stateVariable: this.form.value,
+        // Emit both values, but we'll only use the enumeraion list on creating a new state.
+        this.modifyState.emit({
+          state: this.form.value,
           stateEnumerations: this.enumerations
         });
       } else {
@@ -126,7 +126,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   }
 
   public onCancel(): void {
-    this.modifyStateVariable.emit(undefined);
+    this.modifyState.emit(undefined);
   }
 
   /**
@@ -164,8 +164,8 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
       }
     }
 
-    // Only emit our enumerations seperatly if we're modifying an existing state variable.
-    if (this.newStateVariable.id !== undefined) {
+    // Only emit our enumerations seperatly if we're modifying an existing state.
+    if (this.newState.id !== undefined) {
       this.modifyEnumerations.emit(this.enumerations);
     }
 
@@ -182,7 +182,7 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
   private isIdentifierDuplicate(identifier: string): boolean {
     if (this.identifiers.size > 0) {
       return this.identifiers.has(identifier)
-          && (!this.newStateVariable.identifier || identifier !== this.newStateVariable.identifier);
+          && (!this.newState.identifier || identifier !== this.newState.identifier);
     }
 
     return false;
@@ -191,10 +191,10 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
 
 @NgModule({
   declarations: [
-    StateVariableSidenavComponent
+    StateSidenavComponent
   ],
   exports: [
-    StateVariableSidenavComponent
+    StateSidenavComponent
   ],
   imports: [
     EnumFormModule,
@@ -204,4 +204,4 @@ export class StateVariableSidenavComponent implements OnChanges, OnDestroy {
     MaterialModule
   ]
 })
-export class StateVariableSidenavModule {}
+export class StateSidenavModule {}

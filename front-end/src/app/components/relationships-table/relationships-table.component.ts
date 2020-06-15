@@ -2,7 +2,7 @@ import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEm
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { RelationshipMap, Relationship, StateVariableMap, InformationTypesMap, InformationTypeEnum, EventMap } from 'src/app/models';
+import { RelationshipMap, Relationship, StateMap, InformationTypesMap, InformationTypeEnum, EventMap } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -17,7 +17,7 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
   @Input() public history: boolean;
   @Input() public informationTypesMap: InformationTypesMap;
   @Input() public relationshipMap: RelationshipMap;
-  @Input() public stateVariableMap: StateVariableMap;
+  @Input() public stateMap: StateMap;
 
   @Output() public relationshipSelected: EventEmitter<Relationship>;
 
@@ -61,7 +61,7 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
 
   public getTypeIdentifier(id: number, type: string): string {
     if (type === InformationTypeEnum[InformationTypeEnum.State]) {
-      return this.stateVariableMap[id].identifier;
+      return this.stateMap[id].identifier;
     } else if (type === InformationTypeEnum[InformationTypeEnum.Event]) {
       return this.eventMap[id].identifier;
     }

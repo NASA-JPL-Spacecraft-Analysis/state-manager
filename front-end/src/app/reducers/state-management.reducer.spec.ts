@@ -1,6 +1,6 @@
-import { initialState, reducer, StateManagementState } from './state-management.reducer';
-import { StateVariableActions } from '../actions';
-import { StateVariableMap, RelationshipMap, StateEnumerationMap, StateEnumeration } from '../models';
+import { initialState, reducer, StateState } from './state.reducer';
+import { StateActions } from '../actions';
+import { StateMap, RelationshipMap, StateEnumerationMap, StateEnumeration } from '../models';
 import { relationshipMap, stateVariableMap, stateEnumerationList, stateEnumerationMap, identifierSet, identifierList } from '../mocks';
 
 describe('StateManagementReducer', () => {
@@ -12,14 +12,14 @@ describe('StateManagementReducer', () => {
       const relationshipId = 1;
       const relationship = relationships[relationshipId];
 
-      const state: StateManagementState = reducer(
+      const stateState: StateState = reducer(
         { ...initialState },
-        StateVariableActions.createRelationshipSuccess({
+        StateActions.createRelationshipSuccess({
           relationship
         })
       );
 
-      expect(state).toEqual({
+      expect(stateState).toEqual({
         ...initialState,
         selectedRelationship: relationship,
         relationships: {
@@ -31,8 +31,8 @@ describe('StateManagementReducer', () => {
     });
   });
 
-  describe('createStateVariableSuccess', () => {
-    it('should set the selectedStateVariable, and created stateVariable after a create', () => {
+  describe('createStateSuccess', () => {
+    it('should set the selectedState, and created state after a create', () => {
       const stateVariables: StateVariableMap = {
         ...stateVariableMap
       };

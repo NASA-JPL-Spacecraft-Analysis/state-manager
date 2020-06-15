@@ -6,7 +6,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { FileUploadActions, ToastActions } from '../actions';
-import { InformationTypesMap, StateEnumerationMap, StateVariableMap, RelationshipMap, EventMap } from '../models';
+import { InformationTypesMap, StateEnumerationMap, StateMap, RelationshipMap, EventMap } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -167,33 +167,33 @@ export class FileUploadEffects {
     );
   });
 
-  public uploadStateVariables = createEffect(() => {
+  public uploadStates = createEffect(() => {
     return this.actions.pipe(
-      ofType(FileUploadActions.uploadStateVariables),
+      ofType(FileUploadActions.uploadStates),
       switchMap(({ file, fileType }) => {
-        let saveStateVariables: Observable<StateVariableMap>;
+        let saveStates: Observable<StateMap>;
 
         if (fileType === 'csv') {
-          saveStateVariables = this.stateManagementService.saveStateVariablesCsv(file);
+          saveStates = this.stateManagementService.saveStatesCsv(file);
         } else {
-          saveStateVariables = this.stateManagementService.saveStateVariablesJson(file);
+          saveStates = this.stateManagementService.saveStatesJson(file);
         }
 
-        return saveStateVariables.pipe(
+        return saveStates.pipe(
           switchMap(
-            (stateVariableMap: StateVariableMap) => [
-              FileUploadActions.uploadStateVariablesSuccess({
-                stateVariableMap
+            (stateMap: StateMap) => [
+              FileUploadActions.uploadStatesSuccess({
+                stateMap
               }),
               ToastActions.showToast({
-                message: 'State variable(s) uploaded',
+                message: 'State(s) uploaded',
                 toastType: 'success'
               })
             ]
           ),
           catchError(
             (error: HttpErrorResponse) => [
-              FileUploadActions.uploadStateVariablesFailure({ error }),
+              FileUploadActions.uploadStatesFailure({ error }),
               ToastActions.showToast({
                 message: error.error,
                 toastType: 'error'

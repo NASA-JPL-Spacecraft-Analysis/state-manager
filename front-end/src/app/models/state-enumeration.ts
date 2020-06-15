@@ -2,7 +2,7 @@ import { StringTMap } from './string-t-map';
 
 export interface StateEnumeration {
   id: number;
-  stateVariableId: number;
+  stateId: number;
   label: string;
   value: number;
 }

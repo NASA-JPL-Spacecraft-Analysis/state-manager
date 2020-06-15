@@ -41,7 +41,7 @@ export class EnumFormComponent implements OnChanges {
   public onAddEnumeration(): void {
     this.enumerations.push({
       id: null,
-      stateVariableId: null,
+      stateId: null,
       label: '',
       value: null
     });

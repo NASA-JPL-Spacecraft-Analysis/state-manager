@@ -20,7 +20,7 @@ export interface AppState {
   informationTypes: InformationTypesReducer.InformationTypesState;
   layout: LayoutReducer.LayoutState;
   router: fromRouter.RouterReducerState;
-  states: StateReducer.StateManagementState;
+  states: StateReducer.StateState;
 }
 
 export const ROOT_REDUCERS = new InjectionToken<

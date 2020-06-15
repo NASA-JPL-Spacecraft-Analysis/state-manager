@@ -9,16 +9,16 @@ import { RelationshipMap, Relationship } from 'src/app/models/relationship';
 import {
   getRelationships,
   getSelectedRelationship,
-  getStateVariables,
+  getStates,
   getInformationTypes,
   getEventMap,
   getShowSidenav
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
-import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
+import { StateActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
 import { RelationshipsSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
-import { StateVariableMap, InformationTypesMap, EventMap } from 'src/app/models';
+import { StateMap, InformationTypesMap, EventMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -33,7 +33,7 @@ export class RelationshipsComponent implements OnDestroy {
   public relationshipMap: RelationshipMap;
   public relationship: Relationship;
   public showSidenav: boolean;
-  public stateVariableMap: StateVariableMap;
+  public stateMap: StateMap;
 
   private subscriptions = new SubSink();
 
@@ -62,8 +62,8 @@ export class RelationshipsComponent implements OnDestroy {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateVariables)).subscribe(stateVariableMap => {
-        this.stateVariableMap = stateVariableMap;
+      this.store.pipe(select(getStates)).subscribe(stateMap => {
+        this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -98,13 +98,14 @@ export class RelationshipsComponent implements OnDestroy {
   }
 
   /**
-   * Only dispatch our actions if we have state variables, otherwise tell the user they need state
-   * variables before they can create relationships.
+   * Only dispatch our actions if we have states, otherwise tell the user they need state
+   * before they can create relationships.
    * @param relationship The relationship that is being modified.
    */
   public onModifyRelationship(relationship?: Relationship): void {
-    if (this.stateVariableMap) {
-      this.store.dispatch(StateVariableActions.setSelectedRelationship({
+    // TODO: Check for events and information types here as well.
+    if (this.stateMap) {
+      this.store.dispatch(StateActions.setSelectedRelationship({
         relationship
       }));
 
@@ -113,7 +114,7 @@ export class RelationshipsComponent implements OnDestroy {
       }));
     } else {
       this.store.dispatch(ToastActions.showToast({
-        message: 'You must create state variables before creating relationships',
+        message: 'You must create states, events, or information types before creating relationships',
         toastType: 'error'
       }));
     }
@@ -126,11 +127,11 @@ export class RelationshipsComponent implements OnDestroy {
       }));
     } else {
       if (relationship.id === null) {
-        this.store.dispatch(StateVariableActions.createRelationship({
+        this.store.dispatch(StateActions.createRelationship({
           relationship
         }));
       } else {
-        this.store.dispatch(StateVariableActions.editRelationship({
+        this.store.dispatch(StateActions.editRelationship({
           relationship
         }));
       }

@@ -1,7 +1,7 @@
 import { StringTMap } from './string-t-map';
 
 // TODO: Validate data types for this interface, some of these will become enums.
-export interface StateVariable {
+export interface State {
   id: number;
   identifier: string;
   displayName: string;
@@ -12,4 +12,4 @@ export interface StateVariable {
   description: string;
 }
 
-export type StateVariableMap = StringTMap<StateVariable>;
+export type StateMap = StringTMap<State>;

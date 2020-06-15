@@ -4,9 +4,9 @@
       <mat-select
         [(value)]="relationship[formProperty]"
         (selectionChange)="onValueChange($event)">
-        <mat-option *ngFor="let value of stateVariableMap | keyvalue"
-          [value]="stateVariableMap[value.key].id">
-          {{stateVariableMap[value.key].identifier}}
+        <mat-option *ngFor="let value of stateMap | keyvalue"
+          [value]="stateMap[value.key].id">
+          {{stateMap[value.key].identifier}}
         </mat-option>
       </mat-select>
     </div>

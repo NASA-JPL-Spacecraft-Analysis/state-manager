@@ -3,4 +3,4 @@ export * from './event-sidenav/event-sidenav.component';
 export * from './event-table/event-table.component';
 export * from './relationship-type-picker/relationship-type-picker.component';
 export * from './relationships-sidenav/relationships-sidenav.component';
-export * from './state-variable-table/state-variable-table.component';
+export * from './state-table/state-table.component';

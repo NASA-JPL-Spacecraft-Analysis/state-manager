@@ -2,30 +2,30 @@ import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitt
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { StateVariable, StateVariableMap } from '../../models';
+import { State, StateMap } from '../../models';
 import { MaterialModule } from 'src/app/material';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'state-variable-table',
-  styleUrls: [ 'state-variable-table.component.css' ],
-  templateUrl: 'state-variable-table.component.html'
+  selector: 'state-table',
+  styleUrls: [ 'state-table.component.css' ],
+  templateUrl: 'state-table.component.html'
 })
-export class StateVariableTableComponent implements OnChanges, OnInit {
-  @Input() public stateVariableMap: StateVariableMap;
+export class StateTableComponent implements OnChanges, OnInit {
+  @Input() public stateMap: StateMap;
   @Input() public history: boolean;
 
-  @Output() public stateVariableSelected: EventEmitter<StateVariable>;
+  @Output() public stateSelected: EventEmitter<State>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  public dataSource: MatTableDataSource<StateVariable>;
-  public stateVariableMapSize: number;
+  public dataSource: MatTableDataSource<State>;
+  public stateMapSize: number;
   public displayedColumns: string[] = [];
 
   constructor() {
-    this.stateVariableSelected = new EventEmitter<StateVariable>();
+    this.stateSelected = new EventEmitter<State>();
   }
 
   public ngOnInit(): void {
@@ -48,17 +48,17 @@ export class StateVariableTableComponent implements OnChanges, OnInit {
   }
 
   public ngOnChanges(): void {
-    // Get all our state variables from our map so the table can display them.
-    if (this.stateVariableMap) {
-      const keys = Object.keys(this.stateVariableMap);
-      const stateVariables: StateVariable[] = [];
-      this.stateVariableMapSize = keys.length;
+    // Get all our states from our map so the table can display them.
+    if (this.stateMap) {
+      const keys = Object.keys(this.stateMap);
+      const state: State[] = [];
+      this.stateMapSize = keys.length;
 
       for (const key of keys) {
-        stateVariables.push(this.stateVariableMap[key]);
+        state.push(this.stateMap[key]);
       }
 
-      this.dataSource = new MatTableDataSource(stateVariables);
+      this.dataSource = new MatTableDataSource(state);
 
       this.dataSource.paginator = this.paginator;
 
@@ -78,26 +78,26 @@ export class StateVariableTableComponent implements OnChanges, OnInit {
     this.dataSource.filter = filterValue;
   }
 
-  public onRowClick(stateVariable: StateVariable): void {
-    this.stateVariableSelected.emit(stateVariable);
+  public onRowClick(state: State): void {
+    this.stateSelected.emit(state);
   }
 
-  // Filter by our state variable's type to start with.
-  private filter(stateVariable: StateVariable, filterValue: string): boolean {
-    return stateVariable.type.toLowerCase().includes(filterValue);
+  // Filter by our state's type to start with.
+  private filter(state: State, filterValue: string): boolean {
+    return state.type.toLowerCase().includes(filterValue);
   }
 }
 
 @NgModule({
   declarations: [
-    StateVariableTableComponent
+    StateTableComponent
   ],
   exports: [
-    StateVariableTableComponent
+    StateTableComponent
   ],
   imports: [
     CommonModule,
     MaterialModule
   ]
 })
-export class StateVariableTableModule {}
+export class StateTableModule {}

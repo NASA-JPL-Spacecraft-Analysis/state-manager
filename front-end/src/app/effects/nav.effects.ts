@@ -6,7 +6,7 @@ import { concat, of } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from '../functions/router';
-import { InformationTypesActions, StateVariableActions, LayoutActions, EventActions, CollectionActions } from '../actions';
+import { InformationTypesActions, LayoutActions, EventActions, CollectionActions, StateActions } from '../actions';
 import { AppState } from '../app-store';
 
 @Injectable()
@@ -55,9 +55,6 @@ export class NavEffects {
       map(([_, state]) => state),
       switchMap(state =>
         concat(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
           this.stateManagementService.getEventMap(
             state.collection.selectedCollectionId
           ).pipe(
@@ -87,24 +84,24 @@ export class NavEffects {
             )
           ),
           this.stateManagementService.getRelationships().pipe(
-            map(relationships => StateVariableActions.setRelationships({
+            map(relationships => StateActions.setRelationships({
               relationships
             })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchRelationshipsFailure({
+                StateActions.fetchRelationshipsFailure({
                   error
                 })
               ]
             )
           ),
-          this.stateManagementService.getStateVariables().pipe(
-            map(stateVariables => StateVariableActions.setStateVariables({
-              stateVariables
+          this.stateManagementService.getStates(1).pipe(
+            map(stateMap => StateActions.setStates({
+              stateMap
             })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchStateVariablesFailure({
+                StateActions.fetchStatesFailure({
                   error
                 })
               ]
@@ -151,107 +148,24 @@ export class NavEffects {
             )
           ),
           this.stateManagementService.getRelationshipHistory().pipe(
-            map(relationshipHistory => StateVariableActions.setRelationshipHistory({
+            map(relationshipHistory => StateActions.setRelationshipHistory({
               relationshipHistory
             })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchRelationshipHistoryFailure({
+                StateActions.fetchRelationshipHistoryFailure({
                   error
                 })
               ]
             )
           ),
-          this.stateManagementService.getStateVariables().pipe(
-            map(stateVariables => StateVariableActions.setStateVariables({
-              stateVariables
+          this.stateManagementService.getStates(1).pipe(
+            map(stateMap => StateActions.setStates({
+              stateMap
             })),
             catchError(
               (error: Error) => [
-                StateVariableActions.fetchStateVariablesFailure({
-                  error
-                })
-              ]
-            )
-          )
-        )
-      )
-    )
-  );
-
-  public navState = createEffect(() =>
-    this.actions.pipe(
-      ofRoute('states'),
-      switchMap(_ =>
-        concat(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
-          this.stateManagementService.getStateVariables().pipe(
-            map(stateVariables => StateVariableActions.setStateVariables({
-              stateVariables
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchStateVariablesFailure({
-                  error
-                })
-              ]
-            )
-          ),
-          this.stateManagementService.getStateEnumerations().pipe(
-            map(stateEnumerations => StateVariableActions.setStateEnumerations({
-              stateEnumerations
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchStateEnumerationsFailure({
-                  error
-                })
-              ]
-            )
-          ),
-          this.stateManagementService.getIdentifiers().pipe(
-            map(identifiers => StateVariableActions.setIdentifiers({
-              identifiers
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchIdentifiersFailure({
-                  error
-                })
-              ]
-            )
-          )
-        )
-      )
-    )
-  );
-
-  public navStateHistory = createEffect(() =>
-    this.actions.pipe(
-      ofRoute('state-history'),
-      switchMap(_ =>
-        concat(
-          this.stateManagementService.getStateHistory().pipe(
-            map(stateHistory => StateVariableActions.setStateHistory({
-              stateHistory
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchStateHistoryFailure({
-                  error
-                })
-              ]
-            )
-          ),
-          this.stateManagementService.getStateVariables().pipe(
-            map(stateVariables => StateVariableActions.setStateVariables({
-              stateVariables
-            })),
-            catchError(
-              (error: Error) => [
-                StateVariableActions.fetchStateVariablesFailure({
+                StateActions.fetchStatesFailure({
                   error
                 })
               ]

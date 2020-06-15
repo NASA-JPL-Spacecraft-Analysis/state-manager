@@ -3,16 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import {
-  StateVariable,
-  StateEnumerationMap,
-  StateVariableMap,
-  StateEnumeration,
-  Relationship,
-  RelationshipMap,
-  InformationTypesMap,
+  CollectionMap,
   EventMap,
   Event,
-  CollectionMap
+  InformationTypesMap,
+  Relationship,
+  RelationshipMap,
+  State,
+  StateMap,
+  StateEnumerationMap,
+  StateEnumeration
 } from '../models';
 import { environment } from 'src/environments/environment';
 
@@ -38,10 +38,10 @@ export class StateManagementService {
     );
   }
 
-  public createStateVariable(stateVariable: StateVariable): Observable<StateVariable> {
-    return this.http.post<StateVariable>(
-      baseUrl + '/state-variable',
-      stateVariable
+  public createState(state: State): Observable<State> {
+    return this.http.post<State>(
+      baseUrl + '/state',
+      state
     );
   }
 
@@ -59,10 +59,10 @@ export class StateManagementService {
     );
   }
 
-  public editStateVariable(stateVariable: StateVariable): Observable<StateVariable> {
-    return this.http.put<StateVariable>(
-      baseUrl + '/state-variable',
-      stateVariable
+  public editState(state: State): Observable<State> {
+    return this.http.put<State>(
+      baseUrl + '/state',
+      state
     );
   }
 
@@ -84,9 +84,9 @@ export class StateManagementService {
     );
   }
 
-  public getIdentifiers(): Observable<string[]> {
+  public getStateIdentifiers(collectionId: number): Observable<string[]> {
     return this.http.get<string[]>(
-      baseUrl + '/state-identifiers'
+      baseUrl + '/collection/' + collectionId + '/state-identifiers'
     );
   }
 
@@ -108,27 +108,27 @@ export class StateManagementService {
     );
   }
 
-  public getStateEnumerations(): Observable<StateEnumerationMap> {
+  public getStateEnumerations(collectionId: number): Observable<StateEnumerationMap> {
     return this.http.get<StateEnumerationMap>(
-      baseUrl + '/state-enumerations'
+      baseUrl + '/collection/' + collectionId + '/state-enumerations'
     );
   }
 
-  public getStateHistory(): Observable<StateVariableMap> {
-    return this.http.get<StateVariableMap>(
-      baseUrl + '/state-history'
+  public getStateHistory(collectionId: number): Observable<StateMap> {
+    return this.http.get<StateMap>(
+      baseUrl + '/collection/' + collectionId + '/state-history'
     );
   }
 
-  public getStateVariables(): Observable<StateVariableMap> {
-    return this.http.get<StateVariableMap>(
-      baseUrl + '/state-variables'
+  public getStates(collectionId: number): Observable<StateMap> {
+    return this.http.get<StateMap>(
+      baseUrl + '/collection/' + collectionId + '/state'
     );
   }
 
-  public saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
+  public saveEnumerations(stateId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
     return this.http.post<StateEnumeration[]>(
-      baseUrl + '/state-enumerations/' + stateVariableId,
+      baseUrl + '/state-enumerations/' + stateId,
       enumerations
     );
   }
@@ -205,20 +205,20 @@ export class StateManagementService {
     );
   }
 
-  public saveStateVariablesCsv(file: File): Observable<StateVariableMap> {
+  public saveStatesCsv(file: File): Observable<StateMap> {
     const formData = this.setFormData(file);
 
-    return this.http.post<StateVariableMap>(
-      baseUrl + '/state-variables-csv',
+    return this.http.post<StateMap>(
+      baseUrl + '/states-csv',
       formData
     );
   }
 
-  public saveStateVariablesJson(file: File): Observable<StateVariableMap> {
+  public saveStatesJson(file: File): Observable<StateMap> {
     const formData = this.setFormData(file);
 
-    return this.http.post<StateVariableMap>(
-      baseUrl + '/state-variables-json',
+    return this.http.post<StateMap>(
+      baseUrl + '/states-json',
       formData
     );
   }
