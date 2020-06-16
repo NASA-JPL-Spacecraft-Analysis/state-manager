@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { State, StateMap, StateEnumeration } from '../../models';
-import { getStates, getSelectedState, getShowSidenav } from '../../selectors';
+import { getStates, getSelectedState, getShowSidenav, getCollectionState, getSelectedCollectionId } from '../../selectors';
 import { StateActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
 import { StateTableModule } from '../../components';
 import { AppState } from 'src/app/app-store';
@@ -25,6 +25,7 @@ enum UploadableTypes {
   templateUrl: 'states.component.html'
 })
 export class StateComponent implements OnDestroy {
+  public collectionId: number;
   public showSidenav: boolean;
   public stateMap: StateMap;
   public state: State;
@@ -38,6 +39,10 @@ export class StateComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
+      this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
+        this.collectionId = collectionId;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
@@ -59,6 +64,7 @@ export class StateComponent implements OnDestroy {
 
   public onEnumerationsOutput(enumerations: StateEnumeration[]): void {
     this.store.dispatch(StateActions.saveEnumerations({
+      collectionId: this.collectionId,
       stateId: this.state.id,
       enumerations
     }));
@@ -96,11 +102,13 @@ export class StateComponent implements OnDestroy {
 
         if (state.id === null) {
           this.store.dispatch(StateActions.createState({
+            collectionId: this.collectionId,
             state,
             stateEnumerations
           }));
         } else {
           this.store.dispatch(StateActions.editState({
+            collectionId: this.collectionId,
             state
           }));
         }
@@ -121,7 +129,8 @@ export class StateComponent implements OnDestroy {
     if (file && (fileType === 'csv' || fileType === 'json')) {
       switch (type) {
         case UploadableTypes.Enumerations:
-          this.store.dispatch(FileUploadActions.uploadEnumerations({
+          this.store.dispatch(FileUploadActions.uploadStateEnumerations({
+            collectionId: this.collectionId,
             file,
             fileType
           }));
@@ -129,6 +138,7 @@ export class StateComponent implements OnDestroy {
           break;
         case UploadableTypes.States:
           this.store.dispatch(FileUploadActions.uploadStates({
+            collectionId: this.collectionId,
             file,
             fileType
           }));

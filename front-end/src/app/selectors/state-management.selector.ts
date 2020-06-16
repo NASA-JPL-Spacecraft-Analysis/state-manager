@@ -5,7 +5,7 @@ import { StateEnumeration, StateEnumerationMap, State } from '../models';
 
 const getStatesState = createFeatureSelector<StateState>('states');
 
-export const getIdentifiers = createSelector(
+export const getStateIdentifiers = createSelector(
   getStatesState,
   (stateState: StateState) => stateState.stateIdentifiers
 );
@@ -48,11 +48,11 @@ export const getSelectedState = createSelector(
 export const getStateEnumerationsForSelectedState = createSelector(
   getStateEnumerations,
   getSelectedState,
-  (stateEnumerations: StateEnumerationMap, selectedState: State): StateEnumeration[] => {
+  (stateEnumerationMap: StateEnumerationMap, selectedState: State): StateEnumeration[] => {
     const selectedStateEnumerations: StateEnumeration[] = [];
 
-    if (stateEnumerations && selectedState && stateEnumerations[selectedState.id]) {
-      for (const enumeration of stateEnumerations[selectedState.id]) {
+    if (stateEnumerationMap && selectedState && stateEnumerationMap[selectedState.id]) {
+      for (const enumeration of stateEnumerationMap[selectedState.id]) {
         selectedStateEnumerations.push({
           ...enumeration
         });

@@ -4,7 +4,8 @@ import com.opencsv.bean.CsvBindByName;
 
 public class StateEnumeration {
     private Integer id;
-    private int stateVariableId;
+    private int collectionId;
+    private int stateId;
 
     @CsvBindByName(required = true)
     private String label;
@@ -20,12 +21,20 @@ public class StateEnumeration {
         this.id = id;
     }
 
-    public int getStateVariableId() {
-        return stateVariableId;
+    public Integer getCollectionId() {
+        return collectionId;
     }
 
-    public void setStateVariableId(int stateVariableId) {
-        this.stateVariableId = stateVariableId;
+    public void setCollectionId(int collectionId) {
+        this.collectionId = collectionId;
+    }
+
+    public int getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(int stateId) {
+        this.stateId = stateId;
     }
 
     public String getLabel() {

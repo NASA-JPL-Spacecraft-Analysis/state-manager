@@ -5,14 +5,14 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
-import { ToastActions, EventActions, StateActions } from '../actions';
+import { ToastActions, EventActions, StateActions, CollectionActions, LayoutActions } from '../actions';
 import { Event, Relationship, State } from '../models';
-import { Observable, merge } from 'rxjs';
+import { Observable, merge, of, EMPTY } from 'rxjs';
 import { ofRoute } from '../functions/router';
 import { AppState } from '../app-store';
 
 @Injectable()
-export class StatesEffects {
+export class StateEffects {
   constructor(
     private actions: Actions,
     private router: Router,
@@ -88,8 +88,9 @@ export class StatesEffects {
   public createState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.createState),
-      switchMap(({ state, stateEnumerations }) =>
+      switchMap(({ collectionId, state, stateEnumerations }) =>
         this.stateManagementService.createState(
+          collectionId,
           state
         ).pipe(
           switchMap(
@@ -98,6 +99,7 @@ export class StatesEffects {
                 state: createdState
               }),
               StateActions.saveEnumerations({
+                collectionId,
                 stateId: createdState.id,
                 enumerations: stateEnumerations,
               }),
@@ -190,8 +192,9 @@ export class StatesEffects {
   public editState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.editState),
-      switchMap(({ state }) =>
+      switchMap(({ collectionId, state }) =>
         this.stateManagementService.editState(
+          collectionId,
           state
         ).pipe(
           switchMap(
@@ -228,42 +231,25 @@ export class StatesEffects {
         const collectionId = state.collection.selectedCollectionId;
 
         if (collectionId) {
-          return merge(
-            this.getStates(collectionId),
-            this.stateManagementService.getStateEnumerations(
-              collectionId
-            ).pipe(
-              map(stateEnumerations => StateActions.setStateEnumerations({
-                stateEnumerations
-              })),
-              catchError(
-                (error: Error) => [
-                  StateActions.fetchStateEnumerationsFailure({
-                    error
-                  })
-                ]
-              )
-            ),
-            this.stateManagementService.getStateIdentifiers(
-              collectionId
-            ).pipe(
-              map(identifiers => StateActions.setIdentifiers({
-                identifiers
-              })),
-              catchError(
-                (error: Error) => [
-                  StateActions.fetchIdentifiersFailure({
-                    error
-                  })
-                ]
-              )
-            )
-          );
+          return this.getStates(collectionId);
         }
 
         return [];
       })
     );
+  });
+
+  public navStatesByCollectionId = createEffect(() => {
+    return this.actions.pipe(
+      ofType(CollectionActions.setSelectedCollection),
+      switchMap(({ id }) => {
+        if (id !== null) {
+          return this.getStates(id);
+        }
+
+        return [];
+      })
+    )
   });
 
   public navStatesHistory = createEffect(() => {
@@ -286,8 +272,9 @@ export class StatesEffects {
   public saveEnumerations = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.saveEnumerations),
-      switchMap(({ stateId, enumerations }) =>
+      switchMap(({ collectionId, stateId, enumerations }) =>
         this.stateManagementService.saveEnumerations(
+          collectionId,
           stateId,
           enumerations
         ).pipe(
@@ -312,22 +299,58 @@ export class StatesEffects {
     const url = this.router.routerState.snapshot.url;
 
     if (url === '/states') {
-      return this.stateManagementService.getStates(
-        collectionId
-      ).pipe(
-        map(stateMap => StateActions.setStates({
-          stateMap
+      return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
         })),
-        catchError(
-          (error: Error) => [
-            StateActions.fetchStatesFailure({
-              error
-            })
-          ]
+        this.stateManagementService.getStates(
+          collectionId
+        ).pipe(
+          map(stateMap => StateActions.setStates({
+            stateMap
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStatesFailure({
+                error
+              })
+            ]
+          )
+        ),
+        this.stateManagementService.getStateEnumerations(
+          collectionId
+        ).pipe(
+          map(stateEnumerationMap => StateActions.setStateEnumerations({
+            stateEnumerationMap
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStateEnumerationsFailure({
+                error
+              })
+            ]
+          )
+        ),
+        this.stateManagementService.getStateIdentifiers(
+          collectionId
+        ).pipe(
+          map(stateIdentifiers => StateActions.setStateIdentifiers({
+            stateIdentifiers
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchIdentifiersFailure({
+                error
+              })
+            ]
+          )
         )
       );
     } else if (url === '/state-history') {
       return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        })),
         this.stateManagementService.getStateHistory(
           collectionId
         ).pipe(
@@ -358,5 +381,7 @@ export class StatesEffects {
         )
       );
     }
+
+    return EMPTY;
   }
 }

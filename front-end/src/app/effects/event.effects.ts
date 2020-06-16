@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, EMPTY } from 'rxjs';
+import { Observable, EMPTY, merge, of } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
-import { CollectionActions, EventActions } from '../actions';
+import { CollectionActions, EventActions, LayoutActions } from '../actions';
 import { StateManagementService } from '../services/state-management.service';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
@@ -51,33 +51,43 @@ export class EventEffects {
     const url = this.router.routerState.snapshot.url;
 
     if (url === '/events') {
-      return this.stateManagementService.getEventMap(
-        id
-      ).pipe(
-        map(eventMap => EventActions.setEventMap({
-          eventMap
+      return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
         })),
-        catchError(
-          (error: Error) => [
-            EventActions.fetchEventMapFailure({
-              error
-            })
-          ]
+        this.stateManagementService.getEventMap(
+          id
+        ).pipe(
+          map(eventMap => EventActions.setEventMap({
+            eventMap
+          })),
+          catchError(
+            (error: Error) => [
+              EventActions.fetchEventMapFailure({
+                error
+              })
+            ]
+          )
         )
       );
     } else if (url === '/event-history') {
-      return this.stateManagementService.getEventHistoryMap(
-        id
-      ).pipe(
-        map(eventHistoryMap => EventActions.setEventHistoryMap({
-          eventHistoryMap
+      return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
         })),
-        catchError(
-          (error: Error) => [
-            EventActions.fetchEventHistoryMapFailure({
-              error
-            })
-          ]
+        this.stateManagementService.getEventHistoryMap(
+          id
+        ).pipe(
+          map(eventHistoryMap => EventActions.setEventHistoryMap({
+            eventHistoryMap
+          })),
+          catchError(
+            (error: Error) => [
+              EventActions.fetchEventHistoryMapFailure({
+                error
+              })
+            ]
+          )
         )
       );
     }

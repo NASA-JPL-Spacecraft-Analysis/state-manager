@@ -8,7 +8,7 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div *ngIf="identifiers !== null">
+    <div *ngIf="stateIdentifiers !== null">
       <mat-form-field>
         <input matInput
           placeholder="Identifier"

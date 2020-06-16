@@ -12,9 +12,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO: Implement these methods as we need to use json importing.
- */
 public class JsonParseServiceImpl implements FileParseService {
     @Override
     public <T> String output(List<T> objectList, Class<T> type) {
@@ -49,10 +46,10 @@ public class JsonParseServiceImpl implements FileParseService {
     }
 
     @Override
-    public List<StateVariable> parseStateVariables(InputStream inputStream) {
-        List<StateVariable> parsedStateVariables = new ArrayList<>();
+    public List<State> parseStates(InputStream inputStream) {
+        List<State> parsedStateList = new ArrayList<>();
 
-        return parseJson(inputStream, parsedStateVariables, new TypeToken<List<StateVariable>>(){}.getType());
+        return parseJson(inputStream, parsedStateList, new TypeToken<List<State>>(){}.getType());
     }
 
     /**

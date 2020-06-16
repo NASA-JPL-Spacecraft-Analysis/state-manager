@@ -11,7 +11,7 @@ import {
 
 export const createState = createAction(
   '[state] createState',
-  props<{ state: State, stateEnumerations: StateEnumeration[] }>()
+  props<{ collectionId: number, state: State, stateEnumerations: StateEnumeration[] }>()
 );
 
 export const createRelationship = createAction(
@@ -61,7 +61,7 @@ export const createStatesSuccess = createAction(
 
 export const editState = createAction(
   '[state] editState',
-  props<{ state: State }>()
+  props<{ collectionId: number, state: State }>()
 );
 
 export const editStateFailure = createAction(
@@ -106,7 +106,7 @@ export const fetchStatesFailure = createAction(
 
 export const saveEnumerations = createAction(
   '[state] saveEnumerations',
-  props<{ stateId: number, enumerations: StateEnumeration[] }>()
+  props<{ collectionId: number, stateId: number, enumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsSuccess = createAction(
@@ -119,9 +119,9 @@ export const saveEnumerationsFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const setIdentifiers = createAction(
-  '[state] setIdentifiers',
-  props<{ identifiers: string[] }>()
+export const setStateIdentifiers = createAction(
+  '[state] setStateIdentifiers',
+  props<{ stateIdentifiers: string[] }>()
 );
 
 export const setRelationships = createAction(
@@ -136,7 +136,7 @@ export const setRelationshipHistory = createAction(
 
 export const setStateEnumerations = createAction(
   '[state] setStateEnumerations',
-  props<{ stateEnumerations: StateEnumerationMap }>()
+  props<{ stateEnumerationMap: StateEnumerationMap }>()
 );
 
 export const setStateHistory = createAction(

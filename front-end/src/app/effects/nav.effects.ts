@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ROOT_EFFECTS_INIT, ofType } from '@ngrx/effects';
 import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
-import { concat, of } from 'rxjs';
+import { concat } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ofRoute } from '../functions/router';
-import { InformationTypesActions, LayoutActions, EventActions, CollectionActions, StateActions } from '../actions';
+import { InformationTypesActions, EventActions, CollectionActions, StateActions } from '../actions';
 import { AppState } from '../app-store';
 
 @Injectable()
@@ -33,17 +33,6 @@ export class NavEffects {
             ]
           )
         )
-      )
-    )
-  );
-
-  public navAll = createEffect(() =>
-    this.actions.pipe(
-      ofRoute(/\*/),
-      switchMap(_ =>
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
-        }))
       )
     )
   );

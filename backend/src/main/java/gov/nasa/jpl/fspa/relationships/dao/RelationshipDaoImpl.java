@@ -1,6 +1,6 @@
 package gov.nasa.jpl.fspa.relationships.dao;
 
-import gov.nasa.jpl.fspa.dao.StateVariableQueries;
+import gov.nasa.jpl.fspa.states.dao.StateQueries;
 import gov.nasa.jpl.fspa.model.*;
 import gov.nasa.jpl.fspa.util.DatabaseUtil;
 
@@ -102,7 +102,7 @@ public class RelationshipDaoImpl implements RelationshipDao {
 
                 relationshipCounter++;
 
-                if (relationshipCounter % StateVariableQueries.BATCH_SIZE == 0 || relationshipCounter == relationshipList.size()) {
+                if (relationshipCounter % StateQueries.BATCH_SIZE == 0 || relationshipCounter == relationshipList.size()) {
                     preparedStatement.executeBatch();
                 }
             }

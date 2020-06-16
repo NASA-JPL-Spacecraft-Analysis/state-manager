@@ -33,91 +33,93 @@ export const initialState: StateState = {
 
 export const reducer = createReducer(
   initialState,
-  on(StateActions.createRelationshipSuccess, (appState, { relationship }) => {
-    return modifyRelationship(appState, relationship);
+  on(StateActions.createRelationshipSuccess, (stateState, { relationship }) => {
+    return modifyRelationship(stateState, relationship);
   }),
-  on(StateActions.createStateSuccess, (appState, { state }) => {
-    return modifyState(appState, state);
+  on(StateActions.createStateSuccess, (stateState, { state }) => {
+    return modifyState(stateState, state);
   }),
-  on(StateActions.createStatesSuccess, (appState, { stateMap }) => ({
-    ...appState,
+  on(StateActions.createStatesSuccess, (stateState, { stateMap }) => ({
+    ...stateState,
     stateMap: {
       ...stateMap
     }
   })),
-  on(StateActions.editRelationshipSuccess, (appState, { relationship }) => {
-    return modifyRelationship(appState, relationship);
+  on(StateActions.editRelationshipSuccess, (stateState, { relationship }) => {
+    return modifyRelationship(stateState, relationship);
   }),
-  on(StateActions.editStateSuccess, (appState, { state }) => {
-    return modifyState(appState, state);
+  on(StateActions.editStateSuccess, (stateState, { state }) => {
+    return modifyState(stateState, state);
   }),
   on(StateActions.saveEnumerationsSuccess, (state, { enumerations }) => {
-    const enumerationMap: StateEnumerationMap = {};
+    const stateEnumerationMap: StateEnumerationMap = {};
     let stateId = null;
 
     for (const enumeration of enumerations) {
       stateId = enumeration.stateId;
 
-      if (enumerationMap[stateId] === undefined) {
-        enumerationMap[stateId] = [];
+      if (stateEnumerationMap[stateId] === undefined) {
+        stateEnumerationMap[stateId] = [];
       }
 
-      enumerationMap[stateId].push(enumeration);
+      stateEnumerationMap[stateId].push(enumeration);
     }
 
     return {
       ...state,
-      stateEnumerations: {
-        ...enumerationMap
+      stateEnumerationMap: {
+        ...stateEnumerationMap
       }
     };
   }),
-  on(StateActions.setIdentifiers, (appState, { identifiers }) => {
-    const identifierSet = new Set<string>();
+  on(StateActions.setStateIdentifiers, (appState, { stateIdentifiers }) => {
+    const stateIdentifierSet = new Set<string>();
 
-    if (identifiers) {
-      for (const identifier of identifiers) {
-        identifierSet.add(identifier);
+    if (stateIdentifiers) {
+      for (const stateIdentifier of stateIdentifiers) {
+        stateIdentifierSet.add(stateIdentifier);
       }
     }
 
     return {
       ...appState,
-      identifierSet
+      stateIdentifiers: stateIdentifierSet
     };
   }),
   on(StateActions.setRelationships, (appState, { relationships }) => ({
     ...appState,
     relationships
   })),
-  on(StateActions.setRelationshipHistory, (appState, { relationshipHistory }) => ({
-    ...appState,
+  on(StateActions.setRelationshipHistory, (stateState, { relationshipHistory }) => ({
+    ...stateState,
     relationshipHistory
   })),
-  on(StateActions.setStateEnumerations, (appState, { stateEnumerations }) => ({
-    ...appState,
-    stateEnumerations
+  on(StateActions.setStateEnumerations, (stateState, { stateEnumerationMap }) => ({
+    ...stateState,
+    stateEnumerationMap: {
+      ...stateEnumerationMap
+    }
   })),
-  on(StateActions.setStateHistory, (appState, { stateHistoryMap }) => ({
-    ...appState,
+  on(StateActions.setStateHistory, (stateState, { stateHistoryMap }) => ({
+    ...stateState,
     stateHistoryMap
   })),
-  on(StateActions.setStates, (appState, { stateMap }) => ({
-    ...appState,
+  on(StateActions.setStates, (stateState, { stateMap }) => ({
+    ...stateState,
     stateMap
   })),
-  on(StateActions.setSelectedRelationship, (appState, { relationship }) => ({
-    ...appState,
+  on(StateActions.setSelectedRelationship, (stateState, { relationship }) => ({
+    ...stateState,
     relationship
   })),
-  on(StateActions.setSelectedState, (appState, { state }) => ({
-    ...appState,
+  on(StateActions.setSelectedState, (stateState, { state }) => ({
+    ...stateState,
     selectedState: state
   })),
-  on(FileUploadActions.uploadEnumerationsSuccess, (state, action) => ({
+  on(FileUploadActions.uploadStateEnumerationsSuccess, (state, { stateEnumerationMap }) => ({
     ...state,
-    stateEnumerations: {
-      ...action.enumerations
+    stateEnumerationMap: {
+      ...stateEnumerationMap
     }
   })),
   on(FileUploadActions.uploadRelationshipsSuccess, (state, action) => ({
@@ -127,21 +129,21 @@ export const reducer = createReducer(
       ...action.relationshipMap
     }
   })),
-  on(FileUploadActions.uploadStatesSuccess, (appState, { stateMap }) => ({
-    ...appState,
+  on(FileUploadActions.uploadStatesSuccess, (stateState, { stateMap }) => ({
+    ...stateState,
     stateMap: {
-      ...appState.stateMap,
+      ...stateState.stateMap,
       ...stateMap
     }
   }))
 );
 
-function modifyRelationship(appState: StateState, relationship: Relationship): StateState {
+function modifyRelationship(stateState: StateState, relationship: Relationship): StateState {
   return {
-    ...appState,
+    ...stateState,
     selectedRelationship: relationship,
     relationships: {
-      ...appState.relationships,
+      ...stateState.relationships,
       [relationship.id]: {
         ...relationship
       }
@@ -149,12 +151,12 @@ function modifyRelationship(appState: StateState, relationship: Relationship): S
   };
 }
 
-function modifyState(appState: StateState, state: State): StateState {
+function modifyState(stateState: StateState, state: State): StateState {
   return {
-    ...appState,
+    ...stateState,
     selectedState: state,
     stateMap: {
-      ...appState.stateMap,
+      ...stateState.stateMap,
       [state.id]: {
         ...state
       }

@@ -22,7 +22,7 @@ public class ValidationServiceTests {
     public Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap;
     public List<InformationTypesUpload> informationTypesUploadList;
     public List<RelationshipUpload> relationshipUploadList;
-    public List<StateVariable> stateVariableList;
+    public List<State> stateList;
     public Map<String, Integer> stateVariableMap;
 
     @Before
@@ -37,7 +37,7 @@ public class ValidationServiceTests {
         informationTypesEnumMap = new HashMap<>();
         informationTypesUploadList = new ArrayList<>();
         relationshipUploadList = new ArrayList<>();
-        stateVariableList = new ArrayList<>();
+        stateList = new ArrayList<>();
         stateVariableMap = new HashMap<>();
 
         for (InformationTypesEnum informationTypesEnum: InformationTypesEnum.values()) {
@@ -197,76 +197,76 @@ public class ValidationServiceTests {
 
     @Test
     public void invalidStateVariables() {
-        stateVariableList.add(new StateVariable());
+        stateList.add(new State());
 
-        assertTrue(validationService.hasInvalidStateVariables(stateVariableList));
+        assertTrue(validationService.hasInvalidStates(stateList));
     }
 
     @Test
     public void validStateVariables() {
-        StateVariable stateVariable = new StateVariable();
-        stateVariable.setIdentifier("TEST");
-        stateVariable.setDisplayName("Test Display Name");
-        stateVariable.setType("Test Type");
-        stateVariable.setUnits("Test Units");
-        stateVariable.setSource("Test Source");
-        stateVariable.setSubsystem("Test Subsystem");
+        State state = new State();
+        state.setIdentifier("TEST");
+        state.setDisplayName("Test Display Name");
+        state.setType("Test Type");
+        state.setUnits("Test Units");
+        state.setSource("Test Source");
+        state.setSubsystem("Test Subsystem");
 
-        stateVariableList.add(stateVariable);
+        stateList.add(state);
 
-        assertFalse(validationService.hasInvalidStateVariables(stateVariableList));
+        assertFalse(validationService.hasInvalidStates(stateList));
     }
 
     // getDuplicateIdentifiers
 
     @Test
     public void hasDuplicateIdentifiers() {
-        StateVariable stateVariable = new StateVariable();
+        State state = new State();
 
         identifierMap.put("TEST_IDENTIFIER", 1);
 
-        stateVariable.setIdentifier("TEST_IDENTIFIER");
-        stateVariableList.add(stateVariable);
+        state.setIdentifier("TEST_IDENTIFIER");
+        stateList.add(state);
 
-        assertEquals(validationService.getDuplicateIdentifiers(stateVariableList, identifierMap).size(), 1);
+        assertEquals(validationService.getDuplicateIdentifiers(stateList, identifierMap).size(), 1);
     }
 
     @Test
     public void hasUploadedDuplicateIdentifiers() {
-        StateVariable stateVariable = new StateVariable();
-        StateVariable stateVariable1 = new StateVariable();
+        State state = new State();
+        State state1 = new State();
 
         identifierMap.put("TEST_IDENTIFIER", 1);
 
-        stateVariable.setIdentifier("TEST_IDENTIFIER_1");
-        stateVariableList.add(stateVariable);
+        state.setIdentifier("TEST_IDENTIFIER_1");
+        stateList.add(state);
 
-        stateVariable1.setIdentifier("TEST_IDENTIFIER_1");
-        stateVariableList.add(stateVariable1);
+        state1.setIdentifier("TEST_IDENTIFIER_1");
+        stateList.add(state1);
 
-        assertEquals(validationService.getDuplicateIdentifiers(stateVariableList, identifierMap).size(), 1);
+        assertEquals(validationService.getDuplicateIdentifiers(stateList, identifierMap).size(), 1);
     }
 
     @Test
     public void hasNoDuplicateIdentifiers() {
-        StateVariable stateVariable = new StateVariable();
+        State state = new State();
 
         identifierMap.put("TEST_IDENTIFIER", 1);
 
-        stateVariable.setIdentifier("TEST_IDENTIFIER_1");
-        stateVariableList.add(stateVariable);
+        state.setIdentifier("TEST_IDENTIFIER_1");
+        stateList.add(state);
 
-        assertEquals(validationService.getDuplicateIdentifiers(stateVariableList, identifierMap).size(), 0);
+        assertEquals(validationService.getDuplicateIdentifiers(stateList, identifierMap).size(), 0);
     }
 
     @Test
     public void hasNoExistingIdentifiers() {
-        StateVariable stateVariable = new StateVariable();
+        State state = new State();
 
-        stateVariable.setIdentifier("TEST_IDENTIFIER_1");
-        stateVariableList.add(stateVariable);
+        state.setIdentifier("TEST_IDENTIFIER_1");
+        stateList.add(state);
 
-        assertEquals(validationService.getDuplicateIdentifiers(stateVariableList, identifierMap).size(), 0);
+        assertEquals(validationService.getDuplicateIdentifiers(stateList, identifierMap).size(), 0);
     }
 
     // validateInformationTypes

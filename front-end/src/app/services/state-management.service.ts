@@ -38,9 +38,9 @@ export class StateManagementService {
     );
   }
 
-  public createState(state: State): Observable<State> {
+  public createState(collectionId: number, state: State): Observable<State> {
     return this.http.post<State>(
-      baseUrl + '/state',
+      baseUrl + '/collection/' + collectionId + '/state',
       state
     );
   }
@@ -59,9 +59,9 @@ export class StateManagementService {
     );
   }
 
-  public editState(state: State): Observable<State> {
+  public editState(collectionId: number, state: State): Observable<State> {
     return this.http.put<State>(
-      baseUrl + '/state',
+      baseUrl + '/collection/' + collectionId + '/state',
       state
     );
   }
@@ -122,31 +122,31 @@ export class StateManagementService {
 
   public getStates(collectionId: number): Observable<StateMap> {
     return this.http.get<StateMap>(
-      baseUrl + '/collection/' + collectionId + '/state'
+      baseUrl + '/collection/' + collectionId + '/states'
     );
   }
 
-  public saveEnumerations(stateId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
+  public saveEnumerations(collectionId: number, stateId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
     return this.http.post<StateEnumeration[]>(
-      baseUrl + '/state-enumerations/' + stateId,
+      baseUrl + '/collection/' + collectionId + '/state-enumerations/' + stateId,
       enumerations
     );
   }
 
-  public saveEnumerationsCsv(file: File): Observable<StateEnumerationMap> {
+  public saveEnumerationsCsv(collectionId: number, file: File): Observable<StateEnumerationMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<StateEnumerationMap>(
-      baseUrl + '/enumerations-csv',
+      baseUrl + '/collection/' + collectionId + '/enumerations-csv',
       formData
     );
   }
 
-  public saveEnumerationsJson(file: File): Observable<StateEnumerationMap> {
+  public saveEnumerationsJson(collectionId: number, file: File): Observable<StateEnumerationMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<StateEnumerationMap>(
-      baseUrl + '/enumerations-json',
+      baseUrl + '/collection/' + collectionId + '/enumerations-json',
       formData
     );
   }
@@ -205,20 +205,20 @@ export class StateManagementService {
     );
   }
 
-  public saveStatesCsv(file: File): Observable<StateMap> {
+  public saveStatesCsv(collectionId: number, file: File): Observable<StateMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<StateMap>(
-      baseUrl + '/states-csv',
+      baseUrl + '/collection/' + collectionId + '/states-csv',
       formData
     );
   }
 
-  public saveStatesJson(file: File): Observable<StateMap> {
+  public saveStatesJson(collectionId: number, file: File): Observable<StateMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<StateMap>(
-      baseUrl + '/states-json',
+      baseUrl + '/collection/' + collectionId + '/states-json',
       formData
     );
   }

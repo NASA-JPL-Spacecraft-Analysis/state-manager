@@ -55,21 +55,27 @@ export class FileUploadEffects {
 
   public uploadEnumerations = createEffect(() => {
     return this.actions.pipe(
-      ofType(FileUploadActions.uploadEnumerations),
-      switchMap(({ file, fileType }) => {
+      ofType(FileUploadActions.uploadStateEnumerations),
+      switchMap(({ collectionId, file, fileType }) => {
         let saveEnumerations: Observable<StateEnumerationMap>;
 
         if (fileType === 'csv') {
-          saveEnumerations = this.stateManagementService.saveEnumerationsCsv(file);
+          saveEnumerations = this.stateManagementService.saveEnumerationsCsv(
+            collectionId,
+            file
+          );
         } else {
-          saveEnumerations = this.stateManagementService.saveEnumerationsJson(file);
+          saveEnumerations = this.stateManagementService.saveEnumerationsJson(
+            collectionId,
+            file
+          );
         }
 
         return saveEnumerations.pipe(
           switchMap(
-            (enumerations: StateEnumerationMap) => [
-              FileUploadActions.uploadEnumerationsSuccess({
-                enumerations
+            (stateEnumerationMap: StateEnumerationMap) => [
+              FileUploadActions.uploadStateEnumerationsSuccess({
+                stateEnumerationMap
               }),
               ToastActions.showToast({
                 message: 'Enumerations uploaded',
@@ -79,7 +85,7 @@ export class FileUploadEffects {
           ),
           catchError(
             (error: HttpErrorResponse) => [
-              FileUploadActions.uploadEnumerationsFailure({ error }),
+              FileUploadActions.uploadStateEnumerationsFailure({ error }),
               ToastActions.showToast({
                 message: error.error,
                 toastType: 'error'
@@ -170,13 +176,19 @@ export class FileUploadEffects {
   public uploadStates = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadStates),
-      switchMap(({ file, fileType }) => {
+      switchMap(({ collectionId, file, fileType }) => {
         let saveStates: Observable<StateMap>;
 
         if (fileType === 'csv') {
-          saveStates = this.stateManagementService.saveStatesCsv(file);
+          saveStates = this.stateManagementService.saveStatesCsv(
+            collectionId,
+            file
+          );
         } else {
-          saveStates = this.stateManagementService.saveStatesJson(file);
+          saveStates = this.stateManagementService.saveStatesJson(
+            collectionId,
+            file
+          );
         }
 
         return saveStates.pipe(

@@ -9,7 +9,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { SubSink } from 'subsink';
 
 import { State, StateEnumeration } from '../../models';
-import { getIdentifiers, getStateEnumerationsForSelectedState } from '../../selectors';
+import { getStateIdentifiers, getStateEnumerationsForSelectedState } from '../../selectors';
 import { ToastActions } from '../../actions';
 import { EnumFormModule } from '../../components';
 import { AppState } from 'src/app/app-store';
@@ -34,7 +34,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public identifierIcon: string;
   public identifierTooltipText: string;
   public form: FormGroup;
-  public identifiers: Set<string>;
+  public stateIdentifiers: Set<string>;
 
   private subscriptions = new SubSink();
 
@@ -51,8 +51,8 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(
-      this.store.pipe(select(getIdentifiers)).subscribe(identifiers => {
-        this.identifiers = identifiers;
+      this.store.pipe(select(getStateIdentifiers)).subscribe(stateIdentifiers => {
+        this.stateIdentifiers = stateIdentifiers;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getStateEnumerationsForSelectedState)).subscribe(enumerations => {
@@ -104,7 +104,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public onSubmit(): void {
     // Process our enumerations before trying to save our state.
     if (this.processEnumerations()) {
-      if (!this.isIdentifierDuplicate(this.form.value.identifier.trim())) {
+      if (!this.isStateIdentifierDuplicate(this.form.value.identifier.trim())) {
         // Emit both values, but we'll only use the enumeraion list on creating a new state.
         this.modifyState.emit({
           state: this.form.value,
@@ -136,7 +136,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
    */
   public onIdentifierChange(identifier: string): void {
     if (identifier.length > 0) {
-      if (this.isIdentifierDuplicate(identifier)) {
+      if (this.isStateIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
         this.identifierTooltipText = 'Your identifier is a duplicate';
 
@@ -179,9 +179,9 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
    * 3) AND that we're not flagging an edited identifier on it's own value
    * @param identifier The current identifier.
    */
-  private isIdentifierDuplicate(identifier: string): boolean {
-    if (this.identifiers.size > 0) {
-      return this.identifiers.has(identifier)
+  private isStateIdentifierDuplicate(identifier: string): boolean {
+    if (this.stateIdentifiers.size > 0) {
+      return this.stateIdentifiers.has(identifier)
           && (!this.newState.identifier || identifier !== this.newState.identifier);
     }
 
