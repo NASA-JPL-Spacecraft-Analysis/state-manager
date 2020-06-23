@@ -1,6 +1,6 @@
 import { StateEnumerationMap, StateEnumeration } from '../models';
 
-export const stateEnumerationMap: StateEnumerationMap = {
+export const mockStateEnumerationMap: StateEnumerationMap = {
   [1]: [
     {
       id: 1,
@@ -17,7 +17,7 @@ export const stateEnumerationMap: StateEnumerationMap = {
   ]
 };
 
-export const stateEnumerationList: StateEnumeration[] = [
+export const mockStateEnumerationList: StateEnumeration[] = [
   {
     id: 1,
     stateId: 1,

@@ -10,7 +10,13 @@ import { FileUploadEffects } from './file-upload.effects';
 import { StateManagementService } from '../services/state-management.service';
 import { MockStateManagementService } from '../services/mock-state-management.service';
 import { FileUploadActions, ToastActions } from '../actions';
-import { mockCsvFile, mockJsonFile, mockInformationTypesMap, stateEnumerationMap, stateVariableMap } from '../mocks';
+import {
+  mockCsvFile,
+  mockJsonFile,
+  mockInformationTypesMap,
+  mockStateEnumerationMap,
+  mockStateMap
+} from '../mocks';
 
 describe('FileUploadEffects', () => {
   let actions: Observable<Action>;
@@ -47,7 +53,8 @@ describe('FileUploadEffects', () => {
       testScheduler.run(({ hot, expectObservable }) => {
         const action = FileUploadActions.uploadInformationTypes({
           file: mockCsvFile,
-          fileType: 'csv'
+          fileType: 'csv',
+          collectionId: 1
         });
 
         actions = hot('-a', { a: action });
@@ -66,18 +73,19 @@ describe('FileUploadEffects', () => {
   });
 
   describe('uploadEnumerations', () => {
-    it('should dispatch uploadEnumerationsSuccess and show a success toast when a .csv file is uploaded', () => {
+    it('should dispatch uploadStateEnumerationsSuccess and show a success toast when a .csv file is uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
-        const action = FileUploadActions.uploadEnumerations({
+        const action = FileUploadActions.uploadStateEnumerations({
           file: mockCsvFile,
-          fileType: 'csv'
+          fileType: 'csv',
+          collectionId: 1
         });
 
         actions = hot('-a', { a: action });
 
         expectObservable(effects.uploadEnumerations).toBe('-(bc)', {
-          b: FileUploadActions.uploadEnumerationsSuccess({
-            enumerations: stateEnumerationMap
+          b: FileUploadActions.uploadStateEnumerationsSuccess({
+            stateEnumerationMap: mockStateEnumerationMap
           }),
           c: ToastActions.showToast({
             message: 'Enumerations uploaded',
@@ -87,18 +95,19 @@ describe('FileUploadEffects', () => {
       });
     });
 
-    it('should dispatch uploadEnumerationsSuccess and show a success toast when a .json file is uploaded', () => {
+    it('should dispatch uploadStateEnumerationsSuccess and show a success toast when a .json file is uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
-        const action = FileUploadActions.uploadEnumerations({
+        const action = FileUploadActions.uploadStateEnumerations({
           file: mockJsonFile,
-          fileType: 'json'
+          fileType: 'json',
+          collectionId: 1
         });
 
         actions = hot('-a', { a: action });
 
         expectObservable(effects.uploadEnumerations).toBe('-(bc)', {
-          b: FileUploadActions.uploadEnumerationsSuccess({
-            enumerations: stateEnumerationMap
+          b: FileUploadActions.uploadStateEnumerationsSuccess({
+            stateEnumerationMap: mockStateEnumerationMap
           }),
           c: ToastActions.showToast({
             message: 'Enumerations uploaded',
@@ -109,43 +118,45 @@ describe('FileUploadEffects', () => {
     });
   });
 
-  describe('uploadStateVariables', () => {
-    it('should dispatch uploadStateVariablesSuccess and show a success toast when a .csv file is uploaded', () => {
+  describe('uploadStates', () => {
+    it('should dispatch uploadStatesSuccess and show a success toast when a .csv file is uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
-        const action = FileUploadActions.uploadStateVariables({
+        const action = FileUploadActions.uploadStates({
           file: mockCsvFile,
-          fileType: 'csv'
+          fileType: 'csv',
+          collectionId: 1
         });
 
         actions = hot('-a', { a: action });
 
-        expectObservable(effects.uploadStateVariables).toBe('-(bc)', {
-          b: FileUploadActions.uploadStateVariablesSuccess({
-            stateVariableMap
+        expectObservable(effects.uploadStates).toBe('-(bc)', {
+          b: FileUploadActions.uploadStatesSuccess({
+            stateMap: mockStateMap
           }),
           c: ToastActions.showToast({
-            message: 'State variable(s) uploaded',
+            message: 'State(s) uploaded',
             toastType: 'success'
           })
         });
       });
     });
 
-    it('should dispatch uploadStateVariablesSuccess and show a success toast when a .json file is uploaded', () => {
+    it('should dispatch uploadStatesSuccess and show a success toast when a .json file is uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
-        const action = FileUploadActions.uploadStateVariables({
+        const action = FileUploadActions.uploadStates({
           file: mockJsonFile,
-          fileType: 'json'
+          fileType: 'json',
+          collectionId: 1
         });
 
         actions = hot('-a', { a: action });
 
-        expectObservable(effects.uploadStateVariables).toBe('-(bc)', {
-          b: FileUploadActions.uploadStateVariablesSuccess({
-            stateVariableMap
+        expectObservable(effects.uploadStates).toBe('-(bc)', {
+          b: FileUploadActions.uploadStatesSuccess({
+            stateMap: mockStateMap
           }),
           c: ToastActions.showToast({
-            message: 'State variable(s) uploaded',
+            message: 'State(s) uploaded',
             toastType: 'success'
           })
         });

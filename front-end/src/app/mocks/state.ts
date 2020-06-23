@@ -1,16 +1,16 @@
 import { StateMap } from '../models';
 
-export const identifierList: string[] = [
+export const mockIdentifierList: string[] = [
   'TEST',
   'TEST 1'
 ];
 
-export const identifierSet: Set<string> = new Set([
+export const mockIdentifierSet: Set<string> = new Set([
   'TEST',
   'TEST 1'
 ]);
 
-export const stateMap: StateMap = {
+export const mockStateMap: StateMap = {
   [1]: {
     id: 1,
     identifier: 'TEST',

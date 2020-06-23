@@ -1,39 +1,41 @@
 import { CollectionState, initialState, reducer } from './collection.reducer';
 import { CollectionActions } from '../actions';
-import { CollectionMap } from '../models';
-import { mockCollectioNMap } from '../mocks';
+import { mockCollectionMap } from '../mocks';
 
 describe('CollectionReducer', () => {
   describe('fetchCollectionsSuccess', () => {
     it('should set collectionMap after fetching the collections', () => {
-      const collectionMap: CollectionMap = {
-        ...mockCollectioNMap
+      const collectionMap = {
+        ...mockCollectionMap
       };
 
-      const state: CollectionState = reducer(
+      const collectionState: CollectionState = reducer(
         { ...initialState },
         CollectionActions.fetchCollectionsSuccess({
           collectionMap
         })
       );
 
-      expect(state).toEqual({
+      expect(collectionState).toEqual({
         ...initialState,
-        collectionMap
+        collectionMap: mockCollectionMap,
+        selectedCollectionId: 1
       });
     });
   });
 
   describe('setSelectedCollection', () => {
     it('should set selctedCollectionId on collection selection', () => {
-      const state: CollectionState = reducer(
+      const id = 1;
+
+      const collectionState: CollectionState = reducer(
         { ...initialState },
         CollectionActions.setSelectedCollection({
-          id: 1
+          id
         })
       );
 
-      expect(state).toEqual({
+      expect(collectionState).toEqual({
         ...initialState,
         selectedCollectionId: 1
       });

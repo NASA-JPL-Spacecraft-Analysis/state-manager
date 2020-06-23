@@ -190,8 +190,6 @@ export class StateManagementService {
   public saveRelationshipsCsv(collectionId: number, file: File): Observable<RelationshipMap> {
     const formData = this.setFormData(file);
 
-    console.log(collectionId, file);
-
     return this.http.post<RelationshipMap>(
       baseUrl + '/collection/' + collectionId + '/relationships-csv',
       formData
