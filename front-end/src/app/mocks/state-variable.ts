@@ -1,4 +1,4 @@
-import { StateVariableMap } from '../models';
+import { StateMap } from '../models';
 
 export const identifierList: string[] = [
   'TEST',
@@ -10,7 +10,7 @@ export const identifierSet: Set<string> = new Set([
   'TEST 1'
 ]);
 
-export const stateVariableMap: StateVariableMap = {
+export const stateMap: StateMap = {
   [1]: {
     id: 1,
     identifier: 'TEST',

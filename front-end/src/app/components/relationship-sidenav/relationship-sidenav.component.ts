@@ -12,11 +12,11 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'relationships-sidenav',
-  styleUrls: [ 'relationships-sidenav.component.css' ],
-  templateUrl: 'relationships-sidenav.component.html'
+  selector: 'relationship-sidenav',
+  styleUrls: [ 'relationship-sidenav.component.css' ],
+  templateUrl: 'relationship-sidenav.component.html'
 })
-export class RelationshipsSidenavComponent implements OnChanges {
+export class RelationshipSidenavComponent implements OnChanges {
   @Input() public eventMap: EventMap;
   @Input() public informationTypesMap: InformationTypesMap;
   @Input() public relationship: Relationship;
@@ -44,7 +44,7 @@ export class RelationshipsSidenavComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (this.relationship === undefined) {
+    if (this.relationship === undefined || this.relationship === null) {
       this.newRelationship = {
         id: null,
         displayName: '',
@@ -90,10 +90,10 @@ export class RelationshipsSidenavComponent implements OnChanges {
 
 @NgModule({
   declarations: [
-    RelationshipsSidenavComponent
+    RelationshipSidenavComponent
   ],
   exports: [
-    RelationshipsSidenavComponent
+    RelationshipSidenavComponent
   ],
   imports: [
     CommonModule,
@@ -103,4 +103,4 @@ export class RelationshipsSidenavComponent implements OnChanges {
     RelationshipTypePickerModule
   ]
 })
-export class RelationshipsSidenavModule {}
+export class RelationshipSidenavModule {}

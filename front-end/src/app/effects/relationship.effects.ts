@@ -1,0 +1,223 @@
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store, Action } from '@ngrx/store';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
+
+import { StateManagementService } from '../services/state-management.service';
+import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypesActions, StateActions } from '../actions';
+import { Observable, merge, EMPTY } from 'rxjs';
+import { ofRoute } from '../functions/router';
+import { AppState } from '../app-store';
+import { Relationship } from '../models';
+
+@Injectable()
+export class RelationshipEffects {
+  constructor(
+    private actions: Actions,
+    private router: Router,
+    private stateManagementService: StateManagementService,
+    private store: Store<AppState>
+  ) {}
+
+  public createRelationship = createEffect(() => {
+    return this.actions.pipe(
+      ofType(RelationshipActions.createRelationship),
+      switchMap(({ collectionId, relationship }) =>
+        this.stateManagementService.createRelationship(
+          collectionId,
+          relationship
+        ).pipe(
+          switchMap(
+            (createdRelationship: Relationship) => [
+              RelationshipActions.createRelationshipSuccess({
+                relationship: createdRelationship
+              }),
+              ToastActions.showToast({
+                message: 'Relationship created',
+                toastType: 'success'
+              })
+            ]
+          ),
+          catchError(
+            (error: Error) => [
+              RelationshipActions.createRelationshipFailure({ error }),
+              ToastActions.showToast({
+                message: 'Relationship creation failed',
+                toastType: 'error'
+              })
+            ]
+          )
+        )
+      )
+    );
+  });
+
+  public editRelationship = createEffect(() => {
+    return this.actions.pipe(
+      ofType(RelationshipActions.editRelationship),
+      switchMap(({ collectionId, relationship }) =>
+        this.stateManagementService.editRelationship(
+          collectionId,
+          relationship
+        ).pipe(
+          switchMap(
+            (editedRelationship: Relationship) => [
+              RelationshipActions.editRelationshipSuccess({
+                relationship: editedRelationship
+              }),
+              ToastActions.showToast({
+                message: 'Relationship edited',
+                toastType: 'success'
+              })
+            ]
+          ),
+          catchError(
+            (error: Error) => [
+              RelationshipActions.editRelationshipFailure({ error }),
+              ToastActions.showToast({
+                message: 'Relationship editing failed',
+                toastType: 'error'
+              })
+            ]
+          )
+        )
+      )
+    );
+  });
+
+  public navRelationships = createEffect(() => {
+    return this.actions.pipe(
+      ofRoute('relationships'),
+      withLatestFrom(this.store),
+      map(([_, state]) => state),
+      switchMap(state => {
+        const collectionId = state.collection.selectedCollectionId;
+
+        if (collectionId) {
+          return this.getRelationships(collectionId);
+        }
+
+        return [];
+      })
+    );
+  });
+
+  public navRelationshipsByCollectionId = createEffect(() => {
+    return this.actions.pipe(
+      ofType(CollectionActions.setSelectedCollection),
+      switchMap(({ id }) => {
+        if (id !== null) {
+          return this.getRelationships(id);
+        }
+
+        return [];
+      })
+    );
+  });
+
+  public navRelationshipHistory = createEffect(() => {
+    return this.actions.pipe(
+      ofRoute('relationship-history'),
+      withLatestFrom(this.store),
+      map(([_, state]) => state),
+      switchMap(state => {
+        const collectionId = state.collection.selectedCollectionId;
+
+        if (collectionId) {
+          return this.getRelationships(collectionId);
+        }
+
+        return [];
+      })
+    );
+  });
+
+  private getRelationships(collectionId: number): Observable<Action> {
+    const url = this.router.routerState.snapshot.url;
+    const sharedActions = merge(
+      this.stateManagementService.getEventMap(
+        collectionId
+      ).pipe(
+        map(eventMap => EventActions.setEventMap({
+          eventMap
+        })),
+        catchError(
+          (error: Error) => [
+            EventActions.fetchEventMapFailure({
+              error
+            })
+          ]
+        )
+      ),
+      this.stateManagementService.getInformationTypes(
+        collectionId
+      ).pipe(
+        map(informationTypes => InformationTypesActions.setInformationTypes({
+          informationTypes
+        })),
+        catchError(
+          (error: Error) => [
+            InformationTypesActions.fetchInformationTypesFailure({
+              error
+            })
+          ]
+        )
+      ),
+      this.stateManagementService.getStates(
+        collectionId
+      ).pipe(
+        map(stateMap => StateActions.setStates({
+          stateMap
+        })),
+        catchError(
+          (error: Error) => [
+            StateActions.fetchStatesFailure({
+              error
+            })
+          ]
+        )
+      )
+    );
+
+    if (url === '/relationships') {
+      return merge(
+        sharedActions,
+        this.stateManagementService.getRelationships(
+          collectionId
+        ).pipe(
+          map(relationships => RelationshipActions.setRelationships({
+            relationships
+          })),
+          catchError(
+            (error: Error) => [
+              RelationshipActions.fetchRelationshipsFailure({
+                error
+              })
+            ]
+          )
+        )
+      );
+    } else if (url === '/relationship-history') {
+      return merge(
+        sharedActions,
+        this.stateManagementService.getRelationshipHistory(
+          collectionId
+        ).pipe(
+          map(relationshipHistory => RelationshipActions.setRelationshipHistory({
+            relationshipHistory
+          })),
+          catchError(
+            (error: Error) => [
+              RelationshipActions.fetchRelationshipHistoryFailure({
+                error
+              })
+            ]
+          )
+        )
+      );
+    }
+
+    return EMPTY;
+  }
+}

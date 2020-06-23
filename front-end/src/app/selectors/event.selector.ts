@@ -1,9 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+
 import { EventState } from '../reducers/event.reducer';
 
-export const getEventState = createFeatureSelector<EventState>(
-  'event'
-);
+export const getEventState = createFeatureSelector<EventState>('events');
 
 export const getEventMap = createSelector(
   getEventState,

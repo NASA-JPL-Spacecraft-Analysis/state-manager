@@ -12,11 +12,12 @@ import {
   getStates,
   getInformationTypes,
   getEventMap,
-  getShowSidenav
+  getShowSidenav,
+  getSelectedCollectionId
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
-import { StateActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
-import { RelationshipsSidenavModule } from 'src/app/components';
+import { LayoutActions, ToastActions, FileUploadActions, RelationshipActions } from 'src/app/actions';
+import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
 import { StateMap, InformationTypesMap, EventMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
@@ -35,6 +36,7 @@ export class RelationshipsComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateMap: StateMap;
 
+  private collectionId: number;
   private subscriptions = new SubSink();
 
   constructor(
@@ -42,6 +44,10 @@ export class RelationshipsComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
+      this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
+        this.collectionId = collectionId;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
@@ -80,7 +86,8 @@ export class RelationshipsComponent implements OnDestroy {
     if (file && (fileType === 'csv' || fileType === 'json')) {
       this.store.dispatch(FileUploadActions.uploadRelationships({
         file,
-        fileType
+        fileType,
+        collectionId: this.collectionId
       }));
     } else {
       this.store.dispatch(ToastActions.showToast({
@@ -105,7 +112,7 @@ export class RelationshipsComponent implements OnDestroy {
   public onModifyRelationship(relationship?: Relationship): void {
     // TODO: Check for events and information types here as well.
     if (this.stateMap) {
-      this.store.dispatch(StateActions.setSelectedRelationship({
+      this.store.dispatch(RelationshipActions.setSelectedRelationship({
         relationship
       }));
 
@@ -127,11 +134,13 @@ export class RelationshipsComponent implements OnDestroy {
       }));
     } else {
       if (relationship.id === null) {
-        this.store.dispatch(StateActions.createRelationship({
+        this.store.dispatch(RelationshipActions.createRelationship({
+          collectionId: this.collectionId,
           relationship
         }));
       } else {
-        this.store.dispatch(StateActions.editRelationship({
+        this.store.dispatch(RelationshipActions.editRelationship({
+          collectionId: this.collectionId,
           relationship
         }));
       }
@@ -149,7 +158,7 @@ export class RelationshipsComponent implements OnDestroy {
   imports: [
     CommonModule,
     MaterialModule,
-    RelationshipsSidenavModule,
+    RelationshipSidenavModule,
     RelationshipsTableModule,
     RouterModule
   ]

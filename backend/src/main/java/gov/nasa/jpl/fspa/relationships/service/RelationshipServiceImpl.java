@@ -69,39 +69,43 @@ public class RelationshipServiceImpl implements RelationshipService {
     }
 
     @Override
-    public Map<Integer, Relationship> getRelationships() {
-        List<Relationship> relationships = relationshipDao.getRelationships();
-        Map<Integer, Relationship> relationshipMap = new HashMap<>();
+    public Map<Integer, Relationship> getRelationships(int collectionId) {
+        return mapRelationships(relationshipDao.getRelationships(collectionId));
+    }
 
-        for (Relationship relationship: relationships) {
+    @Override
+    public Map<Integer, RelationshipHistory> getRelationshipHistory(int collectionId) {
+        List<RelationshipHistory> relationshipHistoryList = relationshipDao.getRelationshipHistory(collectionId);
+
+        return mapRelationships(relationshipHistoryList);
+    }
+
+
+    @Override
+    public Relationship modifyRelationship(int collectionId, Relationship relationship) {
+        relationship.setCollectionId(collectionId);
+
+        return relationshipDao.modifyRelationship(collectionId, relationship);
+    }
+
+    @Override
+    public Map<Integer, Relationship> saveRelationships(int collectionId, List<Relationship> relationshipList) {
+        List<Relationship> savedRelationshipList = new ArrayList<>();
+
+        for (Relationship relationship: relationshipList) {
+           savedRelationshipList.add(relationshipDao.modifyRelationship(collectionId, relationship));
+        }
+
+        return mapRelationships(savedRelationshipList);
+    }
+
+    private <T extends Relationship> Map<Integer, T> mapRelationships(List<T> relationshipList) {
+        Map<Integer, T> relationshipMap = new HashMap<>();
+
+        for (T relationship: relationshipList) {
             relationshipMap.put(relationship.getId(), relationship);
         }
 
         return relationshipMap;
-    }
-
-    @Override
-    public Map<Integer, RelationshipHistory> getRelationshipHistory() {
-        List<RelationshipHistory> relationshipHistoryList = relationshipDao.getRelationshipHistory();
-        Map<Integer, RelationshipHistory> relationshipHistoryMap = new HashMap<>();
-
-        for (RelationshipHistory relationshipHistory: relationshipHistoryList) {
-            relationshipHistoryMap.put(relationshipHistory.getId(), relationshipHistory);
-        }
-
-        return relationshipHistoryMap;
-    }
-
-
-    @Override
-    public Relationship modifyRelationship(Relationship relationship) {
-        return relationshipDao.modifyRelationship(relationship);
-    }
-
-    @Override
-    public Map<Integer, Relationship> saveRelationships(List<Relationship> relationshipList) {
-        relationshipDao.saveRelationshipList(relationshipList);
-
-        return getRelationships();
     }
 }

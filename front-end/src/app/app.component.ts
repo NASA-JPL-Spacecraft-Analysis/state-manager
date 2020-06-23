@@ -14,7 +14,8 @@ import {
   EventEffects,
   CollectionEffects,
   InformationTypesEffects,
-  StateEffects
+  StateEffects,
+  RelationshipEffects
 } from './effects';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
@@ -45,6 +46,7 @@ export class AppComponent {}
       FileUploadEffects,
       InformationTypesEffects,
       NavEffects,
+      RelationshipEffects,
       StateEffects,
       ToastEffects
     ]),

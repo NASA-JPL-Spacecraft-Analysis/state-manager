@@ -9,11 +9,11 @@ public interface RelationshipService {
     List<Relationship> convertRelationshipUploads(List<RelationshipUpload> relationshipUploadList, Map<String, Integer> stateVariableIdentifierMap,
                                                          Map<String, Integer> eventIdentifierMap, Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap);
 
-    Map<Integer, Relationship> getRelationships();
+    Map<Integer, Relationship> getRelationships(int collectionId);
 
-    Map<Integer, RelationshipHistory> getRelationshipHistory();
+    Map<Integer, RelationshipHistory> getRelationshipHistory(int collectionId);
 
-    Relationship modifyRelationship(Relationship relationship);
+    Relationship modifyRelationship(int collectionId, Relationship relationship);
 
-    Map<Integer, Relationship> saveRelationships(List<Relationship> relationshipList);
+    Map<Integer, Relationship> saveRelationships(int collectionId, List<Relationship> relationshipList);
 }

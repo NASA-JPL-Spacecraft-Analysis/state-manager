@@ -31,9 +31,9 @@ export class StateManagementService {
     );
   }
 
-  public createRelationship(relationship: Relationship): Observable<Relationship> {
+  public createRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
     return this.http.post<Relationship>(
-      baseUrl + '/relationship',
+      baseUrl + '/collection/' + collectionId + '/relationship',
       relationship
     );
   }
@@ -52,9 +52,9 @@ export class StateManagementService {
     );
   }
 
-  public editRelationship(relationship: Relationship): Observable<Relationship> {
+  public editRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
     return this.http.put<Relationship>(
-      baseUrl + '/relationship',
+      baseUrl + '/collection/' + collectionId + '/relationship',
       relationship
     );
   }
@@ -96,15 +96,15 @@ export class StateManagementService {
     );
   }
 
-  public getRelationships(): Observable<RelationshipMap> {
+  public getRelationships(collectionId: number): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
-      baseUrl + '/relationships'
+      baseUrl + '/collection/' + collectionId + '/relationships'
     );
   }
 
-  public getRelationshipHistory(): Observable<RelationshipMap> {
+  public getRelationshipHistory(collectionId: number): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
-      baseUrl + '/relationship-history'
+      baseUrl + '/collection/' + collectionId + '/relationship-history'
     );
   }
 
@@ -187,20 +187,22 @@ export class StateManagementService {
     );
   }
 
-  public saveRelationshipsCsv(file: File): Observable<RelationshipMap> {
+  public saveRelationshipsCsv(collectionId: number, file: File): Observable<RelationshipMap> {
     const formData = this.setFormData(file);
 
+    console.log(collectionId, file);
+
     return this.http.post<RelationshipMap>(
-      baseUrl + '/relationships-csv',
+      baseUrl + '/collection/' + collectionId + '/relationships-csv',
       formData
     );
   }
 
-  public saveRelationshipsJson(file: File): Observable<RelationshipMap> {
+  public saveRelationshipsJson(collectionId: number, file: File): Observable<RelationshipMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<RelationshipMap>(
-      baseUrl + '/relationships-json',
+      baseUrl + '/collection/' + collectionId + '/relationships-json',
       formData
     );
   }

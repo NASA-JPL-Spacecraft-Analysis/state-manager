@@ -10,16 +10,6 @@ export const getStateIdentifiers = createSelector(
   (stateState: StateState) => stateState.stateIdentifiers
 );
 
-export const getRelationships = createSelector(
-  getStatesState,
-  (stateState: StateState) => stateState.relationships
-);
-
-export const getRelationshipHistory = createSelector(
-  getStatesState,
-  (stateState: StateState) => stateState.relationshipHistory
-);
-
 export const getStateEnumerations = createSelector(
   getStatesState,
   (stateState: StateState) => stateState.stateEnumerationMap
@@ -28,11 +18,6 @@ export const getStateEnumerations = createSelector(
 export const getStateHistory = createSelector(
   getStatesState,
   (stateState: StateState) => stateState.stateHistoryMap
-);
-
-export const getSelectedRelationship = createSelector(
-  getStatesState,
-  (stateState: StateState) => stateState.selectedRelationship
 );
 
 export const getSelectedState = createSelector(

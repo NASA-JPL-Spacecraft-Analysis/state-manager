@@ -101,6 +101,32 @@ public class StateManagementResource {
     }
 
     @GET
+    @Path("/collection/{collectionId}/relationships")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRelationships(@PathParam("collectionId") int collectionId) {
+        Map<Integer, Relationship> relationshipMap = relationshipService.getRelationships(collectionId);
+
+        if (relationshipMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(relationshipMap).build();
+    }
+
+    @GET
+    @Path("/collection/{collectionId}/relationship-history")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRelationshipHistory(@PathParam("collectionId") int collectionId) {
+        Map<Integer, RelationshipHistory> relationshipHistoryMap = relationshipService.getRelationshipHistory(collectionId);
+
+        if (relationshipHistoryMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(relationshipHistoryMap).build();
+    }
+
+    @GET
     @Path("/collection/{collectionId}/state-enumerations")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStateEnumerations(@PathParam("collectionId") int collectionId) {
@@ -217,6 +243,19 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/collection/{collectionId}/relationship")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationship(@PathParam("collectionId") int collectionId, Relationship relationship) {
+        Relationship createdRelationship = relationshipService.modifyRelationship(collectionId, relationship);
+
+        if (createdRelationship == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(createdRelationship).build();
+    }
+
+    @POST
     @Path("/collection/{collectionId}/relationships-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -287,30 +326,17 @@ public class StateManagementResource {
         return Response.status(Response.Status.CREATED).entity(editedState).build();
     }
 
-    @GET
-    @Path("/relationships")
+    @PUT
+    @Path("/collection/{collectionId}/relationship")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRelationships() {
-        Map<Integer, Relationship> relationshipMap = relationshipService.getRelationships();
+    public Response putRelationship(@PathParam("collectionId") int collectionId, Relationship relationship) {
+        Relationship editedRelationship = relationshipService.modifyRelationship(collectionId, relationship);
 
-        if (relationshipMap.keySet().size() == 0) {
+        if (editedRelationship == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.OK).entity(relationshipMap).build();
-    }
-
-    @GET
-    @Path("/relationship-history")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRelationshipHistory() {
-        Map<Integer, RelationshipHistory> relationshipHistoryMap = relationshipService.getRelationshipHistory();
-
-        if (relationshipHistoryMap.keySet().size() == 0) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.status(Response.Status.OK).entity(relationshipHistoryMap).build();
+        return Response.status(Response.Status.CREATED).entity(editedRelationship).build();
     }
 
     @POST
@@ -326,19 +352,6 @@ public class StateManagementResource {
         return Response.status(Response.Status.CREATED).entity(createdEvent).build();
     }
 
-    @POST
-    @Path("/relationship")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postRelationship(Relationship relationship) {
-        Relationship createdRelationship = relationshipService.modifyRelationship(relationship);
-
-        if (createdRelationship == null) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.status(Response.Status.CREATED).entity(createdRelationship).build();
-    }
-
     @PUT
     @Path("/event")
     @Produces(MediaType.APPLICATION_JSON)
@@ -350,19 +363,6 @@ public class StateManagementResource {
         }
 
         return Response.status(Response.Status.CREATED).entity(editedEvent).build();
-    }
-
-    @PUT
-    @Path("/relationship")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response putRelationship(Relationship relationship) {
-        Relationship editedRelationship = relationshipService.modifyRelationship(relationship);
-
-        if (editedRelationship == null) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.status(Response.Status.CREATED).entity(editedRelationship).build();
     }
 
     /**
@@ -450,7 +450,7 @@ public class StateManagementResource {
                         parsedRelationshipUploadList, stateIdentifierMap, eventIdentifierMap, informationTypesEnumMap);
 
                 if (parsedRelationships.size() > 0) {
-                    return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
+                    return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(collectionId, parsedRelationships)).build();
                 }
             }
         }

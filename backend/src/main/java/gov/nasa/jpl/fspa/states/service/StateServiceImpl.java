@@ -145,7 +145,7 @@ public class StateServiceImpl implements StateService {
     public Map<Integer, State> saveStates(int collectionId, List<State> stateList) {
         List<State> savedStateList = new ArrayList<>();
 
-        for (State state : stateList) {
+        for (State state: stateList) {
             savedStateList.add(stateDao.createState(collectionId, state));
         }
 

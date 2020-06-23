@@ -3,6 +3,7 @@ import { EventMap } from '../models';
 export const mockEventMap: EventMap = {
   [1]: {
     id: 1,
+    collectionId: 1,
     identifier: 'TEST_EVENT_1',
     displayName: 'Test Event 1',
     description: 'Test event description',
@@ -14,6 +15,7 @@ export const mockEventMap: EventMap = {
 export const mockEventHistoryMap: EventMap = {
   [1]: {
     id: 1,
+    collectionId: 1,
     identifier: 'TEST_EVENT_1',
     displayName: 'Test Event 1',
     description: 'Test event description',

@@ -2,18 +2,13 @@ import { createReducer, on } from '@ngrx/store';
 
 import { StateActions, FileUploadActions } from '../actions';
 import {
-  RelationshipMap,
   State,
   StateEnumerationMap,
-  StateMap,
-  Relationship
+  StateMap
 } from '../models';
 
 export interface StateState {
   stateIdentifiers: Set<string>;
-  relationships: RelationshipMap;
-  relationshipHistory: RelationshipMap;
-  selectedRelationship: Relationship;
   selectedState: State;
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
@@ -22,9 +17,6 @@ export interface StateState {
 
 export const initialState: StateState = {
   stateIdentifiers: new Set<string>(),
-  relationships: null,
-  relationshipHistory: null,
-  selectedRelationship: null,
   selectedState: null,
   stateEnumerationMap: null,
   stateHistoryMap: null,
@@ -33,9 +25,6 @@ export const initialState: StateState = {
 
 export const reducer = createReducer(
   initialState,
-  on(StateActions.createRelationshipSuccess, (stateState, { relationship }) => {
-    return modifyRelationship(stateState, relationship);
-  }),
   on(StateActions.createStateSuccess, (stateState, { state }) => {
     return modifyState(stateState, state);
   }),
@@ -45,9 +34,6 @@ export const reducer = createReducer(
       ...stateMap
     }
   })),
-  on(StateActions.editRelationshipSuccess, (stateState, { relationship }) => {
-    return modifyRelationship(stateState, relationship);
-  }),
   on(StateActions.editStateSuccess, (stateState, { state }) => {
     return modifyState(stateState, state);
   }),
@@ -86,14 +72,6 @@ export const reducer = createReducer(
       stateIdentifiers: stateIdentifierSet
     };
   }),
-  on(StateActions.setRelationships, (appState, { relationships }) => ({
-    ...appState,
-    relationships
-  })),
-  on(StateActions.setRelationshipHistory, (stateState, { relationshipHistory }) => ({
-    ...stateState,
-    relationshipHistory
-  })),
   on(StateActions.setStateEnumerations, (stateState, { stateEnumerationMap }) => ({
     ...stateState,
     stateEnumerationMap: {
@@ -108,10 +86,6 @@ export const reducer = createReducer(
     ...stateState,
     stateMap
   })),
-  on(StateActions.setSelectedRelationship, (stateState, { relationship }) => ({
-    ...stateState,
-    relationship
-  })),
   on(StateActions.setSelectedState, (stateState, { state }) => ({
     ...stateState,
     selectedState: state
@@ -122,13 +96,6 @@ export const reducer = createReducer(
       ...stateEnumerationMap
     }
   })),
-  on(FileUploadActions.uploadRelationshipsSuccess, (state, action) => ({
-    ...state,
-    relationships: {
-      ...state.relationships,
-      ...action.relationshipMap
-    }
-  })),
   on(FileUploadActions.uploadStatesSuccess, (stateState, { stateMap }) => ({
     ...stateState,
     stateMap: {
@@ -137,19 +104,6 @@ export const reducer = createReducer(
     }
   }))
 );
-
-function modifyRelationship(stateState: StateState, relationship: Relationship): StateState {
-  return {
-    ...stateState,
-    selectedRelationship: relationship,
-    relationships: {
-      ...stateState.relationships,
-      [relationship.id]: {
-        ...relationship
-      }
-    }
-  };
-}
 
 function modifyState(stateState: StateState, state: State): StateState {
   return {

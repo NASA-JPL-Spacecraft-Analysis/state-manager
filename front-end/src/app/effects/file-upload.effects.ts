@@ -138,13 +138,13 @@ export class FileUploadEffects {
   public uploadRelationship = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
-      switchMap(({ file, fileType }) => {
+      switchMap(({ file, fileType, collectionId }) => {
         let saveRelationships: Observable<RelationshipMap>;
 
         if (fileType === 'csv') {
-          saveRelationships = this.stateManagementService.saveRelationshipsCsv(file);
+          saveRelationships = this.stateManagementService.saveRelationshipsCsv(collectionId, file);
         } else {
-          saveRelationships = this.stateManagementService.saveRelationshipsJson(file);
+          saveRelationships = this.stateManagementService.saveRelationshipsJson(collectionId, file);
         }
 
         return saveRelationships.pipe(

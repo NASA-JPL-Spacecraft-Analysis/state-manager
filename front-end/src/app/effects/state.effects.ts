@@ -6,7 +6,7 @@ import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ToastActions, EventActions, StateActions, CollectionActions, LayoutActions } from '../actions';
-import { Event, Relationship, State } from '../models';
+import { Event, State } from '../models';
 import { Observable, merge, of, EMPTY } from 'rxjs';
 import { ofRoute } from '../functions/router';
 import { AppState } from '../app-store';
@@ -51,39 +51,6 @@ export class StateEffects {
       )
     );
   });
-
-  public createRelationship = createEffect(() => {
-    return this.actions.pipe(
-      ofType(StateActions.createRelationship),
-      switchMap(({ relationship }) =>
-        this.stateManagementService.createRelationship(
-          relationship
-        ).pipe(
-          switchMap(
-            (createdRelationship: Relationship) => [
-              StateActions.createRelationshipSuccess({
-                relationship: createdRelationship
-              }),
-              ToastActions.showToast({
-                message: 'Relationship created',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              StateActions.createRelationshipFailure({ error }),
-              ToastActions.showToast({
-                message: 'Relationship creation failed',
-                toastType: 'error'
-              })
-            ]
-          )
-        )
-      )
-    );
-  });
-
 
   public createState = createEffect(() => {
     return this.actions.pipe(
@@ -157,38 +124,6 @@ export class StateEffects {
     );
   });
 
-  public editRelationship = createEffect(() => {
-    return this.actions.pipe(
-      ofType(StateActions.editRelationship),
-      switchMap(({ relationship }) =>
-        this.stateManagementService.editRelationship(
-          relationship
-        ).pipe(
-          switchMap(
-            (editedRelationship: Relationship) => [
-              StateActions.editRelationshipSuccess({
-                relationship: editedRelationship
-              }),
-              ToastActions.showToast({
-                message: 'Relationship edited',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              StateActions.editRelationshipFailure({ error }),
-              ToastActions.showToast({
-                message: 'Relationship editing failed',
-                toastType: 'error'
-              })
-            ]
-          )
-        )
-      )
-    );
-  });
-
   public editState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.editState),
@@ -249,7 +184,7 @@ export class StateEffects {
 
         return [];
       })
-    )
+    );
   });
 
   public navStatesHistory = createEffect(() => {

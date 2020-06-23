@@ -1,8 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
 import {
-  Relationship,
-  RelationshipMap,
   State,
   StateMap,
   StateEnumeration,
@@ -12,36 +10,6 @@ import {
 export const createState = createAction(
   '[state] createState',
   props<{ collectionId: number, state: State, stateEnumerations: StateEnumeration[] }>()
-);
-
-export const createRelationship = createAction(
-  '[state] createRelationship',
-  props<{ relationship: Relationship }>()
-);
-
-export const createRelationshipFailure = createAction(
-  '[state] createRelationshipFailure',
-  props<{ error: Error }>()
-);
-
-export const createRelationshipSuccess = createAction(
-  '[state] createRelationshipSuccess',
-  props<{ relationship: Relationship }>()
-);
-
-export const editRelationship = createAction(
-  '[state] editRelationship',
-  props<{ relationship: Relationship }>()
-);
-
-export const editRelationshipFailure = createAction(
-  '[state] editRelationshipFailure',
-  props<{ error: Error }>()
-);
-
-export const editRelationshipSuccess = createAction(
-  '[state] editRelationshipSuccess',
-  props<{ relationship: Relationship }>()
 );
 
 export const createStateFailure = createAction(
@@ -76,16 +44,6 @@ export const editStateSuccess = createAction(
 
 export const fetchIdentifiersFailure = createAction(
   '[state] fetchIdentifiersFailure',
-  props<{ error: Error }>()
-);
-
-export const fetchRelationshipsFailure = createAction(
-  '[state] fetchRelationshipsFailure',
-  props<{ error: Error }>()
-);
-
-export const fetchRelationshipHistoryFailure = createAction(
-  '[state] fetchRelationshipHistoryFailure',
   props<{ error: Error }>()
 );
 
@@ -124,16 +82,6 @@ export const setStateIdentifiers = createAction(
   props<{ stateIdentifiers: string[] }>()
 );
 
-export const setRelationships = createAction(
-  '[state] setRelationships',
-  props<{ relationships: RelationshipMap }>()
-);
-
-export const setRelationshipHistory = createAction(
-  '[state] setRelationshipHistory',
-  props<{ relationshipHistory: RelationshipMap }>()
-);
-
 export const setStateEnumerations = createAction(
   '[state] setStateEnumerations',
   props<{ stateEnumerationMap: StateEnumerationMap }>()
@@ -147,11 +95,6 @@ export const setStateHistory = createAction(
 export const setStates = createAction(
   '[state] setStates',
   props<{ stateMap: StateMap }>()
-);
-
-export const setSelectedRelationship = createAction(
-  '[state] setSelectedRelationship',
-  props<{ relationship: Relationship }>()
 );
 
 export const setSelectedState = createAction(

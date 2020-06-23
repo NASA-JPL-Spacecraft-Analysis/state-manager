@@ -9,6 +9,7 @@ import {
   EventReducer,
   InformationTypesReducer,
   LayoutReducer,
+  RelationshipReducer,
   StateReducer,
 } from './reducers';
 import { ConfigState } from './config';
@@ -16,9 +17,10 @@ import { ConfigState } from './config';
 export interface AppState {
   collection: CollectionReducer.CollectionState;
   config: ConfigState;
-  event: EventReducer.EventState;
+  events: EventReducer.EventState;
   informationTypes: InformationTypesReducer.InformationTypesState;
   layout: LayoutReducer.LayoutState;
+  relationships: RelationshipReducer.RelationshipState;
   router: fromRouter.RouterReducerState;
   states: StateReducer.StateState;
 }
@@ -29,9 +31,10 @@ export const ROOT_REDUCERS = new InjectionToken<
   factory: () => ({
     collection: CollectionReducer.reducer,
     config: ConfigReducer.reducer,
-    event: EventReducer.reducer,
+    events: EventReducer.reducer,
     informationTypes: InformationTypesReducer.reducer,
     layout: LayoutReducer.reducer,
+    relationships: RelationshipReducer.reducer,
     router: fromRouter.routerReducer,
     states: StateReducer.reducer
   })

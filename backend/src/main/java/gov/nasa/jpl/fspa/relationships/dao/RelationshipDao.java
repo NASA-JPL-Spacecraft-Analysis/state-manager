@@ -6,11 +6,9 @@ import gov.nasa.jpl.fspa.model.RelationshipHistory;
 import java.util.List;
 
 public interface RelationshipDao {
-    List<Relationship> getRelationships();
+    List<Relationship> getRelationships(int collectionId);
 
-    List<RelationshipHistory> getRelationshipHistory();
+    List<RelationshipHistory> getRelationshipHistory(int collectionId);
 
-    Relationship modifyRelationship(Relationship relationship);
-
-    void saveRelationshipList(List<Relationship> relationshipList);
+    Relationship modifyRelationship(int collectionId, Relationship relationship);
 }

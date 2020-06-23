@@ -49,7 +49,7 @@ export const uploadInformationTypesSuccess = createAction(
 
 export const uploadRelationships = createAction(
   '[file upload] uploadRelationships',
-  props<{ file: File, fileType: string }>()
+  props<{ file: File, fileType: string, collectionId: number }>()
 );
 
 export const uploadRelationshipsFailure = createAction(
