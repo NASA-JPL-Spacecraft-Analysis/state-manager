@@ -117,7 +117,7 @@ JSON:
 CSV:
 ```
 displayName,description,subjectType,subjectIdentifier,targetType,targetIdentifier
-Test upload relationship 1,test json relationship 1,COMMAND,TEST_COMMAND,State,STATE_IDENTIFIER_1
+Test upload relationship 1,test json relationship 1,Command,TEST_COMMAND,State,STATE_IDENTIFIER_1
 ```
 
 JSON:
@@ -137,7 +137,7 @@ JSON:
 ]
 ```
 
-### State Variable Upload
+### State Upload
 
 CSV:
 ```

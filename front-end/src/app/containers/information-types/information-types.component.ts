@@ -6,7 +6,7 @@ import { SubSink } from 'subsink';
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
 import { InformationTypesMap } from 'src/app/models';
-import { getInformationTypes } from 'src/app/selectors';
+import { getInformationTypes, getSelectedCollectionId } from 'src/app/selectors';
 import { InformationTypesTableModule } from 'src/app/components/information-types-table/information-types-table.component';
 import { FileUploadActions, ToastActions } from 'src/app/actions';
 
@@ -19,6 +19,7 @@ import { FileUploadActions, ToastActions } from 'src/app/actions';
 export class InformationTypesComponent implements OnDestroy {
   public informationTypesMap: InformationTypesMap;
 
+  private collectionId: number;
   private subscriptions = new SubSink();
 
   constructor(
@@ -26,6 +27,10 @@ export class InformationTypesComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
+      this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
+        this.collectionId = collectionId;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getInformationTypes)).subscribe(informationTypesMap => {
         this.informationTypesMap = informationTypesMap;
         this.changeDetectorRef.markForCheck();
@@ -44,7 +49,8 @@ export class InformationTypesComponent implements OnDestroy {
     if (file && (fileType === 'csv' || fileType === 'json')) {
       this.store.dispatch(FileUploadActions.uploadInformationTypes({
         file,
-        fileType
+        fileType,
+        collectionId: this.collectionId
       }));
     } else {
       this.store.dispatch(ToastActions.showToast({

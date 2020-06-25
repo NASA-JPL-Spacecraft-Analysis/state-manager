@@ -62,10 +62,10 @@ public class CsvParseServiceImpl implements FileParseService {
     }
 
     @Override
-    public List<StateVariable> parseStateVariables(InputStream inputStream) {
-        List<StateVariable> parsedStateVariables = new ArrayList<>();
+    public List<State> parseStates(InputStream inputStream) {
+        List<State> parsedStateList = new ArrayList<>();
 
-        return parseCsv(inputStream, parsedStateVariables, StateVariable.class);
+        return parseCsv(inputStream, parsedStateList, State.class);
     }
 
     /**

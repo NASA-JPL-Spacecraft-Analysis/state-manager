@@ -16,5 +16,5 @@ public interface FileParseService {
 
     List<RelationshipUpload> parseRelationships(InputStream inputStream);
 
-    List<StateVariable> parseStateVariables(InputStream inputStream);
+    List<State> parseStates(InputStream inputStream);
 }

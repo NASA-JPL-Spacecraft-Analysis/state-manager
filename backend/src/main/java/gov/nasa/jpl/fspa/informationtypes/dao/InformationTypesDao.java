@@ -5,7 +5,7 @@ import gov.nasa.jpl.fspa.model.InformationTypes;
 import java.util.List;
 
 public interface InformationTypesDao {
-    List<InformationTypes> getInformationTypes();
+    List<InformationTypes> getInformationTypes(int collectionId);
 
-    void saveInformationTypes(List<InformationTypes> informationTypesList);
+    InformationTypes saveInformationTypes(InformationTypes informationTypes);
 }

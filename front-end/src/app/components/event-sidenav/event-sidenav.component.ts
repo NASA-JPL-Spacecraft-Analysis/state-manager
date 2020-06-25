@@ -15,6 +15,7 @@ import { Event } from 'src/app/models';
 })
 export class EventSidenavComponent implements OnChanges {
   @Input() public event: Event;
+  @Input() public selectedCollectionId: number;
 
   @Output() public modifyEvent: EventEmitter<Event>;
 
@@ -34,6 +35,7 @@ export class EventSidenavComponent implements OnChanges {
     if (this.event === undefined) {
       this.newEvent = {
         id: undefined,
+        collectionId: this.selectedCollectionId,
         identifier: '',
         displayName: '',
         description: '',
@@ -48,6 +50,7 @@ export class EventSidenavComponent implements OnChanges {
 
     this.form = new FormGroup({
       id: new FormControl(this.newEvent.id),
+      collectionId: new FormControl(this.newEvent.collectionId),
       identifier: new FormControl(this.newEvent.identifier),
       displayName: new FormControl(this.newEvent.displayName),
       description: new FormControl(this.newEvent.description),

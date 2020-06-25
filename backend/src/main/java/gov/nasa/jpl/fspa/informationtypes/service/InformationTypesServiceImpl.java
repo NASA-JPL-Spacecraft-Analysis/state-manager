@@ -36,27 +36,13 @@ public class InformationTypesServiceImpl implements InformationTypesService {
     }
 
     @Override
-    public Map<InformationTypesEnum, Map<Integer, InformationTypes>> getInformationTypes() {
-        List<InformationTypes> informationTypesList = informationTypesDao.getInformationTypes();
-        Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap = new HashMap<>();
-
-        if (informationTypesList.size() > 0) {
-            // Populate our map with each type of Information Type.
-            for (InformationTypesEnum informationTypesEnumValue: InformationTypesEnum.values()) {
-                informationTypesMap.put(informationTypesEnumValue, new HashMap<Integer, InformationTypes>());
-            }
-
-            for (InformationTypes informationTypes: informationTypesList) {
-                informationTypesMap.get(informationTypes.getType()).put(informationTypes.getId(), informationTypes);
-            }
-        }
-
-        return informationTypesMap;
+    public Map<InformationTypesEnum, Map<Integer, InformationTypes>> getInformationTypes(int collectionId) {
+        return mapInformationTypes(informationTypesDao.getInformationTypes(collectionId));
     }
 
     @Override
-    public Map<InformationTypesEnum, Map<String, InformationTypes>> getInformationTypesByIdentifier() {
-        List<InformationTypes> informationTypesList = informationTypesDao.getInformationTypes();
+    public Map<InformationTypesEnum, Map<String, InformationTypes>> getInformationTypesByIdentifier(int collectionId) {
+        List<InformationTypes> informationTypesList = informationTypesDao.getInformationTypes(collectionId);
         Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesMap = new HashMap<>();
 
         if (informationTypesList.size() > 0) {
@@ -74,9 +60,34 @@ public class InformationTypesServiceImpl implements InformationTypesService {
     }
 
     @Override
-    public Map<InformationTypesEnum, Map<Integer, InformationTypes>> saveUploadedInformationTypes(List<InformationTypes> informationTypesList) {
-        informationTypesDao.saveInformationTypes(informationTypesList);
+    public Map<InformationTypesEnum, Map<Integer, InformationTypes>> saveUploadedInformationTypes(List<InformationTypes> informationTypesList, int collectionId) {
+        for (InformationTypes informationTypes: informationTypesList) {
+            informationTypes.setCollectionId(collectionId);
 
-        return getInformationTypes();
+            saveInformationTypes(informationTypes);
+        }
+
+        return getInformationTypes(collectionId);
+    }
+
+    private Map<InformationTypesEnum, Map<Integer, InformationTypes>> mapInformationTypes(List<InformationTypes> informationTypesList) {
+        Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap = new HashMap<>();
+
+        if (informationTypesList.size() > 0) {
+            // Populate our map with each type of Information Type.
+            for (InformationTypesEnum informationTypesEnumValue: InformationTypesEnum.values()) {
+                informationTypesMap.put(informationTypesEnumValue, new HashMap<Integer, InformationTypes>());
+            }
+
+            for (InformationTypes informationTypes: informationTypesList) {
+                informationTypesMap.get(informationTypes.getType()).put(informationTypes.getId(), informationTypes);
+            }
+        }
+
+        return informationTypesMap;
+    }
+
+    private InformationTypes saveInformationTypes(InformationTypes informationTypes) {
+        return informationTypesDao.saveInformationTypes(informationTypes);
     }
 }

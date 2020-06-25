@@ -1,6 +1,6 @@
 import { RelationshipMap, InformationTypeEnum } from '../models';
 
-export const relationshipHistoryMap: RelationshipMap = {
+export const mockRelationshipHistoryMap: RelationshipMap = {
   [1]: {
     id: 1,
     relationshipId: 1,
@@ -14,7 +14,7 @@ export const relationshipHistoryMap: RelationshipMap = {
   }
 };
 
-export const relationshipMap: RelationshipMap = {
+export const mockRelationshipMap: RelationshipMap = {
   [1]: {
     id: 1,
     displayName: 'Test relationship name',

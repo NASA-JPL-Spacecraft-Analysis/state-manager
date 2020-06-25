@@ -76,3 +76,7 @@ table {
 .file-upload-input {
   display: none;
 }
+
+.hidden {
+  display: none !important;
+}

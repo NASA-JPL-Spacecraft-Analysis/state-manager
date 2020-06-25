@@ -14,7 +14,7 @@ public class EnumerationServiceImpl implements EnumerationService {
         for (StateEnumerationUpload stateEnumerationUpload: stateEnumerationUploadList) {
             StateEnumeration enumeration = new StateEnumeration();
 
-            enumeration.setStateVariableId(identifierToVariableIdMap.get(stateEnumerationUpload.getStateIdentifier()));
+            enumeration.setStateId(identifierToVariableIdMap.get(stateEnumerationUpload.getStateIdentifier()));
             enumeration.setLabel(stateEnumerationUpload.getLabel());
             enumeration.setValue(stateEnumerationUpload.getValue());
 

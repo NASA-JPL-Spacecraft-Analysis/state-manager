@@ -7,7 +7,7 @@ import { MaterialModule } from 'src/app/material';
 import {
   InformationTypes,
   InformationTypeEnum,
-  StateVariableMap,
+  StateMap,
   Relationship,
   InformationTypesMap,
   StringTMap,
@@ -26,7 +26,7 @@ export class RelationshipTypePickerComponent implements OnChanges {
   @Input() public isSubject: boolean;
   @Input() public parentFormGroup: FormGroup;
   @Input() public relationship: Relationship;
-  @Input() public stateVariableMap: StateVariableMap;
+  @Input() public stateMap: StateMap;
   @Input() public type: string;
 
   public currentTypeMap: StringTMap<InformationTypes>;

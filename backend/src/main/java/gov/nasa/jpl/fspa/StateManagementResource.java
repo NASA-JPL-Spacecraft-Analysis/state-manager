@@ -1,5 +1,7 @@
 package gov.nasa.jpl.fspa;
 
+import gov.nasa.jpl.fspa.collections.service.CollectionService;
+import gov.nasa.jpl.fspa.collections.service.CollectionServiceImpl;
 import gov.nasa.jpl.fspa.events.service.EventService;
 import gov.nasa.jpl.fspa.events.service.EventServiceImpl;
 import gov.nasa.jpl.fspa.informationtypes.service.InformationTypesService;
@@ -9,7 +11,9 @@ import gov.nasa.jpl.fspa.relationships.service.RelationshipService;
 import gov.nasa.jpl.fspa.relationships.service.RelationshipServiceImpl;
 import gov.nasa.jpl.fspa.service.*;
 
-import gov.nasa.jpl.fspa.util.StateVariableConstants;
+import gov.nasa.jpl.fspa.states.service.StateService;
+import gov.nasa.jpl.fspa.states.service.StateServiceImpl;
+import gov.nasa.jpl.fspa.util.StateManagementConstants;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.ws.rs.*;
@@ -22,31 +26,46 @@ import java.util.Map;
 
 @Path("v1/")
 public class StateManagementResource {
+    private final CollectionService collectionService;
     private final CsvParseServiceImpl csvParseServiceImpl;
     private final EnumerationService enumerationService;
     private final EventService eventService;
     private final InformationTypesService informationTypesService;
     private final JsonParseServiceImpl jsonParseServiceImpl;
     private final RelationshipService relationshipService;
-    private final StateVariableService stateVariableService;
+    private final StateService stateService;
     private final ValidationService validationService;
 
     public StateManagementResource() {
+        collectionService = new CollectionServiceImpl();
         csvParseServiceImpl = new CsvParseServiceImpl();
         enumerationService = new EnumerationServiceImpl();
         eventService = new EventServiceImpl();
         informationTypesService = new InformationTypesServiceImpl();
         jsonParseServiceImpl = new JsonParseServiceImpl();
         relationshipService = new RelationshipServiceImpl();
-        stateVariableService = new StateVariableServiceImpl();
+        stateService = new StateServiceImpl();
         validationService = new ValidationServiceImpl();
     }
 
     @GET
-    @Path("/event-history-map")
+    @Path("/collections")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventHistoryMap() {
-        Map<Integer, EventHistory> eventHistoryMap = eventService.getEventHistoryMap();
+    public Response getCollections() {
+        Map<Integer, Collection> collectionMap = collectionService.getCollections();
+
+        if (collectionMap.keySet().isEmpty()) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(collectionMap).build();
+    }
+
+    @GET
+    @Path("/collection/{collectionId}/event-history-map")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventHistoryMap(@PathParam("collectionId") Integer collectionId) {
+        Map<Integer, EventHistory> eventHistoryMap = eventService.getEventHistoryMap(collectionId);
 
         if (eventHistoryMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -56,10 +75,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/event-map")
+    @Path("/collection/{collectionId}/event-map")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventMap() {
-        Map<Integer, Event> eventMap = eventService.getEventMap();
+    public Response getEventMap(@PathParam("collectionId") int collectionId) {
+        Map<Integer, Event> eventMap = eventService.getEventMap(collectionId);
 
         if (eventMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -69,10 +88,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/information-types")
+    @Path("/collection/{collectionId}/information-types")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInformationTypes() {
-        Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap = informationTypesService.getInformationTypes();
+    public Response getInformationTypes(@PathParam("collectionId") int collectionId) {
+        Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap = informationTypesService.getInformationTypes(collectionId);
 
         if (informationTypesMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -82,10 +101,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/relationships")
+    @Path("/collection/{collectionId}/relationships")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRelationships() {
-        Map<Integer, Relationship> relationshipMap = relationshipService.getRelationships();
+    public Response getRelationships(@PathParam("collectionId") int collectionId) {
+        Map<Integer, Relationship> relationshipMap = relationshipService.getRelationships(collectionId);
 
         if (relationshipMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -95,10 +114,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/relationship-history")
+    @Path("/collection/{collectionId}/relationship-history")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRelationshipHistory() {
-        Map<Integer, RelationshipHistory> relationshipHistoryMap = relationshipService.getRelationshipHistory();
+    public Response getRelationshipHistory(@PathParam("collectionId") int collectionId) {
+        Map<Integer, RelationshipHistory> relationshipHistoryMap = relationshipService.getRelationshipHistory(collectionId);
 
         if (relationshipHistoryMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -108,10 +127,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/state-enumerations")
+    @Path("/collection/{collectionId}/state-enumerations")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStateEnumerations() {
-        Map<Integer, List<StateEnumeration>> stateEnumerationMap = stateVariableService.getStateEnumerations();
+    public Response getStateEnumerations(@PathParam("collectionId") int collectionId) {
+        Map<Integer, List<StateEnumeration>> stateEnumerationMap = stateService.getStateEnumerations(collectionId);
 
         if (stateEnumerationMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -121,10 +140,10 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/state-history")
+    @Path("/collection/{collectionId}/state-history")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStateHistory() {
-        Map<Integer, StateHistory> stateHistoryMap = stateVariableService.getStateHistory();
+    public Response getStateHistory(@PathParam("collectionId") int collectionId) {
+        Map<Integer, StateHistory> stateHistoryMap = stateService.getStateHistory(collectionId);
 
         if (stateHistoryMap.keySet().size() == 0) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -134,45 +153,190 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/state-variables")
+    @Path("/collection/{collectionId}/state-identifiers")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStateVariables() {
-        Map<Integer, StateVariable> stateVariableMap = stateVariableService.getStateVariables();
+    public Response getIdentifiers(@PathParam("collectionId") int collectionId) {
+        List<String> stateIdentifierList = stateService.getStateIdentifiers(collectionId);
 
-        if (stateVariableMap.keySet().size() == 0) {
+        if (stateIdentifierList.isEmpty()) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.OK).entity(stateVariableMap).build();
+        return Response.status(Response.Status.OK).entity(stateIdentifierList).build();
     }
 
     @GET
-    @Path("/state-variable-csv")
-    @Produces({ "text/csv" })
-    public Response getStateVariablesCsv() {
-        String stateVariableCsv = stateVariableService.getStateVariablesAsCsv();
+    @Path("/collection/{collectionId}/states")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStates(@PathParam("collectionId") int collectionId) {
+        Map<Integer, State> stateMap = stateService.getStateMap(collectionId);
 
-        if (stateVariableCsv.equals("")) {
+        if (stateMap.keySet().size() == 0) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(stateMap).build();
+    }
+
+    @GET
+    @Path("/collection/{collectionId}/states-csv")
+    @Produces({ "text/csv" })
+    public Response getStatesCsv(@PathParam("collectionId") int collectionId) {
+        String statesCsv = stateService.getStatesAsCsv(collectionId);
+
+        if (statesCsv.equals("")) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
         return Response.status(Response.Status.OK)
-                .entity(getOutputAsCsv(stateVariableCsv.getBytes()))
-                .header("Content-Disposition", "attachment;filename=StateVariables.csv")
+                .entity(getOutputAsCsv(statesCsv.getBytes()))
+                .header("Content-Disposition", "attachment;filename=States.csv")
                 .build();
     }
 
-    @GET
-    @Path("/state-identifiers")
+    @POST
+    @Path("/collection/{collectionId}/enumerations-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getIdentifiers() {
-        List<String> identifiers = stateVariableService.getIdentifiers();
+    public Response postEnumerationsCsv(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedStateEnumerations(collectionId, csvParseServiceImpl.parseStateEnumerations(inputStream));
+    }
 
-        if (identifiers.isEmpty()) {
+    @POST
+    @Path("/collection/{collectionId}/enumerations-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEnumerationsJson(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedStateEnumerations(collectionId, jsonParseServiceImpl.parseStateEnumerations(inputStream));
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/events-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEventsCsv(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(csvParseServiceImpl.parseEvents(inputStream), collectionId);
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/events-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postEventsJson(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedEvents(jsonParseServiceImpl.parseEvents(inputStream), collectionId);
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/information-types-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream, @PathParam("collectionId") int collectionId) {
+        return saveParsedInformationTypes(csvParseServiceImpl.parseInformationTypes(inputStream), collectionId);
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/information-types-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postInformationTypesJson(@FormDataParam("file") InputStream inputStream, @PathParam("collectionId") int collectionId) {
+        return saveParsedInformationTypes(jsonParseServiceImpl.parseInformationTypes(inputStream), collectionId);
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/relationship")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationship(@PathParam("collectionId") int collectionId, Relationship relationship) {
+        Relationship createdRelationship = relationshipService.modifyRelationship(collectionId, relationship);
+
+        if (createdRelationship == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.OK).entity(identifiers).build();
+        return Response.status(Response.Status.CREATED).entity(createdRelationship).build();
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/relationships-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationshipsCsv(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedRelationships(collectionId, csvParseServiceImpl.parseRelationships(inputStream));
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/relationships-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postRelationshipsJson(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedRelationships(collectionId, jsonParseServiceImpl.parseRelationships(inputStream));
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/state")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postState(@PathParam("collectionId") int collectionId, State state) {
+        State createdState = stateService.modifyState(collectionId, state);
+
+        if (createdState == null) {
+            return Response.status(Response.Status.CONFLICT).entity(StateManagementConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(createdState).build();
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/states-csv")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postStatesCsv(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedStates(collectionId, csvParseServiceImpl.parseStates(inputStream));
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/states-json")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postStatesJson(@PathParam("collectionId") int collectionId, @FormDataParam("file") InputStream inputStream) {
+        return saveParsedStates(collectionId, jsonParseServiceImpl.parseStates(inputStream));
+    }
+
+    @POST
+    @Path("/collection/{collectionId}/state-enumerations/{stateId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postStateEnumerations(@PathParam("collectionId") int collectionId, @PathParam("stateId") int stateId, List<StateEnumeration> stateEnumerations) {
+        List<StateEnumeration> savedStateEnumerations = stateService.saveStateEnumerations(collectionId, stateId, stateEnumerations);
+
+        if (savedStateEnumerations == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(savedStateEnumerations).build();
+    }
+
+    @PUT
+    @Path("/collection/{collectionId}/state")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putState(@PathParam("collectionId") int collectionId, State state) {
+        State editedState = stateService.modifyState(collectionId, state);
+
+        if (editedState == null) {
+            return Response.status(Response.Status.CONFLICT).entity(StateManagementConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(editedState).build();
+    }
+
+    @PUT
+    @Path("/collection/{collectionId}/relationship")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putRelationship(@PathParam("collectionId") int collectionId, Relationship relationship) {
+        Relationship editedRelationship = relationshipService.modifyRelationship(collectionId, relationship);
+
+        if (editedRelationship == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(editedRelationship).build();
     }
 
     @POST
@@ -188,149 +352,17 @@ public class StateManagementResource {
         return Response.status(Response.Status.CREATED).entity(createdEvent).build();
     }
 
-    @POST
-    @Path("/relationship")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postRelationship(Relationship relationship) {
-        Relationship createdRelationship = relationshipService.modifyRelationship(relationship);
-
-        if (createdRelationship == null) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.status(Response.Status.CREATED).entity(createdRelationship).build();
-    }
-
-    @POST
-    @Path("/state-enumerations/{stateVariableId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postStateEnumerations(@PathParam("stateVariableId") int stateVariableId, List<StateEnumeration> stateEnumerations) {
-        List<StateEnumeration> savedStateEnumerations = stateVariableService.saveStateEnumerations(stateVariableId, stateEnumerations);
-
-        if (savedStateEnumerations == null) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.status(Response.Status.CREATED).entity(savedStateEnumerations).build();
-    }
-
-    @POST
-    @Path("/state-variable")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postStateVariable(StateVariable stateVariable) {
-        StateVariable createdStateVariable = stateVariableService.modifyStateVariable(stateVariable);
-
-        if (createdStateVariable == null) {
-            return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
-        }
-
-        return Response.status(Response.Status.CREATED).entity(createdStateVariable).build();
-    }
-
-    @POST
-    @Path("/information-types-csv")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postInformationTypesCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedInformationTypes(csvParseServiceImpl.parseInformationTypes(inputStream));
-    }
-
-    @POST
-    @Path("/information-types-json")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postInformationTypesJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedInformationTypes(jsonParseServiceImpl.parseInformationTypes(inputStream));
-    }
-
-    @POST
-    @Path("/enumerations-csv")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postEnumerationsCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedStateEnumerations(csvParseServiceImpl.parseStateEnumerations(inputStream));
-    }
-
-    @POST
-    @Path("/enumerations-json")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postEnumerationsJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedStateEnumerations(jsonParseServiceImpl.parseStateEnumerations(inputStream));
-    }
-
-    @POST
-    @Path("/events-csv")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postEventsCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedEvents(csvParseServiceImpl.parseEvents(inputStream));
-    }
-
-    @POST
-    @Path("/events-json")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postEventsJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedEvents(jsonParseServiceImpl.parseEvents(inputStream));
-    }
-
-    @POST
-    @Path("/relationships-csv")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postRelationshipsCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedRelationships(csvParseServiceImpl.parseRelationships(inputStream));
-    }
-
-    @POST
-    @Path("/relationships-json")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postRelationshipsJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedRelationships(jsonParseServiceImpl.parseRelationships(inputStream));
-    }
-
-    @POST
-    @Path("/state-variables-csv")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postStateVariablesCsv(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedStateVariables(csvParseServiceImpl.parseStateVariables(inputStream));
-    }
-
-    @POST
-    @Path("/state-variables-json")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response postStateVariablesJson(@FormDataParam("file") InputStream inputStream) {
-        return saveParsedStateVariables(jsonParseServiceImpl.parseStateVariables(inputStream));
-    }
-
     @PUT
-    @Path("/relationship")
+    @Path("/event")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response putRelationship(Relationship relationship) {
-        Relationship editedRelationship = relationshipService.modifyRelationship(relationship);
+    public Response editEvent(Event event) {
+        Event editedEvent = eventService.modifyEvent(event);
 
-        if (editedRelationship == null) {
+        if (editedEvent == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.status(Response.Status.CREATED).entity(editedRelationship).build();
-    }
-
-    @PUT
-    @Path("/state-variable")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response putStateVariable(StateVariable stateVariable) {
-        StateVariable editedStateVariable = stateVariableService.modifyStateVariable(stateVariable);
-
-        if (editedStateVariable == null) {
-            return Response.status(Response.Status.CONFLICT).entity(StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE).build();
-        }
-
-        return Response.status(Response.Status.CREATED).entity(editedStateVariable).build();
+        return Response.status(Response.Status.CREATED).entity(editedEvent).build();
     }
 
     /**
@@ -348,18 +380,18 @@ public class StateManagementResource {
         };
     }
 
-    private Response saveParsedInformationTypes(List<InformationTypesUpload> parsedInformationTypesUploadList) {
+    private Response saveParsedInformationTypes(List<InformationTypesUpload> parsedInformationTypesUploadList, int collectionId) {
         if (parsedInformationTypesUploadList.size() > 0) {
             List<String> invalidInformationTypesList = validationService.validateInformationTypes(parsedInformationTypesUploadList);
 
             if (invalidInformationTypesList.size() == 0) {
                 Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
-                        informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList));
+                        informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList), collectionId);
 
                 return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
             } else {
                 return Response.status(Response.Status.CONFLICT).entity(
-                        StateVariableConstants.INVALID_INFORMATION_TYPES + invalidInformationTypesList.toString()
+                        StateManagementConstants.INVALID_INFORMATION_TYPES + invalidInformationTypesList.toString()
                 ).build();
             }
         }
@@ -367,22 +399,22 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedStateEnumerations(List<StateEnumerationUpload> parsedStateEnumerationUploads) {
+    private Response saveParsedStateEnumerations(int collectionId, List<StateEnumerationUpload> parsedStateEnumerationUploads) {
         if (parsedStateEnumerationUploads.size() > 0) {
-            Map<String, Integer> identifierToVariableIdMap = stateVariableService.getMappedIdentifiers();
+            Map<String, Integer> identifierToStateIdMap = stateService.getMappedIdentifiers(collectionId);
             // A list to hold enumerations not tied to a valid identifier
-            List<String> invalidIdentifiers = enumerationService.invalidIdentifierCheck(parsedStateEnumerationUploads, identifierToVariableIdMap);
+            List<String> invalidIdentifiers = enumerationService.invalidIdentifierCheck(parsedStateEnumerationUploads, identifierToStateIdMap);
 
             if (invalidIdentifiers.size() == 0) {
-                List<StateEnumeration> parsedEnumerations = enumerationService.convertEnumerationCsvToEnumeration(parsedStateEnumerationUploads, identifierToVariableIdMap);
-                Map<Integer, List<StateEnumeration>> mappedEnumerations = stateVariableService.saveUploadedEnumerations(parsedEnumerations);
+                List<StateEnumeration> parsedEnumerations = enumerationService.convertEnumerationCsvToEnumeration(parsedStateEnumerationUploads, identifierToStateIdMap);
+                Map<Integer, List<StateEnumeration>> mappedEnumerations = stateService.saveUploadedEnumerations(parsedEnumerations);
 
                 if (mappedEnumerations.keySet().size() > 0) {
                     return Response.status(Response.Status.CREATED).entity(mappedEnumerations).build();
                 }
             } else {
                 return Response.status(Response.Status.CONFLICT).entity(
-                        StateVariableConstants.INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS + invalidIdentifiers.toString()
+                        StateManagementConstants.INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS + invalidIdentifiers.toString()
                 ).build();
             }
         }
@@ -390,9 +422,9 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedEvents(List<Event> parsedEventList) {
+    private Response saveParsedEvents(List<Event> parsedEventList, int collectionId) {
         if (parsedEventList.size() > 0) {
-            Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList);
+            Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList, collectionId);
 
             if (eventMap.keySet().size() > 0) {
                 return Response.status(Response.Status.CREATED).entity(eventMap).build();
@@ -402,23 +434,23 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedRelationships(List<RelationshipUpload> parsedRelationshipUploadList) {
+    private Response saveParsedRelationships(int collectionId, List<RelationshipUpload> parsedRelationshipUploadList) {
         if (parsedRelationshipUploadList.size() > 0) {
             Map<String, Integer> eventIdentifierMap = eventService.getMappedIdentifiers();
-            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier();
-            Map<String, Integer> stateVariableIdentifierMap = stateVariableService.getMappedIdentifiers();
+            Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier(collectionId);
+            Map<String, Integer> stateIdentifierMap = stateService.getMappedIdentifiers(collectionId);
 
             // If we have invalid relationships, return an error.
-            if (validationService.hasInvalidRelationships(eventIdentifierMap, parsedRelationshipUploadList, stateVariableIdentifierMap, informationTypesEnumMap)) {
+            if (validationService.hasInvalidRelationships(eventIdentifierMap, parsedRelationshipUploadList, stateIdentifierMap, informationTypesEnumMap)) {
                 return Response.status(Response.Status.CONFLICT).entity(
-                        StateVariableConstants.INVALID_RELATIONSHIPS
+                        StateManagementConstants.INVALID_RELATIONSHIPS
                 ).build();
             } else {
                 List<Relationship> parsedRelationships = relationshipService.convertRelationshipUploads(
-                        parsedRelationshipUploadList, stateVariableIdentifierMap, eventIdentifierMap, informationTypesEnumMap);
+                        parsedRelationshipUploadList, stateIdentifierMap, eventIdentifierMap, informationTypesEnumMap);
 
                 if (parsedRelationships.size() > 0) {
-                    return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(parsedRelationships)).build();
+                    return Response.status(Response.Status.CREATED).entity(relationshipService.saveRelationships(collectionId, parsedRelationships)).build();
                 }
             }
         }
@@ -426,23 +458,23 @@ public class StateManagementResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private Response saveParsedStateVariables(List<StateVariable> parsedStateVariables) {
-        if (parsedStateVariables.size() > 0) {
-            if (validationService.hasInvalidStateVariables(parsedStateVariables)) {
+    private Response saveParsedStates(int collectionId, List<State> parsedStateList) {
+        if (parsedStateList.size() > 0) {
+            if (validationService.hasInvalidStates(parsedStateList)) {
                 return Response.status(Response.Status.CONFLICT).entity(
-                        StateVariableConstants.INVALID_STATE_VARIABLES
+                        StateManagementConstants.INVALID_STATE_VARIABLES
                 ).build();
             }
 
-            List<String> duplicateIdentifiers = validationService.getDuplicateIdentifiers(parsedStateVariables, stateVariableService.getMappedIdentifiers());
+            List<String> duplicateIdentifiers = validationService.getDuplicateIdentifiers(parsedStateList, stateService.getMappedIdentifiers(collectionId));
 
             if (duplicateIdentifiers.size() > 0) {
                 return Response.status(Response.Status.CONFLICT).entity(
-                        StateVariableConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
+                        StateManagementConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
                 ).build();
             }
 
-            return Response.status(Response.Status.CREATED).entity(stateVariableService.saveStateVariables(parsedStateVariables)).build();
+            return Response.status(Response.Status.CREATED).entity(stateService.saveStates(collectionId, parsedStateList)).build();
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();

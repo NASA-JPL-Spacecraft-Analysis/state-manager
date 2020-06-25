@@ -4,10 +4,10 @@ import { Store, select } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
-import { StateVariableMap } from 'src/app/models';
+import { StateMap } from 'src/app/models';
 import { AppState } from 'src/app/app-store';
 import { getStateHistory } from 'src/app/selectors';
-import { StateVariableTableModule } from 'src/app/components';
+import { StateTableModule } from 'src/app/components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +16,7 @@ import { StateVariableTableModule } from 'src/app/components';
   templateUrl: 'state-history.component.html'
 })
 export class StateHistoryComponent implements OnDestroy {
-  public stateHistoryMap: StateVariableMap;
+  public stateHistoryMap: StateMap;
 
   private subscriptions = new SubSink();
 
@@ -47,7 +47,7 @@ export class StateHistoryComponent implements OnDestroy {
   imports: [
     CommonModule,
     MaterialModule,
-    StateVariableTableModule
+    StateTableModule
   ]
 })
 export class StateHistoryModule {}

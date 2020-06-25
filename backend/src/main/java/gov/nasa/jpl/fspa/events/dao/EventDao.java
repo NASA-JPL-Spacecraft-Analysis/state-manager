@@ -7,9 +7,9 @@ import gov.nasa.jpl.fspa.model.Identifier;
 import java.util.List;
 
 public interface EventDao {
-    List<EventHistory> getEventHistoryList();
+    List<EventHistory> getEventHistoryList(Integer collectionId);
 
-    List<Event> getEventList();
+    List<Event> getEvents(Integer collectionId);
 
     List<Identifier> getIdentifiers();
 

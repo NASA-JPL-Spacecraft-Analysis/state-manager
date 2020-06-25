@@ -1,0 +1,40 @@
+<mat-toolbar class="states-toolbar">
+  STATES 
+
+  <div>
+    <button mat-button routerLink="/state-history">
+      History 
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="onModifyState()">
+      Create New State 
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="statesFileUpload.click()">
+      Upload States
+    </button>
+    <input #statesFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, statesUploadableType)" />
+
+    <button mat-raised-button class="gray-button" (click)="enumerationsFileUpload.click()">
+      Upload Enumerations 
+    </button>
+    <input #enumerationsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, enumerationsUploadableType)" />
+  </div>
+</mat-toolbar>
+
+<div class="states-content-container">
+  <div class="states-content">
+    <state-table
+      [stateMap]="stateMap"
+      (stateSelected)="onModifyState($event)">
+    </state-table>
+  </div>
+
+  <div class="sidenav" *ngIf="showSidenav">
+    <state-sidenav
+      [state]="state"
+      (modifyState)="onSidenavOutput($event)"
+      (modifyEnumerations)="onEnumerationsOutput($event)">
+    </state-sidenav>
+  </div>
+</div>

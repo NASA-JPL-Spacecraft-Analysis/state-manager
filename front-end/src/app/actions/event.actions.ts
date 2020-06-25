@@ -17,19 +17,34 @@ export const createEventSuccess = createAction(
   props<{ event: Event }>()
 );
 
+export const editEvent = createAction(
+  '[event] editEvent',
+  props<{ event: Event }>()
+);
+
+export const editEventFailure = createAction(
+  '[event] editEventFailure',
+  props<{ error: Error }>()
+);
+
+export const editEventSuccess = createAction(
+  '[event] editEventSuccess',
+  props<{ event: Event }>()
+);
+
 export const fetchEventMapFailure = createAction(
   '[event] fetchEventMapFailure',
+  props<{ error: Error }>()
+);
+
+export const fetchEventHistoryMapFailure = createAction(
+  '[event] fetchEventHistoryMapFailure',
   props<{ error: Error }>()
 );
 
 export const setEventMap = createAction(
   '[event] setEventMap',
   props<{ eventMap: EventMap }>()
-);
-
-export const fetchEventHistoryMapFailure = createAction(
-  '[event] fetchEventHistoryMapFailure',
-  props<{ error: Error }>()
 );
 
 export const setEventHistoryMap = createAction(

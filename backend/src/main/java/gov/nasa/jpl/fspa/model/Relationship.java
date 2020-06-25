@@ -1,7 +1,10 @@
 package gov.nasa.jpl.fspa.model;
 
+import com.opencsv.bean.CsvBindByName;
+
 public class Relationship {
     private Integer id;
+    private Integer collectionId;
     private String displayName;
     private String description;
     private InformationTypesEnum subjectType;
@@ -15,6 +18,14 @@ public class Relationship {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCollectionId() {
+        return collectionId;
+    }
+
+    public void setCollectionId(Integer collectionId) {
+        this.collectionId = collectionId;
     }
 
     public String getDisplayName() {

@@ -5,14 +5,23 @@ import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
-import { NavEffects, StateVariableEffects, ToastEffects, FileUploadEffects } from './effects';
 import { ToastrModule } from 'ngx-toastr';
 
+import {
+  NavEffects,
+  ToastEffects,
+  FileUploadEffects,
+  EventEffects,
+  CollectionEffects,
+  InformationTypesEffects,
+  StateEffects,
+  RelationshipEffects
+} from './effects';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
-import { ToolbarModule } from './components';
 import { MaterialModule } from './material';
+import { ToolbarModule } from './containers';
 
 @Component({
   selector: 'app-root',
@@ -32,9 +41,13 @@ export class AppComponent {}
     HttpClientModule,
     MaterialModule,
     EffectsModule.forRoot([
+      CollectionEffects,
+      EventEffects,
       FileUploadEffects,
+      InformationTypesEffects,
       NavEffects,
-      StateVariableEffects,
+      RelationshipEffects,
+      StateEffects,
       ToastEffects
     ]),
     StoreModule.forRoot(ROOT_REDUCERS, {

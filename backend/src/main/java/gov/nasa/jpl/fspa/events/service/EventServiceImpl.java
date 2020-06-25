@@ -6,6 +6,7 @@ import gov.nasa.jpl.fspa.model.Event;
 import gov.nasa.jpl.fspa.model.EventHistory;
 import gov.nasa.jpl.fspa.model.Identifier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,27 +19,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Map<Integer, EventHistory> getEventHistoryMap() {
-        List<EventHistory> eventHistoryList = eventDao.getEventHistoryList();
-        Map<Integer, EventHistory> eventHistoryMap = new HashMap<>();
-
-        for (EventHistory eventHistory: eventHistoryList) {
-            eventHistoryMap.put(eventHistory.getId(), eventHistory);
-        }
-
-        return eventHistoryMap;
+    public Map<Integer, EventHistory> getEventHistoryMap(Integer collectionId) {
+        return mapEventList(eventDao.getEventHistoryList(collectionId));
     }
 
     @Override
-    public Map<Integer, Event> getEventMap() {
-        List<Event> eventList = eventDao.getEventList();
-        Map<Integer, Event> eventMap = new HashMap<>();
-
-        for (Event event: eventList) {
-            eventMap.put(event.getId(), event);
-        }
-
-        return eventMap;
+    public Map<Integer, Event> getEventMap(Integer collectionId) {
+        return mapEventList(eventDao.getEvents(collectionId));
     }
 
     @Override
@@ -59,11 +46,26 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Map<Integer, Event> saveUploadedEvents(List<Event> eventList) {
+    public Map<Integer, Event> saveUploadedEvents(List<Event> eventList, int collectionId) {
+        List<Event> savedEventList = new ArrayList<>();
+
         for (Event event: eventList) {
-            modifyEvent(event);
+            // Before saving each event, set the collection id.
+            event.setCollectionId(collectionId);
+
+            savedEventList.add(modifyEvent(event));
         }
 
-        return getEventMap();
+        return mapEventList(savedEventList);
+    }
+
+    private <T extends Event> Map<Integer, T> mapEventList(List<T> eventList) {
+        Map<Integer, T> eventMap = new HashMap<>();
+
+        for (T event: eventList) {
+            eventMap.put(event.getId(), event);
+        }
+
+        return eventMap;
     }
 }

@@ -6,13 +6,20 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { RelationshipMap, Relationship } from 'src/app/models/relationship';
-import { getRelationships, getSelectedRelationship, getStateVariables, getInformationTypes, getEventMap } from 'src/app/selectors';
+import {
+  getRelationships,
+  getSelectedRelationship,
+  getStates,
+  getInformationTypes,
+  getEventMap,
+  getShowSidenav,
+  getSelectedCollectionId
+} from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
-import { getShowSidenav } from 'src/app/selectors/layout.selector';
-import { StateVariableActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
-import { RelationshipsSidenavModule } from 'src/app/components';
+import { LayoutActions, ToastActions, FileUploadActions, RelationshipActions } from 'src/app/actions';
+import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
-import { StateVariableMap, InformationTypesMap, EventMap } from 'src/app/models';
+import { StateMap, InformationTypesMap, EventMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -27,8 +34,9 @@ export class RelationshipsComponent implements OnDestroy {
   public relationshipMap: RelationshipMap;
   public relationship: Relationship;
   public showSidenav: boolean;
-  public stateVariableMap: StateVariableMap;
+  public stateMap: StateMap;
 
+  private collectionId: number;
   private subscriptions = new SubSink();
 
   constructor(
@@ -36,6 +44,10 @@ export class RelationshipsComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions.add(
+      this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
+        this.collectionId = collectionId;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
@@ -56,8 +68,8 @@ export class RelationshipsComponent implements OnDestroy {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateVariables)).subscribe(stateVariableMap => {
-        this.stateVariableMap = stateVariableMap;
+      this.store.pipe(select(getStates)).subscribe(stateMap => {
+        this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -74,7 +86,8 @@ export class RelationshipsComponent implements OnDestroy {
     if (file && (fileType === 'csv' || fileType === 'json')) {
       this.store.dispatch(FileUploadActions.uploadRelationships({
         file,
-        fileType
+        fileType,
+        collectionId: this.collectionId
       }));
     } else {
       this.store.dispatch(ToastActions.showToast({
@@ -92,13 +105,14 @@ export class RelationshipsComponent implements OnDestroy {
   }
 
   /**
-   * Only dispatch our actions if we have state variables, otherwise tell the user they need state
-   * variables before they can create relationships.
+   * Only dispatch our actions if we have states, otherwise tell the user they need state
+   * before they can create relationships.
    * @param relationship The relationship that is being modified.
    */
   public onModifyRelationship(relationship?: Relationship): void {
-    if (this.stateVariableMap) {
-      this.store.dispatch(StateVariableActions.setSelectedRelationship({
+    // TODO: Check for events and information types here as well.
+    if (this.stateMap) {
+      this.store.dispatch(RelationshipActions.setSelectedRelationship({
         relationship
       }));
 
@@ -107,7 +121,7 @@ export class RelationshipsComponent implements OnDestroy {
       }));
     } else {
       this.store.dispatch(ToastActions.showToast({
-        message: 'You must create state variables before creating relationships',
+        message: 'You must create states, events, or information types before creating relationships',
         toastType: 'error'
       }));
     }
@@ -120,11 +134,13 @@ export class RelationshipsComponent implements OnDestroy {
       }));
     } else {
       if (relationship.id === null) {
-        this.store.dispatch(StateVariableActions.createRelationship({
+        this.store.dispatch(RelationshipActions.createRelationship({
+          collectionId: this.collectionId,
           relationship
         }));
       } else {
-        this.store.dispatch(StateVariableActions.editRelationship({
+        this.store.dispatch(RelationshipActions.editRelationship({
+          collectionId: this.collectionId,
           relationship
         }));
       }
@@ -142,7 +158,7 @@ export class RelationshipsComponent implements OnDestroy {
   imports: [
     CommonModule,
     MaterialModule,
-    RelationshipsSidenavModule,
+    RelationshipSidenavModule,
     RelationshipsTableModule,
     RouterModule
   ]

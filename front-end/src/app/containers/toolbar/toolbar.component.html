@@ -1,0 +1,41 @@
+<mat-toolbar>
+  <div>
+    <span>State Management</span>
+
+    <mat-form-field class="collection-dropdown">
+      <mat-select [(value)]="selectedCollectionId" (selectionChange)="onCollectionChange($event.value)">
+        <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
+          {{collection.value.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="navigation-container">
+    <button mat-button routerLink="/states" routerLinkActive="active">
+      States
+    </button>
+
+    <button mat-button routerLink="/relationships" routerLinkActive="active">
+      Relationships
+    </button>
+
+    <button mat-button routerLink="/events" routerLinkActive="active">
+      Events
+    </button>
+
+    <button mat-button routerLink="/information-types" routerLinkActive="active">
+      Information Types 
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon svgIcon="more_vert"></mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item [routerLink]="'/faqs'" class="menu-button">
+        <span>FAQs</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

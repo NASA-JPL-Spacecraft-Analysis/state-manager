@@ -1,0 +1,65 @@
+<div *ngIf="stateMap && stateMapSize > 0; else noStates">
+  <mat-form-field class="filter-container">
+    <input matInput (keyup)="applyFilter($any($event).target.value)" type="text" placeholder="Filter" />
+  </mat-form-field>
+
+  <table mat-table [dataSource]="dataSource" [ngClass]="{ 'history': history }">
+    <ng-container *ngIf="history">
+      <ng-container matColumnDef="stateId">
+        <th mat-header-cell *matHeaderCellDef>State Id</th>
+        <td mat-cell *matCellDef="let state">{{state.stateId}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="updated">
+        <th mat-header-cell *matHeaderCellDef>Updated</th>
+        <td mat-cell *matCellDef="let state">{{state.updated}}</td>
+      </ng-container>
+    </ng-container>
+
+    <ng-container matColumnDef="identifier">
+      <th mat-header-cell *matHeaderCellDef>Identifier</th>
+      <td mat-cell *matCellDef="let state">{{state.identifier}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="displayName">
+      <th mat-header-cell *matHeaderCellDef>Display Name</th>
+      <td mat-cell *matCellDef="let state">{{state.displayName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let state">{{state.type}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="units">
+      <th mat-header-cell *matHeaderCellDef>Units</th>
+      <td mat-cell *matCellDef="let state">{{state.units}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="source">
+      <th mat-header-cell *matHeaderCellDef>Source</th>
+      <td mat-cell *matCellDef="let state">{{state.source}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="subsystem">
+      <th mat-header-cell *matHeaderCellDef>Subsystem</th>
+      <td mat-cell *matCellDef="let state">{{state.subsystem}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>Description</th>
+      <td mat-cell *matCellDef="let state">{{state.description}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"
+      (click)="onRowClick(row)">
+    </tr>
+  </table>
+</div>
+
+<mat-paginator [pageSizeOptions]="[100, 250, 1000]" showFirstLastButtons></mat-paginator>
+
+<ng-template #noStates>
+  <span>There are no defined states.</span>
+</ng-template>

@@ -3,22 +3,38 @@ import { ActionReducerMap, Action, MetaReducer, ActionReducer } from '@ngrx/stor
 import * as fromRouter from '@ngrx/router-store';
 
 import { environment } from 'src/environments/environment';
-import { ConfigReducer, LayoutReducer, StateReducer } from './reducers';
+import {
+  CollectionReducer,
+  ConfigReducer,
+  EventReducer,
+  InformationTypesReducer,
+  LayoutReducer,
+  RelationshipReducer,
+  StateReducer,
+} from './reducers';
 import { ConfigState } from './config';
 
 export interface AppState {
+  collection: CollectionReducer.CollectionState;
   config: ConfigState;
+  events: EventReducer.EventState;
+  informationTypes: InformationTypesReducer.InformationTypesState;
   layout: LayoutReducer.LayoutState;
+  relationships: RelationshipReducer.RelationshipState;
   router: fromRouter.RouterReducerState;
-  states: StateReducer.StateManagementState;
+  states: StateReducer.StateState;
 }
 
 export const ROOT_REDUCERS = new InjectionToken<
   ActionReducerMap<AppState, Action>
 >('Root reducers token', {
   factory: () => ({
+    collection: CollectionReducer.reducer,
     config: ConfigReducer.reducer,
+    events: EventReducer.reducer,
+    informationTypes: InformationTypesReducer.reducer,
     layout: LayoutReducer.reducer,
+    relationships: RelationshipReducer.reducer,
     router: fromRouter.routerReducer,
     states: StateReducer.reducer
   })

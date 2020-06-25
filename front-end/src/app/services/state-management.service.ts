@@ -3,15 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import {
-  StateVariable,
-  StateEnumerationMap,
-  StateVariableMap,
-  StateEnumeration,
+  CollectionMap,
+  EventMap,
+  Event,
+  InformationTypesMap,
   Relationship,
   RelationshipMap,
-  InformationTypesMap,
-  EventMap,
-  Event
+  State,
+  StateMap,
+  StateEnumerationMap,
+  StateEnumeration
 } from '../models';
 import { environment } from 'src/environments/environment';
 
@@ -30,181 +31,194 @@ export class StateManagementService {
     );
   }
 
-  public createRelationship(relationship: Relationship): Observable<Relationship> {
+  public createRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
     return this.http.post<Relationship>(
-      baseUrl + '/relationship',
+      baseUrl + '/collection/' + collectionId + '/relationship',
       relationship
     );
   }
 
-  public createStateVariable(stateVariable: StateVariable): Observable<StateVariable> {
-    return this.http.post<StateVariable>(
-      baseUrl + '/state-variable',
-      stateVariable
+  public createState(collectionId: number, state: State): Observable<State> {
+    return this.http.post<State>(
+      baseUrl + '/collection/' + collectionId + '/state',
+      state
     );
   }
 
-  public editRelationship(relationship: Relationship): Observable<Relationship> {
+  public editEvent(event: Event): Observable<Event> {
+    return this.http.put<Event>(
+      baseUrl + '/event',
+      event
+    );
+  }
+
+  public editRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
     return this.http.put<Relationship>(
-      baseUrl + '/relationship',
+      baseUrl + '/collection/' + collectionId + '/relationship',
       relationship
     );
   }
 
-  public editStateVariable(stateVariable: StateVariable): Observable<StateVariable> {
-    return this.http.put<StateVariable>(
-      baseUrl + '/state-variable',
-      stateVariable
+  public editState(collectionId: number, state: State): Observable<State> {
+    return this.http.put<State>(
+      baseUrl + '/collection/' + collectionId + '/state',
+      state
     );
   }
 
-  public getEventMap(): Observable<EventMap> {
+  public getCollections(): Observable<CollectionMap> {
+    return this.http.get<CollectionMap>(
+      baseUrl + '/collections'
+    );
+  }
+
+  public getEventMap(collectionId: number): Observable<EventMap> {
     return this.http.get<EventMap>(
-      baseUrl + '/event-map'
+      baseUrl + '/collection/' + collectionId + '/event-map'
     );
   }
 
-  public getEventHistoryMap(): Observable<EventMap> {
+  public getEventHistoryMap(collectionId: number): Observable<EventMap> {
     return this.http.get<EventMap>(
-      baseUrl + '/event-history-map'
+      baseUrl + '/collection/' + collectionId + '/event-history-map'
     );
   }
 
-  public getIdentifiers(): Observable<string[]> {
+  public getStateIdentifiers(collectionId: number): Observable<string[]> {
     return this.http.get<string[]>(
-      baseUrl + '/state-identifiers'
+      baseUrl + '/collection/' + collectionId + '/state-identifiers'
     );
   }
 
-  public getInformationTypes(): Observable<InformationTypesMap> {
+  public getInformationTypes(collectionId: number): Observable<InformationTypesMap> {
     return this.http.get<InformationTypesMap>(
-      baseUrl + '/information-types'
+      baseUrl + '/collection/' + collectionId + '/information-types'
     );
   }
 
-  public getRelationships(): Observable<RelationshipMap> {
+  public getRelationships(collectionId: number): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
-      baseUrl + '/relationships'
+      baseUrl + '/collection/' + collectionId + '/relationships'
     );
   }
 
-  public getRelationshipHistory(): Observable<RelationshipMap> {
+  public getRelationshipHistory(collectionId: number): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
-      baseUrl + '/relationship-history'
+      baseUrl + '/collection/' + collectionId + '/relationship-history'
     );
   }
 
-  public getStateEnumerations(): Observable<StateEnumerationMap> {
+  public getStateEnumerations(collectionId: number): Observable<StateEnumerationMap> {
     return this.http.get<StateEnumerationMap>(
-      baseUrl + '/state-enumerations'
+      baseUrl + '/collection/' + collectionId + '/state-enumerations'
     );
   }
 
-  public getStateHistory(): Observable<StateVariableMap> {
-    return this.http.get<StateVariableMap>(
-      baseUrl + '/state-history'
+  public getStateHistory(collectionId: number): Observable<StateMap> {
+    return this.http.get<StateMap>(
+      baseUrl + '/collection/' + collectionId + '/state-history'
     );
   }
 
-  public getStateVariables(): Observable<StateVariableMap> {
-    return this.http.get<StateVariableMap>(
-      baseUrl + '/state-variables'
+  public getStates(collectionId: number): Observable<StateMap> {
+    return this.http.get<StateMap>(
+      baseUrl + '/collection/' + collectionId + '/states'
     );
   }
 
-  public saveEnumerations(stateVariableId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
+  public saveEnumerations(collectionId: number, stateId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
     return this.http.post<StateEnumeration[]>(
-      baseUrl + '/state-enumerations/' + stateVariableId,
+      baseUrl + '/collection/' + collectionId + '/state-enumerations/' + stateId,
       enumerations
     );
   }
 
-  public saveEnumerationsCsv(file: File): Observable<StateEnumerationMap> {
+  public saveEnumerationsCsv(collectionId: number, file: File): Observable<StateEnumerationMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<StateEnumerationMap>(
-      baseUrl + '/enumerations-csv',
+      baseUrl + '/collection/' + collectionId + '/enumerations-csv',
       formData
     );
   }
 
-  public saveEnumerationsJson(file: File): Observable<StateEnumerationMap> {
+  public saveEnumerationsJson(collectionId: number, file: File): Observable<StateEnumerationMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<StateEnumerationMap>(
-      baseUrl + '/enumerations-json',
+      baseUrl + '/collection/' + collectionId + '/enumerations-json',
       formData
     );
   }
 
-  public saveEventsCsv(file: File): Observable<EventMap> {
+  public saveEventsCsv(file: File, collectionId: number): Observable<EventMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<EventMap>(
-      baseUrl + '/events-csv',
+      baseUrl + '/collection/' + collectionId + '/events-csv',
       formData
     );
   }
 
-  public saveEventsJson(file: File): Observable<EventMap> {
+  public saveEventsJson(file: File, collectionId: number): Observable<EventMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<EventMap>(
-      baseUrl + '/events-json',
+      baseUrl + '/collection/' + collectionId + '/events-json',
       formData
     );
   }
 
-  public saveInformationTypesCsv(file: File): Observable<InformationTypesMap> {
+  public saveInformationTypesCsv(file: File, collectionId: number): Observable<InformationTypesMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
-      baseUrl + '/information-types-csv',
+      baseUrl + '/collection/' + collectionId + '/information-types-csv',
       formData
     );
   }
 
-  public saveInformationTypesJson(file: File): Observable<InformationTypesMap> {
+  public saveInformationTypesJson(file: File, collectionId: number): Observable<InformationTypesMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
-      baseUrl + '/information-types-json',
+      baseUrl + '/collection/' + collectionId + '/information-types-json',
       formData
     );
   }
 
-  public saveRelationshipsCsv(file: File): Observable<RelationshipMap> {
+  public saveRelationshipsCsv(collectionId: number, file: File): Observable<RelationshipMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<RelationshipMap>(
-      baseUrl + '/relationships-csv',
+      baseUrl + '/collection/' + collectionId + '/relationships-csv',
       formData
     );
   }
 
-  public saveRelationshipsJson(file: File): Observable<RelationshipMap> {
+  public saveRelationshipsJson(collectionId: number, file: File): Observable<RelationshipMap> {
     const formData = this.setFormData(file);
 
     return this.http.post<RelationshipMap>(
-      baseUrl + '/relationships-json',
+      baseUrl + '/collection/' + collectionId + '/relationships-json',
       formData
     );
   }
 
-  public saveStateVariablesCsv(file: File): Observable<StateVariableMap> {
+  public saveStatesCsv(collectionId: number, file: File): Observable<StateMap> {
     const formData = this.setFormData(file);
 
-    return this.http.post<StateVariableMap>(
-      baseUrl + '/state-variables-csv',
+    return this.http.post<StateMap>(
+      baseUrl + '/collection/' + collectionId + '/states-csv',
       formData
     );
   }
 
-  public saveStateVariablesJson(file: File): Observable<StateVariableMap> {
+  public saveStatesJson(collectionId: number, file: File): Observable<StateMap> {
     const formData = this.setFormData(file);
 
-    return this.http.post<StateVariableMap>(
-      baseUrl + '/state-variables-json',
+    return this.http.post<StateMap>(
+      baseUrl + '/collection/' + collectionId + '/states-json',
       formData
     );
   }

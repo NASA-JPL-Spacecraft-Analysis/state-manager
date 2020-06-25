@@ -6,7 +6,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
 import { FileUploadActions, ToastActions } from '../actions';
-import { InformationTypesMap, StateEnumerationMap, StateVariableMap, RelationshipMap, EventMap } from '../models';
+import { InformationTypesMap, StateEnumerationMap, StateMap, RelationshipMap, EventMap } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -18,13 +18,13 @@ export class FileUploadEffects {
   public uploadInformationTypes = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
-      switchMap(({ file, fileType }) => {
+      switchMap(({ file, fileType, collectionId }) => {
         let saveInformationTypes: Observable<InformationTypesMap>;
 
         if (fileType === 'csv') {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesCsv(file);
+          saveInformationTypes = this.stateManagementService.saveInformationTypesCsv(file, collectionId);
         } else {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesJson(file);
+          saveInformationTypes = this.stateManagementService.saveInformationTypesJson(file, collectionId);
         }
 
         return saveInformationTypes.pipe(
@@ -55,21 +55,27 @@ export class FileUploadEffects {
 
   public uploadEnumerations = createEffect(() => {
     return this.actions.pipe(
-      ofType(FileUploadActions.uploadEnumerations),
-      switchMap(({ file, fileType }) => {
+      ofType(FileUploadActions.uploadStateEnumerations),
+      switchMap(({ collectionId, file, fileType }) => {
         let saveEnumerations: Observable<StateEnumerationMap>;
 
         if (fileType === 'csv') {
-          saveEnumerations = this.stateManagementService.saveEnumerationsCsv(file);
+          saveEnumerations = this.stateManagementService.saveEnumerationsCsv(
+            collectionId,
+            file
+          );
         } else {
-          saveEnumerations = this.stateManagementService.saveEnumerationsJson(file);
+          saveEnumerations = this.stateManagementService.saveEnumerationsJson(
+            collectionId,
+            file
+          );
         }
 
         return saveEnumerations.pipe(
           switchMap(
-            (enumerations: StateEnumerationMap) => [
-              FileUploadActions.uploadEnumerationsSuccess({
-                enumerations
+            (stateEnumerationMap: StateEnumerationMap) => [
+              FileUploadActions.uploadStateEnumerationsSuccess({
+                stateEnumerationMap
               }),
               ToastActions.showToast({
                 message: 'Enumerations uploaded',
@@ -79,7 +85,7 @@ export class FileUploadEffects {
           ),
           catchError(
             (error: HttpErrorResponse) => [
-              FileUploadActions.uploadEnumerationsFailure({ error }),
+              FileUploadActions.uploadStateEnumerationsFailure({ error }),
               ToastActions.showToast({
                 message: error.error,
                 toastType: 'error'
@@ -94,13 +100,13 @@ export class FileUploadEffects {
   public uploadEvents = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadEvents),
-      switchMap(({ file, fileType }) => {
+      switchMap(({ file, fileType, collectionId }) => {
         let saveEvents: Observable<EventMap>;
 
         if (fileType === 'csv') {
-          saveEvents = this.stateManagementService.saveEventsCsv(file);
+          saveEvents = this.stateManagementService.saveEventsCsv(file, collectionId);
         } else {
-          saveEvents = this.stateManagementService.saveEventsJson(file);
+          saveEvents = this.stateManagementService.saveEventsJson(file, collectionId);
         }
 
         return saveEvents.pipe(
@@ -132,13 +138,13 @@ export class FileUploadEffects {
   public uploadRelationship = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
-      switchMap(({ file, fileType }) => {
+      switchMap(({ file, fileType, collectionId }) => {
         let saveRelationships: Observable<RelationshipMap>;
 
         if (fileType === 'csv') {
-          saveRelationships = this.stateManagementService.saveRelationshipsCsv(file);
+          saveRelationships = this.stateManagementService.saveRelationshipsCsv(collectionId, file);
         } else {
-          saveRelationships = this.stateManagementService.saveRelationshipsJson(file);
+          saveRelationships = this.stateManagementService.saveRelationshipsJson(collectionId, file);
         }
 
         return saveRelationships.pipe(
@@ -167,33 +173,39 @@ export class FileUploadEffects {
     );
   });
 
-  public uploadStateVariables = createEffect(() => {
+  public uploadStates = createEffect(() => {
     return this.actions.pipe(
-      ofType(FileUploadActions.uploadStateVariables),
-      switchMap(({ file, fileType }) => {
-        let saveStateVariables: Observable<StateVariableMap>;
+      ofType(FileUploadActions.uploadStates),
+      switchMap(({ collectionId, file, fileType }) => {
+        let saveStates: Observable<StateMap>;
 
         if (fileType === 'csv') {
-          saveStateVariables = this.stateManagementService.saveStateVariablesCsv(file);
+          saveStates = this.stateManagementService.saveStatesCsv(
+            collectionId,
+            file
+          );
         } else {
-          saveStateVariables = this.stateManagementService.saveStateVariablesJson(file);
+          saveStates = this.stateManagementService.saveStatesJson(
+            collectionId,
+            file
+          );
         }
 
-        return saveStateVariables.pipe(
+        return saveStates.pipe(
           switchMap(
-            (stateVariableMap: StateVariableMap) => [
-              FileUploadActions.uploadStateVariablesSuccess({
-                stateVariableMap
+            (stateMap: StateMap) => [
+              FileUploadActions.uploadStatesSuccess({
+                stateMap
               }),
               ToastActions.showToast({
-                message: 'State variable(s) uploaded',
+                message: 'State(s) uploaded',
                 toastType: 'success'
               })
             ]
           ),
           catchError(
             (error: HttpErrorResponse) => [
-              FileUploadActions.uploadStateVariablesFailure({ error }),
+              FileUploadActions.uploadStatesFailure({ error }),
               ToastActions.showToast({
                 message: error.error,
                 toastType: 'error'

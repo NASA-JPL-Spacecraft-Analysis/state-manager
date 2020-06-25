@@ -10,9 +10,9 @@ import java.util.Map;
 public interface InformationTypesService {
     List<InformationTypes> convertInformationTypesUpload(List<InformationTypesUpload> informationTypesUploadList);
 
-    Map<InformationTypesEnum, Map<Integer, InformationTypes>> getInformationTypes();
+    Map<InformationTypesEnum, Map<Integer, InformationTypes>> getInformationTypes(int collectionId);
 
-    Map<InformationTypesEnum, Map<String, InformationTypes>> getInformationTypesByIdentifier();
+    Map<InformationTypesEnum, Map<String, InformationTypes>> getInformationTypesByIdentifier(int collectionId);
 
-    Map<InformationTypesEnum, Map<Integer, InformationTypes>> saveUploadedInformationTypes(List<InformationTypes> informationTypesList);
+    Map<InformationTypesEnum, Map<Integer, InformationTypes>> saveUploadedInformationTypes(List<InformationTypes> informationTypesList, int collectionId);
 }

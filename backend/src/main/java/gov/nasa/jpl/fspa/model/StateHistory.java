@@ -1,19 +1,20 @@
 package gov.nasa.jpl.fspa.model;
 
-public class StateHistory extends StateVariable{
+public class StateHistory extends State {
     private Integer stateId;
     private String updated;
 
     public StateHistory() {}
 
-    public StateHistory(StateVariable stateVariable) {
-        this.setIdentifier(stateVariable.getIdentifier());
-        this.setDisplayName(stateVariable.getDisplayName());
-        this.setType(stateVariable.getType());
-        this.setUnits(stateVariable.getUnits());
-        this.setSource(stateVariable.getSource());
-        this.setSubsystem(stateVariable.getSubsystem());
-        this.setDescription(stateVariable.getDescription());
+    public StateHistory(State state) {
+        this.setCollectionId(state.getCollectionId());
+        this.setIdentifier(state.getIdentifier());
+        this.setDisplayName(state.getDisplayName());
+        this.setType(state.getType());
+        this.setUnits(state.getUnits());
+        this.setSource(state.getSource());
+        this.setSubsystem(state.getSubsystem());
+        this.setDescription(state.getDescription());
     }
 
     public Integer getStateId() {

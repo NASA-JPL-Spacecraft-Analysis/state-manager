@@ -25,9 +25,10 @@
     </event-table>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav">
+  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
     <event-sidenav
       [event]="event"
+      [selectedCollectionId]="selectedCollectionId"
       (modifyEvent)="onSidenavOutput($event)">
     </event-sidenav>
   </div>

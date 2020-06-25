@@ -1,3 +1,9 @@
+CREATE TABLE `collections` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 CREATE TABLE `events` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `identifier` VARCHAR(255) NOT NULL,
