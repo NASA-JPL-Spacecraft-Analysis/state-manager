@@ -32,6 +32,11 @@ export const editEventSuccess = createAction(
   props<{ event: Event }>()
 );
 
+export const fetchEventIdentifiersFailure = createAction(
+  '[event] fetchEventIdentifiersFailure',
+  props<{ error: Error }>()
+);
+
 export const fetchEventMapFailure = createAction(
   '[event] fetchEventMapFailure',
   props<{ error: Error }>()
@@ -40,6 +45,11 @@ export const fetchEventMapFailure = createAction(
 export const fetchEventHistoryMapFailure = createAction(
   '[event] fetchEventHistoryMapFailure',
   props<{ error: Error }>()
+);
+
+export const setEventIdentifiers = createAction(
+  '[event] setEventIdentifiers',
+  props<{ eventIdentifiers: string[] }>()
 );
 
 export const setEventMap = createAction(

@@ -5,13 +5,16 @@ import gov.nasa.jpl.fspa.model.EventHistory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface EventService {
-    Map<Integer, EventHistory> getEventHistoryMap(Integer collectionId);
+    Map<Integer, EventHistory> getEventHistoryMap(int collectionId);
 
-    Map<Integer, Event> getEventMap(Integer collectionId);
+    Set<String> getEventIdentifiers(int collectionId);
 
-    Map<String, Integer> getMappedIdentifiers();
+    Map<Integer, Event> getEventMap(int collectionId);
+
+    Map<String, Integer> getMappedIdentifiers(int collectionId);
 
     Event modifyEvent(Event event);
 

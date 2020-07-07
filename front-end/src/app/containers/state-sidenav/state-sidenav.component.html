@@ -9,23 +9,12 @@
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div *ngIf="stateIdentifiers !== null">
-      <mat-form-field>
-        <input matInput
-          placeholder="Identifier"
-          type="text"
-          formControlName="identifier"
-          (ngModelChange)="onIdentifierChange($event)"
-          required
-        />
-
-        <mat-icon matSuffix
-          #duplicateTooltip
-          [ngClass]="identifierIcon"
-          matTooltipPosition="above"
-          [matTooltip]="identifierTooltipText">
-          {{identifierIcon}}
-        </mat-icon>
-      </mat-form-field>
+      <identifier-form
+        [originalIdentifier]="originalIdentifier"
+        [identifiers]="stateIdentifiers"
+        (duplicateIdentifier)="onDuplicateIdentifier($event)"
+        (identifierEmitter)="onIdentifierChange($event)">
+      </identifier-form>
 
       <mat-form-field>
         <input matInput

@@ -4,12 +4,14 @@ import { EventActions, FileUploadActions } from '../actions';
 import { EventMap, Event } from '../models';
 
 export interface EventState {
+  eventIdentifiers: string[];
   eventMap: EventMap;
   eventHistoryMap: EventMap;
   selectedEvent: Event;
 }
 
 export const initialState: EventState = {
+  eventIdentifiers: null,
   eventMap: null,
   eventHistoryMap: null,
   selectedEvent: null
@@ -30,12 +32,23 @@ export const reducer = createReducer(
       ...eventMap
     }
   })),
-  on(EventActions.setEventMap, (state, { eventMap }) => ({
-    ...state,
-    eventMap: {
-      ...eventMap
+  on(EventActions.setEventMap, (state, { eventMap }) => {
+    const eventIdentifiers: string[] = [];
+
+    for (const key of Object.keys(eventMap)) {
+      eventIdentifiers.push(eventMap[key].identifier);
     }
-  })),
+
+    return {
+      ...state,
+      eventIdentifiers: [
+        ...eventIdentifiers
+      ],
+      eventMap: {
+        ...eventMap
+      }
+    };
+  }),
   on(EventActions.setEventHistoryMap, (state, { eventHistoryMap }) => ({
     ...state,
     eventHistoryMap: {

@@ -1,0 +1,17 @@
+<mat-form-field>
+  <input matInput
+    placeholder="Identifier"
+    type="text"
+    [ngModel]="originalIdentifier"
+    (ngModelChange)="onIdentifierChange($event)"
+    required
+  />
+
+  <mat-icon matSuffix
+    #duplicateTooltip
+    [ngClass]="identifierIcon"
+    matTooltipPosition="above"
+    [matTooltip]="identifierTooltipText">
+    {{identifierIcon}}
+  </mat-icon>
+</mat-form-field>

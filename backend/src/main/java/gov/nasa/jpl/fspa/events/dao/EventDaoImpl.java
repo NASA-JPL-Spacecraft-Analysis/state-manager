@@ -14,14 +14,14 @@ import java.util.List;
 
 public class EventDaoImpl implements EventDao {
     @Override
-    public List<EventHistory> getEventHistoryList(Integer collectionId) {
+    public List<EventHistory> getEventHistoryList(int collectionId) {
         List<EventHistory> eventHistoryList = new ArrayList<>();
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_HISTORY_LIST)) {
-            statement.setInt(1, collectionId);
+             PreparedStatement preparedStatement = connection.prepareStatement(EventQueries.GET_EVENT_HISTORY_LIST)) {
+            preparedStatement.setInt(1, collectionId);
 
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 EventHistory eventHistory = new EventHistory();
@@ -41,14 +41,14 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public List<Event> getEvents(Integer collectionId) {
+    public List<Event> getEvents(int collectionId) {
         List<Event> eventList = new ArrayList<>();
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_EVENT_LIST)) {
-            statement.setInt(1, collectionId);
+             PreparedStatement preparedStatement = connection.prepareStatement(EventQueries.GET_EVENT_LIST)) {
+            preparedStatement.setInt(1, collectionId);
 
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 Event event = new Event();
@@ -65,12 +65,14 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public List<Identifier> getIdentifiers() {
+    public List<Identifier> getIdentifiers(int collectionId) {
         List<Identifier> identifiers = new ArrayList<>();
 
         try (Connection connection = DatabaseUtil.getDataSource().getConnection();
-             PreparedStatement statement = connection.prepareStatement(EventQueries.GET_IDENTIFIERS);
-             ResultSet resultSet = statement.executeQuery()) {
+             PreparedStatement preparedStatement = connection.prepareStatement(EventQueries.GET_IDENTIFIERS)) {
+            preparedStatement.setInt(1, collectionId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 Identifier identifier = new Identifier();

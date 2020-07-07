@@ -47,7 +47,7 @@ export class EventEffects {
     );
   });
 
-  private getEventInformation(id: number): Observable<Action> {
+  private getEventInformation(collectionId: number): Observable<Action> {
     const url = this.router.routerState.snapshot.url;
 
     if (url === '/events') {
@@ -56,7 +56,7 @@ export class EventEffects {
           showSidenav: false
         })),
         this.stateManagementService.getEventMap(
-          id
+          collectionId
         ).pipe(
           map(eventMap => EventActions.setEventMap({
             eventMap
@@ -76,7 +76,7 @@ export class EventEffects {
           showSidenav: false
         })),
         this.stateManagementService.getEventHistoryMap(
-          id
+          collectionId
         ).pipe(
           map(eventHistoryMap => EventActions.setEventHistoryMap({
             eventHistoryMap

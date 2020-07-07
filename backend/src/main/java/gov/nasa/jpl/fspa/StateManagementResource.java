@@ -16,6 +16,7 @@ import gov.nasa.jpl.fspa.states.service.StateServiceImpl;
 import gov.nasa.jpl.fspa.util.StateManagementConstants;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Path("v1/")
 public class StateManagementResource {
@@ -436,7 +438,7 @@ public class StateManagementResource {
 
     private Response saveParsedRelationships(int collectionId, List<RelationshipUpload> parsedRelationshipUploadList) {
         if (parsedRelationshipUploadList.size() > 0) {
-            Map<String, Integer> eventIdentifierMap = eventService.getMappedIdentifiers();
+            Map<String, Integer> eventIdentifierMap = eventService.getMappedIdentifiers(collectionId);
             Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier(collectionId);
             Map<String, Integer> stateIdentifierMap = stateService.getMappedIdentifiers(collectionId);
 

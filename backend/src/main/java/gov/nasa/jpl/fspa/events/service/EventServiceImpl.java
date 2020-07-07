@@ -6,10 +6,7 @@ import gov.nasa.jpl.fspa.model.Event;
 import gov.nasa.jpl.fspa.model.EventHistory;
 import gov.nasa.jpl.fspa.model.Identifier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EventServiceImpl implements EventService {
     private final EventDao eventDao;
@@ -19,19 +16,31 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Map<Integer, EventHistory> getEventHistoryMap(Integer collectionId) {
+    public Map<Integer, EventHistory> getEventHistoryMap(int collectionId) {
         return mapEventList(eventDao.getEventHistoryList(collectionId));
     }
 
     @Override
-    public Map<Integer, Event> getEventMap(Integer collectionId) {
+    public Set<String> getEventIdentifiers(int collectionId) {
+        Set<String> identifierSet = new HashSet<>();
+        List<Identifier> identifierList = eventDao.getIdentifiers(collectionId);
+
+        for (Identifier identifier: identifierList) {
+            identifierSet.add(identifier.getIdentifier());
+        }
+
+        return identifierSet;
+    }
+
+    @Override
+    public Map<Integer, Event> getEventMap(int collectionId) {
         return mapEventList(eventDao.getEvents(collectionId));
     }
 
     @Override
-    public Map<String, Integer> getMappedIdentifiers() {
+    public Map<String, Integer> getMappedIdentifiers(int collectionId) {
         Map<String, Integer> mappedIdentifiers = new HashMap<>();
-        List<Identifier> identifiers = eventDao.getIdentifiers();
+        List<Identifier> identifiers = eventDao.getIdentifiers(collectionId);
 
         for (Identifier identifier: identifiers) {
             mappedIdentifiers.put(identifier.getIdentifier(), identifier.getItemId());
