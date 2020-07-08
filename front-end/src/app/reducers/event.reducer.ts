@@ -62,10 +62,21 @@ export const reducer = createReducer(
 );
 
 function modifyEvent(state: EventState, event: Event) {
+  const eventIdentifierMap = {
+    ...state.eventIdentifierMap
+  };
+
+  for (const identifier of Object.keys(eventIdentifierMap)) {
+    // Remove the old identifier from our map
+    if (Number(eventIdentifierMap[identifier]) === event.id) {
+      delete eventIdentifierMap[identifier];
+    }
+  }
+
   return {
     ...state,
     eventIdentifierMap: {
-      ...state.eventIdentifierMap,
+      ...eventIdentifierMap,
       [event.id]: event.identifier
     },
     eventMap: {
