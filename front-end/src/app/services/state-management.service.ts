@@ -24,9 +24,9 @@ const { baseUrl } = environment;
 export class StateManagementService {
   constructor(private http: HttpClient) {}
 
-  public createEvent(event: Event): Observable<Event> {
+  public createEvent(collectionId: number, event: Event): Observable<Event> {
     return this.http.post<Event>(
-      baseUrl + '/event',
+      this.addCollectionId(collectionId) + 'event',
       event
     );
   }
@@ -45,9 +45,9 @@ export class StateManagementService {
     );
   }
 
-  public editEvent(event: Event): Observable<Event> {
+  public editEvent(collectionId: number, event: Event): Observable<Event> {
     return this.http.put<Event>(
-      baseUrl + '/event',
+      this.addCollectionId(collectionId) + 'event',
       event
     );
   }

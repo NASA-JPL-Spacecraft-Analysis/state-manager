@@ -60,38 +60,6 @@ export class StateEffects {
     );
   });
 
-  public editEvent = createEffect(() => {
-    return this.actions.pipe(
-      ofType(EventActions.editEvent),
-      switchMap(({ event }) =>
-        this.stateManagementService.editEvent(
-          event
-        ).pipe(
-          switchMap(
-            (editedEvent: Event) => [
-              EventActions.editEventSuccess({
-                event: editedEvent
-              }),
-              ToastActions.showToast({
-                message: 'Event edited',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              EventActions.createEventFailure({ error }),
-              ToastActions.showToast({
-                message: 'Event editing failed',
-                toastType: 'error'
-              })
-            ]
-          )
-        )
-      )
-    );
-  });
-
   public editState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.editState),

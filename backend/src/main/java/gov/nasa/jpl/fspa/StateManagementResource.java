@@ -329,10 +329,10 @@ public class StateManagementResource {
     }
 
     @POST
-    @Path("/event")
+    @Path("/collection/{collectionId}/event")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postEvent(Event event) {
-        Event createdEvent = eventService.modifyEvent(event);
+    public Response postEvent(@PathParam("collectionId") int collectionId, Event event) {
+        Event createdEvent = eventService.modifyEvent(collectionId, event);
 
         if (createdEvent == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -342,10 +342,10 @@ public class StateManagementResource {
     }
 
     @PUT
-    @Path("/event")
+    @Path("/collection/{collectionId}/event")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editEvent(Event event) {
-        Event editedEvent = eventService.modifyEvent(event);
+    public Response editEvent(@PathParam("collectionId") int collectionId, Event event) {
+        Event editedEvent = eventService.modifyEvent(collectionId, event);
 
         if (editedEvent == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -413,6 +413,14 @@ public class StateManagementResource {
 
     private Response saveParsedEvents(List<Event> parsedEventList, int collectionId) {
         if (parsedEventList.size() > 0) {
+            List<String> duplicateIdentifiers = validationService.getDuplicateIdentifiers(parsedEventList, stateService.getMappedIdentifiers(collectionId));
+
+            if (duplicateIdentifiers.size() > 0) {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateManagementConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
+                ).build();
+            }
+
             Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList, collectionId);
 
             if (eventMap.keySet().size() > 0) {

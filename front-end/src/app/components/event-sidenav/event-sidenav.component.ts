@@ -19,13 +19,14 @@ export class EventSidenavComponent implements OnChanges {
   @Input() public eventIdentifierMap: Map<string, number>;
   @Input() public selectedCollectionId: number;
 
+  @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public modifyEvent: EventEmitter<Event>;
 
   public form: FormGroup;
   public newEvent: Event;
   public originalIdentifier: string;
 
-  private duplicateIdentifier: boolean;
+  private isDuplicateIdentifier: boolean;
 
   constructor(
     private iconRegistry: MatIconRegistry,
@@ -33,6 +34,7 @@ export class EventSidenavComponent implements OnChanges {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
+    this.duplicateIdentifier = new EventEmitter<boolean>();
     this.modifyEvent = new EventEmitter<Event>();
   }
 
@@ -70,7 +72,7 @@ export class EventSidenavComponent implements OnChanges {
   }
 
   public onDuplicateIdentifier(duplicateIdentifier: boolean): void {
-    this.duplicateIdentifier = duplicateIdentifier;
+    this.isDuplicateIdentifier = duplicateIdentifier;
   }
 
   public onIdentifierChange(identifier: string): void {
@@ -79,8 +81,10 @@ export class EventSidenavComponent implements OnChanges {
   }
 
   public onSubmit(): void {
-    if (!this.duplicateIdentifier) {
+    if (!this.isDuplicateIdentifier) {
       this.modifyEvent.emit(this.form.value);
+    } else {
+      this.duplicateIdentifier.emit(true);
     }
   }
 }

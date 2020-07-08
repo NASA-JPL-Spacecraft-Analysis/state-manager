@@ -62,6 +62,17 @@ export class EventsComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  public onDuplicateIdentifier(duplicateIdentifier: boolean): void {
+    if (duplicateIdentifier) {
+      this.store.dispatch(
+        ToastActions.showToast({
+          message: 'Please provide a unique identifier',
+          toastType: 'error'
+        })
+      );
+    }
+  }
+
   public onModifyEvent(event?: StateEvent): void {
     this.store.dispatch(EventActions.setSelectedEvent({
       event
@@ -98,10 +109,12 @@ export class EventsComponent implements OnDestroy {
     } else {
       if (event.id === null) {
         this.store.dispatch(EventActions.createEvent({
+          collectionId: this.selectedCollectionId,
           event
         }));
       } else {
         this.store.dispatch(EventActions.editEvent({
+          collectionId: this.selectedCollectionId,
           event
         }));
       }

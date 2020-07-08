@@ -4,7 +4,7 @@ import { Event, EventMap } from '../models';
 
 export const createEvent = createAction(
   '[event] createEvent',
-  props<{ event: Event }>()
+  props<{ collectionId: number, event: Event }>()
 );
 
 export const createEventFailure = createAction(
@@ -19,7 +19,7 @@ export const createEventSuccess = createAction(
 
 export const editEvent = createAction(
   '[event] editEvent',
-  props<{ event: Event }>()
+  props<{ collectionId: number, event: Event }>()
 );
 
 export const editEventFailure = createAction(

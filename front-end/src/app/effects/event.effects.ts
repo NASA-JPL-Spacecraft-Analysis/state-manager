@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of } from 'rxjs';
-import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { switchMap, catchError, map, withLatestFrom, concat } from 'rxjs/operators';
 
 import { CollectionActions, EventActions, LayoutActions, ToastActions } from '../actions';
 import { StateManagementService } from '../services/state-management.service';
@@ -46,6 +46,7 @@ export class EventEffects {
             showSidenav: false
           })),
           this.stateManagementService.createEvent(
+            action.collectionId,
             action.event
           ).pipe(
             switchMap(
@@ -66,6 +67,56 @@ export class EventEffects {
                 }),
                 ToastActions.showToast({
                   message: 'Event creation failed',
+                  toastType: 'error'
+                })
+              ]
+            )
+          )
+        );
+      })
+    );
+  });
+
+  public editEvent = createEffect(() => {
+    return this.actions.pipe(
+      ofType(EventActions.editEvent),
+      withLatestFrom(this.store),
+      map(([action, state]) => ({ action, state })),
+      switchMap(({ action, state }) => {
+        if (this.validationService.isDuplicateIdentifier(
+          action.event.identifier,
+          action.event.id,
+          state.events.eventIdentifierMap
+        )) {
+          return [
+            ToastActions.showToast({
+              message: '',
+              toastType: 'error'
+            })
+          ];
+        }
+
+        return merge(
+          this.stateManagementService.editEvent(
+            action.collectionId,
+            action.event
+          ).pipe(
+            switchMap(
+              (editedEvent: Event) => [
+                EventActions.editEventSuccess({
+                  event: editedEvent
+                }),
+                ToastActions.showToast({
+                  message: 'Event edited',
+                  toastType: 'success'
+                })
+              ]
+            ),
+            catchError(
+              (error: Error) => [
+                EventActions.createEventFailure({ error }),
+                ToastActions.showToast({
+                  message: 'Event editing failed',
                   toastType: 'error'
                 })
               ]

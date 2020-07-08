@@ -8,43 +8,45 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <identifier-form
-      [originalIdentifier:="originalIdentifier"
-      [identifierMap]="eventIdentifierMap"
-      (duplicateIdentifier)="onDuplicateIdentifier($event)"
-      (identifierEmitter)="onIdentifierChange($event)">
-    </identifier-form>
+    <div *ngIf="eventIdentifierMap !== null">
+      <identifier-form
+        [originalIdentifier]="originalIdentifier"
+        [identifierMap]="eventIdentifierMap"
+        (duplicateIdentifier)="onDuplicateIdentifier($event)"
+        (identifierEmitter)="onIdentifierChange($event)">
+      </identifier-form>
 
-    <mat-form-field class="hidden">
-      <input matInput
-        type="number"
-        formControlName="collectionId"
-        required
-      />
-    </mat-form-field>
+      <mat-form-field class="hidden">
+        <input matInput
+          type="number"
+          formControlName="collectionId"
+          required
+        />
+      </mat-form-field>
 
-    <mat-form-field>
-      <input matInput
-        placeholder="Display Name"
-        type="text"
-        formControlName="displayName"
-        required
-      />
-    </mat-form-field>
+      <mat-form-field>
+        <input matInput
+          placeholder="Display Name"
+          type="text"
+          formControlName="displayName"
+          required
+        />
+      </mat-form-field>
 
-    <mat-form-field>
-      <textarea matInput
-        placeholder="Description"
-        formControlName="description"></textarea>
-    </mat-form-field>
+      <mat-form-field>
+        <textarea matInput
+          placeholder="Description"
+          formControlName="description"></textarea>
+      </mat-form-field>
 
-    <mat-form-field>
-      <input matInput
-        placeholder="External Link"
-        type="text"
-        formControlName="externalLink"
-      />
-    </mat-form-field>
+      <mat-form-field>
+        <input matInput
+          placeholder="External Link"
+          type="text"
+          formControlName="externalLink"
+        />
+      </mat-form-field>
+    </div>
 
     <div class="sidenav-actions">
       <button mat-raised-button color="primary" type="submit">Save</button>
