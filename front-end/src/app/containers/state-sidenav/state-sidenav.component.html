@@ -8,10 +8,10 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div *ngIf="stateIdentifiers !== null">
+    <div *ngIf="stateIdentifierMap !== null">
       <identifier-form
         [originalIdentifier]="originalIdentifier"
-        [identifiers]="stateIdentifiers"
+        [identifierMap]="stateIdentifierMap"
         (duplicateIdentifier)="onDuplicateIdentifier($event)"
         (identifierEmitter)="onIdentifierChange($event)">
       </identifier-form>

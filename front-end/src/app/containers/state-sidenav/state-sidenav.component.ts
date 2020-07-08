@@ -8,7 +8,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { SubSink } from 'subsink';
 
 import { State, StateEnumeration } from '../../models';
-import { getStateIdentifiers, getStateEnumerationsForSelectedState } from '../../selectors';
+import { getStateEnumerationsForSelectedState, getStateIdentifierMap } from '../../selectors';
 import { ToastActions } from '../../actions';
 import { EnumFormModule, IdentifierFormModule } from '../../components';
 import { AppState } from 'src/app/app-store';
@@ -30,7 +30,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public originalIdentifier: string;
   public enumerations: StateEnumeration[];
   public form: FormGroup;
-  public stateIdentifiers: Set<string>;
+  public stateIdentifierMap: Map<string, number>;
 
   private duplicateIdentifier: boolean;
   private subscriptions = new SubSink();
@@ -47,8 +47,8 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(
-      this.store.pipe(select(getStateIdentifiers)).subscribe(stateIdentifiers => {
-        this.stateIdentifiers = stateIdentifiers;
+      this.store.pipe(select(getStateIdentifierMap)).subscribe(stateIdentifierMap => {
+        this.stateIdentifierMap = stateIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getStateEnumerationsForSelectedState)).subscribe(enumerations => {

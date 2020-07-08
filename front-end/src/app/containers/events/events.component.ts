@@ -10,7 +10,7 @@ import { EventActions, LayoutActions, ToastActions, FileUploadActions } from 'sr
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
 import { Event as StateEvent, EventMap } from 'src/app/models';
-import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId } from 'src/app/selectors';
+import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId, getEventIdentifierMap } from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 
 @Component({
@@ -21,6 +21,7 @@ import { EventSidenavModule, EventTableModule } from 'src/app/components';
 })
 export class EventsComponent implements OnDestroy {
   public event: StateEvent;
+  public eventIdentifierMap;
   public eventMap: EventMap;
   public selectedCollectionId: number;
   public showSidenav: boolean;
@@ -34,6 +35,10 @@ export class EventsComponent implements OnDestroy {
     this.subscriptions = new SubSink();
 
     this.subscriptions.add(
+      this.store.pipe(select(getEventIdentifierMap)).subscribe(eventIdentifierMap => {
+        this.eventIdentifierMap = eventIdentifierMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();

@@ -6,6 +6,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 
 import { MaterialModule } from 'src/app/material';
 import { Event } from 'src/app/models';
+import { IdentifierFormModule } from '../identifier-form/identifier-form.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,12 +16,16 @@ import { Event } from 'src/app/models';
 })
 export class EventSidenavComponent implements OnChanges {
   @Input() public event: Event;
+  @Input() public eventIdentifierMap: Map<string, number>;
   @Input() public selectedCollectionId: number;
 
   @Output() public modifyEvent: EventEmitter<Event>;
 
   public form: FormGroup;
   public newEvent: Event;
+  public originalIdentifier: string;
+
+  private duplicateIdentifier: boolean;
 
   constructor(
     private iconRegistry: MatIconRegistry,
@@ -46,6 +51,8 @@ export class EventSidenavComponent implements OnChanges {
       this.newEvent = {
         ...this.event
       };
+
+      this.originalIdentifier = this.newEvent.identifier;
     }
 
     this.form = new FormGroup({
@@ -62,8 +69,19 @@ export class EventSidenavComponent implements OnChanges {
     this.modifyEvent.emit(undefined);
   }
 
+  public onDuplicateIdentifier(duplicateIdentifier: boolean): void {
+    this.duplicateIdentifier = duplicateIdentifier;
+  }
+
+  public onIdentifierChange(identifier: string): void {
+    this.newEvent.identifier = identifier;
+    this.form.get('identifier').setValue(identifier);
+  }
+
   public onSubmit(): void {
-    this.modifyEvent.emit(this.form.value);
+    if (!this.duplicateIdentifier) {
+      this.modifyEvent.emit(this.form.value);
+    }
   }
 }
 
@@ -77,6 +95,7 @@ export class EventSidenavComponent implements OnChanges {
   imports: [
     CommonModule,
     FormsModule,
+    IdentifierFormModule,
     MaterialModule,
     ReactiveFormsModule
   ]

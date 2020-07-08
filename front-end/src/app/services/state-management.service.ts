@@ -84,12 +84,6 @@ export class StateManagementService {
     );
   }
 
-  public getStateIdentifiers(collectionId: number): Observable<string[]> {
-    return this.http.get<string[]>(
-      this.addCollectionId(collectionId) + 'state-identifiers'
-    );
-  }
-
   public getInformationTypes(collectionId: number): Observable<InformationTypesMap> {
     return this.http.get<InformationTypesMap>(
       this.addCollectionId(collectionId) + 'information-types'

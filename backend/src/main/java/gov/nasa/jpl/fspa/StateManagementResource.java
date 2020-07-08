@@ -155,19 +155,6 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/collection/{collectionId}/state-identifiers")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getIdentifiers(@PathParam("collectionId") int collectionId) {
-        List<String> stateIdentifierList = stateService.getStateIdentifiers(collectionId);
-
-        if (stateIdentifierList.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.status(Response.Status.OK).entity(stateIdentifierList).build();
-    }
-
-    @GET
     @Path("/collection/{collectionId}/states")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStates(@PathParam("collectionId") int collectionId) {

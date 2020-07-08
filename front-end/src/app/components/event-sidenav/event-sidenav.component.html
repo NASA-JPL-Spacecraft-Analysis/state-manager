@@ -8,14 +8,12 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field>
-      <input matInput
-        placeholder="Identifier"
-        type="text"
-        formControlName="identifier"
-        required
-      />
-    </mat-form-field>
+    <identifier-form
+      [originalIdentifier:="originalIdentifier"
+      [identifierMap]="eventIdentifierMap"
+      (duplicateIdentifier)="onDuplicateIdentifier($event)"
+      (identifierEmitter)="onIdentifierChange($event)">
+    </identifier-form>
 
     <mat-form-field class="hidden">
       <input matInput

@@ -27,6 +27,7 @@
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
     <event-sidenav
+      [eventIdentifierMap]="eventIdentifierMap"
       [event]="event"
       [selectedCollectionId]="selectedCollectionId"
       (modifyEvent)="onSidenavOutput($event)">

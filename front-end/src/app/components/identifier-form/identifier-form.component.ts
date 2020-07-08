@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class IdentifierFormComponent {
   @Input() public originalIdentifier: string;
-  @Input() public identifiers: Set<string>;
+  @Input() public identifierMap: Map<string, number>;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public identifierEmitter: EventEmitter<string>;
@@ -41,7 +41,7 @@ export class IdentifierFormComponent {
    * @param identifier The current identifier.
    */
   public onIdentifierChange(identifier: string): void {
-    if (this.identifiers.size > 0) {
+    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
         this.identifierTooltipText = 'Your identifier is a duplicate';
@@ -71,8 +71,8 @@ export class IdentifierFormComponent {
    * @param identifier The current identifier.
    */
   private isIdentifierDuplicate(identifier: string): boolean {
-    if (this.identifiers.size > 0) {
-      return this.identifiers.has(identifier)
+    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
+      return this.identifierMap[identifier]
         && (!this.originalIdentifier || identifier !== this.originalIdentifier);
     }
 

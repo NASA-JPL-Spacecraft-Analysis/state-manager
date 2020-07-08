@@ -4,14 +4,14 @@ import { EventActions, FileUploadActions } from '../actions';
 import { EventMap, Event } from '../models';
 
 export interface EventState {
-  eventIdentifiers: string[];
+  eventIdentifierMap: Map<string, number>;
   eventMap: EventMap;
   eventHistoryMap: EventMap;
   selectedEvent: Event;
 }
 
 export const initialState: EventState = {
-  eventIdentifiers: null,
+  eventIdentifierMap: null,
   eventMap: null,
   eventHistoryMap: null,
   selectedEvent: null
@@ -33,17 +33,17 @@ export const reducer = createReducer(
     }
   })),
   on(EventActions.setEventMap, (state, { eventMap }) => {
-    const eventIdentifiers: string[] = [];
+    const eventIdentifierMap = new Map<string, number>();
 
     for (const key of Object.keys(eventMap)) {
-      eventIdentifiers.push(eventMap[key].identifier);
+      eventIdentifierMap[eventMap[key].identifier] = key;
     }
 
     return {
       ...state,
-      eventIdentifiers: [
-        ...eventIdentifiers
-      ],
+      eventIdentifierMap: {
+        ...eventIdentifierMap
+      },
       eventMap: {
         ...eventMap
       }
@@ -64,12 +64,16 @@ export const reducer = createReducer(
 function modifyEvent(state: EventState, event: Event) {
   return {
     ...state,
-    selectedEvent: event,
+    eventIdentifierMap: {
+      ...state.eventIdentifierMap,
+      [event.id]: event.identifier
+    },
     eventMap: {
       ...state.eventMap,
       [event.id]: {
         ...event
       }
-    }
+    },
+    selectedEvent: event
   };
 }

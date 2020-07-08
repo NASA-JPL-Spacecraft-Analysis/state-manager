@@ -20,38 +20,6 @@ export class StateEffects {
     private store: Store<AppState>
   ) {}
 
-  public createEvent = createEffect(() => {
-    return this.actions.pipe(
-      ofType(EventActions.createEvent),
-      switchMap(({ event }) =>
-        this.stateManagementService.createEvent(
-          event
-        ).pipe(
-          switchMap(
-            (createdEvent: Event) => [
-              EventActions.createEventSuccess({
-                event: createdEvent
-              }),
-              ToastActions.showToast({
-                message: 'Event created',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              EventActions.createEventFailure({ error }),
-              ToastActions.showToast({
-                message: 'Event creation failed',
-                toastType: 'error'
-              })
-            ]
-          )
-        )
-      )
-    );
-  });
-
   public createState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.createState),
@@ -261,20 +229,6 @@ export class StateEffects {
           catchError(
             (error: Error) => [
               StateActions.fetchStateEnumerationsFailure({
-                error
-              })
-            ]
-          )
-        ),
-        this.stateManagementService.getStateIdentifiers(
-          collectionId
-        ).pipe(
-          map(stateIdentifiers => StateActions.setStateIdentifiers({
-            stateIdentifiers
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchIdentifiersFailure({
                 error
               })
             ]

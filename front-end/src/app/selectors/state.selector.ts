@@ -5,9 +5,9 @@ import { StateEnumeration, StateEnumerationMap, State } from '../models';
 
 const getStatesState = createFeatureSelector<StateState>('states');
 
-export const getStateIdentifiers = createSelector(
+export const getStateIdentifierMap = createSelector(
   getStatesState,
-  (stateState: StateState) => stateState.stateIdentifiers
+  (stateState: StateState) => stateState.stateIdentifierMap
 );
 
 export const getStateEnumerations = createSelector(
