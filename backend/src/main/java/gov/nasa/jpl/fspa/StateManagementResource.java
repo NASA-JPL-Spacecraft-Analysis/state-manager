@@ -16,7 +16,6 @@ import gov.nasa.jpl.fspa.states.service.StateServiceImpl;
 import gov.nasa.jpl.fspa.util.StateManagementConstants;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,7 +23,6 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Path("v1/")
 public class StateManagementResource {
@@ -376,6 +374,10 @@ public class StateManagementResource {
             if (invalidInformationTypesList.size() == 0) {
                 Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
                         informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList), collectionId);
+
+                if (informationTypesMap == null) {
+                    return Response.status(Response.Status.CONFLICT).entity(StateManagementConstants.DUPLICATE_INFORMATION_TYPE_IDENTIFIERS_MESSAGE).build();
+                }
 
                 return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
             } else {
