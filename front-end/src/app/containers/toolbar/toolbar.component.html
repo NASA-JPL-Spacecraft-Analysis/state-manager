@@ -12,19 +12,19 @@
   </div>
 
   <div class="navigation-container">
-    <button mat-button routerLink="/states" routerLinkActive="active">
+    <button mat-button routerLink="/collection/{{selectedCollectionId}}/states" routerLinkActive="active">
       States
     </button>
 
-    <button mat-button routerLink="/relationships" routerLinkActive="active">
+    <button mat-button routerLink="/collection/{{selectedCollectionId}}/relationships" routerLinkActive="active">
       Relationships
     </button>
 
-    <button mat-button routerLink="/events" routerLinkActive="active">
+    <button mat-button routerLink="/collection/{{selectedCollectionId}}/events" routerLinkActive="active">
       Events
     </button>
 
-    <button mat-button routerLink="/information-types" routerLinkActive="active">
+    <button mat-button routerLink="/collection/{{selectedCollectionId}}/information-types" routerLinkActive="active">
       Information Types 
     </button>
 

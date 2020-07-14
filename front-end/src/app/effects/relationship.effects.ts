@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { Store, Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
+import { Observable, merge, EMPTY } from 'rxjs';
 
 import { StateManagementService } from '../services/state-management.service';
 import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypesActions, StateActions } from '../actions';
-import { Observable, merge, EMPTY } from 'rxjs';
-import { ofRoute } from '../functions/router';
+import { ofRoute, mapToParam } from '../functions/router';
 import { AppState } from '../app-store';
 import { Relationship } from '../models';
 
@@ -88,17 +88,10 @@ export class RelationshipEffects {
 
   public navRelationships = createEffect(() => {
     return this.actions.pipe(
-      ofRoute('relationships'),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        const collectionId = state.collection.selectedCollectionId;
-
-        if (collectionId) {
-          return this.getRelationships(collectionId);
-        }
-
-        return [];
+      ofRoute([ 'collection/:collectionId/relationships', 'collection/:collectionId/relationship-history' ]),
+      mapToParam<number>('collectionId'),
+      switchMap(collectionId => {
+        return this.getRelationships(collectionId);
       })
     );
   });
@@ -116,25 +109,8 @@ export class RelationshipEffects {
     );
   });
 
-  public navRelationshipHistory = createEffect(() => {
-    return this.actions.pipe(
-      ofRoute('relationship-history'),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        const collectionId = state.collection.selectedCollectionId;
-
-        if (collectionId) {
-          return this.getRelationships(collectionId);
-        }
-
-        return [];
-      })
-    );
-  });
-
   private getRelationships(collectionId: number): Observable<Action> {
-    const url = this.router.routerState.snapshot.url;
+    const url = this.router.routerState.snapshot.url.split('/').pop();
     const sharedActions = merge(
       this.stateManagementService.getEventMap(
         collectionId
@@ -180,7 +156,7 @@ export class RelationshipEffects {
       )
     );
 
-    if (url === '/relationships') {
+    if (url === 'relationships') {
       return merge(
         sharedActions,
         this.stateManagementService.getRelationships(
@@ -198,7 +174,7 @@ export class RelationshipEffects {
           )
         )
       );
-    } else if (url === '/relationship-history') {
+    } else if (url === 'relationship-history') {
       return merge(
         sharedActions,
         this.stateManagementService.getRelationshipHistory(

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
-import { ofRoute } from '../functions/router';
+import { ofRoute, mapToParam } from '../functions/router';
 import { InformationTypesActions, CollectionActions } from '../actions';
 import { AppState } from '../app-store';
 
@@ -19,15 +19,10 @@ export class InformationTypesEffects {
 
   public navInformationTypes = createEffect(() => {
     return this.actions.pipe(
-      ofRoute('information-types'),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        if (state.collection.selectedCollectionId) {
-          return this.getInformationTypes(state.collection.selectedCollectionId);
-        }
-
-        return [];
+      ofRoute('collection/:collectionId/information-types'),
+      mapToParam<number>('collectionId'),
+      switchMap(collectionId => {
+        return this.getInformationTypes(collectionId);
       })
     );
   });

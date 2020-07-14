@@ -21,7 +21,7 @@ export class EventEffects {
 
   public getEventByStateCollectionId = createEffect(() => {
     return this.actions.pipe(
-      ofRoute([ 'events', 'event-history' ]),
+      ofRoute([ 'collection/:collectionId/events', 'collection/:collectionId/event-history' ]),
       withLatestFrom(this.store),
       map(([_, state]) => state),
       switchMap(state => {
@@ -48,9 +48,9 @@ export class EventEffects {
   });
 
   private getEventInformation(id: number): Observable<Action> {
-    const url = this.router.routerState.snapshot.url;
+    const url = this.router.routerState.snapshot.url.split('/').pop();
 
-    if (url === '/events') {
+    if (url === 'events') {
       return merge(
         of(LayoutActions.toggleSidenav({
           showSidenav: false
@@ -70,7 +70,7 @@ export class EventEffects {
           )
         )
       );
-    } else if (url === '/event-history') {
+    } else if (url === 'event-history') {
       return merge(
         of(LayoutActions.toggleSidenav({
           showSidenav: false
