@@ -159,7 +159,7 @@ export class StateEffects {
 
   public navStates = createEffect(() => {
     return this.actions.pipe(
-      ofRoute('collection/:collectionId/states'),
+      ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
       mapToParam<number>('collectionId'),
       switchMap(collectionId => {
         return this.getStates(collectionId);
@@ -176,16 +176,6 @@ export class StateEffects {
         }
 
         return [];
-      })
-    );
-  });
-
-  public navStatesHistory = createEffect(() => {
-    return this.actions.pipe(
-      ofRoute('collection/:collectionId/state-history'),
-      mapToParam<number>('collectionId'),
-      switchMap(collectionId => {
-        return this.getStates(collectionId);
       })
     );
   });
