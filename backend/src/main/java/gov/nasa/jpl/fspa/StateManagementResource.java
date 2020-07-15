@@ -153,19 +153,6 @@ public class StateManagementResource {
     }
 
     @GET
-    @Path("/collection/{collectionId}/state-identifiers")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getIdentifiers(@PathParam("collectionId") int collectionId) {
-        List<String> stateIdentifierList = stateService.getStateIdentifiers(collectionId);
-
-        if (stateIdentifierList.isEmpty()) {
-            return Response.status(Response.Status.NO_CONTENT).build();
-        }
-
-        return Response.status(Response.Status.OK).entity(stateIdentifierList).build();
-    }
-
-    @GET
     @Path("/collection/{collectionId}/states")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStates(@PathParam("collectionId") int collectionId) {
@@ -340,10 +327,10 @@ public class StateManagementResource {
     }
 
     @POST
-    @Path("/event")
+    @Path("/collection/{collectionId}/event")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postEvent(Event event) {
-        Event createdEvent = eventService.modifyEvent(event);
+    public Response postEvent(@PathParam("collectionId") int collectionId, Event event) {
+        Event createdEvent = eventService.modifyEvent(collectionId, event);
 
         if (createdEvent == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -353,10 +340,10 @@ public class StateManagementResource {
     }
 
     @PUT
-    @Path("/event")
+    @Path("/collection/{collectionId}/event")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editEvent(Event event) {
-        Event editedEvent = eventService.modifyEvent(event);
+    public Response editEvent(@PathParam("collectionId") int collectionId, Event event) {
+        Event editedEvent = eventService.modifyEvent(collectionId, event);
 
         if (editedEvent == null) {
             return Response.status(Response.Status.NO_CONTENT).build();
@@ -387,6 +374,10 @@ public class StateManagementResource {
             if (invalidInformationTypesList.size() == 0) {
                 Map<InformationTypesEnum, Map<Integer, InformationTypes>> informationTypesMap =
                         informationTypesService.saveUploadedInformationTypes(informationTypesService.convertInformationTypesUpload(parsedInformationTypesUploadList), collectionId);
+
+                if (informationTypesMap == null) {
+                    return Response.status(Response.Status.CONFLICT).entity(StateManagementConstants.DUPLICATE_INFORMATION_TYPE_IDENTIFIERS_MESSAGE).build();
+                }
 
                 return Response.status(Response.Status.CREATED).entity(informationTypesMap).build();
             } else {
@@ -424,6 +415,14 @@ public class StateManagementResource {
 
     private Response saveParsedEvents(List<Event> parsedEventList, int collectionId) {
         if (parsedEventList.size() > 0) {
+            List<String> duplicateIdentifiers = validationService.getDuplicateIdentifiers(parsedEventList, stateService.getMappedIdentifiers(collectionId));
+
+            if (duplicateIdentifiers.size() > 0) {
+                return Response.status(Response.Status.CONFLICT).entity(
+                        StateManagementConstants.DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES + duplicateIdentifiers.toString()
+                ).build();
+            }
+
             Map<Integer, Event> eventMap = eventService.saveUploadedEvents(parsedEventList, collectionId);
 
             if (eventMap.keySet().size() > 0) {
@@ -436,7 +435,7 @@ public class StateManagementResource {
 
     private Response saveParsedRelationships(int collectionId, List<RelationshipUpload> parsedRelationshipUploadList) {
         if (parsedRelationshipUploadList.size() > 0) {
-            Map<String, Integer> eventIdentifierMap = eventService.getMappedIdentifiers();
+            Map<String, Integer> eventIdentifierMap = eventService.getMappedIdentifiers(collectionId);
             Map<InformationTypesEnum, Map<String, InformationTypes>> informationTypesEnumMap =  informationTypesService.getInformationTypesByIdentifier(collectionId);
             Map<String, Integer> stateIdentifierMap = stateService.getMappedIdentifiers(collectionId);
 

@@ -89,18 +89,6 @@ public class StateServiceImpl implements StateService {
         return mappedIdentifiers;
     }
 
-    @Override
-    public List<String> getStateIdentifiers(int collectionId) {
-        List<String> stateIdentifierList = new ArrayList<>();
-        List<Identifier> identifierList = stateDao.getStateIdentifiers(collectionId);
-
-        for (Identifier identifier: identifierList) {
-            stateIdentifierList.add(identifier.getIdentifier());
-        }
-
-        return stateIdentifierList;
-    }
-
     /**
      * This method processes the posted set of enumerations for a given state.
      * It figures out which enumerations to delete, create, and update based on IDs and what enumerations aren't

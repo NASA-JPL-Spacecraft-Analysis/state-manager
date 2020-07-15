@@ -11,7 +11,7 @@ public interface ValidationService {
 
     boolean hasInvalidStates(List<State> stateList);
 
-    List<String> getDuplicateIdentifiers(List<State> stateList, Map<String, Integer> identifierMap);
+    <T extends IdentifierType> List<String> getDuplicateIdentifiers(List<T> itemList, Map<String, Integer> identifierMap);
 
     List<String> validateInformationTypes(List<InformationTypesUpload> informationTypesUploadList);
 }

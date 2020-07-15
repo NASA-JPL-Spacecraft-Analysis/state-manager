@@ -7,6 +7,9 @@ public class StateManagementConstants {
     public static final String DUPLICATE_IDENTIFIER_MESSAGE_WITH_DUPLICATES = DUPLICATE_IDENTIFIER_MESSAGE
             + "Duplicate Identifiers: ";
 
+    public static final String DUPLICATE_INFORMATION_TYPE_IDENTIFIERS_MESSAGE = "You tried to upload some information types with "
+            + "duplicate identifiers, please fix them and try again.";
+
     public static final String INVALID_IDENTIFIER_MESSAGE_WITH_IDENTIFIERS = "You tried to upload a list of enumeration(s) "
             + "with the following invalid identifiers: ";
 

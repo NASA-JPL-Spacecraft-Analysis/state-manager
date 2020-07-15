@@ -77,11 +77,6 @@ export const saveEnumerationsFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const setStateIdentifiers = createAction(
-  '[state] setStateIdentifiers',
-  props<{ stateIdentifiers: string[] }>()
-);
-
 export const setStateEnumerations = createAction(
   '[state] setStateEnumerations',
   props<{ stateEnumerationMap: StateEnumerationMap }>()

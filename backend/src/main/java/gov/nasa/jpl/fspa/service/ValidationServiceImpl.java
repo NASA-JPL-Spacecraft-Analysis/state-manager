@@ -36,7 +36,7 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean hasInvalidStates(List<State> stateList) {
-        for (State state : stateList) {
+        for (State state: stateList) {
             if (isPropertyInvalid(state.getIdentifier())
                 || isPropertyInvalid(state.getDisplayName())
                 || isPropertyInvalid(state.getType())
@@ -51,20 +51,19 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     /**
-     * Checks for duplicate identifiers for a given list of state variables.
-     * @param stateList The new list of state variables we are checking for duplicates.
+     * Checks for duplicate identifiers for a given list of items.
+     * @param itemList The list of items we're checking the identifiers of.
      * @param identifierMap The list of current identifiers to check against.
      * @return A list of the duplicate identifiers.
      */
     @Override
-    public List<String> getDuplicateIdentifiers(List<State> stateList, Map<String, Integer> identifierMap) {
+    public <T extends IdentifierType> List<String> getDuplicateIdentifiers(List<T> itemList, Map<String, Integer> identifierMap) {
         List<String> duplicateIdentifiers = new ArrayList<>();
         Set<String> uploadedIdentifierSet = new HashSet<>();
 
-
         // Check the existing identifiers we have.
-        for (State state : stateList) {
-            String currentIdentifier = state.getIdentifier();
+        for (IdentifierType item: itemList) {
+            String currentIdentifier = item.getIdentifier();
 
             // Check the uploaded state variables first and make sure the user didn't upload the same identifier more than once.
             if (uploadedIdentifierSet.contains(currentIdentifier)) {
@@ -72,7 +71,7 @@ public class ValidationServiceImpl implements ValidationService {
             }
 
             if (identifierMap.get(currentIdentifier) != null
-                    && !identifierMap.get(currentIdentifier).equals(state.getId())) {
+                    && !identifierMap.get(currentIdentifier).equals(item.getId())) {
                 duplicateIdentifiers.add(currentIdentifier);
             }
 

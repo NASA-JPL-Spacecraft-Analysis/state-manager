@@ -4,7 +4,7 @@ import { Event, EventMap } from '../models';
 
 export const createEvent = createAction(
   '[event] createEvent',
-  props<{ event: Event }>()
+  props<{ collectionId: number, event: Event }>()
 );
 
 export const createEventFailure = createAction(
@@ -19,7 +19,7 @@ export const createEventSuccess = createAction(
 
 export const editEvent = createAction(
   '[event] editEvent',
-  props<{ event: Event }>()
+  props<{ collectionId: number, event: Event }>()
 );
 
 export const editEventFailure = createAction(
@@ -32,6 +32,11 @@ export const editEventSuccess = createAction(
   props<{ event: Event }>()
 );
 
+export const fetchEventIdentifiersFailure = createAction(
+  '[event] fetchEventIdentifiersFailure',
+  props<{ error: Error }>()
+);
+
 export const fetchEventMapFailure = createAction(
   '[event] fetchEventMapFailure',
   props<{ error: Error }>()
@@ -40,6 +45,11 @@ export const fetchEventMapFailure = createAction(
 export const fetchEventHistoryMapFailure = createAction(
   '[event] fetchEventHistoryMapFailure',
   props<{ error: Error }>()
+);
+
+export const setEventIdentifiers = createAction(
+  '[event] setEventIdentifiers',
+  props<{ eventIdentifiers: string[] }>()
 );
 
 export const setEventMap = createAction(

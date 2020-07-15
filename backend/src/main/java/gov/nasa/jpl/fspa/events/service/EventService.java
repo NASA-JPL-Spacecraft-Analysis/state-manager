@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 public interface EventService {
-    Map<Integer, EventHistory> getEventHistoryMap(Integer collectionId);
+    Map<Integer, EventHistory> getEventHistoryMap(int collectionId);
 
-    Map<Integer, Event> getEventMap(Integer collectionId);
+    Map<Integer, Event> getEventMap(int collectionId);
 
-    Map<String, Integer> getMappedIdentifiers();
+    Map<String, Integer> getMappedIdentifiers(int collectionId);
 
-    Event modifyEvent(Event event);
+    Event modifyEvent(int collectionId, Event event);
 
     Map<Integer, Event> saveUploadedEvents(List<Event> eventList, int collectionId);
 }
