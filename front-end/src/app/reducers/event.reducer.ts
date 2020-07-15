@@ -4,12 +4,14 @@ import { EventActions, FileUploadActions } from '../actions';
 import { EventMap, Event } from '../models';
 
 export interface EventState {
+  eventIdentifierMap: Map<string, number>;
   eventMap: EventMap;
   eventHistoryMap: EventMap;
   selectedEvent: Event;
 }
 
 export const initialState: EventState = {
+  eventIdentifierMap: null,
   eventMap: null,
   eventHistoryMap: null,
   selectedEvent: null
@@ -30,12 +32,23 @@ export const reducer = createReducer(
       ...eventMap
     }
   })),
-  on(EventActions.setEventMap, (state, { eventMap }) => ({
-    ...state,
-    eventMap: {
-      ...eventMap
+  on(EventActions.setEventMap, (state, { eventMap }) => {
+    const eventIdentifierMap = new Map<string, number>();
+
+    for (const key of Object.keys(eventMap)) {
+      eventIdentifierMap[eventMap[key].identifier] = key;
     }
-  })),
+
+    return {
+      ...state,
+      eventIdentifierMap: {
+        ...eventIdentifierMap
+      },
+      eventMap: {
+        ...eventMap
+      }
+    };
+  }),
   on(EventActions.setEventHistoryMap, (state, { eventHistoryMap }) => ({
     ...state,
     eventHistoryMap: {
@@ -49,14 +62,29 @@ export const reducer = createReducer(
 );
 
 function modifyEvent(state: EventState, event: Event) {
+  const eventIdentifierMap = {
+    ...state.eventIdentifierMap
+  };
+
+  for (const identifier of Object.keys(eventIdentifierMap)) {
+    // Remove the old identifier from our map
+    if (Number(eventIdentifierMap[identifier]) === event.id) {
+      delete eventIdentifierMap[identifier];
+    }
+  }
+
   return {
     ...state,
-    selectedEvent: event,
+    eventIdentifierMap: {
+      ...eventIdentifierMap,
+      [event.id]: event.identifier
+    },
     eventMap: {
       ...state.eventMap,
       [event.id]: {
         ...event
       }
-    }
+    },
+    selectedEvent: event
   };
 }

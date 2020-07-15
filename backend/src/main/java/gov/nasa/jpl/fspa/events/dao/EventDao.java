@@ -7,11 +7,11 @@ import gov.nasa.jpl.fspa.model.Identifier;
 import java.util.List;
 
 public interface EventDao {
-    List<EventHistory> getEventHistoryList(Integer collectionId);
+    List<EventHistory> getEventHistoryList(int collectionId);
 
-    List<Event> getEvents(Integer collectionId);
+    List<Event> getEvents(int collectionId);
 
-    List<Identifier> getIdentifiers();
+    List<Identifier> getIdentifiers(int collectionId);
 
     Event modifyEvent(Event event);
 }

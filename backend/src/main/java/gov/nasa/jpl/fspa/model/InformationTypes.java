@@ -2,13 +2,9 @@ package gov.nasa.jpl.fspa.model;
 
 import com.opencsv.bean.CsvBindByName;
 
-public class InformationTypes {
-    private Integer id;
+public class InformationTypes extends IdentifierType {
     private Integer collectionId;
     private InformationTypesEnum type;
-
-    @CsvBindByName(required = true)
-    private String identifier;
 
     @CsvBindByName
     private String displayName;
@@ -18,14 +14,6 @@ public class InformationTypes {
 
     @CsvBindByName
     private String externalLink;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getCollectionId() {
         return collectionId;
@@ -41,14 +29,6 @@ public class InformationTypes {
 
     public void setType(InformationTypesEnum type) {
         this.type = type;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
     public String getDisplayName() {

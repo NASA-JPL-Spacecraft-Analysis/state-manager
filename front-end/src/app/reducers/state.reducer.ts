@@ -8,7 +8,7 @@ import {
 } from '../models';
 
 export interface StateState {
-  stateIdentifiers: Set<string>;
+  stateIdentifierMap: Map<string, number>;
   selectedState: State;
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
@@ -16,7 +16,7 @@ export interface StateState {
 }
 
 export const initialState: StateState = {
-  stateIdentifiers: new Set<string>(),
+  stateIdentifierMap: null,
   selectedState: null,
   stateEnumerationMap: null,
   stateHistoryMap: null,
@@ -58,20 +58,6 @@ export const reducer = createReducer(
       }
     };
   }),
-  on(StateActions.setStateIdentifiers, (appState, { stateIdentifiers }) => {
-    const stateIdentifierSet = new Set<string>();
-
-    if (stateIdentifiers) {
-      for (const stateIdentifier of stateIdentifiers) {
-        stateIdentifierSet.add(stateIdentifier);
-      }
-    }
-
-    return {
-      ...appState,
-      stateIdentifiers: stateIdentifierSet
-    };
-  }),
   on(StateActions.setStateEnumerations, (stateState, { stateEnumerationMap }) => ({
     ...stateState,
     stateEnumerationMap: {
@@ -82,10 +68,23 @@ export const reducer = createReducer(
     ...stateState,
     stateHistoryMap
   })),
-  on(StateActions.setStates, (stateState, { stateMap }) => ({
-    ...stateState,
-    stateMap
-  })),
+  on(StateActions.setStates, (stateState, { stateMap }) => {
+    const stateIdentifierMap = new Map<string, number>();
+
+    for (const key of Object.keys(stateMap)) {
+      stateIdentifierMap[stateMap[key].identifier] = key;
+    }
+
+    return {
+      ...stateState,
+      stateIdentifierMap: {
+        ...stateIdentifierMap
+      },
+      stateMap: {
+        ...stateMap
+      }
+    };
+  }),
   on(StateActions.setSelectedState, (stateState, { state }) => ({
     ...stateState,
     selectedState: state
@@ -106,9 +105,24 @@ export const reducer = createReducer(
 );
 
 function modifyState(stateState: StateState, state: State): StateState {
+  const stateIdentifierMap = {
+    ...stateState.stateIdentifierMap
+  };
+
+  for (const identifier of Object.keys(stateIdentifierMap)) {
+    // Remove the old identifier from our map
+    if (Number(stateIdentifierMap[identifier]) === state.id) {
+      delete stateIdentifierMap[identifier];
+    }
+  }
+
   return {
     ...stateState,
     selectedState: state,
+    stateIdentifierMap: {
+      ...stateIdentifierMap,
+      [state.identifier]: state.id
+    },
     stateMap: {
       ...stateState.stateMap,
       [state.id]: {

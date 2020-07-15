@@ -1,17 +1,16 @@
 import { Component, NgModule, ChangeDetectionStrategy, Input,
-  ChangeDetectorRef, OnDestroy, ViewChild, Output, EventEmitter, OnChanges } from '@angular/core';
+  ChangeDetectorRef, OnDestroy, Output, EventEmitter, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { MatIconRegistry } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
 import { SubSink } from 'subsink';
 
 import { State, StateEnumeration } from '../../models';
-import { getStateIdentifiers, getStateEnumerationsForSelectedState } from '../../selectors';
+import { getStateEnumerationsForSelectedState, getStateIdentifierMap } from '../../selectors';
 import { ToastActions } from '../../actions';
-import { EnumFormModule } from '../../components';
+import { EnumFormModule, IdentifierFormModule } from '../../components';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 
@@ -27,15 +26,13 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>;
   @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
-  @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
-
   public newState: State;
+  public originalIdentifier: string;
   public enumerations: StateEnumeration[];
-  public identifierIcon: string;
-  public identifierTooltipText: string;
   public form: FormGroup;
-  public stateIdentifiers: Set<string>;
+  public stateIdentifierMap: Map<string, number>;
 
+  private duplicateIdentifier: boolean;
   private subscriptions = new SubSink();
 
   constructor(
@@ -44,15 +41,14 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
     private sanitizer: DomSanitizer,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.iconRegistry.addSvgIcon('done', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/done.svg'));
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
     this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(
-      this.store.pipe(select(getStateIdentifiers)).subscribe(stateIdentifiers => {
-        this.stateIdentifiers = stateIdentifiers;
+      this.store.pipe(select(getStateIdentifierMap)).subscribe(stateIdentifierMap => {
+        this.stateIdentifierMap = stateIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getStateEnumerationsForSelectedState)).subscribe(enumerations => {
@@ -82,6 +78,8 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
       this.newState = {
         ...this.state
       };
+
+      this.originalIdentifier = this.newState.identifier;
     }
 
     this.form = new FormGroup({
@@ -96,6 +94,15 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
     });
   }
 
+  public onDuplicateIdentifier(duplicateIdentifier: boolean): void {
+    this.duplicateIdentifier = duplicateIdentifier;
+  }
+
+  public onIdentifierChange(identifier: string): void {
+    this.newState.identifier = identifier;
+    this.form.get('identifier').setValue(identifier);
+  }
+
   /**
    * Called when the user submits the form.
    * When the user submits, we check:
@@ -104,7 +111,12 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public onSubmit(): void {
     // Process our enumerations before trying to save our state.
     if (this.processEnumerations()) {
-      if (!this.isStateIdentifierDuplicate(this.form.value.identifier.trim())) {
+      if (!this.duplicateIdentifier) {
+        // Only emit our enumerations seperatly if we're modifying an existing state.
+        if (this.newState.id !== undefined) {
+          this.modifyEnumerations.emit(this.enumerations);
+        }
+
         // Emit both values, but we'll only use the enumeraion list on creating a new state.
         this.modifyState.emit({
           state: this.form.value,
@@ -112,7 +124,12 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
         });
       } else {
         // Show the duplicate tooltip.
-        this.duplicateTooltip.show();
+        this.store.dispatch(
+          ToastActions.showToast({
+            message: 'Please provide a unique identifier',
+            toastType: 'error'
+          })
+        );
       }
     } else {
       // If we had an issue with the enumerations, show an error.
@@ -130,30 +147,6 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   }
 
   /**
-   * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
-   * if the identifier isn't empty.
-   * @param identifier The current identifier.
-   */
-  public onIdentifierChange(identifier: string): void {
-    if (identifier.length > 0) {
-      if (this.isStateIdentifierDuplicate(identifier)) {
-        this.identifierIcon = 'clear';
-        this.identifierTooltipText = 'Your identifier is a duplicate';
-
-        // Mark our form as invalid so the user can't save when there's a duplicate.
-        this.form.get('identifier').setErrors({});
-      } else {
-        this.identifierIcon = 'done';
-        this.identifierTooltipText = 'Your identifier is unique';
-      }
-    } else {
-      // Reset everything when the user clears the field.
-      this.identifierIcon = null;
-      this.identifierTooltipText = null;
-    }
-  }
-
-  /**
    * Checks to see if the enumerations were modified. If they were, then we save them.
    */
   private processEnumerations(): boolean {
@@ -164,28 +157,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
       }
     }
 
-    // Only emit our enumerations seperatly if we're modifying an existing state.
-    if (this.newState.id !== undefined) {
-      this.modifyEnumerations.emit(this.enumerations);
-    }
-
     return true;
-  }
-
-  /**
-   * Checks to see if an identifier is duplicate by:
-   * 1) That we have some identifiers then
-   * 2) That we have a unique identifier
-   * 3) AND that we're not flagging an edited identifier on it's own value
-   * @param identifier The current identifier.
-   */
-  private isStateIdentifierDuplicate(identifier: string): boolean {
-    if (this.stateIdentifiers.size > 0) {
-      return this.stateIdentifiers.has(identifier)
-          && (!this.newState.identifier || identifier !== this.newState.identifier);
-    }
-
-    return false;
   }
 }
 
@@ -198,6 +170,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   ],
   imports: [
     EnumFormModule,
+    IdentifierFormModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

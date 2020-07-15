@@ -24,44 +24,44 @@ const { baseUrl } = environment;
 export class StateManagementService {
   constructor(private http: HttpClient) {}
 
-  public createEvent(event: Event): Observable<Event> {
+  public createEvent(collectionId: number, event: Event): Observable<Event> {
     return this.http.post<Event>(
-      baseUrl + '/event',
+      this.addCollectionId(collectionId) + 'event',
       event
     );
   }
 
   public createRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
     return this.http.post<Relationship>(
-      baseUrl + '/collection/' + collectionId + '/relationship',
+      this.addCollectionId(collectionId) + 'relationship',
       relationship
     );
   }
 
   public createState(collectionId: number, state: State): Observable<State> {
     return this.http.post<State>(
-      baseUrl + '/collection/' + collectionId + '/state',
+      this.addCollectionId(collectionId) + 'state',
       state
     );
   }
 
-  public editEvent(event: Event): Observable<Event> {
+  public editEvent(collectionId: number, event: Event): Observable<Event> {
     return this.http.put<Event>(
-      baseUrl + '/event',
+      this.addCollectionId(collectionId) + 'event',
       event
     );
   }
 
   public editRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
     return this.http.put<Relationship>(
-      baseUrl + '/collection/' + collectionId + '/relationship',
+      this.addCollectionId(collectionId) + 'relationship',
       relationship
     );
   }
 
   public editState(collectionId: number, state: State): Observable<State> {
     return this.http.put<State>(
-      baseUrl + '/collection/' + collectionId + '/state',
+      this.addCollectionId(collectionId) + 'state',
       state
     );
   }
@@ -74,61 +74,55 @@ export class StateManagementService {
 
   public getEventMap(collectionId: number): Observable<EventMap> {
     return this.http.get<EventMap>(
-      baseUrl + '/collection/' + collectionId + '/event-map'
+      this.addCollectionId(collectionId) + 'event-map'
     );
   }
 
   public getEventHistoryMap(collectionId: number): Observable<EventMap> {
     return this.http.get<EventMap>(
-      baseUrl + '/collection/' + collectionId + '/event-history-map'
-    );
-  }
-
-  public getStateIdentifiers(collectionId: number): Observable<string[]> {
-    return this.http.get<string[]>(
-      baseUrl + '/collection/' + collectionId + '/state-identifiers'
+      this.addCollectionId(collectionId) + 'event-history-map'
     );
   }
 
   public getInformationTypes(collectionId: number): Observable<InformationTypesMap> {
     return this.http.get<InformationTypesMap>(
-      baseUrl + '/collection/' + collectionId + '/information-types'
+      this.addCollectionId(collectionId) + 'information-types'
     );
   }
 
   public getRelationships(collectionId: number): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
-      baseUrl + '/collection/' + collectionId + '/relationships'
+      this.addCollectionId(collectionId) + 'relationships'
     );
   }
 
   public getRelationshipHistory(collectionId: number): Observable<RelationshipMap> {
     return this.http.get<RelationshipMap>(
-      baseUrl + '/collection/' + collectionId + '/relationship-history'
+      this.addCollectionId(collectionId) + 'relationship-history'
     );
   }
 
   public getStateEnumerations(collectionId: number): Observable<StateEnumerationMap> {
     return this.http.get<StateEnumerationMap>(
-      baseUrl + '/collection/' + collectionId + '/state-enumerations'
+      this.addCollectionId(collectionId) + 'state-enumerations'
     );
   }
 
   public getStateHistory(collectionId: number): Observable<StateMap> {
     return this.http.get<StateMap>(
-      baseUrl + '/collection/' + collectionId + '/state-history'
+      this.addCollectionId(collectionId) + 'state-history'
     );
   }
 
   public getStates(collectionId: number): Observable<StateMap> {
     return this.http.get<StateMap>(
-      baseUrl + '/collection/' + collectionId + '/states'
+      this.addCollectionId(collectionId) + 'states'
     );
   }
 
   public saveEnumerations(collectionId: number, stateId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
     return this.http.post<StateEnumeration[]>(
-      baseUrl + '/collection/' + collectionId + '/state-enumerations/' + stateId,
+      this.addCollectionId(collectionId) + 'state-enumerations/' + stateId,
       enumerations
     );
   }
@@ -137,7 +131,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<StateEnumerationMap>(
-      baseUrl + '/collection/' + collectionId + '/enumerations-csv',
+      this.addCollectionId(collectionId) + 'enumerations-csv',
       formData
     );
   }
@@ -146,7 +140,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<StateEnumerationMap>(
-      baseUrl + '/collection/' + collectionId + '/enumerations-json',
+      this.addCollectionId(collectionId) + 'enumerations-json',
       formData
     );
   }
@@ -155,7 +149,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<EventMap>(
-      baseUrl + '/collection/' + collectionId + '/events-csv',
+      this.addCollectionId(collectionId) + 'events-csv',
       formData
     );
   }
@@ -164,7 +158,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<EventMap>(
-      baseUrl + '/collection/' + collectionId + '/events-json',
+      this.addCollectionId(collectionId) + 'events-json',
       formData
     );
   }
@@ -173,7 +167,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
-      baseUrl + '/collection/' + collectionId + '/information-types-csv',
+      this.addCollectionId(collectionId) + 'information-types-csv',
       formData
     );
   }
@@ -182,7 +176,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<InformationTypesMap>(
-      baseUrl + '/collection/' + collectionId + '/information-types-json',
+      this.addCollectionId(collectionId) + 'information-types-json',
       formData
     );
   }
@@ -191,7 +185,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<RelationshipMap>(
-      baseUrl + '/collection/' + collectionId + '/relationships-csv',
+      this.addCollectionId(collectionId) + 'relationships-csv',
       formData
     );
   }
@@ -200,7 +194,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<RelationshipMap>(
-      baseUrl + '/collection/' + collectionId + '/relationships-json',
+      this.addCollectionId(collectionId) + 'relationships-json',
       formData
     );
   }
@@ -209,7 +203,7 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<StateMap>(
-      baseUrl + '/collection/' + collectionId + '/states-csv',
+      this.addCollectionId(collectionId) + 'states-csv',
       formData
     );
   }
@@ -218,9 +212,13 @@ export class StateManagementService {
     const formData = this.setFormData(file);
 
     return this.http.post<StateMap>(
-      baseUrl + '/collection/' + collectionId + '/states-json',
+      this.addCollectionId(collectionId) + 'states-json',
       formData
     );
+  }
+
+  private addCollectionId(collectionId: number): string {
+    return baseUrl + '/collection/' + collectionId + '/';
   }
 
   private setFormData(file: File): FormData {

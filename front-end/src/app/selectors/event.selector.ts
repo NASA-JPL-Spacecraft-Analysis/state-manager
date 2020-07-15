@@ -4,6 +4,11 @@ import { EventState } from '../reducers/event.reducer';
 
 export const getEventState = createFeatureSelector<EventState>('events');
 
+export const getEventIdentifierMap = createSelector(
+  getEventState,
+  (state: EventState) => state.eventIdentifierMap
+);
+
 export const getEventMap = createSelector(
   getEventState,
   (state: EventState) => state.eventMap

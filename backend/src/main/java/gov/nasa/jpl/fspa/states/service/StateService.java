@@ -34,8 +34,6 @@ public interface StateService {
 
     Map<String, Integer> getMappedIdentifiers(int collectionId);
 
-    List<String> getStateIdentifiers(int collectionId);
-
     List<StateEnumeration> saveStateEnumerations(int collectionId, int stateVariableId, List<StateEnumeration> stateEnumerations);
 
     Map<Integer, State> saveStates(int collectionId, List<State> stateList);

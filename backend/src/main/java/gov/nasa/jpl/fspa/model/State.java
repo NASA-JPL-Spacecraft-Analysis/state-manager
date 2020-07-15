@@ -2,12 +2,8 @@ package gov.nasa.jpl.fspa.model;
 
 import com.opencsv.bean.CsvBindByName;
 
-public class State {
-    private Integer id;
+public class State extends IdentifierType {
     private Integer collectionId;
-
-    @CsvBindByName(required = true)
-    private String identifier;
 
     @CsvBindByName(required = true)
     private String displayName;
@@ -27,28 +23,12 @@ public class State {
     @CsvBindByName
     private String description;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Integer getCollectionId() {
         return collectionId;
     }
 
     public void setCollectionId(Integer collectionId) {
         this.collectionId = collectionId;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
     public String getDisplayName() {
