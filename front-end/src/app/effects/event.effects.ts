@@ -155,7 +155,7 @@ export class EventEffects {
     );
   });
 
-  private getEventInformation(id: number): Observable<Action> {
+  private getEventInformation(collectionId: number): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
 
     if (url === 'events') {
