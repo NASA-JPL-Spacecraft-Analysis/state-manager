@@ -4,7 +4,6 @@ import { Observable, Observer } from 'rxjs';
 import { StateMap, StateEnumerationMap, RelationshipMap, InformationTypesMap, EventMap, CollectionMap } from '../models';
 import {
   mockEventMap,
-  mockIdentifierList,
   mockRelationshipMap,
   mockStateEnumerationMap,
   mockStateMap,
@@ -31,13 +30,6 @@ export class MockStateManagementService {
   public getEventHistoryMap(): Observable<EventMap> {
     return new Observable((observer: Observer<EventMap>) => {
       observer.next(mockEventMap);
-      observer.complete();
-    });
-  }
-
-  public getIdentifiers(): Observable<string[]> {
-    return new Observable((observer: Observer<string[]>) => {
-      observer.next(mockIdentifierList);
       observer.complete();
     });
   }

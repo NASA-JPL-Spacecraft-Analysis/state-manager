@@ -1,13 +1,8 @@
 import { StateMap } from '../models';
 
-export const mockIdentifierList: string[] = [
-  'TEST',
-  'TEST 1'
-];
-
-export const mockIdentifierSet: Set<string> = new Set([
-  'TEST',
-  'TEST 1'
+export const mockStateIdentifierMap: Map<string, number> = new Map([
+  ['TEST', 1],
+  ['TEST 1', 2],
 ]);
 
 export const mockStateMap: StateMap = {
