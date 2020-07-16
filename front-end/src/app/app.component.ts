@@ -53,14 +53,13 @@ export class AppComponent {}
     StoreModule.forRoot(ROOT_REDUCERS, {
       metaReducers,
       runtimeChecks: {
-        strictActionImmutability: !environment.production,
+        strictActionImmutability: true,
         strictActionSerializability: false,
-        strictStateImmutability: !environment.production,
-        strictStateSerializability: false,
+        strictStateImmutability: true,
+        strictStateSerializability: true,
       }
     }),
     StoreRouterConnectingModule.forRoot({
-      routerState: RouterState.Minimal,
       serializer: RouterSerializer
     }),
     ToastrModule.forRoot({

@@ -4,21 +4,33 @@ import {
   mockStateMap,
   mockStateEnumerationList,
   mockStateEnumerationMap,
-  mockIdentifierSet,
-  mockIdentifierList
+  mockStateIdentifierMap
 } from '../mocks';
 
 describe('StateManagementReducer', () => {
   describe('createStateSuccess', () => {
-    it('should set the selectedState, and created state after a create', () => {
-      const stateMap = {
-        ...mockStateMap
+    it('should set the selectedState, and update the stateIdentifierMap after creating a state', () => {
+      const state = {
+        id: 3,
+        identifier: 'TEST_2',
+        displayName: 'Test 2',
+        type: '1',
+        units: '1',
+        source: '1',
+        subsystem: '1',
+        description: '1'
       };
-      const stateId = 1;
-      const state = stateMap[stateId];
 
       const stateState: StateState = reducer(
-        { ...initialState },
+        {
+          ...initialState,
+          stateIdentifierMap: {
+            ...mockStateIdentifierMap
+          },
+          stateMap: {
+            ...mockStateMap
+          }
+        },
         StateActions.createStateSuccess({
           state
         })
@@ -27,8 +39,13 @@ describe('StateManagementReducer', () => {
       expect(stateState).toEqual({
         ...initialState,
         selectedState: state,
+        stateIdentifierMap: {
+          ...stateState.stateIdentifierMap,
+          [state.identifier]: state.id
+        },
         stateMap: {
-          [stateId]: {
+          ...stateState.stateMap,
+          [state.id]: {
             ...state
           }
         }
@@ -59,15 +76,28 @@ describe('StateManagementReducer', () => {
   });
 
   describe('editStateSuccess', () => {
-    it('should set the selectedState, and edited states after an edit', () => {
-      const stateMap = {
-        ...mockStateMap
+    it('should set the selectedState, and update the stateIdentifierMap after editing a state', () => {
+      const state = {
+        id: 2,
+        identifier: 'TEST_2',
+        displayName: 'Test 2',
+        type: 'test string 2',
+        units: 'na',
+        source: 'na',
+        subsystem: 'na',
+        description: 'This is test string 2.'
       };
-      const stateId = 1;
-      const state = stateMap[stateId];
 
       const stateState: StateState = reducer(
-        { ...initialState },
+        {
+          ...initialState,
+          stateIdentifierMap: {
+            ...mockStateIdentifierMap
+          },
+          stateMap: {
+            ...mockStateMap
+          }
+        },
         StateActions.editStateSuccess({
           state
         })
@@ -76,8 +106,13 @@ describe('StateManagementReducer', () => {
       expect(stateState).toEqual({
         ...initialState,
         selectedState: state,
+        stateIdentifierMap: {
+          ...stateState.stateIdentifierMap,
+          [state.identifier]: state.id
+        },
         stateMap: {
-          [stateId]: {
+          ...stateState.stateMap,
+          [state.id]: {
             ...state
           }
         }
@@ -101,26 +136,6 @@ describe('StateManagementReducer', () => {
       expect(stateState).toEqual({
         ...initialState,
         stateEnumerationMap: mockStateEnumerationMap
-      });
-    });
-  });
-
-  describe('setIdentifiers', () => {
-    it('should set identifiers', () => {
-      const stateIdentifiers = [
-        ...mockIdentifierList
-      ];
-
-      const stateState: StateState = reducer(
-        { ...initialState },
-        StateActions.setStateIdentifiers({
-          stateIdentifiers
-        })
-      );
-
-      expect(stateState).toEqual({
-        ...initialState,
-        stateIdentifiers: mockIdentifierSet
       });
     });
   });
@@ -166,21 +181,24 @@ describe('StateManagementReducer', () => {
   });
 
   describe('setStates', () => {
-    it('should set ', () => {
-      const stateMap = {
-        ...mockStateMap
-      };
-
+    it('should set states', () => {
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.setStates({
-          stateMap
+          stateMap: {
+            ...mockStateMap
+          }
         })
       );
 
       expect(stateState).toEqual({
         ...initialState,
-        stateMap
+        stateIdentifierMap: {
+          ...stateState.stateIdentifierMap
+        },
+        stateMap: {
+          ...stateState.stateMap
+        }
       });
     });
   });
