@@ -1,4 +1,4 @@
-<div *ngIf="relationshipMap && stateMap && relationshipsList.length > 0; else noRelationships">
+<div *ngIf="relationshipMap && relationshipsList.length > 0; else noRelationships">
   <table mat-table [dataSource]="dataSource" [ngClass]="{ 'history': history }">
     <ng-container *ngIf="history">
       <ng-container matColumnDef="relationshipId">

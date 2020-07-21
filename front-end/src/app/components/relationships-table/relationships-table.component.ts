@@ -60,13 +60,26 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
   }
 
   public getTypeIdentifier(id: number, type: string): string {
-    if (type === InformationTypeEnum[InformationTypeEnum.State]) {
-      return this.stateMap[id].identifier;
-    } else if (type === InformationTypeEnum[InformationTypeEnum.Event]) {
-      return this.eventMap[id].identifier;
+    switch (type) {
+      case InformationTypeEnum[InformationTypeEnum.Event]:
+        if (this.eventMap[id]) {
+          return this.eventMap[id].identifier;
+        }
+
+        break;
+      case InformationTypeEnum[InformationTypeEnum.State]:
+        if (this.stateMap[id]) {
+          return this.stateMap[id].identifier;
+        }
+
+        break;
+      default:
+        if (type && id && this.informationTypesMap[type][id]) {
+          return this.informationTypesMap[type][id].identifier;
+        }
     }
 
-    return this.informationTypesMap[type][id].identifier;
+    return '';
   }
 
   public onRowClick(relationship: Relationship): void {

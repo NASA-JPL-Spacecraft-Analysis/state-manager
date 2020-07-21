@@ -1,5 +1,5 @@
 import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
@@ -27,7 +27,8 @@ export class ToolbarComponent implements OnDestroy {
   constructor(private store: Store<AppState>,
               private changeDetectorRef: ChangeDetectorRef,
               private domSanitizer: DomSanitizer,
-              private matIconRegistry: MatIconRegistry) {
+              private matIconRegistry: MatIconRegistry,
+              private router: Router) {
     this.matIconRegistry.addSvgIcon('more_vert', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/more_vert.svg'));
 
     this.subscriptions.add(
@@ -47,7 +48,12 @@ export class ToolbarComponent implements OnDestroy {
   }
 
   public onCollectionChange(id: number): void {
-    this.store.dispatch(CollectionActions.setSelectedCollection({ id }));
+    this.store.dispatch(CollectionActions.setSelectedCollection({
+      id
+    }));
+
+    // Preserve what page we're on, but change the collection.
+    this.router.navigate(['collection/' + id + '/' + this.router.url.split('/').pop()]);
   }
 }
 
