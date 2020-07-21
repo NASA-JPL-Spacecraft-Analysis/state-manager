@@ -71,8 +71,10 @@ export const reducer = createReducer(
   on(StateActions.setStates, (stateState, { stateMap }) => {
     const stateIdentifierMap = new Map<string, number>();
 
-    for (const key of Object.keys(stateMap)) {
-      stateIdentifierMap[stateMap[key].identifier] = key;
+    if (stateMap) {
+      for (const key of Object.keys(stateMap)) {
+        stateIdentifierMap[stateMap[key].identifier] = key;
+      }
     }
 
     return {

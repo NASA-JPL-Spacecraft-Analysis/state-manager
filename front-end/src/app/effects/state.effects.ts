@@ -8,7 +8,7 @@ import { StateManagementService } from '../services/state-management.service';
 import { ToastActions, EventActions, StateActions, CollectionActions, LayoutActions } from '../actions';
 import { Event, State } from '../models';
 import { Observable, merge, of, EMPTY } from 'rxjs';
-import { ofRoute } from '../functions/router';
+import { ofRoute, mapToParam } from '../functions/router';
 import { AppState } from '../app-store';
 
 @Injectable()
@@ -95,17 +95,10 @@ export class StateEffects {
 
   public navStates = createEffect(() => {
     return this.actions.pipe(
-      ofRoute('states'),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        const collectionId = state.collection.selectedCollectionId;
-
-        if (collectionId) {
-          return this.getStates(collectionId);
-        }
-
-        return [];
+      ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
+      mapToParam<number>('collectionId'),
+      switchMap(collectionId => {
+        return this.getStates(collectionId);
       })
     );
   });
@@ -116,23 +109,6 @@ export class StateEffects {
       switchMap(({ id }) => {
         if (id !== null) {
           return this.getStates(id);
-        }
-
-        return [];
-      })
-    );
-  });
-
-  public navStatesHistory = createEffect(() => {
-    return this.actions.pipe(
-      ofRoute('state-history'),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        const collectionId = state.collection.selectedCollectionId;
-
-        if (collectionId) {
-          return this.getStates(collectionId);
         }
 
         return [];
@@ -167,9 +143,9 @@ export class StateEffects {
   });
 
   private getStates(collectionId: number): Observable<Action> {
-    const url = this.router.routerState.snapshot.url;
+    const url = this.router.routerState.snapshot.url.split('/').pop();
 
-    if (url === '/states') {
+    if (url === 'states') {
       return merge(
         of(LayoutActions.toggleSidenav({
           showSidenav: false
@@ -203,7 +179,7 @@ export class StateEffects {
           )
         )
       );
-    } else if (url === '/state-history') {
+    } else if (url === 'state-history') {
       return merge(
         of(LayoutActions.toggleSidenav({
           showSidenav: false

@@ -17,39 +17,49 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'states'
+    redirectTo: 'collection'
   },
   {
-    component: EventsComponent,
-    path: 'events'
-  },
-  {
-    component: EventHistoryComponent,
-    path: 'event-history'
+    path: 'collection/:collectionId',
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'states'
+      },
+      {
+        component: EventsComponent,
+        path: 'events'
+      },
+      {
+        component: EventHistoryComponent,
+        path: 'event-history'
+      },
+      {
+        component: InformationTypesComponent,
+        path: 'information-types'
+      },
+      {
+        component: RelationshipsComponent,
+        path: 'relationships'
+      },
+      {
+        component: RelationshipHistoryComponent,
+        path: 'relationship-history'
+      },
+      {
+        component: StateComponent,
+        path: 'states'
+      },
+      {
+        component: StateHistoryComponent,
+        path: 'state-history'
+      }
+    ],
   },
   {
     component: FaqComponent,
     path: 'faqs'
-  },
-  {
-    component: InformationTypesComponent,
-    path: 'information-types'
-  },
-  {
-    component: RelationshipsComponent,
-    path: 'relationships'
-  },
-  {
-    component: RelationshipHistoryComponent,
-    path: 'relationship-history'
-  },
-  {
-    component: StateComponent,
-    path: 'states'
-  },
-  {
-    component: StateHistoryComponent,
-    path: 'state-history'
   }
 ];
 

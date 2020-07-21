@@ -35,8 +35,10 @@ export const reducer = createReducer(
   on(EventActions.setEventMap, (state, { eventMap }) => {
     const eventIdentifierMap = new Map<string, number>();
 
-    for (const key of Object.keys(eventMap)) {
-      eventIdentifierMap[eventMap[key].identifier] = key;
+    if (eventMap) {
+      for (const key of Object.keys(eventMap)) {
+        eventIdentifierMap[eventMap[key].identifier] = key;
+      }
     }
 
     return {
