@@ -1,5 +1,5 @@
 import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
@@ -8,9 +8,8 @@ import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
-import { getCollectionMap, getSelectedCollectionId } from 'src/app/selectors';
-import { CollectionMap } from 'src/app/models';
-import { CollectionActions } from 'src/app/actions';
+import { getSelectedCollectionId } from 'src/app/selectors';
+import { CollectionModule } from '../collections/collections.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,23 +18,19 @@ import { CollectionActions } from 'src/app/actions';
   templateUrl: 'toolbar.component.html'
 })
 export class ToolbarComponent implements OnDestroy {
-  public collectionMap: CollectionMap;
   public selectedCollectionId: number;
 
   private subscriptions = new SubSink();
 
-  constructor(private store: Store<AppState>,
-              private changeDetectorRef: ChangeDetectorRef,
-              private domSanitizer: DomSanitizer,
-              private matIconRegistry: MatIconRegistry,
-              private router: Router) {
+  constructor(
+    private store: Store<AppState>,
+    private changeDetectorRef: ChangeDetectorRef,
+    private domSanitizer: DomSanitizer,
+    private matIconRegistry: MatIconRegistry
+  ) {
     this.matIconRegistry.addSvgIcon('more_vert', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/more_vert.svg'));
 
     this.subscriptions.add(
-      this.store.pipe(select(getCollectionMap)).subscribe(collectionMap => {
-        this.collectionMap = collectionMap;
-        this.changeDetectorRef.markForCheck();
-      }),
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
         this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
@@ -45,15 +40,6 @@ export class ToolbarComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  public onCollectionChange(id: number): void {
-    this.store.dispatch(CollectionActions.setSelectedCollection({
-      id
-    }));
-
-    // Preserve what page we're on, but change the collection.
-    this.router.navigate(['collection/' + id + '/' + this.router.url.split('/').pop()]);
   }
 }
 
@@ -65,6 +51,7 @@ export class ToolbarComponent implements OnDestroy {
     ToolbarComponent
   ],
   imports: [
+    CollectionModule,
     CommonModule,
     MaterialModule,
     RouterModule

@@ -1,3 +1,4 @@
+export * from './collections/collections.component';
 export * from './event-history/event-history.component';
 export * from './events/events.component';
 export * from './faq/faq.component';

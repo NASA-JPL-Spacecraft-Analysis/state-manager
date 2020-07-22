@@ -2,13 +2,7 @@
   <div>
     <span>State Management</span>
 
-    <mat-form-field class="collection-dropdown">
-      <mat-select [(value)]="selectedCollectionId" (selectionChange)="onCollectionChange($event.value)">
-        <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
-          {{collection.value.name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <collections></collections>
   </div>
 
   <div class="navigation-container">
