@@ -21,6 +21,11 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
+    public Collection editCollection(int collectionId, String collectionName) {
+        return collectionDao.updateCollection(collectionId, collectionName);
+    }
+
+    @Override
     public Map<Integer, Collection> getCollections() {
         List<Collection> collectionList = collectionDao.getCollections();
         Map<Integer, Collection> collectionMap = new HashMap<>();

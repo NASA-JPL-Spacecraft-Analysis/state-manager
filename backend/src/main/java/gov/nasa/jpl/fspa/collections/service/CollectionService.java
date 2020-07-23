@@ -7,5 +7,7 @@ import java.util.Map;
 public interface CollectionService {
     Collection createCollection(String collectionName);
 
+    Collection editCollection(int collectionId, String collectionName);
+
     Map<Integer, Collection> getCollections();
 }

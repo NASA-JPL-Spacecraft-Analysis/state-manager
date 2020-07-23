@@ -58,4 +58,27 @@ public class CollectionDaoImpl implements CollectionDao {
 
         return collectionList;
     }
+
+    @Override
+    public Collection updateCollection(int collectionId, String collectionName) {
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(CollectionQueries.UPDATE_COLLECTION)) {
+
+            preparedStatement.setString(1, collectionName);
+            preparedStatement.setInt(2, collectionId);
+
+            preparedStatement.executeUpdate();
+
+            Collection collection = new Collection();
+
+            collection.setId(collectionId);
+            collection.setName(collectionName);
+
+            return collection;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return null;
+    }
 }

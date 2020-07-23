@@ -7,4 +7,8 @@ public class CollectionQueries {
                                                  + " (?) ";
 
     public static final String GET_COLLECTIONS = " select * from collections ";
+
+    public static final String UPDATE_COLLECTION = " update collections "
+                                                 + " set name = ? "
+                                                 + " where id = ? ";
 }

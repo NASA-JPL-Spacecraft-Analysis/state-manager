@@ -25,6 +25,15 @@ export const reducer = createReducer(
     },
     selectedCollectionId: collection.id
   })),
+  on(CollectionActions.editCollectionSuccess, (state, { collection }) => ({
+    ...state,
+    collectionMap: {
+      ...state.collectionMap,
+      [collection.id]: {
+        ...collection
+      }
+    }
+  })),
   on(CollectionActions.fetchCollectionsSuccess, (state, { collectionMap }) => {
     const keys = Object.keys(collectionMap);
     let selectedCollectionId: number;

@@ -8,4 +8,6 @@ public interface CollectionDao {
     Collection createCollection(String collectionName);
 
     List<Collection> getCollections();
+
+    Collection updateCollection(int collectionId, String collectionName);
 }

@@ -314,6 +314,20 @@ public class StateManagementResource {
     }
 
     @PUT
+    @Path("/collection/{collectionId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putCollection(@PathParam("collectionId") int collectionId, String collectionName) {
+        Collection collection = collectionService.editCollection(collectionId, collectionName);
+
+        if (collection == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(collection).build();
+    }
+
+
+    @PUT
     @Path("/collection/{collectionId}/state")
     @Produces(MediaType.APPLICATION_JSON)
     public Response putState(@PathParam("collectionId") int collectionId, State state) {
