@@ -182,6 +182,19 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/collection")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postCollection(String collectionName) {
+        Collection collection = collectionService.createCollection(collectionName);
+
+        if (collection == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(collection).build();
+    }
+
+    @POST
     @Path("/collection/{collectionId}/enumerations-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)

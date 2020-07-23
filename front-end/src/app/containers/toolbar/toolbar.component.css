@@ -12,3 +12,8 @@ button {
 .menu-button {
   color: black;
 }
+
+.toolbar-container {
+  display: flex;
+  align-items: center;
+}

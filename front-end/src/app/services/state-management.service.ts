@@ -12,7 +12,8 @@ import {
   State,
   StateMap,
   StateEnumerationMap,
-  StateEnumeration
+  StateEnumeration,
+  Collection
 } from '../models';
 import { environment } from 'src/environments/environment';
 
@@ -23,6 +24,13 @@ const { baseUrl } = environment;
 })
 export class StateManagementService {
   constructor(private http: HttpClient) {}
+
+  public createCollection(name: string): Observable<Collection> {
+    return this.http.post<Collection>(
+      baseUrl + '/collection',
+      name
+    );
+  }
 
   public createEvent(collectionId: number, event: Event): Observable<Event> {
     return this.http.post<Event>(
@@ -42,6 +50,13 @@ export class StateManagementService {
     return this.http.post<State>(
       this.addCollectionId(collectionId) + 'state',
       state
+    );
+  }
+
+  public editCollection(collectionId: number, name: string): Observable<Collection> {
+    return this.http.put<Collection>(
+      this.addCollectionId(collectionId),
+      name
     );
   }
 

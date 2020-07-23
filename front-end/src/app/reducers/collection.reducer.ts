@@ -15,6 +15,16 @@ export const initialState: CollectionState = {
 
 export const reducer = createReducer(
   initialState,
+  on(CollectionActions.createCollectionSuccess, (state, { collection }) => ({
+    ...state,
+    collectionMap: {
+      ...state.collectionMap,
+      [collection.id]: {
+        ...collection
+      }
+    },
+    selectedCollectionId: collection.id
+  })),
   on(CollectionActions.fetchCollectionsSuccess, (state, { collectionMap }) => {
     const keys = Object.keys(collectionMap);
     let selectedCollectionId: number;

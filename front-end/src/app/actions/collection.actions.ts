@@ -1,6 +1,36 @@
 import { createAction, props } from '@ngrx/store';
 
-import { CollectionMap } from '../models';
+import { CollectionMap, Collection } from '../models';
+
+export const createCollection = createAction(
+  '[collection] createCollection',
+  props<{ name: string }>()
+);
+
+export const createCollectionSuccess = createAction(
+  '[collection] createCollectionSuccess',
+  props<{ collection: Collection }>()
+);
+
+export const createCollectionFailure = createAction(
+  '[collection] createCollectionFailure',
+  props<{ error: Error }>()
+);
+
+export const editCollection = createAction(
+  '[collection] editCollection',
+  props<{ collectionId: number, name: string }>()
+);
+
+export const editCollectionSuccess = createAction(
+  '[collection] editCollectionSuccess',
+  props<{ collection: Collection }>()
+);
+
+export const editCollectionFailure = createAction(
+  '[collection] editCollectionFailure',
+  props<{ error: Error }>()
+);
 
 export const fetchCollectionsFailure = createAction(
   '[collection] fetchCollectionMapFailure',

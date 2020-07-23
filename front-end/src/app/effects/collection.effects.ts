@@ -3,14 +3,64 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap } from 'rxjs/operators';
 
-import { CollectionActions } from '../actions';
+import { CollectionActions, ToastActions } from '../actions';
+import { StateManagementService } from '../services/state-management.service';
+import { Collection } from '../models';
 
 @Injectable()
 export class CollectionEffects {
   constructor(
     private actions: Actions,
-    private router: Router
+    private router: Router,
+    private stateManagementService: StateManagementService
   ) {}
+
+  public createCollection = createEffect(() => {
+    return this.actions.pipe(
+      ofType(CollectionActions.createCollection),
+      switchMap(({ name }) =>
+        this.stateManagementService.createCollection(
+          name
+        ).pipe(
+          switchMap(
+            (collection: Collection) => [
+              CollectionActions.createCollectionSuccess({
+                collection
+              }),
+              ToastActions.showToast({
+                message: 'Collection created',
+                toastType: 'success'
+              })
+            ]
+          )
+        )
+      )
+    );
+  });
+
+  public editCollection = createEffect(() => {
+    return this.actions.pipe(
+      ofType(CollectionActions.editCollection),
+      switchMap(({ collectionId, name }) =>
+        this.stateManagementService.editCollection(
+          collectionId,
+          name
+        ).pipe(
+          switchMap(
+            (collection: Collection) => [
+              CollectionActions.editCollectionSuccess({
+                collection
+              }),
+              ToastActions.showToast({
+                message: 'Collection edited',
+                toastType: 'success'
+              })
+            ]
+          )
+        )
+      )
+    );
+  });
 
   public fetchCollectionsSuccess = createEffect(() => {
     return this.actions.pipe(

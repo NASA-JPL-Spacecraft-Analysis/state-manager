@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store, Action } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
 
 import { StateManagementService } from '../services/state-management.service';
-import { ToastActions, EventActions, StateActions, CollectionActions, LayoutActions } from '../actions';
-import { Event, State } from '../models';
+import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
+import { State } from '../models';
 import { Observable, merge, of, EMPTY } from 'rxjs';
 import { ofRoute, mapToParam } from '../functions/router';
-import { AppState } from '../app-store';
 
 @Injectable()
 export class StateEffects {
   constructor(
     private actions: Actions,
     private router: Router,
-    private stateManagementService: StateManagementService,
-    private store: Store<AppState>
+    private stateManagementService: StateManagementService
   ) {}
 
   public createState = createEffect(() => {

@@ -1,5 +1,21 @@
+.action-text {
+  color: #9D9D9D;
+}
+
+.collection-container {
+  margin-left: 1em;
+}
+
 .collection-dropdown {
   font-size: .75em;
   width: 20em;
-  margin-left: 4em;
+}
+
+.icon-area {
+  margin-right: 1em;
+}
+
+.margin {
+  display: inline-block;
+  width: 2.75em;
 }
