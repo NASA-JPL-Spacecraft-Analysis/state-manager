@@ -8,7 +8,7 @@ import { switchMap, map, withLatestFrom } from 'rxjs/operators';
 import { CollectionActions, ToastActions } from '../actions';
 import { StateManagementService } from '../services/state-management.service';
 import { Collection } from '../models';
-import { of, forkJoin, concat } from 'rxjs';
+import { of, forkJoin, concat, merge } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components';
 import { AppState } from '../app-store';
 
@@ -53,6 +53,7 @@ export class CollectionEffects {
           ConfirmationDialogComponent,
           {
             data: {
+              confirmButtonColor: '#dc4545',
               confirmButtonText: 'Delete',
               message: 'You can recover your data by contacting FSPA support.',
               title: 'Delete collection "' + name + '"?'
@@ -92,7 +93,14 @@ export class CollectionEffects {
           );
         }
 
-        return [];
+        return [
+          CollectionActions.setSelectedCollection({
+            id: null
+          }),
+          CollectionActions.setSelectedCollection({
+            id
+          })
+        ];
       })
     );
   });

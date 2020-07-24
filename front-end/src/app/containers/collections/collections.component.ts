@@ -22,6 +22,7 @@ import { CollectionInputModule } from 'src/app/components';
 export class CollectionComponent implements OnDestroy {
   public collectionMap: CollectionMap;
   public collectionName: string;
+  public deleting: boolean;
   public editing: boolean;
   public selectedCollectionId: number;
 
@@ -88,7 +89,6 @@ export class CollectionComponent implements OnDestroy {
           name: collectionName
         }));
       } else {
-
         this.store.dispatch(CollectionActions.createCollection({
           name: collectionName
         }));
@@ -103,10 +103,16 @@ export class CollectionComponent implements OnDestroy {
   }
 
   public onDeleteCollection(): void {
+    this.deleting = true;
+
     this.store.dispatch(CollectionActions.deleteCollection({
       id: this.selectedCollectionId,
       name: this.collectionMap[this.selectedCollectionId].name
     }));
+
+    setTimeout(() => {
+      this.deleting = false;
+    });
   }
 
   public onEditCollection(): void {

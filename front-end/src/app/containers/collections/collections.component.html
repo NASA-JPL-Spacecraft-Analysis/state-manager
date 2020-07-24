@@ -1,6 +1,6 @@
 <div class="collection-container">
   <div *ngIf="!editing">
-    <mat-form-field class="collection-dropdown">
+    <mat-form-field *ngIf="!deleting" class="collection-dropdown">
       <mat-select [value]="selectedCollectionId" (selectionChange)="onCollectionChange($event.value)">
         <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
           <span *ngIf="collection.value.id === selectedCollectionId; else margin">
