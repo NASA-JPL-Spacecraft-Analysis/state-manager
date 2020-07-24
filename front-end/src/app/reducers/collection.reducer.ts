@@ -53,12 +53,14 @@ export const reducer = createReducer(
     collectionMap: {
       ...collectionMap
     },
-    selectedCollectionId: getFirstCollection(state.collectionMap)
+    selectedCollectionId: getFirstCollection(collectionMap)
   })),
   on(CollectionActions.setSelectedCollection, (state, { id }) => {
     if (!id) {
       id = getFirstCollection(state.collectionMap);
     }
+
+    console.log({ ...state, selectedCollectionId: id });
 
     return {
       ...state,
