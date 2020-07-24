@@ -48,6 +48,19 @@ public class StateManagementResource {
         validationService = new ValidationServiceImpl();
     }
 
+    @DELETE
+    @Path("/collection/{collectionId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteCollection(@PathParam("collectionId") int collectionId) {
+        int deletedCollectionId = collectionService.deleteCollection(collectionId);
+
+        if (deletedCollectionId == -1) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(collectionId).build();
+    }
+
     @GET
     @Path("/collections")
     @Produces(MediaType.APPLICATION_JSON)

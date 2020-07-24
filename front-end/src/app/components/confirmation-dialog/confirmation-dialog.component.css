@@ -1,0 +1,13 @@
+.cancel-button {
+  color: white;
+  background-color: #B0B0B0;
+}
+
+.mat-dialog-actions {
+  justify-content: flex-end;
+}
+
+.submit-button {
+  color: white;
+  background-color: #DC4545;
+}

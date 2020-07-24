@@ -21,6 +21,11 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
+    public int deleteCollection(int collectionId) {
+        return collectionDao.deleteCollection(collectionId);
+    }
+
+    @Override
     public Collection editCollection(int collectionId, String collectionName) {
         return collectionDao.updateCollection(collectionId, collectionName);
     }

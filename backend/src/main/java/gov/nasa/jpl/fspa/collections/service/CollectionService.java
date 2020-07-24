@@ -7,6 +7,8 @@ import java.util.Map;
 public interface CollectionService {
     Collection createCollection(String collectionName);
 
+    int deleteCollection(int collectionId);
+
     Collection editCollection(int collectionId, String collectionName);
 
     Map<Integer, Collection> getCollections();

@@ -17,6 +17,21 @@ export const createCollectionFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const deleteCollection = createAction(
+  '[collection] deleteCollection',
+  props<{ id: number, name: string }>()
+);
+
+export const deleteCollectionSuccess = createAction(
+  '[collection] deleteCollectionSuccess',
+  props<{ id: number }>()
+);
+
+export const deleteCollectionFailure = createAction(
+  '[collection] deleteCollectionFailure',
+  props<{ error: Error }>()
+);
+
 export const editCollection = createAction(
   '[collection] editCollection',
   props<{ collectionId: number, name: string }>()

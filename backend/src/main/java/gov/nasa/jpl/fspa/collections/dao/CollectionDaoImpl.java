@@ -37,6 +37,23 @@ public class CollectionDaoImpl implements CollectionDao {
     }
 
     @Override
+    public int deleteCollection(int collectionId) {
+        try (Connection connection = DatabaseUtil.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(CollectionQueries.DELETE_COLLECTION)) {
+
+            preparedStatement.setInt(1, collectionId);
+
+            preparedStatement.executeUpdate();
+
+            return collectionId;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    @Override
     public List<Collection> getCollections() {
         List<Collection> collectionList = new ArrayList<>();
 

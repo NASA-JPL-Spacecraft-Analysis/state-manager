@@ -52,6 +52,7 @@ export class CollectionComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
+        debugger;
         this.selectedCollectionId = selectedCollectionId;
 
         if (this.collectionMap) {
@@ -103,6 +104,10 @@ export class CollectionComponent implements OnDestroy {
   }
 
   public onDeleteCollection(): void {
+    this.store.dispatch(CollectionActions.deleteCollection({
+      id: this.selectedCollectionId,
+      name: this.collectionMap[this.selectedCollectionId].name
+    }));
   }
 
   public onEditCollection(): void {
@@ -110,7 +115,7 @@ export class CollectionComponent implements OnDestroy {
   }
 
   private setCollectioName(): void {
-    this.collectionName = this.collectionMap[this.selectedCollectionId].name;
+    this.collectionName = this.collectionMap[this.selectedCollectionId]?.name;
   }
 
   private toggleEditing(): void {

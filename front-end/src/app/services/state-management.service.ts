@@ -53,6 +53,12 @@ export class StateManagementService {
     );
   }
 
+  public deleteCollection(collectionId: number): Observable<number> {
+    return this.http.delete<number>(
+      this.addCollectionId(collectionId)
+    );
+  }
+
   public editCollection(collectionId: number, name: string): Observable<Collection> {
     return this.http.put<Collection>(
       this.addCollectionId(collectionId),

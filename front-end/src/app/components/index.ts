@@ -1,4 +1,5 @@
 export * from './collection-input/collection-input.component';
+export * from './confirmation-dialog/confirmation-dialog.component';
 export * from './enum-form/enum-form.component';
 export * from './event-sidenav/event-sidenav.component';
 export * from './event-table/event-table.component';

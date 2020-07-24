@@ -7,6 +7,8 @@ import java.util.List;
 public interface CollectionDao {
     Collection createCollection(String collectionName);
 
+    int deleteCollection(int collectionId);
+
     List<Collection> getCollections();
 
     Collection updateCollection(int collectionId, String collectionName);
