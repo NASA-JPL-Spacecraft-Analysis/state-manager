@@ -52,7 +52,6 @@ export class CollectionComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
-        debugger;
         this.selectedCollectionId = selectedCollectionId;
 
         if (this.collectionMap) {
