@@ -34,6 +34,9 @@ export class CollectionEffects {
               CollectionActions.createCollectionSuccess({
                 collection
               }),
+              CollectionActions.setSelectedCollection({
+                id: collection.id
+              }),
               ToastActions.showToast({
                 message: 'Collection created',
                 toastType: 'success'

@@ -21,8 +21,7 @@ describe('CollectionReducer', () => {
         ...initialState,
         collectionMap: {
           [collection.id]: collection
-        },
-        selectedCollectionId: 2
+        }
       });
     });
   });

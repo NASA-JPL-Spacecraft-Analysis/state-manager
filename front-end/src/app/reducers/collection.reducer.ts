@@ -22,8 +22,7 @@ export const reducer = createReducer(
       [collection.id]: {
         ...collection
       }
-    },
-    selectedCollectionId: collection.id
+    }
   })),
   on(CollectionActions.deleteCollectionSuccess, (state, { id }) => {
     const collectionMap = {
@@ -59,8 +58,6 @@ export const reducer = createReducer(
     if (!id) {
       id = getFirstCollection(state.collectionMap);
     }
-
-    console.log({ ...state, selectedCollectionId: id });
 
     return {
       ...state,
