@@ -48,6 +48,19 @@ public class StateManagementResource {
         validationService = new ValidationServiceImpl();
     }
 
+    @DELETE
+    @Path("/collection/{collectionId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteCollection(@PathParam("collectionId") int collectionId) {
+        int deletedCollectionId = collectionService.deleteCollection(collectionId);
+
+        if (deletedCollectionId == -1) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(collectionId).build();
+    }
+
     @GET
     @Path("/collections")
     @Produces(MediaType.APPLICATION_JSON)
@@ -182,6 +195,19 @@ public class StateManagementResource {
     }
 
     @POST
+    @Path("/collection")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postCollection(String collectionName) {
+        Collection collection = collectionService.createCollection(collectionName);
+
+        if (collection == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.CREATED).entity(collection).build();
+    }
+
+    @POST
     @Path("/collection/{collectionId}/enumerations-csv")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
@@ -299,6 +325,20 @@ public class StateManagementResource {
 
         return Response.status(Response.Status.CREATED).entity(savedStateEnumerations).build();
     }
+
+    @PUT
+    @Path("/collection/{collectionId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putCollection(@PathParam("collectionId") int collectionId, String collectionName) {
+        Collection collection = collectionService.editCollection(collectionId, collectionName);
+
+        if (collection == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(collection).build();
+    }
+
 
     @PUT
     @Path("/collection/{collectionId}/state")

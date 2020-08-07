@@ -15,24 +15,65 @@ export const initialState: CollectionState = {
 
 export const reducer = createReducer(
   initialState,
-  on(CollectionActions.fetchCollectionsSuccess, (state, { collectionMap }) => {
-    const keys = Object.keys(collectionMap);
-    let selectedCollectionId: number;
-
-    if (keys.length > 0) {
-      selectedCollectionId = Number(keys[0]);
+  on(CollectionActions.createCollectionSuccess, (state, { collection }) => ({
+    ...state,
+    collectionMap: {
+      ...state.collectionMap,
+      [collection.id]: {
+        ...collection
+      }
     }
+  })),
+  on(CollectionActions.deleteCollectionSuccess, (state, { id }) => {
+    const collectionMap = {
+      ...state.collectionMap
+    };
+
+    delete collectionMap[id];
 
     return {
       ...state,
       collectionMap: {
         ...collectionMap
-      },
-      selectedCollectionId
+      }
     };
   }),
-  on(CollectionActions.setSelectedCollection, (state, { id }) => ({
+  on(CollectionActions.editCollectionSuccess, (state, { collection }) => ({
     ...state,
-    selectedCollectionId: id
-  }))
+    collectionMap: {
+      ...state.collectionMap,
+      [collection.id]: {
+        ...collection
+      }
+    }
+  })),
+  on(CollectionActions.fetchCollectionsSuccess, (state, { collectionMap }) => ({
+    ...state,
+    collectionMap: {
+      ...collectionMap
+    },
+    selectedCollectionId: getFirstCollection(collectionMap)
+  })),
+  on(CollectionActions.setSelectedCollection, (state, { id }) => {
+    if (!id) {
+      id = getFirstCollection(state.collectionMap);
+    }
+
+    return {
+      ...state,
+      selectedCollectionId: id
+    };
+  })
 );
+
+function getFirstCollection(collectionMap: CollectionMap): number {
+  if (collectionMap) {
+    const keys = Object.keys(collectionMap);
+
+    if (keys.length > 0) {
+      return Number(keys[0]);
+    }
+  }
+
+  return -1;
+}

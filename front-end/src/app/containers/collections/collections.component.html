@@ -1,0 +1,48 @@
+<div class="collection-container">
+  <div *ngIf="!editing">
+    <mat-form-field *ngIf="!deleting" class="collection-dropdown">
+      <mat-select [value]="selectedCollectionId" (selectionChange)="onCollectionChange($event.value)">
+        <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
+          <span *ngIf="collection.value.id === selectedCollectionId; else margin">
+            <mat-icon svgIcon="done"></mat-icon>
+          </span>
+
+          <ng-template #margin>
+            <div class="margin"></div>
+          </ng-template>
+
+          {{collection.value.name}}
+        </mat-option>
+
+        <hr>
+
+        <mat-option class="action-text" (click)="onCreateNewCollection()">
+          <mat-icon svgIcon="add"></mat-icon>
+
+          Create a new collection
+        </mat-option>
+
+        <hr>
+
+        <mat-option class="action-text" (click)="onEditCollection()">
+          <mat-icon svgIcon="edit"></mat-icon>
+
+          Edit name
+        </mat-option>
+
+        <mat-option class="action-text" (click)="onDeleteCollection()">
+          <mat-icon svgIcon="delete"></mat-icon>
+
+          Delete collection
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="editing">
+    <collection-input
+      [focus]="editing"
+      (collectionNameOutput)="onCollectionInputOutput($event)">
+    </collection-input>
+  </div>
+</div>
