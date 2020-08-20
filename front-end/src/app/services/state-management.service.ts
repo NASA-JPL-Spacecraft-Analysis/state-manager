@@ -17,7 +17,7 @@ import {
 } from '../models';
 import { environment } from 'src/environments/environment';
 
-const { baseUrl } = environment;
+const { apiPath } = environment;
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class StateManagementService {
 
   public createCollection(name: string): Observable<Collection> {
     return this.http.post<Collection>(
-      baseUrl + '/collection',
+      apiPath + '/collection',
       name
     );
   }
@@ -89,7 +89,7 @@ export class StateManagementService {
 
   public getCollections(): Observable<CollectionMap> {
     return this.http.get<CollectionMap>(
-      baseUrl + '/collections'
+      apiPath + '/collections'
     );
   }
 
@@ -239,7 +239,7 @@ export class StateManagementService {
   }
 
   private addCollectionId(collectionId: number): string {
-    return baseUrl + '/collection/' + collectionId + '/';
+    return apiPath + '/collection/' + collectionId + '/';
   }
 
   private setFormData(file: File): FormData {
