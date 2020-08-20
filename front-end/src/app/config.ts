@@ -2,12 +2,12 @@ import { environment } from './../environments/environment';
 
 export interface ConfigState {
   app: {
-    baseUrl: string;
+    apiPath: string;
   };
 }
 
 export const config: ConfigState = {
   app: {
-    baseUrl: environment.baseUrl
+    apiPath: environment.apiPath
   }
 };
