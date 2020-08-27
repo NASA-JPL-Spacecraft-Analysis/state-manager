@@ -3,36 +3,45 @@
 ## Requirements
 
 To be able to run the application you need the following software installed:
+- [Docker](https://docs.docker.com/install/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [MySQL](https://www.mysql.com/)
+
+To be able to develop the application you additionally need the following software installed:
 - [NPM](https://www.npmjs.com/get-npm)
 - [Maven](https://maven.apache.org/install.html)
 - [Angular CLI](https://cli.angular.io/)
-- [Docker](https://docs.docker.com/install/)
-- [MySQL](https://www.mysql.com/)
 
-## Running for the first time
+## Initial setup
+1. First start MySQL and create a schema named `state-management-db`.
+1. Next create the `state-management-db-user` database user and grant it all privileges on our schema.
+1. To setup the database, connect to the MySQL server, and execute `database-setup.sql`.
+1. If needed, change the `JDBC_URL` and `JDBC_PASS` in the docker-compose.yml file to point to your MySQL database and use the correct password for the database user.
 
-1. First we need to start MySQL and create our schema named `state-management-db`. Next create the `state-management-db-user` account with all privileges on our schema.
-2. Then start Docker, in the root directory run `docker-compose up`. Docker needs to be running at all times during development for the RESTful web services to respond.
-3. If this is your first time running the app, you'll need to setup the database.  Connect to the now running MySQL server, and execute `database-setup.sql`.
-4. Next we need to build and deploy the `.war` file to our running Tomcat server, so run `. build.sh`. 
-5. Navigate to the `front-end` folder, and run `npm install` to install all the dependencies the front-end application needs.
-6. Finally, run `ng serve` and the front-end application will be running at `http://localhost:4200/state-management`.  This serves the front-end, so it needs to continue running as well.
+## Running the application
+1. Ensure MySQL server is running.
+1. Ensure that `CORS_ALLOW_ORIGIN` in the docker-compose.yml file is set to `http://localhost`.
+1. Run `docker-compose build` to build both the frontend and backend
+1. Run `docker-compose up` to spin up the application. The application will be running at `http://localhost`.
 
-
-## Running after initial setup
-
-These instructions for subsequent runs of the application after you've followed the setup instructions above.
-
-1. Start Docker, this needs to be running during development so the backend will respond to REST requests. `docker-compose up`
-2. Start the front-end, this needs to be running during development to serve the front-end application:
-    1. `cd front-end`
-    2. `ng serve`
+## Running for development
+1. Ensure MySQL server is running.
+1. Change the `CORS_ALLOW_ORIGIN` in the docker-compose.yml file to `http://localhost:4200`.
+1. Run `docker-compose build backend` to build only the backend.
+1. Run `docker-compose up backend` to spin up only the backend.
+1. Navigate to the `front-end` folder, and run `npm install` to install all the dependencies the front-end application needs.
+1. Finally, run `ng serve` and the front-end application will be running at `http://localhost:4200/state-management`.  This serves the front-end, so it needs to continue running.
 
 ## Making changes
-
-When changing the front-end, the application will automatically be rebuilt and deployed after saving a file.
-
-If you're changing the backend, after you've made your changes the `.war` file needs to be rebuilt and redeployed to the Docker container.  To do this run `. build.sh` inside the root directory.
+When changing the front-end in the development mode setup, the application will automatically be rebuilt and deployed after saving a file.
+If you're changing the backend, after you've made your changes the `.war` file needs to be rebuilt and redeployed to the Docker container.
+There are two ways to do this:
+1. Without maven:
+    1. `docker-compose down`
+    1. `docker-compose build backend`
+    1. `docker-compose up backend`
+1. With maven:
+    1. Run `. build.sh` from the main project folder.
 
 ## Usage
 
