@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import {
   CollectionMap,
@@ -17,13 +19,18 @@ import {
 } from '../models';
 import { environment } from 'src/environments/environment';
 
+import * as gql from './gql';
+
 const { baseUrl } = environment;
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateManagementService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private apollo: Apollo,
+    private http: HttpClient
+  ) {}
 
   public createCollection(name: string): Observable<Collection> {
     return this.http.post<Collection>(
@@ -87,10 +94,13 @@ export class StateManagementService {
     );
   }
 
-  public getCollections(): Observable<CollectionMap> {
-    return this.http.get<CollectionMap>(
-      baseUrl + '/collections'
-    );
+  public getCollections(): Observable<Collection[]> {
+    return this.apollo
+      .query<{ collections: Collection[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_COLLECTIONS
+      })
+      .pipe(map(({ data: { collections } }) => collections));
   }
 
   public getEventMap(collectionId: number): Observable<EventMap> {

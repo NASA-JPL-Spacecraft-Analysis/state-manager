@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { CollectionMap, Collection } from '../models';
+import { Collection } from '../models';
 
 export const createCollection = createAction(
   '[collection] createCollection',
@@ -54,7 +54,7 @@ export const fetchCollectionsFailure = createAction(
 
 export const fetchCollectionsSuccess = createAction(
   '[collection] fetchCollections',
-  props<{ collectionMap: CollectionMap }>()
+  props<{ collections: Collection[] }>()
 );
 
 export const setSelectedCollection = createAction(

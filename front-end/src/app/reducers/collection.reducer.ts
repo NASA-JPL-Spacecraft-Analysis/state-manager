@@ -47,13 +47,26 @@ export const reducer = createReducer(
       }
     }
   })),
-  on(CollectionActions.fetchCollectionsSuccess, (state, { collectionMap }) => ({
-    ...state,
-    collectionMap: {
-      ...collectionMap
-    },
-    selectedCollectionId: getFirstCollection(collectionMap)
-  })),
+  on(CollectionActions.fetchCollectionsSuccess, (state, { collections }) => {
+    const collectionMap = {};
+    let firstCollectionId = -1;
+
+    for (const collection of collections) {
+      if (firstCollectionId === -1) {
+        firstCollectionId = Number(collection.id);
+      }
+
+      collectionMap[collection.id] = collection;
+    }
+
+    return  {
+      ...state,
+      collectionMap: {
+        ...collectionMap
+      },
+      selectedCollectionId: firstCollectionId
+    };
+  }),
   on(CollectionActions.setSelectedCollection, (state, { id }) => {
     if (!id) {
       id = getFirstCollection(state.collectionMap);

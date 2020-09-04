@@ -135,9 +135,13 @@ export class CollectionEffects {
   public fetchCollectionsSuccess = createEffect(() => {
     return this.actions.pipe(
       ofType(CollectionActions.fetchCollectionsSuccess),
-      switchMap(({ collectionMap }) => {
-        const keys = Object.keys(collectionMap);
+      switchMap(({ collections }) => {
+        const keys = [];
         let collectionId = null;
+
+        for (const collection of collections) {
+          keys.push(collection.id);
+        }
 
         // Search our URL for a valid collectionId.
         for (const splitUrl of this.router.url.split('/')) {

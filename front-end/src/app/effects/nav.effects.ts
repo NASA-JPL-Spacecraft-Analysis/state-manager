@@ -17,8 +17,8 @@ export class NavEffects {
       ofType(ROOT_EFFECTS_INIT),
       switchMap(_ =>
         this.stateManagementService.getCollections().pipe(
-          map(collectionMap => CollectionActions.fetchCollectionsSuccess({
-            collectionMap
+          map(collections => CollectionActions.fetchCollectionsSuccess({
+            collections
           })),
           catchError(
             (error: Error) => [
