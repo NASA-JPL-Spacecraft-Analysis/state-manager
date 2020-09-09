@@ -109,41 +109,41 @@ JSON:
          "displayName": "Test Command",
          "description": "",
          "externalLink": ""
-     }
+     },
      {
          "informationType": Activity,
          "identifier": "test_activity",
          "displayName": "Test Activity",
          "description": "",
-         "externalLink: ""
+         "externalLink": ""
      },
      {
          "informationType": "Command",
          "identifier": "test_command",
          "displayName": "Test Command",
          "description": "",
-         "externalLink: ""
-     }
+         "externalLink": ""
+     },
      {
          "informationType": FlightRule,
          "identifier": "test_flight_rule",
          "displayName": "Test Flight Rule",
          "description": "",
-         "externalLink: ""
+         "externalLink": ""
      },
      {
          "informationType": "FSWParameter",
          "identifier": "test_fsw_parameter",
          "displayName": "Test FSW Parameter",
          "description": "",
-         "externalLink: ""
+         "externalLink": ""
      },
      {
          "informationType": "Model",
          "identifier": "test_model",
          "displayName": "Test Model",
          "description": "",
-         "externalLink: ""
+         "externalLink": ""
      }
 ]
 ```
