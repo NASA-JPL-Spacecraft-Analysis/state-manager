@@ -72,7 +72,7 @@ export class StateTableComponent implements OnChanges, OnInit {
    *
    * @param filterValue The filter the user has entered.
    */
-  public applyFilter(filterValue: string) {
+  public applyFilter(filterValue: string): void {
     filterValue = filterValue.trim().toLowerCase();
 
     this.dataSource.filter = filterValue;

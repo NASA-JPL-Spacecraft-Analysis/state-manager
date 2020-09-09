@@ -56,7 +56,15 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
       }
 
       this.dataSource = new MatTableDataSource(this.relationshipsList);
+
+      this.dataSource.filterPredicate = this.filter;
     }
+  }
+
+  public applyFilter(filterValue: string): void {
+    filterValue = filterValue.trim().toLowerCase();
+
+    this.dataSource.filter = filterValue;
   }
 
   public getTypeIdentifier(id: number, type: string): string {
@@ -84,6 +92,13 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
 
   public onRowClick(relationship: Relationship): void {
     this.relationshipSelected.emit(relationship);
+  }
+
+  private filter(relationship: Relationship, filterValue: string): boolean {
+    return relationship.description?.toLowerCase().includes(filterValue)
+      || relationship.displayName?.toLowerCase().includes(filterValue)
+      || relationship.subjectType?.toString().toLowerCase().includes(filterValue)
+      || relationship.targetType?.toString().toLowerCase().includes(filterValue);
   }
 }
 
