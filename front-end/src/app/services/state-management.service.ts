@@ -16,7 +16,8 @@ import {
   StateEnumerationMap,
   StateEnumeration,
   Collection,
-  StateHistory
+  StateHistory,
+  RelationshipHistory
 } from '../models';
 import { environment } from 'src/environments/environment';
 
@@ -122,16 +123,24 @@ export class StateManagementService {
     );
   }
 
-  public getRelationships(collectionId: number): Observable<RelationshipMap> {
-    return this.http.get<RelationshipMap>(
-      this.addCollectionId(collectionId) + 'relationships'
-    );
+  public getRelationships(collectionId: number): Observable<Relationship[]> {
+    return this.apollo
+      .query<{ relationships: Relationship[] }>({
+        fetchPolicy: 'no-cache',
+      query: gql.GET_RELATIONSHIPS,
+        variables: { collection_id: collectionId }
+      })
+      .pipe(map(({ data: { relationships } }) => relationships));
   }
 
-  public getRelationshipHistory(collectionId: number): Observable<RelationshipMap> {
-    return this.http.get<RelationshipMap>(
-      this.addCollectionId(collectionId) + 'relationship-history'
-    );
+  public getRelationshipHistory(collectionId: number): Observable<RelationshipHistory[]> {
+    return this.apollo
+      .query<{ relationshipHistory: RelationshipHistory[] }>({
+        fetchPolicy: 'no-cache',
+      query: gql.GET_RELATIONSHIP_HISTORY,
+        variables: { collection_id: collectionId }
+      })
+      .pipe(map(({ data: { relationshipHistory } }) => relationshipHistory));
   }
 
   public getStateEnumerations(collectionId: number): Observable<StateEnumerationMap> {
@@ -142,7 +151,7 @@ export class StateManagementService {
 
   public getStateHistory(collectionId: number): Observable<StateHistory[]> {
     return this.apollo
-      .query<{ stateHistory: [] }>({
+      .query<{ stateHistory: StateHistory[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_STATE_HISTORY,
         variables: { collection_id: collectionId }

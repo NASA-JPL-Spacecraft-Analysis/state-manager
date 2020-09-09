@@ -23,14 +23,30 @@ export const reducer = createReducer(
   on(RelationshipActions.editRelationshipSuccess, (relationshipState, { relationship }) => {
     return modifyRelationship(relationshipState, relationship);
   }),
-  on(RelationshipActions.setRelationships, (relationshipState, { relationships }) => ({
-    ...relationshipState,
-    relationships
-  })),
-  on(RelationshipActions.setRelationshipHistory, (relationshipState, { relationshipHistory }) => ({
-    ...relationshipState,
-    relationshipHistory
-  })),
+  on(RelationshipActions.setRelationships, (relationshipState, { relationships }) => {
+    const relationshipMap = {};
+
+    for (const relationship of relationships) {
+      relationshipMap[relationship.id] = relationship;
+    }
+
+    return {
+      ...relationshipState,
+      relationships: relationshipMap
+    };
+  }),
+  on(RelationshipActions.setRelationshipHistory, (relationshipState, { relationshipHistory }) => {
+    const relationshipHistoryMap = {};
+
+    for (const relationshipHistoryItem of relationshipHistory) {
+      relationshipHistoryMap[relationshipHistoryItem.id] = relationshipHistoryItem;
+    }
+
+    return {
+      ...relationshipState,
+      relationshipHistory: relationshipHistoryMap
+    };
+  }),
   on(RelationshipActions.setSelectedRelationship, (relationshipState, { relationship }) => ({
     ...relationshipState,
     selectedRelationship: relationship

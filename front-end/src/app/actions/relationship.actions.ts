@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { Relationship, RelationshipMap } from '../models';
+import { Relationship, RelationshipHistory } from '../models';
 
 export const createRelationship = createAction(
   '[relationship] createRelationship',
@@ -44,12 +44,12 @@ export const fetchRelationshipHistoryFailure = createAction(
 
 export const setRelationships = createAction(
   '[relationship] setRelationships',
-  props<{ relationships: RelationshipMap }>()
+  props<{ relationships: Relationship[] }>()
 );
 
 export const setRelationshipHistory = createAction(
   '[relationship] setRelationshipHistory',
-  props<{ relationshipHistory: RelationshipMap }>()
+  props<{ relationshipHistory: RelationshipHistory[] }>()
 );
 
 export const setSelectedRelationship = createAction(
