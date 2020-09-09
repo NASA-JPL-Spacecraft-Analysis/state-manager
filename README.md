@@ -93,22 +93,58 @@ JSON:
 CSV:
 ```
 informationType,identifier,displayName,description,externalLink
+Activity,test_activity,Test Activity,,
 Command,test_command,Test Command,,
+FlightRule,test_flight_rule,Test Flight Rule,,
+FSWParameter,test_fsw_parameter,Test FSW Parameter,,
+Model,test_model,Test Model,,
 ```
 
 JSON:
 ```
 [
-  {
-    "informationType": "Command",
-    "identifier": "TEST_COMMAND",
-    "displayName": "Test Command",
-    "description": "",
-    "externalLink": ""
-  },
-  {
-    ...
-  }
+     {
+         "informationType": "Command",
+         "identifier": "TEST_COMMAND",
+         "displayName": "Test Command",
+         "description": "",
+         "externalLink": ""
+     }
+     {
+         "informationType": Activity,
+         "identifier": "test_activity",
+         "displayName": "Test Activity",
+         "description": "",
+         "externalLink: ""
+     },
+     {
+         "informationType": "Command",
+         "identifier": "test_command",
+         "displayName": "Test Command",
+         "description": "",
+         "externalLink: ""
+     }
+     {
+         "informationType": FlightRule,
+         "identifier": "test_flight_rule",
+         "displayName": "Test Flight Rule",
+         "description": "",
+         "externalLink: ""
+     },
+     {
+         "informationType": "FSWParameter",
+         "identifier": "test_fsw_parameter",
+         "displayName": "Test FSW Parameter",
+         "description": "",
+         "externalLink: ""
+     },
+     {
+         "informationType": "Model",
+         "identifier": "test_model",
+         "displayName": "Test Model",
+         "description": "",
+         "externalLink: ""
+     }
 ]
 ```
 
