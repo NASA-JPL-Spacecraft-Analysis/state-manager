@@ -22,7 +22,7 @@ export class InformationTypesEffects {
       ofRoute('collection/:collectionId/information-types'),
       mapToParam<number>('collectionId'),
       switchMap(collectionId => {
-        return this.getInformationTypes(collectionId);
+        return this.getInformationTypes(Number(collectionId));
       })
     );
   });

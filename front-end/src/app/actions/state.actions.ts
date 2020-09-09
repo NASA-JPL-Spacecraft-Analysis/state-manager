@@ -4,7 +4,8 @@ import {
   State,
   StateMap,
   StateEnumeration,
-  StateEnumerationMap
+  StateEnumerationMap,
+  StateHistory
 } from '../models';
 
 export const createState = createAction(
@@ -84,12 +85,12 @@ export const setStateEnumerations = createAction(
 
 export const setStateHistory = createAction(
   '[state] setStateHistory',
-  props<{ stateHistoryMap: StateMap }>()
+  props<{ stateHistory: StateHistory[] }>()
 );
 
 export const setStates = createAction(
   '[state] setStates',
-  props<{ stateMap: StateMap }>()
+  props<{ states: State[] }>()
 );
 
 export const setSelectedState = createAction(

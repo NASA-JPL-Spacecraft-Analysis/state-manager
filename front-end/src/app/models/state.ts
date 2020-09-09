@@ -12,4 +12,9 @@ export interface State {
   description: string;
 }
 
+export interface StateHistory extends State {
+  stateId: number;
+  updated: Date;
+}
+
 export type StateMap = StringTMap<State>;

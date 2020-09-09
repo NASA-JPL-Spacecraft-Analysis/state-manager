@@ -96,7 +96,7 @@ export class StateEffects {
       ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
       mapToParam<number>('collectionId'),
       switchMap(collectionId => {
-        return this.getStates(collectionId);
+        return this.getStates(Number(collectionId));
       })
     );
   });
@@ -151,8 +151,8 @@ export class StateEffects {
         this.stateManagementService.getStates(
           collectionId
         ).pipe(
-          map(stateMap => StateActions.setStates({
-            stateMap
+          map(states => StateActions.setStates({
+            states
           })),
           catchError(
             (error: Error) => [
@@ -185,8 +185,8 @@ export class StateEffects {
         this.stateManagementService.getStateHistory(
           collectionId
         ).pipe(
-          map(stateHistoryMap => StateActions.setStateHistory({
-            stateHistoryMap
+          map(stateHistory => StateActions.setStateHistory({
+            stateHistory
           })),
           catchError(
             (error: Error) => [
@@ -199,8 +199,8 @@ export class StateEffects {
         this.stateManagementService.getStates(
           collectionId
         ).pipe(
-          map(stateMap => StateActions.setStates({
-            stateMap
+          map(states => StateActions.setStates({
+            states
           })),
           catchError(
             (error: Error) => [

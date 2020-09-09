@@ -14,7 +14,9 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "subsink"
+              "graphql-tag",
+              "subsink",
+              "zen-observable"
             ],
             "baseHref": "/state-management/",
             "outputPath": "dist/",

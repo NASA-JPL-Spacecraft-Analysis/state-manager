@@ -15,7 +15,8 @@ import {
   StateMap,
   StateEnumerationMap,
   StateEnumeration,
-  Collection
+  Collection,
+  StateHistory
 } from '../models';
 import { environment } from 'src/environments/environment';
 
@@ -139,16 +140,24 @@ export class StateManagementService {
     );
   }
 
-  public getStateHistory(collectionId: number): Observable<StateMap> {
-    return this.http.get<StateMap>(
-      this.addCollectionId(collectionId) + 'state-history'
-    );
+  public getStateHistory(collectionId: number): Observable<StateHistory[]> {
+    return this.apollo
+      .query<{ stateHistory: [] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_STATE_HISTORY,
+        variables: { collection_id: collectionId }
+      })
+      .pipe(map(({ data: { stateHistory } }) => stateHistory));
   }
 
-  public getStates(collectionId: number): Observable<StateMap> {
-    return this.http.get<StateMap>(
-      this.addCollectionId(collectionId) + 'states'
-    );
+  public getStates(collectionId: number): Observable<State[]> {
+    return this.apollo
+      .query<{ states: State[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_STATES,
+        variables: { collection_id: collectionId }
+      })
+      .pipe(map(({ data: { states } }) => states));
   }
 
   public saveEnumerations(collectionId: number, stateId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {

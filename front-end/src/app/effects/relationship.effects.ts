@@ -91,7 +91,7 @@ export class RelationshipEffects {
       ofRoute([ 'collection/:collectionId/relationships', 'collection/:collectionId/relationship-history' ]),
       mapToParam<number>('collectionId'),
       switchMap(collectionId => {
-        return this.getRelationships(collectionId);
+        return this.getRelationships(Number(collectionId));
       })
     );
   });
@@ -143,8 +143,8 @@ export class RelationshipEffects {
       this.stateManagementService.getStates(
         collectionId
       ).pipe(
-        map(stateMap => StateActions.setStates({
-          stateMap
+        map(states => StateActions.setStates({
+          states
         })),
         catchError(
           (error: Error) => [

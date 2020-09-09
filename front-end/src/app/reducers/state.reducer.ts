@@ -64,17 +64,25 @@ export const reducer = createReducer(
       ...stateEnumerationMap
     }
   })),
-  on(StateActions.setStateHistory, (stateState, { stateHistoryMap }) => ({
-    ...stateState,
-    stateHistoryMap
-  })),
-  on(StateActions.setStates, (stateState, { stateMap }) => {
+  on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
+    const stateHistoryMap = {};
+
+    for (const stateHistoryItem of stateHistory) {
+      stateHistoryMap[stateHistoryItem.id] = stateHistoryItem;
+    }
+
+    return {
+      ...stateState,
+      stateHistoryMap
+    };
+  }),
+  on(StateActions.setStates, (stateState, { states }) => {
+    const stateMap = {};
     const stateIdentifierMap = new Map<string, number>();
 
-    if (stateMap) {
-      for (const key of Object.keys(stateMap)) {
-        stateIdentifierMap[stateMap[key].identifier] = key;
-      }
+    for (const state of states) {
+      stateMap[state.id] = state;
+      stateIdentifierMap[state.identifier] = state.id;
     }
 
     return {
