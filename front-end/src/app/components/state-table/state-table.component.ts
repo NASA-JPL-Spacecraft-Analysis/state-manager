@@ -72,7 +72,7 @@ export class StateTableComponent implements OnChanges, OnInit {
    *
    * @param filterValue The filter the user has entered.
    */
-  public applyFilter(filterValue: string) {
+  public applyFilter(filterValue: string): void {
     filterValue = filterValue.trim().toLowerCase();
 
     this.dataSource.filter = filterValue;
@@ -82,9 +82,15 @@ export class StateTableComponent implements OnChanges, OnInit {
     this.stateSelected.emit(state);
   }
 
-  // Filter by our state's type to start with.
+  // Check each field for the filter value, this will eventually change to search by field.
   private filter(state: State, filterValue: string): boolean {
-    return state.type.toLowerCase().includes(filterValue);
+    return state.description?.toLowerCase().includes(filterValue)
+      || state.displayName?.toLowerCase().includes(filterValue)
+      || state.identifier?.toLowerCase().includes(filterValue)
+      || state.source?.toLowerCase().includes(filterValue)
+      || state.subsystem?.toLowerCase().includes(filterValue)
+      || state.type?.toLowerCase().includes(filterValue)
+      || state.units?.toLowerCase().includes(filterValue);
   }
 }
 

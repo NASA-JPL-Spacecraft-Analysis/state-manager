@@ -35,6 +35,8 @@ export class EventTableComponent implements OnChanges, OnInit {
       }
 
       this.dataSource = new MatTableDataSource(this.eventList);
+
+      this.dataSource.filterPredicate = this.filter;
     }
   }
 
@@ -52,6 +54,20 @@ export class EventTableComponent implements OnChanges, OnInit {
         'updated'
       );
     }
+  }
+
+  public applyFilter(filterValue: string): void {
+    filterValue = filterValue.trim().toLowerCase();
+
+    this.dataSource.filter = filterValue;
+  }
+
+  // Check each field for the filter value, this will eventually change to search by field.
+  private filter(event: Event, filterValue: string): boolean {
+    return event.description?.toLowerCase().includes(filterValue)
+      || event.displayName?.toLowerCase().includes(filterValue)
+      || event.externalLink?.toLowerCase().includes(filterValue)
+      || event.identifier?.toLowerCase().includes(filterValue);
   }
 
   public onRowClick(event: Event): void {

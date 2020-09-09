@@ -1,4 +1,8 @@
 <div *ngIf="relationshipMap && relationshipsList.length > 0; else noRelationships">
+  <mat-form-field class="filter-container">
+    <input matInput (keyup)="applyFilter($any($event).target.value)" type="text" placeholder="Filter" />
+  </mat-form-field>
+
   <table mat-table [dataSource]="dataSource" [ngClass]="{ 'history': history }">
     <ng-container *ngIf="history">
       <ng-container matColumnDef="relationshipId">
