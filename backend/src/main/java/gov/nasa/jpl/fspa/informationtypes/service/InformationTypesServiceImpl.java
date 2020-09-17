@@ -101,10 +101,12 @@ public class InformationTypesServiceImpl implements InformationTypesService {
     private Map<String, Integer> getInformationTypesIdentifiers(Map<Integer, InformationTypes> informationTypesMap) {
         Map<String, Integer> informationTypeIdentifierMap = new HashMap<>();
 
-        for (int id: informationTypesMap.keySet()) {
-            InformationTypes informationType = informationTypesMap.get(id);
+        if (informationTypesMap != null) {
+            for (int id: informationTypesMap.keySet()) {
+                InformationTypes informationType = informationTypesMap.get(id);
 
-            informationTypeIdentifierMap.put(informationType.getIdentifier(), informationType.getId());
+                informationTypeIdentifierMap.put(informationType.getIdentifier(), informationType.getId());
+            }
         }
 
         return informationTypeIdentifierMap;
