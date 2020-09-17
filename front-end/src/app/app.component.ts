@@ -1,7 +1,7 @@
 import { NgModule, Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
@@ -18,10 +18,10 @@ import {
   RelationshipEffects
 } from './effects';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
-import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
 import { MaterialModule } from './material';
 import { ToolbarModule } from './containers';
+import { HttpRequestInterceptor } from './services';
 
 @Component({
   selector: 'app-root',
@@ -69,6 +69,9 @@ export class AppComponent {}
       resetTimeoutOnDuplicate: true
     }),
     ToolbarModule
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }
   ],
   bootstrap: [
     AppComponent
