@@ -163,11 +163,11 @@ export class EventEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getEventMap(
+        this.stateManagementService.getEvents(
           collectionId
         ).pipe(
-          map(eventMap => EventActions.setEventMap({
-            eventMap
+          map(events => EventActions.setEvents({
+            events
           })),
           catchError(
             (error: Error) => [
@@ -183,11 +183,11 @@ export class EventEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getEventHistoryMap(
+        this.stateManagementService.getEventHistory(
           collectionId
         ).pipe(
-          map(eventHistoryMap => EventActions.setEventHistoryMap({
-            eventHistoryMap
+          map(eventHistory => EventActions.setEventHistory({
+            eventHistory
           })),
           catchError(
             (error: Error) => [

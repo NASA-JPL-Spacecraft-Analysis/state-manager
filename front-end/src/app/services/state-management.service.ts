@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {
-  CollectionMap,
   EventMap,
   Event,
   InformationTypesMap,
@@ -105,16 +104,24 @@ export class StateManagementService {
       .pipe(map(({ data: { collections } }) => collections));
   }
 
-  public getEventMap(collectionId: number): Observable<EventMap> {
-    return this.http.get<EventMap>(
-      this.addCollectionId(collectionId) + 'event-map'
-    );
+  public getEvents(collectionId: number): Observable<Event[]> {
+    return this.apollo
+      .query<{ events: Event[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_EVENTS,
+        variables: { collection_id: collectionId }
+      })
+      .pipe(map(({ data: { events } }) => events));
   }
 
-  public getEventHistoryMap(collectionId: number): Observable<EventMap> {
-    return this.http.get<EventMap>(
-      this.addCollectionId(collectionId) + 'event-history-map'
-    );
+  public getEventHistory(collectionId: number): Observable<Event[]> {
+    return this.apollo
+      .query<{ eventHistory: Event[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_EVENT_HISTORY,
+        variables: { collection_id: collectionId }
+      })
+      .pipe(map(({ data: { eventHistory } }) => eventHistory));
   }
 
   public getInformationTypes(collectionId: number): Observable<InformationTypesMap> {
@@ -127,7 +134,7 @@ export class StateManagementService {
     return this.apollo
       .query<{ relationships: Relationship[] }>({
         fetchPolicy: 'no-cache',
-      query: gql.GET_RELATIONSHIPS,
+        query: gql.GET_RELATIONSHIPS,
         variables: { collection_id: collectionId }
       })
       .pipe(map(({ data: { relationships } }) => relationships));

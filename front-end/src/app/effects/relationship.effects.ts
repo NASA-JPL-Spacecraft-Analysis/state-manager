@@ -112,11 +112,11 @@ export class RelationshipEffects {
   private getRelationships(collectionId: number): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
     const sharedActions = merge(
-      this.stateManagementService.getEventMap(
+      this.stateManagementService.getEvents(
         collectionId
       ).pipe(
-        map(eventMap => EventActions.setEventMap({
-          eventMap
+        map(events => EventActions.setEvents({
+          events
         })),
         catchError(
           (error: Error) => [

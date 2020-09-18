@@ -32,13 +32,13 @@ export const reducer = createReducer(
       ...eventMap
     }
   })),
-  on(EventActions.setEventMap, (state, { eventMap }) => {
+  on(EventActions.setEvents, (state, { events }) => {
+    const eventMap = new Map<number, Event>();
     const eventIdentifierMap = new Map<string, number>();
 
-    if (eventMap) {
-      for (const key of Object.keys(eventMap)) {
-        eventIdentifierMap[eventMap[key].identifier] = key;
-      }
+    for (const event of events) {
+      eventMap[event.id] = event;
+      eventIdentifierMap[event.identifier] = event.id;
     }
 
     return {
@@ -51,12 +51,20 @@ export const reducer = createReducer(
       }
     };
   }),
-  on(EventActions.setEventHistoryMap, (state, { eventHistoryMap }) => ({
-    ...state,
-    eventHistoryMap: {
-      ...eventHistoryMap
+  on(EventActions.setEventHistory, (state, { eventHistory }) => {
+    const eventHistoryMap = {};
+
+    for (const eventHistoryItem of eventHistory) {
+      eventHistoryMap[eventHistoryItem.id] = eventHistory;
     }
-  })),
+
+    return {
+      ...state,
+      eventHistoryMap: {
+        ...eventHistoryMap
+      }
+    };
+  }),
   on(EventActions.setSelectedEvent, (state, { event }) => ({
     ...state,
     selectedEvent: event

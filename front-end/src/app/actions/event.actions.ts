@@ -52,14 +52,14 @@ export const setEventIdentifiers = createAction(
   props<{ eventIdentifiers: string[] }>()
 );
 
-export const setEventMap = createAction(
-  '[event] setEventMap',
-  props<{ eventMap: EventMap }>()
+export const setEvents = createAction(
+  '[event] setEvents',
+  props<{ events: Event[] }>()
 );
 
-export const setEventHistoryMap = createAction(
-  '[event] setEventHistoryMap',
-  props<{ eventHistoryMap: EventMap }>()
+export const setEventHistory = createAction(
+  '[event] setEventHistory',
+  props<{ eventHistory: Event[] }>()
 );
 
 export const setSelectedEvent = createAction(

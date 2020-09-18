@@ -1,10 +1,36 @@
 import gql from 'graphql-tag';
 
 export const GET_COLLECTIONS = gql(`
-  query {
+  query collections{
     collections {
       id
       name
+    }
+  }
+`);
+
+export const GET_EVENTS = gql(`
+  query events($collection_id: Float!) {
+    events(collection_id: $collection_id) {
+      description
+      displayName: display_name
+      externalLink: external_link
+      id
+      identifier
+    }
+  }
+`);
+
+export const GET_EVENT_HISTORY = gql(`
+  query eventHistory($collection_id: Float!) {
+    eventHistory(collection_id: $collection_id) {
+      description
+      displayName: display_name
+      eventId: event_id
+      externalLink: external_link
+      id
+      identifier
+      updated
     }
   }
 `);
