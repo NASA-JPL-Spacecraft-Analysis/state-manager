@@ -32,13 +32,6 @@ table {
   margin-bottom: .5em;
 }
 
-.gray-button {
-  background: #979797;
-  color: white;
-  border-radius: 3px;
-  box-shadow: none;
-}
-
 .sidenav {
   width: 25%;
 }

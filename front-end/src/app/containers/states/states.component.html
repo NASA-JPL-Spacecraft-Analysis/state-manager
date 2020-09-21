@@ -1,21 +1,21 @@
-<mat-toolbar class="states-toolbar">
-  STATES 
+<mat-toolbar color="primary" class="mat-toolbar-page">
+  <h6>States</h6>
 
   <div>
-    <button mat-button routerLink="../state-history">
+    <button mat-button color="primary" routerLink="../state-history">
       History 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="onModifyState()">
+    <button mat-raised-button color="accent" (click)="onModifyState()">
       Create New State 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="statesFileUpload.click()">
+    <button mat-raised-button color="accent" (click)="statesFileUpload.click()">
       Upload States
     </button>
     <input #statesFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, statesUploadableType)" />
 
-    <button mat-raised-button class="gray-button" (click)="enumerationsFileUpload.click()">
+    <button mat-raised-button color="accent" (click)="enumerationsFileUpload.click()">
       Upload Enumerations 
     </button>
     <input #enumerationsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, enumerationsUploadableType)" />

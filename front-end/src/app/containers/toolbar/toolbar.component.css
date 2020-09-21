@@ -1,12 +1,5 @@
 button {
   margin-right: .5em;
-  color: white;
-}
-
-.mat-toolbar {
-  display: flex;
-  justify-content: space-between;
-  background-color: #B9B9B9;
 }
 
 .menu-button {

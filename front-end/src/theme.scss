@@ -1,0 +1,141 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+// Colors
+
+$mat-primary: (
+  50: #F9F5FF,
+  100: #F2EEFF,
+  200: #E8E4FF,
+  300: #D7D3EE,
+  400: #B3AFC9,
+  500: #938FA8,
+  600: #65627E,
+  700: #57546B,
+  800: #38364B,
+  900: #171629,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text
+  )
+);
+
+$mat-accent: (
+  50: #DEF5FB,
+  100: #ACE7F4,
+  200: #73D8EC,
+  300: #30C7E2,
+  400: #00BCDA,
+  500: #00B1D3,
+  600: #00A1C0,
+  700: #008DA6,
+  800: #00798D,
+  900: #005761,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text
+  )
+);
+
+$primary: mat-palette($mat-primary, 800);
+$accent: mat-palette($mat-accent, 300);
+$theme: mat-light-theme($primary, $accent);
+
+@include angular-material-theme($theme);
+
+// Mixins
+
+@mixin headline-6 {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 24px;
+}
+
+@mixin body-2 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height:  20px;
+}
+
+@mixin button {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 2.25px;
+  line-height: 16px;
+}
+
+// Typography
+
+h6 {
+  @include headline-6();
+}
+
+// Component Overwrites
+
+table {
+  td {
+    @include body-2();
+  }
+
+  tr:nth-child(odd):not(.mat-header-row) {
+    background-color: rgba(110, 110, 134, 0.08);
+  }
+
+  tr {
+    th.mat-header-cell, td.mat-cell {
+      border-bottom: none;
+    }
+  }
+}
+
+.mat-button.mat-button-base {
+  background-color: mat-color($primary, 900);
+  color: white;
+}
+
+.mat-button, .mat-raised-button {
+  @include button();
+}
+
+.mat-form-field-infix {
+  border-top: none;
+}
+
+.mat-form-field-underline {
+  display: none;
+}
+
+.mat-toolbar {
+  display: flex;
+  height: 3em;
+  justify-content: space-between;
+
+  button {
+    margin-right: 1em;
+  }
+
+  h6 {
+    @include headline-6();
+  }
+}
+
+.mat-toolbar.mat-toolbar-page {
+  background-color: mat-color($primary, 900);
+  box-shadow: 0px 4px 5px rgba(43, 43, 63, 0.12), 0px 1px 10px rgba(43, 43, 63, 0.12), 0px 2px 4px rgba(43, 43, 63, 0.2);
+}
