@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 
-import { StateManagementService } from '../services/state-management.service';
+import { EventService, InformationTypesService, RelationshipService, StateService} from '../services';
 import { FileUploadActions, ToastActions } from '../actions';
 import { InformationTypesMap, StateEnumerationMap, StateMap, RelationshipMap, EventMap } from '../models';
 
@@ -12,7 +12,10 @@ import { InformationTypesMap, StateEnumerationMap, StateMap, RelationshipMap, Ev
 export class FileUploadEffects {
   constructor(
     private actions: Actions,
-    private stateManagementService: StateManagementService
+    private eventService: EventService,
+    private informationTypesService: InformationTypesService,
+    private stateService: StateService,
+    private relationshipService: RelationshipService
   ) {}
 
   public uploadInformationTypes = createEffect(() => {
@@ -22,9 +25,9 @@ export class FileUploadEffects {
         let saveInformationTypes: Observable<InformationTypesMap>;
 
         if (fileType === 'csv') {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesCsv(file, collectionId);
+          saveInformationTypes = this.informationTypesService.saveInformationTypesCsv(file, collectionId);
         } else {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesJson(file, collectionId);
+          saveInformationTypes = this.informationTypesService.saveInformationTypesJson(file, collectionId);
         }
 
         return saveInformationTypes.pipe(
@@ -60,12 +63,12 @@ export class FileUploadEffects {
         let saveEnumerations: Observable<StateEnumerationMap>;
 
         if (fileType === 'csv') {
-          saveEnumerations = this.stateManagementService.saveEnumerationsCsv(
+          saveEnumerations = this.stateService.saveEnumerationsCsv(
             collectionId,
             file
           );
         } else {
-          saveEnumerations = this.stateManagementService.saveEnumerationsJson(
+          saveEnumerations = this.stateService.saveEnumerationsJson(
             collectionId,
             file
           );
@@ -104,9 +107,9 @@ export class FileUploadEffects {
         let saveEvents: Observable<EventMap>;
 
         if (fileType === 'csv') {
-          saveEvents = this.stateManagementService.saveEventsCsv(file, collectionId);
+          saveEvents = this.eventService.saveEventsCsv(file, collectionId);
         } else {
-          saveEvents = this.stateManagementService.saveEventsJson(file, collectionId);
+          saveEvents = this.eventService.saveEventsJson(file, collectionId);
         }
 
         return saveEvents.pipe(
@@ -142,9 +145,9 @@ export class FileUploadEffects {
         let saveRelationships: Observable<RelationshipMap>;
 
         if (fileType === 'csv') {
-          saveRelationships = this.stateManagementService.saveRelationshipsCsv(collectionId, file);
+          saveRelationships = this.relationshipService.saveRelationshipsCsv(collectionId, file);
         } else {
-          saveRelationships = this.stateManagementService.saveRelationshipsJson(collectionId, file);
+          saveRelationships = this.relationshipService.saveRelationshipsJson(collectionId, file);
         }
 
         return saveRelationships.pipe(
@@ -180,12 +183,12 @@ export class FileUploadEffects {
         let saveStates: Observable<StateMap>;
 
         if (fileType === 'csv') {
-          saveStates = this.stateManagementService.saveStatesCsv(
+          saveStates = this.stateService.saveStatesCsv(
             collectionId,
             file
           );
         } else {
-          saveStates = this.stateManagementService.saveStatesJson(
+          saveStates = this.stateService.saveStatesJson(
             collectionId,
             file
           );

@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { switchMap, map, withLatestFrom } from 'rxjs/operators';
 
 import { CollectionActions, ToastActions } from '../actions';
-import { StateManagementService } from '../services/state-management.service';
+import { CollectionService } from '../services';
 import { Collection } from '../models';
 import { of, forkJoin, concat, merge } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components';
@@ -16,9 +16,9 @@ import { AppState } from '../app-store';
 export class CollectionEffects {
   constructor(
     private actions: Actions,
+    private collectionService: CollectionService,
     private dialog: MatDialog,
     private router: Router,
-    private stateManagementService: StateManagementService,
     private store: Store<AppState>
   ) {}
 
@@ -26,7 +26,7 @@ export class CollectionEffects {
     return this.actions.pipe(
       ofType(CollectionActions.createCollection),
       switchMap(({ name }) =>
-        this.stateManagementService.createCollection(
+        this.collectionService.createCollection(
           name
         ).pipe(
           switchMap(
@@ -75,7 +75,7 @@ export class CollectionEffects {
       switchMap(({ id, result }) => {
         if (result) {
           return concat(
-            this.stateManagementService.deleteCollection(
+            this.collectionService.deleteCollection(
               id
             ).pipe(
               switchMap(
@@ -112,7 +112,7 @@ export class CollectionEffects {
     return this.actions.pipe(
       ofType(CollectionActions.editCollection),
       switchMap(({ collectionId, name }) =>
-        this.stateManagementService.editCollection(
+        this.collectionService.editCollection(
           collectionId,
           name
         ).pipe(

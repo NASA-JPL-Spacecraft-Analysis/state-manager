@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { StateManagementService } from '../services/state-management.service';
+import { StateService } from '../services';
 import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
 import { State } from '../models';
 import { Observable, merge, of, EMPTY } from 'rxjs';
@@ -15,14 +15,14 @@ export class StateEffects {
   constructor(
     private actions: Actions,
     private router: Router,
-    private stateManagementService: StateManagementService
+    private stateService: StateService
   ) {}
 
   public createState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.createState),
       switchMap(({ collectionId, state, stateEnumerations }) =>
-        this.stateManagementService.createState(
+        this.stateService.createState(
           collectionId,
           state
         ).pipe(
@@ -62,7 +62,7 @@ export class StateEffects {
     return this.actions.pipe(
       ofType(StateActions.editState),
       switchMap(({ collectionId, state }) =>
-        this.stateManagementService.editState(
+        this.stateService.editState(
           collectionId,
           state
         ).pipe(
@@ -118,7 +118,7 @@ export class StateEffects {
     return this.actions.pipe(
       ofType(StateActions.saveEnumerations),
       switchMap(({ collectionId, stateId, enumerations }) =>
-        this.stateManagementService.saveEnumerations(
+        this.stateService.saveEnumerations(
           collectionId,
           stateId,
           enumerations
@@ -148,7 +148,7 @@ export class StateEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getStates(
+        this.stateService.getStates(
           collectionId
         ).pipe(
           map(states => StateActions.setStates({
@@ -162,7 +162,7 @@ export class StateEffects {
             ]
           )
         ),
-        this.stateManagementService.getStateEnumerations(
+        this.stateService.getStateEnumerations(
           collectionId
         ).pipe(
           map(stateEnumerationMap => StateActions.setStateEnumerations({
@@ -182,7 +182,7 @@ export class StateEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getStateHistory(
+        this.stateService.getStateHistory(
           collectionId
         ).pipe(
           map(stateHistory => StateActions.setStateHistory({
@@ -196,7 +196,7 @@ export class StateEffects {
             ]
           )
         ),
-        this.stateManagementService.getStates(
+        this.stateService.getStates(
           collectionId
         ).pipe(
           map(states => StateActions.setStates({

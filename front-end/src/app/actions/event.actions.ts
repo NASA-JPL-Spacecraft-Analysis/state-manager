@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { Event, EventMap } from '../models';
+import { Event } from '../models';
 
 export const createEvent = createAction(
   '[event] createEvent',

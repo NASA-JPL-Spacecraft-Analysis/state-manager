@@ -12,8 +12,8 @@ export interface Relationship {
 }
 
 export interface RelationshipHistory extends Relationship {
-  relationshipId?: number;
-  updated?: Date;
+  relationshipId: number;
+  updated: Date;
 }
 
 export type RelationshipMap = StringTMap<Relationship>;

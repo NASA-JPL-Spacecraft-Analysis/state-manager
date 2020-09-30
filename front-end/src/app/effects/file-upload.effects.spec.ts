@@ -7,8 +7,7 @@ import { Observable } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 
 import { FileUploadEffects } from './file-upload.effects';
-import { StateManagementService } from '../services/state-management.service';
-import { MockStateManagementService } from '../services/mock-state-management.service';
+import { CollectionService, EventService, InformationTypesService, MockCollectionService, MockEventService, mockInformationTypesService, MockRelationshipService, MockStateService, RelationshipService, StateService } from '../services';
 import { FileUploadActions, ToastActions } from '../actions';
 import {
   mockCsvFile,
@@ -22,7 +21,11 @@ describe('FileUploadEffects', () => {
   let actions: Observable<Action>;
   let effects: FileUploadEffects;
   let testScheduler: TestScheduler;
-  let stateManagementService: StateManagementService;
+  let collectionService: CollectionService;
+  let eventService: EventService;
+  let informationTypesService: InformationTypesService;
+  let relationshipService: RelationshipService;
+  let stateService: StateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -33,13 +36,33 @@ describe('FileUploadEffects', () => {
         FileUploadEffects,
         provideMockActions(() => actions),
         {
-          provide: StateManagementService,
-          useValue: new MockStateManagementService()
-        }
+          provide: CollectionService,
+          useValue: new MockCollectionService()
+        },
+        {
+          provide: EventService,
+          useValue: new MockEventService()
+        },
+        {
+          provide: InformationTypesService,
+          useValue: new mockInformationTypesService()
+        },
+        {
+          provide: RelationshipService,
+          useValue: new MockRelationshipService()
+        },
+        {
+          provide: StateService,
+          useValue: new MockStateService()
+        },
       ]
     });
 
-    stateManagementService = TestBed.inject(StateManagementService);
+    collectionService = TestBed.inject(CollectionService);
+    eventService = TestBed.inject(EventService);
+    informationTypesService = TestBed.inject(InformationTypesService);
+    relationshipService = TestBed.inject(RelationshipService);
+    stateService = TestBed.inject(StateService);
     actions = TestBed.inject(Actions);
     effects = TestBed.inject(FileUploadEffects);
 

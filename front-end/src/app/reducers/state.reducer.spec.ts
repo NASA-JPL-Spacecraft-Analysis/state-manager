@@ -4,7 +4,7 @@ import {
   mockStateMap,
   mockStateEnumerationList,
   mockStateEnumerationMap,
-  mockStateIdentifierMap
+  mockStateIdentifierMap, mockStates
 } from '../mocks';
 
 describe('StateManagementReducer', () => {
@@ -185,9 +185,9 @@ describe('StateManagementReducer', () => {
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.setStates({
-          stateMap: {
-            ...mockStateMap
-          }
+          states: [
+            ...mockStates
+          ]
         })
       );
 

@@ -1,6 +1,6 @@
 import { CollectionState, initialState, reducer } from './collection.reducer';
 import { CollectionActions } from '../actions';
-import { mockCollectionMap } from '../mocks';
+import { mockCollectionMap, mockCollections } from '../mocks';
 
 describe('CollectionReducer', () => {
   describe('createCollectionSuccess', () => {
@@ -68,14 +68,14 @@ describe('CollectionReducer', () => {
 
   describe('fetchCollectionsSuccess', () => {
     it('should set collectionMap after fetching the collections', () => {
-      const collectionMap = {
-        ...mockCollectionMap
-      };
+      const collections = [
+        ...mockCollections
+      ];
 
       const collectionState: CollectionState = reducer(
         { ...initialState },
         CollectionActions.fetchCollectionsSuccess({
-          collectionMap
+          collections: mockCollections
         })
       );
 

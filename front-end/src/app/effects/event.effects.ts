@@ -6,7 +6,7 @@ import { Observable, EMPTY, merge, of } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom, concat } from 'rxjs/operators';
 
 import { CollectionActions, EventActions, LayoutActions, ToastActions } from '../actions';
-import { StateManagementService } from '../services/state-management.service';
+import { EventService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
 import { ValidationService } from '../services/validation.service';
@@ -18,7 +18,7 @@ export class EventEffects {
     private actions: Actions,
     private router: Router,
     private store: Store<AppState>,
-    private stateManagementService: StateManagementService,
+    private eventService: EventService,
     private validationService: ValidationService
   ) {}
 
@@ -45,7 +45,7 @@ export class EventEffects {
           of(LayoutActions.toggleSidenav({
             showSidenav: false
           })),
-          this.stateManagementService.createEvent(
+          this.eventService.createEvent(
             action.collectionId,
             action.event
           ).pipe(
@@ -97,7 +97,7 @@ export class EventEffects {
         }
 
         return merge(
-          this.stateManagementService.editEvent(
+          this.eventService.editEvent(
             action.collectionId,
             action.event
           ).pipe(
@@ -163,7 +163,7 @@ export class EventEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getEvents(
+        this.eventService.getEvents(
           collectionId
         ).pipe(
           map(events => EventActions.setEvents({
@@ -183,7 +183,7 @@ export class EventEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getEventHistory(
+        this.eventService.getEventHistory(
           collectionId
         ).pipe(
           map(eventHistory => EventActions.setEventHistory({

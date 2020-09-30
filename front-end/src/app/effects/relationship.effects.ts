@@ -1,30 +1,31 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store, Action } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, EMPTY } from 'rxjs';
 
-import { StateManagementService } from '../services/state-management.service';
+import { EventService, InformationTypesService, StateService, RelationshipService } from '../services';
 import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypesActions, StateActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { AppState } from '../app-store';
 import { Relationship } from '../models';
 
 @Injectable()
 export class RelationshipEffects {
   constructor(
     private actions: Actions,
+    private eventService: EventService,
+    private informationTypesService: InformationTypesService,
     private router: Router,
-    private stateManagementService: StateManagementService,
-    private store: Store<AppState>
+    private relationshipService: RelationshipService,
+    private stateService: StateService
   ) {}
 
   public createRelationship = createEffect(() => {
     return this.actions.pipe(
       ofType(RelationshipActions.createRelationship),
       switchMap(({ collectionId, relationship }) =>
-        this.stateManagementService.createRelationship(
+        this.relationshipService.createRelationship(
           collectionId,
           relationship
         ).pipe(
@@ -57,7 +58,7 @@ export class RelationshipEffects {
     return this.actions.pipe(
       ofType(RelationshipActions.editRelationship),
       switchMap(({ collectionId, relationship }) =>
-        this.stateManagementService.editRelationship(
+        this.relationshipService.editRelationship(
           collectionId,
           relationship
         ).pipe(
@@ -112,7 +113,7 @@ export class RelationshipEffects {
   private getRelationships(collectionId: number): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
     const sharedActions = merge(
-      this.stateManagementService.getEvents(
+      this.eventService.getEvents(
         collectionId
       ).pipe(
         map(events => EventActions.setEvents({
@@ -126,7 +127,7 @@ export class RelationshipEffects {
           ]
         )
       ),
-      this.stateManagementService.getInformationTypes(
+      this.informationTypesService.getInformationTypes(
         collectionId
       ).pipe(
         map(informationTypes => InformationTypesActions.setInformationTypes({
@@ -140,7 +141,7 @@ export class RelationshipEffects {
           ]
         )
       ),
-      this.stateManagementService.getStates(
+      this.stateService.getStates(
         collectionId
       ).pipe(
         map(states => StateActions.setStates({
@@ -159,7 +160,7 @@ export class RelationshipEffects {
     if (url === 'relationships') {
       return merge(
         sharedActions,
-        this.stateManagementService.getRelationships(
+        this.relationshipService.getRelationships(
           collectionId
         ).pipe(
           map(relationships => RelationshipActions.setRelationships({
@@ -177,7 +178,7 @@ export class RelationshipEffects {
     } else if (url === 'relationship-history') {
       return merge(
         sharedActions,
-        this.stateManagementService.getRelationshipHistory(
+        this.relationshipService.getRelationshipHistory(
           collectionId
         ).pipe(
           map(relationshipHistory => RelationshipActions.setRelationshipHistory({

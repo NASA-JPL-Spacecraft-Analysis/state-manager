@@ -33,7 +33,7 @@ export const reducer = createReducer(
     }
   })),
   on(EventActions.setEvents, (state, { events }) => {
-    const eventMap = new Map<number, Event>();
+    const eventMap = {};
     const eventIdentifierMap = new Map<string, number>();
 
     for (const event of events) {
