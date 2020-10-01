@@ -14,7 +14,8 @@ export const mockStateMap: StateMap = {
     units: 'na',
     source: 'na',
     subsystem: 'na',
-    description: 'This is a test string.'
+    description: 'This is a test string.',
+    enumerations: []
   },
   [2]: {
     id: 2,
@@ -24,6 +25,7 @@ export const mockStateMap: StateMap = {
     units: 'na',
     source: 'na',
     subsystem: 'na',
-    description: 'This is test string 1.'
+    description: 'This is test string 1.',
+    enumerations: []
   }
 };

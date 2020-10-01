@@ -9,7 +9,8 @@ export const mockStates: State[] = [
     units: 'test state units',
     source: 'test state source',
     subsystem: 'test state subsystem',
-    description: 'Test state description.'
+    description: 'Test state description.',
+    enumerations: []
   }
 ];
 

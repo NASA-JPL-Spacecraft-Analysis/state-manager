@@ -32,19 +32,20 @@ export class StateService {
     );
   }
 
-  public getStates(collectionId: number): Observable<State[]> {
+  /**
+   * TODO: Figure out a way to exclude enumerations for when we query for states on the relationships page.
+   * @param collectionId
+   */
+  public getStates(collectionId: number): Observable<{
+    states: State[]
+  }> {
     return this.apollo
       .query<{ states: State[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_STATES,
         variables: { collection_id: collectionId }
       })
-      .pipe(map(({ data: { states } }) => states));
-  }
-  public getStateEnumerations(collectionId: number): Observable<StateEnumerationMap> {
-    return this.http.get<StateEnumerationMap>(
-      addCollectionId(collectionId) + 'state-enumerations'
-    );
+      .pipe(map(({ data }) => data));
   }
 
   public getStateHistory(collectionId: number): Observable<StateHistory[]> {

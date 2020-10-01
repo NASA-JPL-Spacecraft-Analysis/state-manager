@@ -35,6 +35,19 @@ export const GET_EVENT_HISTORY = gql(`
   }
 `);
 
+export const GET_INFORMATION_TYPES = gql(`
+  query informationTypes($collection_id: Float!) {
+    informationTypes(collection_id: $collection_id) {
+      description
+      displayName: display_name
+      externalLink: external_link
+      id
+      identifier
+      type
+    }
+  }
+`);
+
 export const GET_RELATIONSHIPS = gql(`
   query relationships($collection_id: Float!) {
     relationships(collection_id: $collection_id) {
@@ -68,6 +81,11 @@ export const GET_STATES = gql(`
     states(collection_id: $collection_id) {
       description
       displayName: display_name
+      enumerations {
+        id
+        label
+        value
+      }
       id
       identifier
       source

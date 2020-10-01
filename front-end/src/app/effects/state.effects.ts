@@ -151,26 +151,14 @@ export class StateEffects {
         this.stateService.getStates(
           collectionId
         ).pipe(
-          map(states => StateActions.setStates({
-            states
-          })),
+          switchMap(({ states }) => [
+            StateActions.setStates({
+              states
+            })
+          ]),
           catchError(
             (error: Error) => [
               StateActions.fetchStatesFailure({
-                error
-              })
-            ]
-          )
-        ),
-        this.stateService.getStateEnumerations(
-          collectionId
-        ).pipe(
-          map(stateEnumerationMap => StateActions.setStateEnumerations({
-            stateEnumerationMap
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStateEnumerationsFailure({
                 error
               })
             ]
@@ -199,9 +187,11 @@ export class StateEffects {
         this.stateService.getStates(
           collectionId
         ).pipe(
-          map(states => StateActions.setStates({
-            states
-          })),
+          switchMap(({ states }) => [
+            StateActions.setStates({
+              states
+            })
+          ]),
           catchError(
             (error: Error) => [
               StateActions.fetchStatesFailure({

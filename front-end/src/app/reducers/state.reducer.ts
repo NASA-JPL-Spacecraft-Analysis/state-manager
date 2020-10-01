@@ -58,12 +58,20 @@ export const reducer = createReducer(
       }
     };
   }),
-  on(StateActions.setStateEnumerations, (stateState, { stateEnumerationMap }) => ({
-    ...stateState,
-    stateEnumerationMap: {
-      ...stateEnumerationMap
+  on(StateActions.setStateEnumerations, (stateState, { stateEnumerations }) => {
+    const stateEnumerationMap = {};
+
+    for (const stateEnumeration of stateEnumerations) {
+      stateEnumerationMap[stateEnumeration.id] = stateEnumeration;
     }
-  })),
+
+    return {
+      ...stateState,
+      stateEnumerationMap: {
+        ...stateEnumerationMap
+      }
+    };
+  }),
   on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
     const stateHistoryMap = {};
 

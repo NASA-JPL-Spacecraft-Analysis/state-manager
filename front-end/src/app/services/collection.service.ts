@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Collection } from './../models';
-import { addCollectionId, setFormData } from './service-utils';
+import { addCollectionId } from './service-utils';
 import { environment } from 'src/environments/environment';
 
 import * as gql from './gql';

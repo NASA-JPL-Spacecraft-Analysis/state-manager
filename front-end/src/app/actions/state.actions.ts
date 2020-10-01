@@ -4,7 +4,6 @@ import {
   State,
   StateMap,
   StateEnumeration,
-  StateEnumerationMap,
   StateHistory
 } from '../models';
 
@@ -80,7 +79,7 @@ export const saveEnumerationsFailure = createAction(
 
 export const setStateEnumerations = createAction(
   '[state] setStateEnumerations',
-  props<{ stateEnumerationMap: StateEnumerationMap }>()
+  props<{ stateEnumerations: StateEnumeration[] }>()
 );
 
 export const setStateHistory = createAction(

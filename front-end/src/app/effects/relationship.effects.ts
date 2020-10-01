@@ -144,9 +144,9 @@ export class RelationshipEffects {
       this.stateService.getStates(
         collectionId
       ).pipe(
-        map(states => StateActions.setStates({
+        switchMap(({ states }) =>
           states
-        })),
+        ),
         catchError(
           (error: Error) => [
             StateActions.fetchStatesFailure({

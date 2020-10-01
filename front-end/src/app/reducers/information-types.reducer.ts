@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { InformationTypesMap } from '../models';
+import { InformationTypes, InformationTypesMap, StringTMap } from '../models';
 import { FileUploadActions, InformationTypesActions } from '../actions';
 
 export interface InformationTypesState {
@@ -13,12 +13,20 @@ export const initialState: InformationTypesState = {
 
 export const reducer = createReducer(
   initialState,
-  on(InformationTypesActions.setInformationTypes, (state, { informationTypes }) => ({
-    ...state,
-    informationTypes: {
-      ...informationTypes
+  on(InformationTypesActions.setInformationTypes, (state, { informationTypes }) => {
+    const informationTypesMap = new Map<number, StringTMap<InformationTypes>>();
+
+    for (const informationType of informationTypes) {
+      informationTypesMap[informationType.id] = informationType;
     }
-  })),
+
+    return {
+      ...state,
+      informationTypes: {
+        ...informationTypesMap
+      }
+    };
+  }),
   on(FileUploadActions.uploadInformationTypesSuccess, (state, { informationTypes }) => ({
     ...state,
     informationTypes: {
