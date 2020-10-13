@@ -18,32 +18,25 @@ export class StateService {
     private http: HttpClient
   ) {}
 
-  public createState(collectionId: number, newState: State): Observable<State> {
+  public createState(collectionId: number, state: State): Observable<State> {
     return this.apollo
       .mutate<{ createState: State }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATE,
         variables: {
           collection_id: collectionId,
-          description: newState.description,
-          display_name: newState.displayName,
-          identifier: newState.identifier,
-          source: newState.source,
-          subsystem: newState.subsystem,
-          type: newState.type,
-          units: newState.units
+          description: state.description,
+          display_name: state.displayName,
+          identifier: state.identifier,
+          source: state.source,
+          subsystem: state.subsystem,
+          type: state.type,
+          units: state.units
         }
       })
       .pipe(
         map(({ data: { createState } }) => createState )
       );
-  }
-
-  public editState(collectionId: number, state: State): Observable<State> {
-    return this.http.put<State>(
-      addCollectionId(collectionId) + 'state',
-      state
-    );
   }
 
   /**
@@ -113,5 +106,27 @@ export class StateService {
       addCollectionId(collectionId) + 'states-json',
       formData
     );
+  }
+
+  public updateState(state: State): Observable<State> {
+    return this.apollo
+      .mutate<{ updateState: State }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.UPDATE_STATE,
+        variables: {
+          description: state.description,
+          display_name: state.displayName,
+          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
+          id: Number(state.id),
+          identifier: state.identifier,
+          source: state.source,
+          subsystem: state.subsystem,
+          type: state.type,
+          units: state.units
+        }
+      })
+      .pipe(
+        map(({ data: { updateState } }) => updateState)
+      );
   }
 }

@@ -34,7 +34,7 @@ export const reducer = createReducer(
       ...stateMap
     }
   })),
-  on(StateActions.editStateSuccess, (stateState, { state }) => {
+  on(StateActions.updateStateSuccess, (stateState, { state }) => {
     return modifyState(stateState, state);
   }),
   on(StateActions.saveEnumerationsSuccess, (state, { enumerations }) => {

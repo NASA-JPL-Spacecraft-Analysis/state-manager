@@ -62,39 +62,6 @@ export class StateEffects {
     );
   });
 
-  public editState = createEffect(() => {
-    return this.actions.pipe(
-      ofType(StateActions.editState),
-      switchMap(({ collectionId, state }) =>
-        this.stateService.editState(
-          collectionId,
-          state
-        ).pipe(
-          switchMap(
-            (editedState: State) => [
-              StateActions.editStateSuccess({
-                state: editedState
-              }),
-              ToastActions.showToast({
-                message: 'State edited',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              StateActions.editStateFailure({ error }),
-              ToastActions.showToast({
-                message: 'State editing failed',
-                toastType: 'error'
-              })
-            ]
-          )
-        )
-      )
-    );
-  });
-
   public navStates = createEffect(() => {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
@@ -139,6 +106,37 @@ export class StateEffects {
               StateActions.saveEnumerationsFailure({ error })
             ]
           )
+        )
+      )
+    );
+  });
+
+  public updateState = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateActions.updateState),
+      switchMap(({ updatedState }) =>
+        this.stateService.updateState(
+          updatedState
+        ).pipe(
+          switchMap((state) => [
+            StateActions.updateStateSuccess({
+              state: {
+                ...updatedState,
+                id: state.id
+              }
+            }),
+            ToastActions.showToast({
+              message: 'State updated',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            StateActions.updateStateFailure({ error }),
+            ToastActions.showToast({
+              message: 'State updating failed',
+              toastType: 'error'
+            })
+          ])
         )
       )
     );

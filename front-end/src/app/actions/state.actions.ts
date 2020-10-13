@@ -27,21 +27,6 @@ export const createStatesSuccess = createAction(
   props<{ stateMap: StateMap }>()
 );
 
-export const editState = createAction(
-  '[state] editState',
-  props<{ collectionId: number, state: State }>()
-);
-
-export const editStateFailure = createAction(
-  '[state] editStateFailure',
-  props<{ error: Error }>()
-);
-
-export const editStateSuccess = createAction(
-  '[state] editStateSuccess',
-  props<{ state: State }>()
-);
-
 export const fetchIdentifiersFailure = createAction(
   '[state] fetchIdentifiersFailure',
   props<{ error: Error }>()
@@ -94,5 +79,20 @@ export const setStates = createAction(
 
 export const setSelectedState = createAction(
   '[state] setSelectedState',
+  props<{ state: State }>()
+);
+
+export const updateState = createAction(
+  '[state] updateState',
+  props<{ updatedState: State }>()
+);
+
+export const updateStateFailure = createAction(
+  '[state] updateStateFailure',
+  props<{ error: Error }>()
+);
+
+export const updateStateSuccess = createAction(
+  '[state] updateStateSuccess',
   props<{ state: State }>()
 );

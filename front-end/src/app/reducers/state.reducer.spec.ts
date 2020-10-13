@@ -75,7 +75,7 @@ describe('StateManagementReducer', () => {
     });
   });
 
-  describe('editStateSuccess', () => {
+  describe('updateStateSuccess', () => {
     it('should set the selectedState, and update the stateIdentifierMap after editing a state', () => {
       const state = {
         id: 2,
@@ -98,7 +98,7 @@ describe('StateManagementReducer', () => {
             ...mockStateMap
           }
         },
-        StateActions.editStateSuccess({
+        StateActions.updateStateSuccess({
           state
         })
       );

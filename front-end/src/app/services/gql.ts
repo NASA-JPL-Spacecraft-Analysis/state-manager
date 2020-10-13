@@ -140,3 +140,31 @@ export const GET_STATE_HISTORY = gql(`
     }
   }
 `);
+
+export const UPDATE_STATE = gql(`
+  mutation UpdateState(
+    $description: String
+    $display_name: String!
+    $id: Float!
+    $identifier: String!
+    $source: String!
+    $subsystem: String!
+    $type: String!
+    $units: String!
+  ) {
+    updateState(
+      data: {
+        description: $description
+        display_name: $display_name
+        id: $id
+        identifier: $identifier
+        source: $source
+        subsystem: $subsystem
+        type: $type
+        units: $units
+      }
+    ) {
+      id
+    }
+  }
+`);

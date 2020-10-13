@@ -109,9 +109,8 @@ export class StateComponent implements OnDestroy {
             state
           }));
         } else {
-          this.store.dispatch(StateActions.editState({
-            collectionId: this.collectionId,
-            state
+          this.store.dispatch(StateActions.updateState({
+            updatedState: state
           }));
         }
       }

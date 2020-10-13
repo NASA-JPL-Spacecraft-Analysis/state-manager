@@ -1,12 +1,6 @@
 import { StateEnumeration } from './state-enumeration';
 import { StringTMap } from './string-t-map';
 
-export interface CreateAdaptationResponse {
-  id: string | null;
-  message: string | null;
-  success: boolean;
-}
-
 export interface State {
   description: string;
   displayName: string;
