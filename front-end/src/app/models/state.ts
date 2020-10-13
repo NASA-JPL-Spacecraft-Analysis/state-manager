@@ -1,16 +1,22 @@
 import { StateEnumeration } from './state-enumeration';
 import { StringTMap } from './string-t-map';
 
+export interface CreateAdaptationResponse {
+  id: string | null;
+  message: string | null;
+  success: boolean;
+}
+
 export interface State {
+  description: string;
+  displayName: string;
+  enumerations: StateEnumeration[];
   id: number;
   identifier: string;
-  displayName: string;
-  type: string; // enum?
-  units: string; // enum?
   source: string; // enum?
   subsystem: string;
-  description: string;
-  enumerations: StateEnumeration[];
+  type: string; // enum?
+  units: string; // enum?
 }
 
 export interface StateHistory extends State {

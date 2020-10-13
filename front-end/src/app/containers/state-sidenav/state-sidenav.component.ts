@@ -113,13 +113,13 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
       if (!this.duplicateIdentifier) {
         // Only emit our enumerations seperatly if we're modifying an existing state.
         if (this.newState.id !== undefined) {
-          this.modifyEnumerations.emit(this.state.enumerations);
+          this.modifyEnumerations.emit(this.newState.enumerations);
         }
 
         // Emit both values, but we'll only use the enumeraion list on creating a new state.
         this.modifyState.emit({
           state: this.form.value,
-          stateEnumerations: this.state.enumerations
+          stateEnumerations: this.newState.enumerations
         });
       } else {
         // Show the duplicate tooltip.
@@ -150,7 +150,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
    */
   private processEnumerations(): boolean {
     // Check and make sure values are set for all our enumerations.
-    for (const enumeration of this.state.enumerations) {
+    for (const enumeration of this.newState.enumerations) {
       if (enumeration.label === null || enumeration.value === null) {
         return false;
       }

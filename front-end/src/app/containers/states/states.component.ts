@@ -91,8 +91,11 @@ export class StateComponent implements OnDestroy {
         showSidenav: false
       }));
     } else {
-      const { state} = result;
-      const { stateEnumerations } = result;
+      const { state } = result;
+
+      state.enumerations = [
+        ...result.stateEnumerations
+      ];
 
       if (state !== undefined) {
         // Try and set the state id so we don't get duplicate identifier errors.
@@ -103,8 +106,7 @@ export class StateComponent implements OnDestroy {
         if (state.id === null) {
           this.store.dispatch(StateActions.createState({
             collectionId: this.collectionId,
-            state,
-            stateEnumerations
+            state
           }));
         } else {
           this.store.dispatch(StateActions.editState({

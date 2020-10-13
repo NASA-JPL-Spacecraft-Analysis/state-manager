@@ -21,29 +21,33 @@ export class StateEffects {
   public createState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.createState),
-      switchMap(({ collectionId, state, stateEnumerations }) =>
+      switchMap(({ collectionId, state: newState }) =>
         this.stateService.createState(
           collectionId,
-          state
+          newState
         ).pipe(
-          switchMap(
-            (createdState: State) => [
-              StateActions.createStateSuccess({
-                state: createdState
-              }),
-              StateActions.saveEnumerations({
-                collectionId,
-                stateId: createdState.id,
-                enumerations: stateEnumerations,
-              }),
-              ToastActions.showToast({
-                message: 'State created',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
+          switchMap((state) => [
+            StateActions.createStateSuccess({
+              state: {
+                ...newState,
+                id: state.id
+              }
+            }),
+            /*
+            StateActions.saveEnumerations({
+              collectionId,
+              stateId: id,
+              enumerations: stateEnumerations,
+            }),
+            */
+            ToastActions.showToast({
+              message: 'State created',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => {
+            console.log(error);
+            return [
               StateActions.createStateFailure({
                 error
               }),
@@ -51,8 +55,8 @@ export class StateEffects {
                 message: 'State creation failed',
                 toastType: 'error'
               })
-            ]
-          )
+            ];
+          })
         )
       )
     );

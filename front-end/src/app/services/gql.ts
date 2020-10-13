@@ -1,5 +1,33 @@
 import gql from 'graphql-tag';
 
+export const CREATE_STATE = gql(`
+  mutation CreateState(
+    $collection_id: Float!
+    $description: String
+    $display_name: String!
+    $identifier: String!
+    $source: String!
+    $subsystem: String!
+    $type: String!
+    $units: String!
+  ) {
+    createState(
+      data: {
+        collection_id: $collection_id
+        description: $description
+        display_name: $display_name
+        identifier: $identifier
+        source: $source
+        subsystem: $subsystem
+        type: $type
+        units: $units
+      }
+    ) {
+      id
+    }
+  }
+`);
+
 export const GET_COLLECTIONS = gql(`
   query collections{
     collections {

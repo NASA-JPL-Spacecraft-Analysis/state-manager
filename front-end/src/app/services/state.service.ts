@@ -18,11 +18,25 @@ export class StateService {
     private http: HttpClient
   ) {}
 
-  public createState(collectionId: number, state: State): Observable<State> {
-    return this.http.post<State>(
-      addCollectionId(collectionId) + 'state',
-      state
-    );
+  public createState(collectionId: number, newState: State): Observable<State> {
+    return this.apollo
+      .mutate<{ createState: State }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_STATE,
+        variables: {
+          collection_id: collectionId,
+          description: newState.description,
+          display_name: newState.displayName,
+          identifier: newState.identifier,
+          source: newState.source,
+          subsystem: newState.subsystem,
+          type: newState.type,
+          units: newState.units
+        }
+      })
+      .pipe(
+        map(({ data: { createState } }) => createState )
+      );
   }
 
   public editState(collectionId: number, state: State): Observable<State> {
@@ -34,7 +48,6 @@ export class StateService {
 
   /**
    * TODO: Figure out a way to exclude enumerations for when we query for states on the relationships page.
-   * @param collectionId
    */
   public getStates(collectionId: number): Observable<{
     states: State[]

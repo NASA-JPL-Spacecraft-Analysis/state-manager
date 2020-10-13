@@ -9,7 +9,7 @@ import {
 
 export const createState = createAction(
   '[state] createState',
-  props<{ collectionId: number, state: State, stateEnumerations: StateEnumeration[] }>()
+  props<{ collectionId: number, state: State }>()
 );
 
 export const createStateFailure = createAction(
