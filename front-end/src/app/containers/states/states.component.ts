@@ -85,7 +85,7 @@ export class StateComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[] }): void {
+  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds?: number[] }): void {
     if (result === undefined) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
@@ -112,6 +112,13 @@ export class StateComponent implements OnDestroy {
           this.store.dispatch(StateActions.updateState({
             updatedState: state
           }));
+
+          if (result.deletedEnumerationIds && result.deletedEnumerationIds.length > 0) {
+            this.store.dispatch(StateActions.deleteEnumerations({
+              deletedEnumerationIds: result.deletedEnumerationIds,
+              stateId: state.id
+            }));
+          }
         }
       }
     }

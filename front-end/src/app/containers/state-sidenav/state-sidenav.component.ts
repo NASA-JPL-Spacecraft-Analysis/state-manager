@@ -23,9 +23,10 @@ import { MaterialModule } from 'src/app/material';
 export class StateSidenavComponent implements OnChanges, OnDestroy {
   @Input() public state: State;
 
-  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>;
+  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: number[] }>;
   @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
+  public deletedEnumerationIds: number[];
   public newState: State;
   public originalIdentifier: string;
   public form: FormGroup;
@@ -42,7 +43,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>();
+    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: number[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(
@@ -81,6 +82,8 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
       this.originalIdentifier = this.newState.identifier;
     }
 
+    this.deletedEnumerationIds = [];
+
     this.form = new FormGroup({
       id: new FormControl(this.newState.id),
       identifier: new FormControl(this.newState.identifier, [ Validators.required ]),
@@ -108,8 +111,8 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
    * 1) That our identifier is unique (when trimmed)
    */
   public onSubmit(): void {
-    // Process our enumerations before trying to save our state.
-    if (this.processEnumerations()) {
+    // Process our enumerations and make sure the form is valid before trying to save our state.
+    if (this.processEnumerations() && this.form.valid) {
       if (!this.duplicateIdentifier) {
         // Only emit our enumerations seperatly if we're modifying an existing state.
         if (this.newState.id !== undefined) {
@@ -119,7 +122,8 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
         // Emit both values, but we'll only use the enumeraion list on creating a new state.
         this.modifyState.emit({
           state: this.form.value,
-          stateEnumerations: this.newState.enumerations
+          stateEnumerations: this.newState.enumerations,
+          deletedEnumerationIds: this.deletedEnumerationIds
         });
       } else {
         // Show the duplicate tooltip.

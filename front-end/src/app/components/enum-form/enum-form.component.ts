@@ -13,6 +13,7 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'enum-form.component.html'
 })
 export class EnumFormComponent implements OnChanges {
+  @Input() deletedEnumerationIds: number[];
   @Input() enumerations: StateEnumeration[];
 
   public enumerationsLabel: string;
@@ -52,6 +53,11 @@ export class EnumFormComponent implements OnChanges {
   // Remove the deleted enumeration and then emit the current list of enumerations.
   public onDeleteEnumeration(enumeration: StateEnumeration): void {
     this.enumerations.splice(this.enumerations.indexOf(enumeration), 1);
+
+    // Only try and save the id of enumerations that have an id.
+    if (enumeration.id) {
+      this.deletedEnumerationIds.push(enumeration.id);
+    }
 
     this.updateEnumerationsLabel();
   }

@@ -39,16 +39,13 @@ export const reducer = createReducer(
   }),
   on(StateActions.saveEnumerationsSuccess, (state, { enumerations }) => {
     const stateEnumerationMap: StateEnumerationMap = {};
-    let stateId = null;
 
     for (const enumeration of enumerations) {
-      stateId = enumeration.stateId;
-
-      if (stateEnumerationMap[stateId] === undefined) {
-        stateEnumerationMap[stateId] = [];
+      if (stateEnumerationMap[enumeration.stateId] === undefined) {
+        stateEnumerationMap[enumeration.stateId] = [];
       }
 
-      stateEnumerationMap[stateId].push(enumeration);
+      stateEnumerationMap[enumeration.stateId].push(enumeration);
     }
 
     return {

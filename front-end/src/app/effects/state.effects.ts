@@ -6,7 +6,6 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { StateService } from '../services';
 import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
-import { State } from '../models';
 import { Observable, merge, of, EMPTY } from 'rxjs';
 import { ofRoute, mapToParam } from '../functions/router';
 
@@ -33,13 +32,11 @@ export class StateEffects {
                 id: state.id
               }
             }),
-            /*
             StateActions.saveEnumerations({
               collectionId,
-              stateId: id,
-              enumerations: stateEnumerations,
+              stateId: newState.id,
+              enumerations: newState.enumerations
             }),
-            */
             ToastActions.showToast({
               message: 'State created',
               toastType: 'success'
@@ -62,13 +59,39 @@ export class StateEffects {
     );
   });
 
+  public deleteEnumerations = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateActions.deleteEnumerations),
+      switchMap(({ deletedEnumerationIds, stateId}) =>
+        this.stateService.deleteEnumerations(
+          deletedEnumerationIds,
+          stateId
+        ).pipe(
+          switchMap((deleteEnumerations) => [
+            StateActions.deleteEnumerationsSuccess({
+              deletedEnumerationIds
+            })
+          ]),
+          catchError((error: Error) => {
+            console.log(error);
+            return [
+              StateActions.deleteEnumerationsFailure({
+                error
+              })
+            ];
+          })
+        )
+      )
+    );
+  });
+
   public navStates = createEffect(() => {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
       mapToParam<number>('collectionId'),
-      switchMap(collectionId => {
-        return this.getStates(Number(collectionId));
-      })
+      switchMap(collectionId =>
+        this.getStates(Number(collectionId))
+      )
     );
   });
 
@@ -88,26 +111,53 @@ export class StateEffects {
   public saveEnumerations = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.saveEnumerations),
-      switchMap(({ collectionId, stateId, enumerations }) =>
-        this.stateService.saveEnumerations(
+      switchMap(({ collectionId, stateId, enumerations }) => {
+        const saveEnumerations = [];
+
+        // TODO: Track down where the IDs are changing... This format will change after rename fields in backend.
+        stateId = Number(stateId);
+
+        for (const enumeration of enumerations) {
+          let id: number | undefined;
+
+          if (enumeration.id) {
+            id = Number(enumeration.id);
+          }
+
+          saveEnumerations.push(
+            {
+              id,
+              label: enumeration.label.toString(),
+              state_id: Number(stateId),
+              value: enumeration.value.toString()
+            }
+          );
+        }
+
+        return this.stateService.saveEnumerations(
           collectionId,
-          stateId,
-          enumerations
+          saveEnumerations
         ).pipe(
-          switchMap((savedEnumerations) => {
+          switchMap((savedEnumerations) => [
+            StateActions.saveEnumerationsSuccess({
+              enumerations: savedEnumerations,
+              stateId
+            })
+          ]),
+          catchError((error: Error) => {
+            console.log(error);
             return [
-              StateActions.saveEnumerationsSuccess({
-                enumerations: savedEnumerations
+              StateActions.saveEnumerationsFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: 'State enumeration save failed',
+                toastType: 'error'
               })
             ];
-          }),
-          catchError(
-            (error: Error) => [
-              StateActions.saveEnumerationsFailure({ error })
-            ]
-          )
-        )
-      )
+          })
+        );
+      })
     );
   });
 

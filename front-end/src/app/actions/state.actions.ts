@@ -27,6 +27,21 @@ export const createStatesSuccess = createAction(
   props<{ stateMap: StateMap }>()
 );
 
+export const deleteEnumerations = createAction(
+  '[state] deleteEnumerations',
+  props<{ deletedEnumerationIds: number[], stateId: number }>()
+);
+
+export const deleteEnumerationsFailure = createAction(
+  '[state] deleteEnumerationsFailure',
+  props<{ error: Error }>()
+);
+
+export const deleteEnumerationsSuccess = createAction(
+  '[state] deleteEnumerationsSuccess',
+  props<{ deletedEnumerationIds: number[] }>()
+);
+
 export const fetchIdentifiersFailure = createAction(
   '[state] fetchIdentifiersFailure',
   props<{ error: Error }>()
@@ -54,7 +69,7 @@ export const saveEnumerations = createAction(
 
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
-  props<{ enumerations: StateEnumeration[] }>()
+  props<{ enumerations: StateEnumeration[], stateId: number }>()
 );
 
 export const saveEnumerationsFailure = createAction(

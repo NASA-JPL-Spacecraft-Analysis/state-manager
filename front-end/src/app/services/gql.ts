@@ -28,6 +28,22 @@ export const CREATE_STATE = gql(`
   }
 `);
 
+export const DELETE_ENUMERATIONS = gql(`
+  mutation DeleteEnumerations(
+    $enumerationIds: [ID!]!
+    $state_id: ID!
+  ) {
+    deleteEnumerations(
+      data: {
+        enumerationIds: $enumerationIds
+        state_id: $state_id
+      }
+    ) {
+      success
+    }
+  }
+`);
+
 export const GET_COLLECTIONS = gql(`
   query collections{
     collections {
@@ -137,6 +153,25 @@ export const GET_STATE_HISTORY = gql(`
       type
       units
       updated
+    }
+  }
+`);
+
+export const SAVE_ENUMERATIONS = gql(`
+  mutation SaveEnumerations(
+    $collection_id: Float!
+    $enumerations: [StateEnumerationInput!]!
+  ) {
+    saveEnumerations(
+      data: {
+        collection_id: $collection_id
+        enumerations: $enumerations
+      }
+    ) {
+      id
+      label
+      value
+      stateId: state_id
     }
   }
 `);

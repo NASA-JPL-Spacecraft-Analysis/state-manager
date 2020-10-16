@@ -34,9 +34,20 @@ export class StateService {
           units: state.units
         }
       })
-      .pipe(
-        map(({ data: { createState } }) => createState )
-      );
+      .pipe(map(({ data: { createState } }) => createState));
+  }
+
+  public deleteEnumerations(enumerationIds: number[], stateId: number): Observable<boolean> {
+    return this.apollo
+      .mutate<{ deleteEnumerations: boolean }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.DELETE_ENUMERATIONS,
+        variables: {
+          enumerationIds,
+          state_id: stateId
+        }
+      })
+      .pipe(map(({ data: { deleteEnumerations } }) => deleteEnumerations));
   }
 
   /**
@@ -64,11 +75,17 @@ export class StateService {
       .pipe(map(({ data: { stateHistory } }) => stateHistory));
   }
 
-  public saveEnumerations(collectionId: number, stateId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
-    return this.http.post<StateEnumeration[]>(
-      addCollectionId(collectionId) + 'state-enumerations/' + stateId,
-      enumerations
-    );
+  public saveEnumerations(collectionId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
+    return this.apollo
+      .mutate<{ saveEnumerations: StateEnumeration[] }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.SAVE_ENUMERATIONS,
+        variables: {
+          collection_id: collectionId,
+          enumerations
+        }
+      })
+      .pipe(map(({ data: { saveEnumerations } }) => saveEnumerations));
   }
 
   public saveEnumerationsCsv(collectionId: number, file: File): Observable<StateEnumerationMap> {
