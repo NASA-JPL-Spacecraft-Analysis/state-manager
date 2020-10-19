@@ -2,6 +2,14 @@ button {
   margin-right: .5em;
 }
 
+#logotype{
+  font-family: "Oswald";
+  font-size: .9em;
+  font-weight: 400;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+}
+
 .menu-button {
   color: black;
 }
