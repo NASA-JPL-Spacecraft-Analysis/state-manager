@@ -55,7 +55,7 @@ export const reducer = createReducer(
     const eventHistoryMap = {};
 
     for (const eventHistoryItem of eventHistory) {
-      eventHistoryMap[eventHistoryItem.id] = eventHistory;
+      eventHistoryMap[eventHistoryItem.id] = eventHistoryItem;
     }
 
     return {

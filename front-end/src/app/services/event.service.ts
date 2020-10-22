@@ -40,7 +40,9 @@ export class EventService {
       .query<{ events: Event[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_EVENTS,
-        variables: { collection_id: collectionId }
+        variables: {
+          collection_id: collectionId
+        }
       })
       .pipe(map(({ data: { events } }) => events));
   }
@@ -50,7 +52,9 @@ export class EventService {
       .query<{ eventHistory: Event[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_EVENT_HISTORY,
-        variables: { collection_id: collectionId }
+        variables: {
+          collection_id: collectionId
+        }
       })
       .pipe(map(({ data: { eventHistory } }) => eventHistory));
   }
