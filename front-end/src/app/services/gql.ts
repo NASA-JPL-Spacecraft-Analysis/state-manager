@@ -1,5 +1,29 @@
 import gql from 'graphql-tag';
 
+export const CREATE_EVENT = gql(`
+  mutation CreateEvent(
+    $collection_id: Float!
+    $description: String
+    $displayName: String
+    $editable: Boolean
+    $externalLink: String
+    $identifier: String!
+  ) {
+    createEvent(
+      data: {
+        collection_id: $collection_id
+        description: $description
+        display_name: $displayName
+        editable: $editable
+        external_link: $externalLink
+        identifier: $identifier
+      }
+    ) {
+      id
+    }
+  }
+`);
+
 export const CREATE_STATE = gql(`
   mutation CreateState(
     $collection_id: Float!
@@ -172,6 +196,30 @@ export const SAVE_ENUMERATIONS = gql(`
       label
       value
       stateId: state_id
+    }
+  }
+`);
+
+export const UPDATE_EVENT = gql(`
+  mutation UpdateEvent(
+    $description: String
+    $displayName: String
+    $editable: Boolean
+    $externalLink: String
+    $id: Float!
+    $identifier: String!
+  ) {
+    updateEvent(
+      data: {
+        description: $description
+        display_name: $displayName
+        editable: $editable
+        external_link: $externalLink
+        id: $id
+        identifier: $identifier
+      }
+    ) {
+      id
     }
   }
 `);

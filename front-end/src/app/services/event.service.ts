@@ -19,17 +19,20 @@ export class EventService {
   ) {}
 
   public createEvent(collectionId: number, event: Event): Observable<Event> {
-    return this.http.post<Event>(
-      addCollectionId(collectionId) + 'event',
-      event
-    );
-  }
-
-  public editEvent(collectionId: number, event: Event): Observable<Event> {
-    return this.http.put<Event>(
-      addCollectionId(collectionId) + 'event',
-      event
-    );
+    return this.apollo
+      .mutate<{ createEvent: Event }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_EVENT,
+        variables: {
+          collection_id: collectionId,
+          description: event.description,
+          display_name: event.displayName,
+          editable: event.editable,
+          external_link: event.externalLink,
+          identifier: event.identifier
+        }
+      })
+      .pipe(map(({ data: { createEvent }}) => createEvent));
   }
 
   public getEvents(collectionId: number): Observable<Event[]> {
@@ -68,5 +71,25 @@ export class EventService {
       addCollectionId(collectionId) + 'events-json',
       formData
     );
+  }
+
+  public updateEvent(event: Event): Observable<Event> {
+    return this.apollo
+      .mutate<{ updateEvent: Event }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.UPDATE_EVENT,
+        variables: {
+          description: event.description,
+          display_name: event.displayName,
+          editable: event.editable,
+          external_link: event.externalLink,
+          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
+          id: Number(event.id),
+          identifier: event.identifier
+        }
+      })
+      .pipe(
+        map(({ data: { updateEvent }}) => updateEvent)
+      );
   }
 }

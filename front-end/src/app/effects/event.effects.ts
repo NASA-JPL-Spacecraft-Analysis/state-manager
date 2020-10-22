@@ -41,87 +41,34 @@ export class EventEffects {
           ];
         }
 
-        return merge(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
-          this.eventService.createEvent(
-            action.collectionId,
-            action.event
-          ).pipe(
-            switchMap(
-              (event: Event) => [
-                EventActions.createEventSuccess({
-                  event
-                }),
-                ToastActions.showToast({
-                  message: 'Event created',
-                  toastType: 'success'
-                })
-              ]
-            ),
-            catchError(
-              (error: Error) => [
-                EventActions.createEventFailure({
-                  error
-                }),
-                ToastActions.showToast({
-                  message: 'Event creation failed',
-                  toastType: 'error'
-                })
-              ]
-            )
-          )
-        );
-      })
-    );
-  });
-
-  public editEvent = createEffect(() => {
-    return this.actions.pipe(
-      ofType(EventActions.editEvent),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        if (this.validationService.isDuplicateIdentifier(
-          action.event.identifier,
-          action.event.id,
-          state.events.eventIdentifierMap
-        )) {
-          return [
+        return this.eventService.createEvent(
+          action.collectionId,
+          action.event
+        ).pipe(
+          switchMap((event: Event) => [
+            EventActions.createEventSuccess({
+              event: {
+                ...action.event,
+                id: event.id
+              }
+            }),
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            }),
             ToastActions.showToast({
-              message: '',
+              message: 'Event created',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            EventActions.createEventFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Event creation failed',
               toastType: 'error'
             })
-          ];
-        }
-
-        return merge(
-          this.eventService.editEvent(
-            action.collectionId,
-            action.event
-          ).pipe(
-            switchMap(
-              (editedEvent: Event) => [
-                EventActions.editEventSuccess({
-                  event: editedEvent
-                }),
-                ToastActions.showToast({
-                  message: 'Event edited',
-                  toastType: 'success'
-                })
-              ]
-            ),
-            catchError(
-              (error: Error) => [
-                EventActions.createEventFailure({ error }),
-                ToastActions.showToast({
-                  message: 'Event editing failed',
-                  toastType: 'error'
-                })
-              ]
-            )
-          )
+          ])
         );
       })
     );
@@ -151,6 +98,54 @@ export class EventEffects {
         }
 
         return [];
+      })
+    );
+  });
+
+  public updateEvent = createEffect(() => {
+    return this.actions.pipe(
+      ofType(EventActions.updateEvent),
+      withLatestFrom(this.store),
+      map(([action, state]) => ({ action, state })),
+      switchMap(({ action, state }) => {
+        if (this.validationService.isDuplicateIdentifier(
+          action.event.identifier,
+          action.event.id,
+          state.events.eventIdentifierMap
+        )) {
+          return [
+            ToastActions.showToast({
+              message: 'Duplicate identifier provided',
+              toastType: 'error'
+            })
+          ];
+        }
+
+        return this.eventService.updateEvent(
+          action.event
+        ).pipe(
+          switchMap((event: Event) => [
+            EventActions.updateEventSuccess({
+              event: {
+                ...action.event,
+                id: event.id
+              }
+            }),
+            ToastActions.showToast({
+              message: 'Event edited',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            EventActions.createEventFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Event editing failed',
+              toastType: 'error'
+            })
+          ])
+        );
       })
     );
   });

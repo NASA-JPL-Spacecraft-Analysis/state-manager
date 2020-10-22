@@ -22,7 +22,7 @@ export const reducer = createReducer(
   on(EventActions.createEventSuccess, (state, { event }) => {
     return modifyEvent(state, event);
   }),
-  on(EventActions.editEventSuccess, (state, { event }) => {
+  on(EventActions.updateEventSuccess, (state, { event }) => {
     return modifyEvent(state, event);
   }),
   on(FileUploadActions.uploadEventsSuccess, (state, { eventMap }) => ({

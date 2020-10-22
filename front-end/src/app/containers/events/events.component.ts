@@ -113,8 +113,7 @@ export class EventsComponent implements OnDestroy {
           event
         }));
       } else {
-        this.store.dispatch(EventActions.editEvent({
-          collectionId: this.selectedCollectionId,
+        this.store.dispatch(EventActions.updateEvent({
           event
         }));
       }

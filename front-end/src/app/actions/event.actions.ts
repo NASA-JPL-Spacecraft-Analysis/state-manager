@@ -17,21 +17,6 @@ export const createEventSuccess = createAction(
   props<{ event: Event }>()
 );
 
-export const editEvent = createAction(
-  '[event] editEvent',
-  props<{ collectionId: number, event: Event }>()
-);
-
-export const editEventFailure = createAction(
-  '[event] editEventFailure',
-  props<{ error: Error }>()
-);
-
-export const editEventSuccess = createAction(
-  '[event] editEventSuccess',
-  props<{ event: Event }>()
-);
-
 export const fetchEventIdentifiersFailure = createAction(
   '[event] fetchEventIdentifiersFailure',
   props<{ error: Error }>()
@@ -65,4 +50,19 @@ export const setEventHistory = createAction(
 export const setSelectedEvent = createAction(
   '[event] setSelectedEvent',
   props<{ event: Event}>()
+);
+
+export const updateEvent = createAction(
+  '[event] updateEvent',
+  props<{ event: Event }>()
+);
+
+export const updateEventFailure = createAction(
+  '[event] updateEventFailure',
+  props<{ error: Error }>()
+);
+
+export const updateEventSuccess = createAction(
+  '[event] updateEventSuccess',
+  props<{ event: Event }>()
 );

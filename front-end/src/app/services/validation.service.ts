@@ -12,7 +12,7 @@ export class ValidationService {
      * then we have a duplicate.
      */
     for (const key of Object.keys(identifierMap)) {
-      if (key === identifier && (id && identifierMap[key].id !== id)) {
+      if (key === identifier && (id && identifierMap[key] !== id)) {
         return true;
       }
     }

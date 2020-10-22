@@ -26,6 +26,9 @@ export class StateEffects {
           newState
         ).pipe(
           switchMap((state) => [
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            }),
             StateActions.createStateSuccess({
               state: {
                 ...newState,
