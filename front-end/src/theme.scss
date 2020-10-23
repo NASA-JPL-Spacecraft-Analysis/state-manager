@@ -133,6 +133,10 @@ table {
   line-height: 32px;
 }
 
+.mat-toolbar.mat-primary .mat-raised-button.mat-button-base {
+  line-height: 32px;
+}
+
 .mat-button, .mat-raised-button {
   @include button();
 }
