@@ -4,20 +4,20 @@
 // Colors
 
 
-$light-secondary-text: #F3F3FF;
+$light-secondary-text: #ebf0ff;
 
 $mat-primary: (
-  50: #faf8ff,
-  100: #f5f3ff,
-  200: #efedff,
-  300: #e2dffc,
-  400: #bfbdd9,
-  500: #a09eb9,
-  600: #77758f,
-  700: #62617a,
-  800: #434259,
-  850: #2a2a44,
-  900: #212136,
+  50: #eaeeff,
+  100: #cbd7ee,
+  200: #b0bcd7,
+  300: #93a1c0,
+  400: #7d8cae,
+  500: #67799d,
+  600: #596a8c,
+  700: #485774,
+  800: #38445e,
+  850: #303850,
+  900: #253046,
   contrast: (
     50: $dark-primary-text,
     100: $dark-primary-text,
@@ -57,6 +57,21 @@ $mat-accent: (
   )
 );
 
+$mat-grey: (  
+  50: #F8F9FA,
+  100: #F1F3F5,
+  200: #E8EBED,
+  250: #E3E7E9,
+  300: #DEE2E6,
+  400: #CFD4DA,
+  500: #ADB5BD,
+  600: #70777E,
+  650: #868E96,
+  700: #495057,
+  800: #343A40,
+  900: #21252A
+);
+
 $primary: mat-palette($mat-primary, 800);
 $accent: mat-palette($mat-accent, 200);
 $theme: mat-light-theme($primary, $accent);
@@ -86,10 +101,6 @@ $theme: mat-light-theme($primary, $accent);
 
 // Typography
 
-h6 {
-  @include headline-6();
-}
-
 // Component Overwrites
 
 table {
@@ -97,13 +108,14 @@ table {
     @include body-2();
   }
 
-  tr:nth-child(odd):not(.mat-header-row) {
-    background-color: rgba(110, 110, 134, 0.08);
+  .mat-header-cell, th{
+    background-color: mat-color($mat-grey, 100);
+    color: mat-color($mat-grey, 700);
   }
 
   tr {
     th.mat-header-cell, td.mat-cell {
-      border-bottom: none;
+      border-bottom: 1px solid mat-color($mat-grey, 400);
     }
   }
 }
@@ -133,6 +145,16 @@ table {
   display: none;
 }
 
+.mat-form-field-appearance-fill .mat-form-field-flex{
+  background-color: mat-color($mat-grey, 100);
+}
+
+.filter-container > div{
+  padding: 1em;
+  border-bottom: 1px solid mat-color($mat-grey, 400);
+  box-shadow: 0px 4px 5px mat-color($mat-grey, 250);
+}
+
 .mat-toolbar {
   display: flex;
   height: 2.2em;
@@ -153,7 +175,6 @@ table {
 
 .mat-toolbar.mat-toolbar-page {
   background-color: mat-color($primary, 900);
-  box-shadow: 0px 4px 5px rgba(43, 43, 63, 0.12), 0px 1px 10px rgba(43, 43, 63, 0.12), 0px 2px 4px rgba(43, 43, 63, 0.2);
 }
 
 
