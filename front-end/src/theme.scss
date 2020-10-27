@@ -82,8 +82,9 @@ $theme: mat-light-theme($primary, $accent);
 
 @mixin headline-6 {
   font-size: 20px;
-  font-weight: 900;
+  font-weight: 600;
   line-height: 24px;
+  letter-spacing: .15px;
 }
 
 @mixin body-2 {
@@ -111,6 +112,7 @@ table {
   .mat-header-cell, th{
     background-color: mat-color($mat-grey, 100);
     color: mat-color($mat-grey, 700);
+    letter-spacing: .15px;
   }
 
   tr {
