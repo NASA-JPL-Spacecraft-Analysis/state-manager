@@ -104,12 +104,6 @@ export const reducer = createReducer(
   on(StateActions.setSelectedState, (stateState, { state }) => ({
     ...stateState,
     selectedState: state
-  })),
-  on(FileUploadActions.uploadStateEnumerationsSuccess, (state, { stateEnumerationMap }) => ({
-    ...state,
-    stateEnumerationMap: {
-      ...stateEnumerationMap
-    }
   }))
 );
 

@@ -4,7 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { State, StateMap, StateEnumeration, StateEnumerationMap, StateHistory } from '../models';
+import { State, StateMap, StateEnumeration, StateEnumerationMap, StateHistory, StateEnumerationUpload } from '../models';
 import { addCollectionId, setFormData } from './service-utils';
 
 import * as gql from './gql';
@@ -88,7 +88,10 @@ export class StateService {
       .pipe(map(({ data: { stateHistory } }) => stateHistory));
   }
 
-  public saveEnumerations(collectionId: number, enumerations: StateEnumeration[]): Observable<StateEnumeration[]> {
+  public saveEnumerations(
+    collectionId: number,
+    enumerations: StateEnumeration[] | StateEnumerationUpload[]
+  ): Observable<StateEnumeration[]> {
     return this.apollo
       .mutate<{ saveEnumerations: StateEnumeration[] }>({
         fetchPolicy: 'no-cache',
@@ -99,15 +102,6 @@ export class StateService {
         }
       })
       .pipe(map(({ data: { saveEnumerations } }) => saveEnumerations));
-  }
-
-  public saveEnumerationsCsv(collectionId: number, file: File): Observable<StateEnumerationMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<StateEnumerationMap>(
-      addCollectionId(collectionId) + 'enumerations-csv',
-      formData
-    );
   }
 
   public saveEnumerationsJson(collectionId: number, file: File): Observable<StateEnumerationMap> {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { csvParse, DSVRowArray } from 'd3-dsv';
 
-import { State } from '../models';
+import { State, StateEnumerationUpload } from '../models';
 import { ValidationService } from './validation.service';
 
 @Injectable({
@@ -28,6 +28,26 @@ export class ParseService {
       }
 
       return states;
+    }
+
+    return null;
+  }
+
+  public async parseStateEnumerations(file: File): Promise<StateEnumerationUpload[]> {
+    const parsedItems = await this.readFile(file);
+
+    if (parsedItems && parsedItems.length > 0) {
+      const stateEnumerations = [];
+
+      for (const item of parsedItems) {
+        if (this.validationService.validateStateEnumerationUpload(item)) {
+          stateEnumerations.push(item);
+        } else {
+          return null;
+        }
+      }
+
+      return stateEnumerations;
     }
 
     return null;

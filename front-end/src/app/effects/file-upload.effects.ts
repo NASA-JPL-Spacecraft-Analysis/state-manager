@@ -6,7 +6,8 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, InformationTypesService, ParseService, RelationshipService, StateService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { InformationTypesMap, StateEnumerationMap, RelationshipMap, EventMap } from '../models';
+import { InformationTypesMap, StateEnumerationMap, RelationshipMap, EventMap, StateEnumeration } from '../models';
+import { createStatesSuccess } from '../actions/state.actions';
 
 @Injectable()
 export class FileUploadEffects {
@@ -60,43 +61,61 @@ export class FileUploadEffects {
   public uploadEnumerations = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadStateEnumerations),
-      switchMap(({ collectionId, file, fileType }) => {
-        let saveEnumerations: Observable<StateEnumerationMap>;
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseStateEnumerations(file)
+        ])
+      ),
+      map(([ collectionId, parsedEnumerations ]) => ({
+        collectionId,
+        parsedEnumerations
+      })),
+      switchMap(({ collectionId, parsedEnumerations }) => {
+        if (parsedEnumerations && parsedEnumerations.length > 0) {
+          // TODO: Once we rename the db fields, remove this.
+          for (const stateEnumeration of parsedEnumerations) {
+            stateEnumeration['state_identifier'] = stateEnumeration.stateIdentifier;
+            delete stateEnumeration.stateIdentifier;
+          }
 
-        if (fileType === 'csv') {
-          saveEnumerations = this.stateService.saveEnumerationsCsv(
-            collectionId,
-            file
-          );
-        } else {
-          saveEnumerations = this.stateService.saveEnumerationsJson(
-            collectionId,
-            file
+          return concat(
+            this.stateService.saveEnumerations(
+              collectionId,
+              parsedEnumerations
+            ).pipe(
+              switchMap((createStateEnumerations: StateEnumeration[]) => {
+                let stateId = -1;
+
+                if (createStateEnumerations.length > 0) {
+                  stateId = createStateEnumerations[0].stateId;
+                }
+
+                return [
+                  StateActions.saveEnumerationsSuccess({
+                    enumerations: createStateEnumerations,
+                    stateId
+                  }),
+                  ToastActions.showToast({
+                    message: 'Enumerations uploaded',
+                    toastType: 'success'
+                  })
+                ];
+              }),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadStateEnumerationsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.toString(),
+                  toastType: 'error'
+                })
+              ])
+            )
           );
         }
 
-        return saveEnumerations.pipe(
-          switchMap(
-            (stateEnumerationMap: StateEnumerationMap) => [
-              FileUploadActions.uploadStateEnumerationsSuccess({
-                stateEnumerationMap
-              }),
-              ToastActions.showToast({
-                message: 'Enumerations uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadStateEnumerationsFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [];
       })
     );
   });

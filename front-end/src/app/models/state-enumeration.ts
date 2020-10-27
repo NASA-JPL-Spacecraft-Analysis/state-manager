@@ -7,4 +7,10 @@ export interface StateEnumeration {
   value: number;
 }
 
+export interface StateEnumerationUpload {
+  label: string;
+  stateIdentifier: string;
+  value: string;
+}
+
 export type StateEnumerationMap = StringTMap<StateEnumeration[]>;

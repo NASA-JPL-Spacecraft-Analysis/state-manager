@@ -32,4 +32,12 @@ export class ValidationService {
       && item.hasOwnProperty('units')
     );
   }
+
+  public validateStateEnumerationUpload(item: DSVRowString<string>): boolean {
+    return (
+      item.hasOwnProperty('label')
+      && item.hasOwnProperty('stateIdentifier')
+      && item.hasOwnProperty('value')
+    );
+  }
 }

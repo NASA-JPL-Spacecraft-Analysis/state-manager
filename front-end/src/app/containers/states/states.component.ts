@@ -132,15 +132,13 @@ export class StateComponent implements OnDestroy {
    */
   public onFileUpload(fileEvent: Event, type: UploadableTypes): void {
     const file = (fileEvent.target as HTMLInputElement).files[0];
-    const fileType = file.name.split('.').pop().toLowerCase();
 
-    if (file && (fileType === 'csv' || fileType === 'json')) {
+    if (file) {
       switch (type) {
         case UploadableTypes.Enumerations:
           this.store.dispatch(FileUploadActions.uploadStateEnumerations({
             collectionId: this.collectionId,
-            file,
-            fileType
+            file
           }));
 
           break;
