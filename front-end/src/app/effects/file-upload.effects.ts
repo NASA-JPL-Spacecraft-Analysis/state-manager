@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { concat, forkJoin, Observable, of} from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { EventService, InformationTypesService, RelationshipService, StateService} from '../services';
-import { FileUploadActions, ToastActions } from '../actions';
-import { InformationTypesMap, StateEnumerationMap, StateMap, RelationshipMap, EventMap } from '../models';
+import { EventService, InformationTypesService, ParseService, RelationshipService, StateService} from '../services';
+import { FileUploadActions, StateActions, ToastActions } from '../actions';
+import { InformationTypesMap, StateEnumerationMap, RelationshipMap, EventMap } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -14,6 +14,7 @@ export class FileUploadEffects {
     private actions: Actions,
     private eventService: EventService,
     private informationTypesService: InformationTypesService,
+    private parseService: ParseService,
     private stateService: StateService,
     private relationshipService: RelationshipService
   ) {}
@@ -179,43 +180,52 @@ export class FileUploadEffects {
   public uploadStates = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadStates),
-      switchMap(({ collectionId, file, fileType }) => {
-        let saveStates: Observable<StateMap>;
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseStates(file)
+        ])
+      ),
+      map(([ collectionId, parsedStates ]) => ({
+        collectionId,
+        parsedStates
+      })),
+      switchMap(({ collectionId, parsedStates }) => {
+        if (parsedStates && parsedStates.length > 0) {
+          // TODO: Once we rename the db fields, remove this.
+          for (const state of parsedStates) {
+            state['display_name'] = state.displayName;
+            delete state.displayName;
+          }
 
-        if (fileType === 'csv') {
-          saveStates = this.stateService.saveStatesCsv(
-            collectionId,
-            file
-          );
-        } else {
-          saveStates = this.stateService.saveStatesJson(
-            collectionId,
-            file
+          return concat(
+            this.stateService.createStates(
+              collectionId,
+              parsedStates
+            ).pipe(
+              switchMap((createStates) => [
+                StateActions.createStatesSuccess({
+                  states: createStates
+                }),
+                ToastActions.showToast({
+                  message: 'State(s) uploaded',
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadStatesFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.toString(),
+                  toastType: 'error'
+                })
+              ])
+            )
           );
         }
 
-        return saveStates.pipe(
-          switchMap(
-            (stateMap: StateMap) => [
-              FileUploadActions.uploadStatesSuccess({
-                stateMap
-              }),
-              ToastActions.showToast({
-                message: 'State(s) uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadStatesFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [];
       })
     );
   });

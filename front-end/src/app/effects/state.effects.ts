@@ -45,18 +45,15 @@ export class StateEffects {
               toastType: 'success'
             })
           ]),
-          catchError((error: Error) => {
-            console.log(error);
-            return [
-              StateActions.createStateFailure({
-                error
-              }),
-              ToastActions.showToast({
-                message: 'State creation failed',
-                toastType: 'error'
-              })
-            ];
-          })
+          catchError((error: Error) => [
+            StateActions.createStateFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'State creation failed',
+              toastType: 'error'
+            })
+          ])
         )
       )
     );
@@ -75,14 +72,11 @@ export class StateEffects {
               deletedEnumerationIds
             })
           ]),
-          catchError((error: Error) => {
-            console.log(error);
-            return [
-              StateActions.deleteEnumerationsFailure({
-                error
-              })
-            ];
-          })
+          catchError((error: Error) => [
+            StateActions.deleteEnumerationsFailure({
+              error
+            })
+          ])
         )
       )
     );
@@ -147,18 +141,15 @@ export class StateEffects {
               stateId
             })
           ]),
-          catchError((error: Error) => {
-            console.log(error);
-            return [
-              StateActions.saveEnumerationsFailure({
-                error
-              }),
-              ToastActions.showToast({
-                message: 'State enumeration save failed',
-                toastType: 'error'
-              })
-            ];
-          })
+          catchError((error: Error) => [
+            StateActions.saveEnumerationsFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'State enumeration save failed',
+              toastType: 'error'
+            })
+          ])
         );
       })
     );

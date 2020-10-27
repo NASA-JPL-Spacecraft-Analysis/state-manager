@@ -28,10 +28,11 @@ export const reducer = createReducer(
   on(StateActions.createStateSuccess, (stateState, { state }) => {
     return modifyState(stateState, state);
   }),
-  on(StateActions.createStatesSuccess, (stateState, { stateMap }) => ({
+  on(StateActions.createStatesSuccess, (stateState, { states }) => ({
     ...stateState,
     stateMap: {
-      ...stateMap
+      ...stateState.stateMap,
+      ...mapStates(states)
     }
   })),
   on(StateActions.updateStateSuccess, (stateState, { state }) => {
@@ -109,13 +110,6 @@ export const reducer = createReducer(
     stateEnumerationMap: {
       ...stateEnumerationMap
     }
-  })),
-  on(FileUploadActions.uploadStatesSuccess, (stateState, { stateMap }) => ({
-    ...stateState,
-    stateMap: {
-      ...stateState.stateMap,
-      ...stateMap
-    }
   }))
 );
 
@@ -145,4 +139,14 @@ function modifyState(stateState: StateState, state: State): StateState {
       }
     }
   };
+}
+
+function mapStates(states: State[]): StateMap {
+  const stateMap = {};
+
+  for (const state of states) {
+    stateMap[state.id] = state;
+  }
+
+  return stateMap;
 }

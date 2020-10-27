@@ -37,6 +37,19 @@ export class StateService {
       .pipe(map(({ data: { createState } }) => createState));
   }
 
+  public createStates(collectionId: number, states: State[]): Observable<State[]> {
+    return this.apollo
+      .mutate<{ createStates: State[] }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_STATES,
+        variables: {
+          collection_id: collectionId,
+          states
+        }
+      })
+      .pipe(map(({ data: { createStates } }) => createStates));
+  }
+
   public deleteEnumerations(enumerationIds: number[], stateId: number): Observable<boolean> {
     return this.apollo
       .mutate<{ deleteEnumerations: boolean }>({
@@ -102,16 +115,6 @@ export class StateService {
 
     return this.http.post<StateEnumerationMap>(
       addCollectionId(collectionId) + 'enumerations-json',
-      formData
-    );
-  }
-
-
-  public saveStatesCsv(collectionId: number, file: File): Observable<StateMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<StateMap>(
-      addCollectionId(collectionId) + 'states-csv',
       formData
     );
   }

@@ -147,8 +147,7 @@ export class StateComponent implements OnDestroy {
         case UploadableTypes.States:
           this.store.dispatch(FileUploadActions.uploadStates({
             collectionId: this.collectionId,
-            file,
-            fileType
+            file
           }));
 
           break;

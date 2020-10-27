@@ -6,6 +6,7 @@ export * from './mock.information-types.service';
 export * from './mock.relationship.service';
 export * from './mock.state.service';
 export * from './information-types.service';
+export * from './parse.service';
 export * from './relationship.service';
 export * from './state.service';
 export * from './validation.service';

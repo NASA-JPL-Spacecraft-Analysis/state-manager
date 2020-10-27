@@ -52,6 +52,29 @@ export const CREATE_STATE = gql(`
   }
 `);
 
+export const CREATE_STATES = gql(`
+  mutation CreateStates(
+    $collection_id: Float!
+    $states: [CreateStateInput!]!
+  ) {
+    createStates(
+      data: {
+        collection_id: $collection_id
+        states: $states
+      }
+    ) {
+      description
+      displayName: display_name
+      id
+      identifier
+      source
+      subsystem
+      type
+      units
+    }
+  }
+`);
+
 export const DELETE_ENUMERATIONS = gql(`
   mutation DeleteEnumerations(
     $enumerationIds: [ID!]!
