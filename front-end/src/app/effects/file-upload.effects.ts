@@ -4,10 +4,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of} from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { EventService, InformationTypesService, ParseService, RelationshipService, StateService} from '../services';
+import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { InformationTypesMap, StateEnumerationMap, RelationshipMap, EventMap, StateEnumeration } from '../models';
-import { createStatesSuccess } from '../actions/state.actions';
+import { InformationTypesMap, RelationshipMap, EventMap, StateEnumeration } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -17,7 +16,8 @@ export class FileUploadEffects {
     private informationTypesService: InformationTypesService,
     private parseService: ParseService,
     private stateService: StateService,
-    private relationshipService: RelationshipService
+    private relationshipService: RelationshipService,
+    private validationService: ValidationService
   ) {}
 
   public uploadInformationTypes = createEffect(() => {
@@ -64,25 +64,34 @@ export class FileUploadEffects {
       switchMap(({ collectionId, file }) =>
         forkJoin([
           of(collectionId),
-          this.parseService.parseStateEnumerations(file)
+          this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedEnumerations ]) => ({
+      map(([ collectionId, stateEnumerations ]) => ({
         collectionId,
-        parsedEnumerations
+        stateEnumerations
       })),
-      switchMap(({ collectionId, parsedEnumerations }) => {
-        if (parsedEnumerations && parsedEnumerations.length > 0) {
+      switchMap(({ collectionId, stateEnumerations }) => {
+        if (stateEnumerations && stateEnumerations.length > 0) {
           // TODO: Once we rename the db fields, remove this.
-          for (const stateEnumeration of parsedEnumerations) {
+          for (const stateEnumeration of stateEnumerations) {
             stateEnumeration['state_identifier'] = stateEnumeration.stateIdentifier;
             delete stateEnumeration.stateIdentifier;
+
+            if (this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
           }
 
           return concat(
             this.stateService.saveEnumerations(
               collectionId,
-              parsedEnumerations
+              stateEnumerations
             ).pipe(
               switchMap((createStateEnumerations: StateEnumeration[]) => {
                 let stateId = -1;
@@ -202,25 +211,35 @@ export class FileUploadEffects {
       switchMap(({ collectionId, file }) =>
         forkJoin([
           of(collectionId),
-          this.parseService.parseStates(file)
+          this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedStates ]) => ({
+      map(([ collectionId, states ]) => ({
         collectionId,
-        parsedStates
+        states
       })),
-      switchMap(({ collectionId, parsedStates }) => {
-        if (parsedStates && parsedStates.length > 0) {
-          // TODO: Once we rename the db fields, remove this.
-          for (const state of parsedStates) {
+      switchMap(({ collectionId, states }) => {
+        if (states && states.length > 0) {
+          for (const state of states) {
+            // TODO: Once we rename the db fields, remove this.
             state['display_name'] = state.displayName;
             delete state.displayName;
+
+            // Validate each parsed state, if we come across anything invalid return null so we can error.
+            if (!this.validationService.validateState(state)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
           }
 
           return concat(
             this.stateService.createStates(
               collectionId,
-              parsedStates
+              states
             ).pipe(
               switchMap((createStates) => [
                 StateActions.createStatesSuccess({

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DSVRowString } from 'd3-dsv';
+import { State } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,7 @@ export class ValidationService {
 
   public validateState(item: DSVRowString<string>): boolean {
     return (
-      item.hasOwnProperty('description')
-      && item.hasOwnProperty('displayName')
+      item.hasOwnProperty('displayName')
       && item.hasOwnProperty('identifier')
       && item.hasOwnProperty('source')
       && item.hasOwnProperty('subsystem')
