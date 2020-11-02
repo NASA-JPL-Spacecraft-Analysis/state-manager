@@ -1,4 +1,4 @@
-import { InformationTypesMap } from '../models';
+import { InformationTypeEnum, InformationTypesMap } from '../models';
 
 export const mockInformationTypesMap: InformationTypesMap = new Map(
   [
@@ -8,7 +8,8 @@ export const mockInformationTypesMap: InformationTypesMap = new Map(
         identifier: 'ACTIVITY_TEST',
         displayName: 'Activity',
         description: 'Test activity',
-        externalLink: ''
+        externalLink: '',
+        type: InformationTypeEnum.Activity
       }
     }]
   ]

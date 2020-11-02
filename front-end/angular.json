@@ -15,6 +15,7 @@
           "options": {
             "allowedCommonJsDependencies": [
               "graphql-tag",
+              "lodash",
               "subsink",
               "zen-observable"
             ],

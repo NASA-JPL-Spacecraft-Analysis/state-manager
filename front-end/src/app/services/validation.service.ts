@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DSVRowString } from 'd3-dsv';
-import { State } from '../models';
+
+import { InformationTypes, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -22,22 +22,30 @@ export class ValidationService {
     return false;
   }
 
-  public validateState(item: DSVRowString<string>): boolean {
+  public validateInformationType(informationType: InformationTypes): boolean {
     return (
-      item.hasOwnProperty('displayName')
-      && item.hasOwnProperty('identifier')
-      && item.hasOwnProperty('source')
-      && item.hasOwnProperty('subsystem')
-      && item.hasOwnProperty('type')
-      && item.hasOwnProperty('units')
+      informationType.hasOwnProperty('identifier')
+      && informationType.hasOwnProperty('displayName')
+      && informationType.hasOwnProperty('type')
     );
   }
 
-  public validateStateEnumerationUpload(item: DSVRowString<string>): boolean {
+  public validateState(state: State): boolean {
     return (
-      item.hasOwnProperty('label')
-      && item.hasOwnProperty('stateIdentifier')
-      && item.hasOwnProperty('value')
+      state.hasOwnProperty('displayName')
+      && state.hasOwnProperty('identifier')
+      && state.hasOwnProperty('source')
+      && state.hasOwnProperty('subsystem')
+      && state.hasOwnProperty('type')
+      && state.hasOwnProperty('units')
+    );
+  }
+
+  public validateStateEnumerationUpload(stateEnumeration: StateEnumerationUpload): boolean {
+    return (
+      stateEnumeration.hasOwnProperty('label')
+      && stateEnumeration.hasOwnProperty('stateIdentifier')
+      && stateEnumeration.hasOwnProperty('value')
     );
   }
 }

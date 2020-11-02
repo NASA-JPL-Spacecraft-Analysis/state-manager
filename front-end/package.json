@@ -33,6 +33,7 @@
     "d3-dsv": "^2.0.0",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",
+    "lodash": "^4.17.20",
     "ngx-toastr": "^11.3.3",
     "rxjs": "^6.6.0",
     "subsink": "^1.0.1",

@@ -24,6 +24,27 @@ export const CREATE_EVENT = gql(`
   }
 `);
 
+export const CREATE_INFORMATION_TYPES = gql(`
+  mutation CreateInformationTypes(
+    $collection_id: Float!
+    $informationTypes: [CreateInformationTypeInput!]!
+  ) {
+    createInformationTypes(
+      data: {
+        collection_id: $collection_id
+        informationTypes: $informationTypes
+      }
+    ) {
+      id
+      identifier
+      description
+      displayName: display_name
+      externalLink: external_link
+      type
+    }
+  }
+`);
+
 export const CREATE_STATE = gql(`
   mutation CreateState(
     $collection_id: Float!

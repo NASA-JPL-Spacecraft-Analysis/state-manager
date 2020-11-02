@@ -6,7 +6,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { InformationTypesMap, RelationshipMap, EventMap, StateEnumeration } from '../models';
+import { RelationshipMap, EventMap, StateEnumeration, InformationTypes } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -23,37 +23,68 @@ export class FileUploadEffects {
   public uploadInformationTypes = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
-      switchMap(({ file, fileType, collectionId }) => {
-        let saveInformationTypes: Observable<InformationTypesMap>;
+      switchMap(({ file, collectionId }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, informationTypes ]) => ({
+        collectionId,
+        informationTypes
+      })),
+      switchMap(({ collectionId, informationTypes }) => {
+        if (informationTypes && informationTypes.length > 0) {
+          for (const informationType of informationTypes) {
+            if (!this.validationService.validateInformationType(informationType)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveInformationTypes = this.informationTypesService.saveInformationTypesCsv(file, collectionId);
-        } else {
-          saveInformationTypes = this.informationTypesService.saveInformationTypesJson(file, collectionId);
+            // TODO: Once we rename the db fields, remove this.
+            informationType['display_name'] = informationType.displayName;
+            delete informationType.displayName;
+            informationType['external_link'] = informationType.external_link;
+            delete informationType.externalLink;
+          }
+
+          return concat(
+            this.informationTypesService.createInformationTypes(
+              collectionId,
+              informationTypes
+            ).pipe(
+              switchMap((createdInformationTypes: InformationTypes[]) => [
+                FileUploadActions.uploadInformationTypesSuccess({
+                  informationTypes: createdInformationTypes
+                }),
+                ToastActions.showToast({
+                  message: 'Information types uploaded',
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadInformationTypesFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.error,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
         }
 
-        return saveInformationTypes.pipe(
-          switchMap(
-            (informationTypes: InformationTypesMap) => [
-              FileUploadActions.uploadInformationTypesSuccess({
-                informationTypes
-              }),
-              ToastActions.showToast({
-                message: 'Information types uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadInformationTypesFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [
+          ToastActions.showToast({
+            message: 'Wrong filetype supplied, only csv and json is supported.',
+            toastType: 'error'
+          })
+        ];
       })
     );
   });
@@ -73,8 +104,8 @@ export class FileUploadEffects {
       })),
       switchMap(({ collectionId, stateEnumerations }) => {
         if (stateEnumerations && stateEnumerations.length > 0) {
-          // TODO: Once we rename the db fields, remove this.
           for (const stateEnumeration of stateEnumerations) {
+            // TODO: Once we rename the db fields, remove this.
             stateEnumeration['state_identifier'] = stateEnumeration.stateIdentifier;
             delete stateEnumeration.stateIdentifier;
 
@@ -124,7 +155,12 @@ export class FileUploadEffects {
           );
         }
 
-        return [];
+        return [
+          ToastActions.showToast({
+            message: 'Wrong filetype supplied, only csv and json is supported.',
+            toastType: 'error'
+          })
+        ];
       })
     );
   });
@@ -263,7 +299,12 @@ export class FileUploadEffects {
           );
         }
 
-        return [];
+        return [
+          ToastActions.showToast({
+            message: 'Wrong filetype supplied, only csv and json is supported.',
+            toastType: 'error'
+          })
+        ];
       })
     );
   });
