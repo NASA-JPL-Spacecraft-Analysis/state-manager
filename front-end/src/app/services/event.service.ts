@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Event, EventMap } from './../models';
-import { addCollectionId, setFormData } from './service-utils';
+import { Event } from './../models';
 
 import * as gql from './gql';
 
@@ -14,8 +12,7 @@ import * as gql from './gql';
 })
 export class EventService {
   constructor(
-    private apollo: Apollo,
-    private http: HttpClient
+    private apollo: Apollo
   ) {}
 
   public createEvent(collectionId: number, event: Event): Observable<Event> {
@@ -33,6 +30,19 @@ export class EventService {
         }
       })
       .pipe(map(({ data: { createEvent }}) => createEvent));
+  }
+
+  public createEvents(collectionId: number, events: Event[]): Observable<Event[]> {
+    return this.apollo
+      .mutate<{ createEvents: Event[] }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_EVENTS,
+        variables: {
+          collection_id: collectionId,
+          events
+        }
+      })
+      .pipe(map(({ data: { createEvents } }) => createEvents));
   }
 
   public getEvents(collectionId: number): Observable<Event[]> {
@@ -57,24 +67,6 @@ export class EventService {
         }
       })
       .pipe(map(({ data: { eventHistory } }) => eventHistory));
-  }
-
-  public saveEventsCsv(file: File, collectionId: number): Observable<EventMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<EventMap>(
-      addCollectionId(collectionId) + 'events-csv',
-      formData
-    );
-  }
-
-  public saveEventsJson(file: File, collectionId: number): Observable<EventMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<EventMap>(
-      addCollectionId(collectionId) + 'events-json',
-      formData
-    );
   }
 
   public updateEvent(event: Event): Observable<Event> {

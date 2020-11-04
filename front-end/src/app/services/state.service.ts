@@ -3,8 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { State, StateMap, StateEnumeration, StateEnumerationMap, StateHistory, StateEnumerationUpload } from '../models';
-import { addCollectionId, setFormData } from './service-utils';
+import { State, StateEnumeration, StateHistory, StateEnumerationUpload } from '../models';
 
 import * as gql from './gql';
 

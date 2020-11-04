@@ -6,7 +6,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { RelationshipMap, EventMap, StateEnumeration, InformationTypes } from '../models';
+import { RelationshipMap, Event, StateEnumeration, InformationTypes } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -168,36 +168,61 @@ export class FileUploadEffects {
   public uploadEvents = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadEvents),
-      switchMap(({ file, fileType, collectionId }) => {
-        let saveEvents: Observable<EventMap>;
+      switchMap(({ file, collectionId }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, events ]) => ({
+        collectionId,
+        events
+      })),
+      switchMap(({ collectionId, events }) => {
+        if (events && events.length > 0) {
+          for (const event of events) {
+            if (!this.validationService.validateEvent(event)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveEvents = this.eventService.saveEventsCsv(file, collectionId);
-        } else {
-          saveEvents = this.eventService.saveEventsJson(file, collectionId);
+            // TODO: Once we rename the db fields, remove this.
+            event['display_name'] = event.displayName;
+            delete event.displayName;
+
+            event['external_link'] = event.externalLink;
+            delete event.externalLink;
+          }
         }
 
-        return saveEvents.pipe(
-          switchMap(
-            (eventMap: EventMap) => [
+        return concat(
+          this.eventService.createEvents(
+            collectionId,
+            events
+          ).pipe(
+            switchMap((createEvents: Event[]) => [
               FileUploadActions.uploadEventsSuccess({
-                eventMap
+                events: createEvents
               }),
               ToastActions.showToast({
                 message: 'Events uploaded',
                 toastType: 'success'
               })
-            ]
+            ])
           ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadEventsFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
+          catchError((error: HttpErrorResponse) => [
+            FileUploadActions.uploadEventsFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: error.error,
+              toastType: 'error'
+            })
+          ])
         );
       })
     );

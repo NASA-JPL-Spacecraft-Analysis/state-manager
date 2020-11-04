@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { InformationTypes, State, StateEnumerationUpload } from '../models';
+import { Event, InformationTypes, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,13 @@ export class ValidationService {
     }
 
     return false;
+  }
+
+  public validateEvent(event: Event): boolean {
+    return (
+      event.hasOwnProperty('identifier')
+      && event.hasOwnProperty('displayName')
+    );
   }
 
   public validateInformationType(informationType: InformationTypes): boolean {

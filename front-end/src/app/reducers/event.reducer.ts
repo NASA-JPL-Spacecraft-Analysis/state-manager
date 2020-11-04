@@ -25,13 +25,21 @@ export const reducer = createReducer(
   on(EventActions.updateEventSuccess, (state, { event }) => {
     return modifyEvent(state, event);
   }),
-  on(FileUploadActions.uploadEventsSuccess, (state, { eventMap }) => ({
-    ...state,
-    eventMap: {
-      ...state.eventMap,
-      ...eventMap
+  on(FileUploadActions.uploadEventsSuccess, (state, { events }) => {
+    const eventMap = {};
+
+    for (const event of events) {
+      eventMap[event.id] = event;
     }
-  })),
+
+    return {
+      ...state,
+      eventMap: {
+        ...state.eventMap,
+        ...eventMap
+      }
+    };
+  }),
   on(EventActions.setEvents, (state, { events }) => {
     const eventMap = {};
     const eventIdentifierMap = new Map<string, number>();

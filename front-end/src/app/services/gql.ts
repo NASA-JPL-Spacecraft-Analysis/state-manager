@@ -39,6 +39,26 @@ export const CREATE_EVENT = gql(`
   }
 `);
 
+export const CREATE_EVENTS = gql(`
+  mutation CreateEvents(
+    $collection_id: Float!
+    $events: [CreateEventInput!]!
+  ) {
+    createEvents(
+      data: {
+        collection_id: $collection_id
+        events: $events
+      }
+    ) {
+      description
+      displayName: display_name
+      externalLink: external_link
+      id
+      identifier
+    }
+  }
+`);
+
 export const CREATE_INFORMATION_TYPES = gql(`
   mutation CreateInformationTypes(
     $collection_id: Float!

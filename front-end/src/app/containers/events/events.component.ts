@@ -7,7 +7,6 @@ import { SubSink } from 'subsink';
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
 import { EventActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
 import { Event as StateEvent, EventMap } from 'src/app/models';
 import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId, getEventIdentifierMap } from 'src/app/selectors';
@@ -85,18 +84,11 @@ export class EventsComponent implements OnDestroy {
 
   public onFileUpload(fileEvent: Event): void {
     const file = (fileEvent.target as HTMLInputElement).files[0];
-    const fileType = file.name.split('.').pop().toLowerCase();
 
-    if (file && (fileType === 'csv' || fileType === 'json')) {
+    if (file) {
       this.store.dispatch(FileUploadActions.uploadEvents({
         file,
-        fileType,
         collectionId: this.selectedCollectionId
-      }));
-    } else {
-      this.store.dispatch(ToastActions.showToast({
-        message: StateManagementConstants.wrongFiletypeUploadMessage,
-        toastType: 'error'
       }));
     }
   }
