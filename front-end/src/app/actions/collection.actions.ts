@@ -32,18 +32,18 @@ export const deleteCollectionFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const editCollection = createAction(
-  '[collection] editCollection',
+export const updateCollection = createAction(
+  '[collection] updateCollection',
   props<{ collectionId: number, name: string }>()
 );
 
-export const editCollectionSuccess = createAction(
-  '[collection] editCollectionSuccess',
+export const updateCollectionSuccess = createAction(
+  '[collection] updateCollectionSuccess',
   props<{ collection: Collection }>()
 );
 
-export const editCollectionFailure = createAction(
-  '[collection] editCollectionFailure',
+export const updateCollectionFailure = createAction(
+  '[collection] updateCollectionFailure',
   props<{ error: Error }>()
 );
 

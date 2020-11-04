@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -14,8 +13,7 @@ import * as gql from './gql';
 })
 export class StateService {
   constructor(
-    private apollo: Apollo,
-    private http: HttpClient
+    private apollo: Apollo
   ) {}
 
   public createState(collectionId: number, state: State): Observable<State> {
@@ -102,24 +100,6 @@ export class StateService {
         }
       })
       .pipe(map(({ data: { saveEnumerations } }) => saveEnumerations));
-  }
-
-  public saveEnumerationsJson(collectionId: number, file: File): Observable<StateEnumerationMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<StateEnumerationMap>(
-      addCollectionId(collectionId) + 'enumerations-json',
-      formData
-    );
-  }
-
-  public saveStatesJson(collectionId: number, file: File): Observable<StateMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<StateMap>(
-      addCollectionId(collectionId) + 'states-json',
-      formData
-    );
   }
 
   public updateState(state: State): Observable<State> {

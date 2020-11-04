@@ -2,8 +2,9 @@
   <div *ngIf="!editing">
     <mat-form-field *ngIf="!deleting" class="collection-dropdown">
       <mat-select [value]="selectedCollectionId" (selectionChange)="onCollectionChange($event.value)">
-        <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
-          <span *ngIf="collection.value.id === selectedCollectionId; else margin">
+        <!-- TODO: We're converting collection.value.id, this'll change once we change ID types. -->
+        <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="+collection.value.id">
+          <span *ngIf="collection.value.id == selectedCollectionId; else margin">
             <mat-icon svgIcon="done"></mat-icon>
           </span>
 

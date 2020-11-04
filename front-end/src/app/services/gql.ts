@@ -1,5 +1,20 @@
 import gql from 'graphql-tag';
 
+export const CREATE_COLLECTION = gql(`
+  mutation CreateCollection(
+    $name: String!
+  ) {
+    createCollection(
+      data: {
+        name: $name
+      }
+    ) {
+      id
+      name
+    }
+  }
+`);
+
 export const CREATE_EVENT = gql(`
   mutation CreateEvent(
     $collection_id: Float!
@@ -92,6 +107,18 @@ export const CREATE_STATES = gql(`
       subsystem
       type
       units
+    }
+  }
+`);
+
+export const DELETE_COLLECTION = gql(`
+  mutation DeleteCollection(
+    $id: Float!
+  ) {
+    deleteCollection(
+      id: $id
+    ) {
+      success
     }
   }
 `);
@@ -240,6 +267,23 @@ export const SAVE_ENUMERATIONS = gql(`
       label
       value
       stateId: state_id
+    }
+  }
+`);
+
+export const UPDATE_COLLECTION = gql(`
+  mutation UpdateCollection(
+    $id: Float!
+    $name: String!
+  ) {
+    updateCollection(
+      data: {
+        id: $id
+        name: $name
+      }
+    ) {
+      id
+      name
     }
   }
 `);

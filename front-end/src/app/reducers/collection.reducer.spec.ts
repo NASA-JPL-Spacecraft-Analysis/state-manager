@@ -52,7 +52,7 @@ describe('CollectionReducer', () => {
 
       const collectionState: CollectionState = reducer(
         { ...initialState, collectionMap: mockCollectionMap },
-        CollectionActions.editCollectionSuccess({
+        CollectionActions.updateCollectionSuccess({
           collection
         })
       );

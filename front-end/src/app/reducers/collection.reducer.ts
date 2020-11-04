@@ -38,7 +38,7 @@ export const reducer = createReducer(
       }
     };
   }),
-  on(CollectionActions.editCollectionSuccess, (state, { collection }) => ({
+  on(CollectionActions.updateCollectionSuccess, (state, { collection }) => ({
     ...state,
     collectionMap: {
       ...state.collectionMap,

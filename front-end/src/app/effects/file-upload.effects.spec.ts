@@ -1,4 +1,3 @@
-import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
@@ -29,9 +28,7 @@ describe('FileUploadEffects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule
-      ],
+      imports: [],
       providers: [
         FileUploadEffects,
         provideMockActions(() => actions),

@@ -33,7 +33,9 @@ export class InformationTypesService {
       .query<{ informationTypes: InformationTypes[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_INFORMATION_TYPES,
-        variables: { collection_id: collectionId }
+        variables: {
+          collection_id: Number(collectionId)
+        }
       })
       .pipe(map(({ data: { informationTypes } }) => informationTypes));
   }
