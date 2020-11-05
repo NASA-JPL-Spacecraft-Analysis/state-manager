@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Event, InformationTypes, State, StateEnumerationUpload } from '../models';
+import { Event, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,16 @@ export class ValidationService {
       informationType.hasOwnProperty('identifier')
       && informationType.hasOwnProperty('displayName')
       && informationType.hasOwnProperty('type')
+    );
+  }
+
+  public validateRelationship(relationship: Relationship): boolean {
+    return (
+      relationship.hasOwnProperty('displayName')
+      && relationship.hasOwnProperty('subjectType')
+      && relationship.hasOwnProperty('subjectIdentifier')
+      && relationship.hasOwnProperty('targetType')
+      && relationship.hasOwnProperty('targetIdentifier')
     );
   }
 

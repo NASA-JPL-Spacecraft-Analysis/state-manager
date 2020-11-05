@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Relationship, RelationshipMap, RelationshipHistory } from '../models';
-import { addCollectionId, setFormData } from './service-utils';
+import { Relationship, RelationshipHistory, RelationshipUpload } from '../models';
 
 import * as gql from './gql';
 
@@ -14,22 +12,39 @@ import * as gql from './gql';
 })
 export class RelationshipService {
   constructor(
-    private apollo: Apollo,
-    private http: HttpClient
+    private apollo: Apollo
   ) {}
 
   public createRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
-    return this.http.post<Relationship>(
-      addCollectionId(collectionId) + 'relationship',
-      relationship
-    );
+    return this.apollo
+      .query<{ createRelationship: Relationship }>({
+        fetchPolicy: 'no-cache',
+        query: gql.CREATE_RELATIONSHIP,
+        variables: {
+          collection_id: collectionId,
+          description: relationship.description,
+          display_name: relationship.displayName,
+          subject_type: relationship.subjectType,
+          target_type: relationship.targetType,
+          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
+          subject_type_id: Number(relationship.subjectTypeId),
+          target_type_id: Number(relationship.targetTypeId)
+        }
+      })
+    .pipe(map(({ data: { createRelationship } }) => createRelationship));
   }
 
-  public editRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
-    return this.http.put<Relationship>(
-      addCollectionId(collectionId) + 'relationship',
-      relationship
-    );
+  public createRelationships(collectionId: number, relationships: RelationshipUpload[]): Observable<Relationship[]> {
+    return this.apollo
+      .query<{ createRelationships: Relationship[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.CREATE_RELATIONSHIPS,
+        variables: {
+          collection_id: collectionId,
+          relationships
+        }
+      })
+    .pipe(map(({ data: { createRelationships } }) => createRelationships));
   }
 
   public getRelationships(collectionId: number): Observable<Relationship[]> {
@@ -37,7 +52,9 @@ export class RelationshipService {
       .query<{ relationships: Relationship[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_RELATIONSHIPS,
-        variables: { collection_id: collectionId }
+        variables: {
+          collection_id: collectionId
+        }
       })
       .pipe(map(({ data: { relationships } }) => relationships));
   }
@@ -46,27 +63,30 @@ export class RelationshipService {
     return this.apollo
       .query<{ relationshipHistory: RelationshipHistory[] }>({
         fetchPolicy: 'no-cache',
-      query: gql.GET_RELATIONSHIP_HISTORY,
-        variables: { collection_id: collectionId }
+        query: gql.GET_RELATIONSHIP_HISTORY,
+        variables: {
+          collection_id: collectionId
+        }
       })
       .pipe(map(({ data: { relationshipHistory } }) => relationshipHistory));
   }
 
-  public saveRelationshipsCsv(collectionId: number, file: File): Observable<RelationshipMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<RelationshipMap>(
-      addCollectionId(collectionId) + 'relationships-csv',
-      formData
-    );
-  }
-
-  public saveRelationshipsJson(collectionId: number, file: File): Observable<RelationshipMap> {
-    const formData = setFormData(file);
-
-    return this.http.post<RelationshipMap>(
-      addCollectionId(collectionId) + 'relationships-json',
-      formData
-    );
+  public updateRelationship(relationship: Relationship): Observable<Relationship> {
+    return this.apollo
+      .query<{ updateRelationship: Relationship }>({
+        fetchPolicy: 'no-cache',
+        query: gql.UPDATE_RELATIONSHIP,
+        variables: {
+          description: relationship.description,
+          display_name: relationship.displayName,
+          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
+          id: Number(relationship.id),
+          subject_type: relationship.subjectType,
+          target_type: relationship.targetType,
+          subject_type_id: Number(relationship.subjectTypeId),
+          target_type_id: Number(relationship.targetTypeId)
+        }
+      })
+    .pipe(map(({ data: { updateRelationship } }) => updateRelationship));
   }
 }

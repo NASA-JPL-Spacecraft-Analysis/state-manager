@@ -6,7 +6,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { RelationshipMap, Event, StateEnumeration, InformationTypes } from '../models';
+import { RelationshipMap, Event, StateEnumeration, InformationTypes, Relationship } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -231,37 +231,74 @@ export class FileUploadEffects {
   public uploadRelationship = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
-      switchMap(({ file, fileType, collectionId }) => {
-        let saveRelationships: Observable<RelationshipMap>;
+      switchMap(({ file, collectionId }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, relationships ]) => ({
+        collectionId,
+        relationships
+      })),
+      switchMap(({ collectionId, relationships }) => {
+        if (relationships && relationships.length > 0) {
+          for (const relationship of relationships) {
+            if (!this.validationService.validateRelationship(relationship)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveRelationships = this.relationshipService.saveRelationshipsCsv(collectionId, file);
-        } else {
-          saveRelationships = this.relationshipService.saveRelationshipsJson(collectionId, file);
+            // TODO: Once we rename the db fields, remove this.
+            relationship['display_name'] = relationship.displayName;
+            delete relationship.displayName;
+            relationship['subject_type'] = relationship.subjectType;
+            delete relationship.subjectType;
+            relationship['subject_identifier'] = relationship.subjectIdentifier;
+            delete relationship.subjectIdentifier;
+            relationship['target_type'] = relationship.targetType;
+            delete relationship.targetType;
+            relationship['target_identifier'] = relationship.targetIdentifier;
+            delete relationship.targetIdentifier;
+          }
+
+          return concat(
+            this.relationshipService.createRelationships(
+              collectionId,
+              relationships
+            ).pipe(
+              switchMap((createdRelationships: Relationship[]) => [
+                FileUploadActions.uploadRelationshipsSuccess({
+                  relationships: createdRelationships
+                }),
+                ToastActions.showToast({
+                  message: 'Relationship(s) uploaded',
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadRelationshipsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.error,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
         }
 
-        return saveRelationships.pipe(
-          switchMap(
-            (relationshipMap: RelationshipMap) => [
-              FileUploadActions.uploadRelationshipsSuccess({
-                relationshipMap
-              }),
-              ToastActions.showToast({
-                message: 'Relationship(s) uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadRelationshipsFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [
+          ToastActions.showToast({
+            message: 'Wrong filetype supplied, only csv and json is supported.',
+            toastType: 'error'
+          })
+        ];
       })
     );
   });

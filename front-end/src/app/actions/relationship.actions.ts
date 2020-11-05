@@ -17,21 +17,6 @@ export const createRelationshipSuccess = createAction(
   props<{ relationship: Relationship }>()
 );
 
-export const editRelationship = createAction(
-  '[relationship] editRelationship',
-  props<{ collectionId: number, relationship: Relationship }>()
-);
-
-export const editRelationshipFailure = createAction(
-  '[relationship] editRelationshipFailure',
-  props<{ error: Error }>()
-);
-
-export const editRelationshipSuccess = createAction(
-  '[relationship] editRelationshipSuccess',
-  props<{ relationship: Relationship }>()
-);
-
 export const fetchRelationshipsFailure = createAction(
   '[relationship] fetchRelationshipsFailure',
   props<{ error: Error }>()
@@ -54,5 +39,20 @@ export const setRelationshipHistory = createAction(
 
 export const setSelectedRelationship = createAction(
   '[relationship] setSelectedRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const updateRelationship = createAction(
+  '[relationship] updateRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const updateRelationshipFailure = createAction(
+  '[relationship] updateRelationshipFailure',
+  props<{ error: Error }>()
+);
+
+export const updateRelationshipSuccess = createAction(
+  '[relationship] updateRelationshipSuccess',
   props<{ relationship: Relationship }>()
 );

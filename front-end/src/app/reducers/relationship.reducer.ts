@@ -20,44 +20,28 @@ export const reducer = createReducer(
   on(RelationshipActions.createRelationshipSuccess, (relationshipState, { relationship }) => {
     return modifyRelationship(relationshipState, relationship);
   }),
-  on(RelationshipActions.editRelationshipSuccess, (relationshipState, { relationship }) => {
-    return modifyRelationship(relationshipState, relationship);
-  }),
-  on(RelationshipActions.setRelationships, (relationshipState, { relationships }) => {
-    const relationshipMap = {};
-
-    for (const relationship of relationships) {
-      relationshipMap[relationship.id] = relationship;
-    }
-
-    return {
-      ...relationshipState,
-      relationships: relationshipMap
-    };
-  }),
-  on(RelationshipActions.setRelationshipHistory, (relationshipState, { relationshipHistory }) => {
-    const relationshipHistoryMap = {};
-
-    for (const relationshipHistoryItem of relationshipHistory) {
-      relationshipHistoryMap[relationshipHistoryItem.id] = relationshipHistoryItem;
-    }
-
-    return {
-      ...relationshipState,
-      relationshipHistory: relationshipHistoryMap
-    };
-  }),
+  on(RelationshipActions.setRelationships, (relationshipState, { relationships }) => ({
+    ...relationshipState,
+    relationships: mapRelationships(relationships)
+  })),
+  on(RelationshipActions.setRelationshipHistory, (relationshipState, { relationshipHistory }) => ({
+    ...relationshipState,
+    relationshipHistory: mapRelationships(relationshipHistory)
+  })),
   on(RelationshipActions.setSelectedRelationship, (relationshipState, { relationship }) => ({
     ...relationshipState,
     selectedRelationship: relationship
   })),
-  on(FileUploadActions.uploadRelationshipsSuccess, (relationshipState, { relationshipMap }) => ({
+  on(RelationshipActions.updateRelationshipSuccess, (relationshipState, { relationship }) => {
+    return modifyRelationship(relationshipState, relationship);
+  }),
+  on(FileUploadActions.uploadRelationshipsSuccess, (relationshipState, { relationships }) => ({
     ...relationshipState,
     relationships: {
       ...relationshipState.relationships,
-      ...relationshipMap
+      ...mapRelationships(relationships)
     }
-  })),
+  }))
 );
 
 function modifyRelationship(relationshipState: RelationshipState, relationship: Relationship): RelationshipState {
@@ -71,4 +55,14 @@ function modifyRelationship(relationshipState: RelationshipState, relationship: 
       }
     }
   };
+}
+
+function mapRelationships(relationships: Relationship[]): RelationshipMap {
+  const relationshipMap = {};
+
+  for (const relationship of relationships) {
+    relationshipMap[relationship.id] = relationship;
+  }
+
+  return relationshipMap;
 }

@@ -80,6 +80,60 @@ export const CREATE_INFORMATION_TYPES = gql(`
   }
 `);
 
+export const CREATE_RELATIONSHIP = gql(`
+  mutation CreateRelationship(
+    $collection_id: Float!
+    $description: String
+    $display_name: String!
+    $subject_type: InformationTypeEnum!
+    $subject_type_id: Float!
+    $target_type: InformationTypeEnum!
+    $target_type_id: Float!
+  ) {
+    createRelationship(
+      data: {
+        collection_id: $collection_id
+        description: $description
+        display_name: $display_name
+        subject_type: $subject_type
+        subject_type_id: $subject_type_id
+        target_type: $target_type
+        target_type_id: $target_type_id
+      }
+    ) {
+      description
+      displayName: display_name
+      id
+      subjectType: subject_type
+      subjectTypeId: subject_type_id
+      targetType: target_type
+      targetTypeId: target_type_id
+    }
+  }
+`);
+
+export const CREATE_RELATIONSHIPS = gql(`
+  mutation CreateRelationships(
+    $collection_id: Float!
+    $relationships: [UploadRelationshipInput!]!
+  ) {
+    createRelationships(
+      data: {
+        collection_id: $collection_id
+        relationships: $relationships
+      }
+    ) {
+      description
+      displayName: display_name
+      id
+      subjectType: subject_type
+      subjectTypeId: subject_type_id
+      targetType: target_type
+      targetTypeId: target_type_id
+    }
+  }
+`);
+
 export const CREATE_STATE = gql(`
   mutation CreateState(
     $collection_id: Float!
@@ -229,7 +283,9 @@ export const GET_RELATIONSHIP_HISTORY = gql(`
       id
       relationshipId: relationship_id
       subjectType: subject_type
+      subjectTypeId: subject_type_id
       targetType: target_type
+      targetTypeId: target_type_id
       updated
     }
   }
@@ -328,6 +384,38 @@ export const UPDATE_EVENT = gql(`
       }
     ) {
       id
+    }
+  }
+`);
+
+export const UPDATE_RELATIONSHIP = gql(`
+  mutation UpdateRelationship(
+    $description: String
+    $display_name: String!
+    $id: Float!
+    $subject_type: InformationTypeEnum!
+    $subject_type_id: Float!
+    $target_type: InformationTypeEnum!
+    $target_type_id: Float!
+  ) {
+    updateRelationship(
+      data: {
+        description: $description
+        display_name: $display_name
+        id: $id
+        subject_type: $subject_type
+        subject_type_id: $subject_type_id
+        target_type: $target_type
+        target_type_id: $target_type_id
+      }
+    ) {
+      description
+      displayName: display_name
+      id
+      subjectType: subject_type
+      subjectTypeId: subject_type_id
+      targetType: target_type
+      targetTypeId: target_type_id
     }
   }
 `);

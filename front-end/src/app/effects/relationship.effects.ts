@@ -29,59 +29,24 @@ export class RelationshipEffects {
           collectionId,
           relationship
         ).pipe(
-          switchMap(
-            (createdRelationship: Relationship) => [
-              RelationshipActions.createRelationshipSuccess({
-                relationship: createdRelationship
-              }),
-              ToastActions.showToast({
-                message: 'Relationship created',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              RelationshipActions.createRelationshipFailure({ error }),
-              ToastActions.showToast({
-                message: 'Relationship creation failed',
-                toastType: 'error'
-              })
-            ]
-          )
-        )
-      )
-    );
-  });
-
-  public editRelationship = createEffect(() => {
-    return this.actions.pipe(
-      ofType(RelationshipActions.editRelationship),
-      switchMap(({ collectionId, relationship }) =>
-        this.relationshipService.editRelationship(
-          collectionId,
-          relationship
-        ).pipe(
-          switchMap(
-            (editedRelationship: Relationship) => [
-              RelationshipActions.editRelationshipSuccess({
-                relationship: editedRelationship
-              }),
-              ToastActions.showToast({
-                message: 'Relationship edited',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              RelationshipActions.editRelationshipFailure({ error }),
-              ToastActions.showToast({
-                message: 'Relationship editing failed',
-                toastType: 'error'
-              })
-            ]
-          )
+          switchMap((createdRelationship: Relationship) => [
+            RelationshipActions.createRelationshipSuccess({
+              relationship: createdRelationship
+            }),
+            ToastActions.showToast({
+              message: 'Relationship created',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            RelationshipActions.createRelationshipFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Relationship creation failed',
+              toastType: 'error'
+            })
+          ])
         )
       )
     );
@@ -91,9 +56,9 @@ export class RelationshipEffects {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/relationships', 'collection/:collectionId/relationship-history' ]),
       mapToParam<number>('collectionId'),
-      switchMap(collectionId => {
-        return this.getRelationships(Number(collectionId));
-      })
+      switchMap(collectionId =>
+        this.getRelationships(Number(collectionId))
+      )
     );
   });
 
@@ -107,6 +72,36 @@ export class RelationshipEffects {
 
         return [];
       })
+    );
+  });
+
+  public updateRelationship = createEffect(() => {
+    return this.actions.pipe(
+      ofType(RelationshipActions.updateRelationship),
+      switchMap(({ relationship }) =>
+        this.relationshipService.updateRelationship(
+          relationship
+        ).pipe(
+          switchMap((updatedRelationship: Relationship) => [
+            RelationshipActions.updateRelationshipSuccess({
+              relationship: updatedRelationship
+            }),
+            ToastActions.showToast({
+              message: 'Relationship edited',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            RelationshipActions.updateRelationshipFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Updating relationship failed',
+              toastType: 'error'
+            })
+          ])
+        )
+      )
     );
   });
 
@@ -144,9 +139,9 @@ export class RelationshipEffects {
       this.stateService.getStates(
         collectionId
       ).pipe(
-        switchMap(({ states }) =>
+        map(states => StateActions.setStates({
           states
-        ),
+        })),
         catchError(
           (error: Error) => [
             StateActions.fetchStatesFailure({

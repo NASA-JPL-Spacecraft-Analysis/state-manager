@@ -197,11 +197,9 @@ export class StateEffects {
         this.stateService.getStates(
           collectionId
         ).pipe(
-          switchMap(({ states }) => [
-            StateActions.setStates({
-              states
-            })
-          ]),
+          map(states => StateActions.setStates({
+            states
+          })),
           catchError(
             (error: Error) => [
               StateActions.fetchStatesFailure({
@@ -233,11 +231,9 @@ export class StateEffects {
         this.stateService.getStates(
           collectionId
         ).pipe(
-          switchMap(({ states }) => [
-            StateActions.setStates({
-              states
-            })
-          ]),
+          map(states => StateActions.setStates({
+            states
+          })),
           catchError(
             (error: Error) => [
               StateActions.fetchStatesFailure({
