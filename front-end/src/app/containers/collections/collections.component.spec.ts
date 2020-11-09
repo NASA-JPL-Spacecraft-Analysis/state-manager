@@ -1,6 +1,7 @@
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 import { CollectionComponent } from './collections.component';
@@ -24,6 +25,7 @@ describe('CollectionsComponent', () => {
       ],
       imports: [
         MaterialModule,
+        HttpClientModule,
         NoopAnimationsModule
       ],
       providers: [

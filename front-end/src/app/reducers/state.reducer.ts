@@ -3,6 +3,7 @@ import { createReducer, on } from '@ngrx/store';
 import { StateActions, FileUploadActions } from '../actions';
 import {
   State,
+  StateEnumeration,
   StateEnumerationMap,
   StateMap
 } from '../models';
@@ -38,38 +39,18 @@ export const reducer = createReducer(
   on(StateActions.updateStateSuccess, (stateState, { state }) => {
     return modifyState(stateState, state);
   }),
-  on(StateActions.saveEnumerationsSuccess, (state, { enumerations }) => {
-    const stateEnumerationMap: StateEnumerationMap = {};
-
-    for (const enumeration of enumerations) {
-      if (stateEnumerationMap[enumeration.stateId] === undefined) {
-        stateEnumerationMap[enumeration.stateId] = [];
-      }
-
-      stateEnumerationMap[enumeration.stateId].push(enumeration);
+  on(StateActions.saveEnumerationsSuccess, (stateState, { enumerations }) => ({
+    ...stateState,
+    stateEnumerationMap: {
+      ...mapEnumerations(enumerations)
     }
-
-    return {
-      ...state,
-      stateEnumerationMap: {
-        ...stateEnumerationMap
-      }
-    };
-  }),
-  on(StateActions.setStateEnumerations, (stateState, { stateEnumerations }) => {
-    const stateEnumerationMap = {};
-
-    for (const stateEnumeration of stateEnumerations) {
-      stateEnumerationMap[stateEnumeration.id] = stateEnumeration;
+  })),
+  on(StateActions.setStateEnumerations, (stateState, { stateEnumerations }) => ({
+    ...stateState,
+    stateEnumerationMap: {
+      ...mapEnumerations(stateEnumerations)
     }
-
-    return {
-      ...stateState,
-      stateEnumerationMap: {
-        ...stateEnumerationMap
-      }
-    };
-  }),
+  })),
   on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
     const stateHistoryMap = {};
 
@@ -143,4 +124,18 @@ function mapStates(states: State[]): StateMap {
   }
 
   return stateMap;
+}
+
+function mapEnumerations(stateEnumerations: StateEnumeration[]): StateEnumerationMap {
+  const stateEnumerationMap = {};
+
+  for (const stateEnumeration of stateEnumerations) {
+    if (!stateEnumerationMap[stateEnumeration.id]) {
+      stateEnumerationMap[stateEnumeration.id] = [];
+    }
+
+    stateEnumerationMap[stateEnumeration.id].push(stateEnumeration);
+  }
+
+  return stateEnumerationMap;
 }

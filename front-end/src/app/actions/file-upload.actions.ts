@@ -66,8 +66,3 @@ export const uploadStatesFailure = createAction(
   '[file upload] uploadStatesFailure',
   props<{ error: Error }>()
 );
-
-export const uploadStatesSuccess = createAction(
-  '[file upload] uploadStatesSuccess',
-  props<{ states: State[] }>()
-);

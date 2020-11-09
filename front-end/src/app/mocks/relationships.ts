@@ -1,6 +1,6 @@
 import { InformationTypeEnum, Relationship, RelationshipHistory, RelationshipMap } from '../models';
 
-const relationship: Relationship = {
+export const mockRelationship: Relationship = {
   id: 1,
   displayName: 'Test relationship name',
   description: 'Test relationship description',
@@ -11,23 +11,17 @@ const relationship: Relationship = {
 };
 
 export const mockRelationships: Relationship[] = [
-  relationship
+  mockRelationship
 ];
 
 export const mockRelationshipsMap: RelationshipMap = {
-  [1]: relationship
+  [1]: mockRelationship
 };
 
 export const mockRelationshipHistory: RelationshipHistory[] = [
   {
-    id: 1,
+    ...mockRelationship,
     relationshipId: 1,
-    displayName: 'Test relationship name',
-    description: 'Test relationship description',
-    subjectType: InformationTypeEnum.Activity,
-    targetType: InformationTypeEnum.Activity,
-    subjectTypeId: 1,
-    targetTypeId: 2,
     updated: new Date()
   }
 ];

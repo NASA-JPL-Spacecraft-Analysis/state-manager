@@ -1,26 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
 
-import { InformationTypesMap } from '../models';
-import { mockInformationTypesMap } from './../mocks';
+import { InformationTypes, InformationTypesMap } from '../models';
+import { mockInformationTypes, mockInformationTypesMap } from './../mocks';
 
 @Injectable()
-export class mockInformationTypesService {
+export class MockInformationTypesService {
+  public createInformaionTypes(collectionId: number, informationTypes: InformationTypes[]): Observable<InformationTypes[]> {
+    return new Observable((observer: Observer<InformationTypes[]>) => {
+      observer.next(mockInformationTypes);
+      observer.complete();
+    });
+  }
+
   public getInformationTypes(): Observable<InformationTypesMap> {
-    return new Observable((observer: Observer<InformationTypesMap>) => {
-      observer.next(mockInformationTypesMap);
-      observer.complete();
-    });
-  }
-
-  public saveInformationTypesCsv(file: File): Observable<InformationTypesMap> {
-    return new Observable((observer: Observer<InformationTypesMap>) => {
-      observer.next(mockInformationTypesMap);
-      observer.complete();
-    });
-  }
-
-  public saveInformationTypesJson(file: File): Observable<InformationTypesMap> {
     return new Observable((observer: Observer<InformationTypesMap>) => {
       observer.next(mockInformationTypesMap);
       observer.complete();

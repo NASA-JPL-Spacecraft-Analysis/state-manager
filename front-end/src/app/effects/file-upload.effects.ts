@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { concat, forkJoin, Observable, of} from 'rxjs';
+import { concat, forkJoin, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { RelationshipMap, Event, StateEnumeration, InformationTypes, Relationship } from '../models';
+import { Event, StateEnumeration, InformationTypes, Relationship } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -34,6 +34,7 @@ export class FileUploadEffects {
         informationTypes
       })),
       switchMap(({ collectionId, informationTypes }) => {
+        console.log(informationTypes);
         if (informationTypes && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
             if (!this.validationService.validateInformationType(informationType)) {
@@ -105,11 +106,7 @@ export class FileUploadEffects {
       switchMap(({ collectionId, stateEnumerations }) => {
         if (stateEnumerations && stateEnumerations.length > 0) {
           for (const stateEnumeration of stateEnumerations) {
-            // TODO: Once we rename the db fields, remove this.
-            stateEnumeration['state_identifier'] = stateEnumeration.stateIdentifier;
-            delete stateEnumeration.stateIdentifier;
-
-            if (this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
+            if (!this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
               return [
                 ToastActions.showToast({
                   message: 'File parsing failed',
@@ -117,6 +114,10 @@ export class FileUploadEffects {
                 })
               ];
             }
+
+            // TODO: Once we rename the db fields, remove this.
+            stateEnumeration['state_identifier'] = stateEnumeration.stateIdentifier;
+            delete stateEnumeration.stateIdentifier;
           }
 
           return concat(
