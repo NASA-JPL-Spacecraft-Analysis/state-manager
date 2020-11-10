@@ -1,7 +1,7 @@
 import { NgModule, Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
@@ -21,10 +21,10 @@ import {
   RelationshipEffects
 } from './effects';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
-import { environment } from './../environments/environment';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
 import { MaterialModule } from './material';
 import { ToolbarModule } from './containers';
+import { environment } from './../environments/environment';
 
 @Component({
   selector: 'app-root',

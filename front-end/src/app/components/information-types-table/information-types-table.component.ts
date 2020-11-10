@@ -49,6 +49,23 @@ export class InformationTypesTableComponent implements OnChanges {
     this.informationTypesList.sort((a, b) => a.id - b.id);
 
     this.dataSource = new MatTableDataSource(this.informationTypesList);
+
+    this.dataSource.filterPredicate = this.filter.bind(this);
+  }
+
+  public applyFilter(filterValue: string): void {
+    filterValue = filterValue.trim().toLowerCase();
+
+    this.dataSource.filter = filterValue;
+  }
+
+  // Check each field for the filter value, this will eventually change to search by field.
+  private filter(informationType: InformationTypes, filterValue: string): boolean {
+    return informationType.description?.toLowerCase().includes(filterValue)
+      || informationType.displayName?.toLowerCase().includes(filterValue)
+      || informationType.externalLink?.toLowerCase().includes(filterValue)
+      || informationType.identifier?.toLowerCase().includes(filterValue)
+      || this.typeMap.get(informationType.id).toString().toLowerCase().includes(filterValue);
   }
 }
 
