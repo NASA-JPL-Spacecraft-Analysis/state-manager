@@ -6,7 +6,7 @@ import { mockInformationTypes, mockInformationTypesMap } from './../mocks';
 
 @Injectable()
 export class MockInformationTypesService {
-  public createInformaionTypes(collectionId: number, informationTypes: InformationTypes[]): Observable<InformationTypes[]> {
+  public createInformationTypes(collectionId: number, informationTypes: InformationTypes[]): Observable<InformationTypes[]> {
     return new Observable((observer: Observer<InformationTypes[]>) => {
       observer.next(mockInformationTypes);
       observer.complete();

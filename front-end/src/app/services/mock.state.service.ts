@@ -8,21 +8,21 @@ import { mockStates, mockStateEnumerationMap, mockStateEnumerations } from './..
 export class MockStateService {
   public createStates(collectionId: number, states: State[]): Observable<State[]> {
     return new Observable((observer: Observer<State[]>) => {
-      observer.next(mockStates);
+      observer.next([ ...mockStates ]);
       observer.complete();
     });
   }
 
   public getStateEnumerations(): Observable<StateEnumerationMap> {
     return new Observable((observer: Observer<StateEnumerationMap>) => {
-      observer.next(mockStateEnumerationMap);
+      observer.next({ ...mockStateEnumerationMap });
       observer.complete();
     });
   }
 
   public getStates(): Observable<State[]> {
     return new Observable((observer: Observer<State[]>) => {
-      observer.next(mockStates);
+      observer.next([ ...mockStates ]);
       observer.complete();
     });
   }
@@ -32,7 +32,7 @@ export class MockStateService {
     enumerations: StateEnumeration[] | StateEnumerationUpload[]
   ): Observable<StateEnumeration[]> {
     return new Observable((observer: Observer<StateEnumeration[]>) => {
-      observer.next(mockStateEnumerations);
+      observer.next([ ...mockStateEnumerations ]);
       observer.complete();
     });
   }

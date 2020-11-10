@@ -27,11 +27,11 @@ import {
   mockCsvFile,
   mockJsonFile,
   mockInformationTypes,
-  mockStates,
-  mockStateEnumerations
+  mockStateEnumerationUploads,
+  mockStateEnumerations,
+  mockStates
 } from '../mocks';
 
-/*
 describe('FileUploadEffects', () => {
   let actions: Observable<Action>;
   let effects: FileUploadEffects;
@@ -96,15 +96,16 @@ describe('FileUploadEffects', () => {
     });
   });
 
+  /*
   describe('uploadInformationTypes', () => {
     it('should dispatch uploadInformationTypesSuccess and show a success toast on success when a .csv file is uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
+        parseService.parseFile = jasmine.createSpy().and.returnValue(of([ ...mockInformationTypes ]));
+
         const action = FileUploadActions.uploadInformationTypes({
           file: mockCsvFile,
           collectionId: 1
         });
-
-        parseService.parseFile = jasmine.createSpy().and.returnValue(of(mockInformationTypes));
 
         actions = hot('-a', { a: action });
 
@@ -124,12 +125,12 @@ describe('FileUploadEffects', () => {
   describe('uploadEnumerations', () => {
     it('should dispatch saveEnumerationsSuccess and show a success toast when enumerations are uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
+        parseService.parseFile = jasmine.createSpy().and.returnValue(of([ ...mockStateEnumerationUploads ]));
+
         const action = FileUploadActions.uploadStateEnumerations({
           file: mockJsonFile,
           collectionId: 1
         });
-
-        parseService.parseFile = jasmine.createSpy().and.returnValue(of(mockStateEnumerations));
 
         actions = hot('-a', { a: action });
 
@@ -150,18 +151,18 @@ describe('FileUploadEffects', () => {
   describe('uploadStates', () => {
     it('should dispatch uploadStatesSuccess and show a success toast when a state .csv file is uploaded', () => {
       testScheduler.run(({ hot, expectObservable }) => {
+        parseService.parseFile = jasmine.createSpy().and.returnValue(of([ ...mockStates ]));
+
         const action = FileUploadActions.uploadStates({
           file: mockCsvFile,
           collectionId: 1
         });
 
-        parseService.parseFile = jasmine.createSpy().and.returnValue(of(mockStates));
-
         actions = hot('-a', { a: action });
 
         expectObservable(effects.uploadStates).toBe('-(bc)', {
           b: StateActions.createStatesSuccess({
-            states: mockStates
+            states: [ ...mockStates ]
           }),
           c: ToastActions.showToast({
             message: 'State(s) uploaded',
@@ -171,5 +172,5 @@ describe('FileUploadEffects', () => {
       });
     });
   });
+  */
 });
-*/

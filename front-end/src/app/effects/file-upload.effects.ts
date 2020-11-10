@@ -34,7 +34,6 @@ export class FileUploadEffects {
         informationTypes
       })),
       switchMap(({ collectionId, informationTypes }) => {
-        console.log(informationTypes);
         if (informationTypes && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
             if (!this.validationService.validateInformationType(informationType)) {
@@ -320,10 +319,6 @@ export class FileUploadEffects {
       switchMap(({ collectionId, states }) => {
         if (states && states.length > 0) {
           for (const state of states) {
-            // TODO: Once we rename the db fields, remove this.
-            state['display_name'] = state.displayName;
-            delete state.displayName;
-
             // Validate each parsed state, if we come across anything invalid return null so we can error.
             if (!this.validationService.validateState(state)) {
               return [
@@ -333,6 +328,10 @@ export class FileUploadEffects {
                 })
               ];
             }
+
+            // TODO: Once we rename the db fields, remove this.
+            state['display_name'] = state.displayName;
+            delete state.displayName;
           }
 
           return concat(

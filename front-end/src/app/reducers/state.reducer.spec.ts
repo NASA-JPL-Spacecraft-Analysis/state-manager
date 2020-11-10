@@ -49,7 +49,7 @@ describe('StateReducer', () => {
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.createStatesSuccess({
-          states: mockStates
+          states: [ ...mockStates ]
         })
       );
 
@@ -154,7 +154,7 @@ describe('StateReducer', () => {
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.setStates({
-          states: mockStates
+          states: [ ...mockStates ]
         })
       );
 
