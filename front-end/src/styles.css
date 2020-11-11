@@ -55,7 +55,7 @@ table {
 .sidenav-container {
   padding: 1em;
   height: 100%;
-  border-left: 1px solid #BEBEBE;
+  border-left: 1px solid #DEE2E6;
 }
 
 .sidenav-actions {
@@ -72,4 +72,10 @@ table {
 
 .hidden {
   display: none !important;
+}
+
+/*Make collection container inline with navbar content*/
+.collection-container .mat-form-field-wrapper{
+  padding-bottom: 0;
+  line-height: 36px;
 }

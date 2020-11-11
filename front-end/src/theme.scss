@@ -3,17 +3,21 @@
 
 // Colors
 
+
+$light-secondary-text: #ebf0ff;
+
 $mat-primary: (
-  50: #F9F5FF,
-  100: #F2EEFF,
-  200: #E8E4FF,
-  300: #D7D3EE,
-  400: #B3AFC9,
-  500: #938FA8,
-  600: #65627E,
-  700: #57546B,
-  800: #38364B,
-  900: #171629,
+  50: #eaeeff,
+  100: #cbd7ee,
+  200: #b0bcd7,
+  300: #93a1c0,
+  400: #7d8cae,
+  500: #67799d,
+  600: #596a8c,
+  700: #485774,
+  800: #38445e,
+  850: #303850,
+  900: #253046,
   contrast: (
     50: $dark-primary-text,
     100: $dark-primary-text,
@@ -53,8 +57,23 @@ $mat-accent: (
   )
 );
 
+$mat-grey: (  
+  50: #F8F9FA,
+  100: #F1F3F5,
+  200: #E8EBED,
+  250: #E3E7E9,
+  300: #DEE2E6,
+  400: #CFD4DA,
+  500: #ADB5BD,
+  600: #70777E,
+  650: #868E96,
+  700: #495057,
+  800: #343A40,
+  900: #21252A
+);
+
 $primary: mat-palette($mat-primary, 800);
-$accent: mat-palette($mat-accent, 300);
+$accent: mat-palette($mat-accent, 200);
 $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
@@ -63,8 +82,9 @@ $theme: mat-light-theme($primary, $accent);
 
 @mixin headline-6 {
   font-size: 20px;
-  font-weight: 900;
+  font-weight: 600;
   line-height: 24px;
+  letter-spacing: .15px;
 }
 
 @mixin body-2 {
@@ -76,15 +96,11 @@ $theme: mat-light-theme($primary, $accent);
 @mixin button {
   font-size: 14px;
   font-weight: 900;
-  letter-spacing: 2.25px;
+  letter-spacing: .02em;
   line-height: 16px;
 }
 
 // Typography
-
-h6 {
-  @include headline-6();
-}
 
 // Component Overwrites
 
@@ -93,20 +109,34 @@ table {
     @include body-2();
   }
 
-  tr:nth-child(odd):not(.mat-header-row) {
-    background-color: rgba(110, 110, 134, 0.08);
+  .mat-header-cell, th{
+    background-color: mat-color($mat-grey, 100);
+    color: mat-color($mat-grey, 700);
+    letter-spacing: .15px;
   }
 
   tr {
     th.mat-header-cell, td.mat-cell {
-      border-bottom: none;
+      border-bottom: 1px solid mat-color($mat-grey, 400);
     }
   }
 }
 
 .mat-button.mat-button-base {
   background-color: mat-color($primary, 900);
-  color: white;
+  color: $light-primary-text;
+}
+
+.mat-toolbar.mat-primary .mat-button.mat-button-base {
+  color: $light-secondary-text;
+  background-color:  mat-color($primary, 850);
+  letter-spacing: .05em;
+  font-weight: 400;
+  line-height: 32px;
+}
+
+.mat-toolbar.mat-primary .mat-raised-button.mat-button-base {
+  line-height: 32px;
 }
 
 .mat-button, .mat-raised-button {
@@ -121,9 +151,19 @@ table {
   display: none;
 }
 
+.mat-form-field-appearance-fill .mat-form-field-flex{
+  background-color: mat-color($mat-grey, 100);
+}
+
+.filter-container > div{
+  padding: 1em;
+  border-bottom: 1px solid mat-color($mat-grey, 400);
+  box-shadow: 0px 4px 5px mat-color($mat-grey, 250);
+}
+
 .mat-toolbar {
   display: flex;
-  height: 3em;
+  height: 2.2em;
   justify-content: space-between;
 
   button {
@@ -135,7 +175,12 @@ table {
   }
 }
 
+.mat-toolbar.mat-primary {
+  background-color: mat-color($primary, 850);
+}
+
 .mat-toolbar.mat-toolbar-page {
   background-color: mat-color($primary, 900);
-  box-shadow: 0px 4px 5px rgba(43, 43, 63, 0.12), 0px 1px 10px rgba(43, 43, 63, 0.12), 0px 2px 4px rgba(43, 43, 63, 0.2);
 }
+
+

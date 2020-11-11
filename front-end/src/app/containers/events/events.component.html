@@ -1,19 +1,19 @@
-<mat-toolbar class="events-toolbar">
-  EVENTS
+<mat-toolbar color="primary" class="events-toolbar mat-toolbar-page">
+  Events
 
   <div>
     <button mat-button routerLink="../event-history">
       History 
     </button>
 
-    <button mat-raised-button color="accent" (click)="onModifyEvent()">
-      Create New Event
-    </button>
-
-    <button mat-raised-button color="accent" (click)="eventsFileUpload.click()">
+    <button mat-button color="primary" (click)="eventsFileUpload.click()">
       Upload Events
     </button>
     <input #eventsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
+
+    <button mat-raised-button color="accent" (click)="onModifyEvent()">
+      Create New Event
+    </button>
   </div>
 </mat-toolbar>
 

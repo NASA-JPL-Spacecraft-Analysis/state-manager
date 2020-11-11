@@ -1,8 +1,8 @@
-<mat-toolbar class="information-types-toolbar">
-  INFORMATION TYPES 
+<mat-toolbar  color="primary" class="mat-toolbar-page information-types-toolbar">
+  Information Types 
 
   <div class="actions-container">
-    <button mat-raised-button color="accent" (click)="informationTypesUpload.click()">
+    <button mat-button color="primary" (click)="informationTypesUpload.click()">
       Upload Information Types 
     </button>
     <input #informationTypesUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
