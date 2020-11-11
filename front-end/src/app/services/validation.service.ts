@@ -6,7 +6,7 @@ import { Event, InformationTypes, Relationship, State, StateEnumerationUpload } 
   providedIn: 'root'
 })
 export class ValidationService {
-  public isDuplicateIdentifier(identifier: string, id: number, identifierMap: Map<string, number>) {
+  public isDuplicateIdentifier(identifier: string, id: string, identifierMap: Map<string, string>) {
     /**
      * If we come across a duplicate identifier
      * AND we have an id

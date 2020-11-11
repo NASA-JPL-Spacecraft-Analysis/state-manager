@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class IdentifierFormComponent {
   @Input() public originalIdentifier: string;
-  @Input() public identifierMap: Map<string, number>;
+  @Input() public identifierMap: Map<string, string>;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public identifierEmitter: EventEmitter<string>;

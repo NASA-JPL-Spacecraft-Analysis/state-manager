@@ -2,7 +2,7 @@ import { StringTMap } from './string-t-map';
 
 // TODO: Rename this class.
 export class InformationTypes {
-  id: number;
+  id: string;
   identifier: string;
   displayName: string;
   description: string;
@@ -10,7 +10,7 @@ export class InformationTypes {
   type: InformationTypeEnum;
 }
 
-export type InformationTypesMap = Map<number, StringTMap<InformationTypes>>;
+export type InformationTypesMap = Map<InformationTypeEnum, StringTMap<InformationTypes>>;
 
 // TODO: These classes will eventually move to their own files once they have more properties.
 export class Activity extends InformationTypes {}

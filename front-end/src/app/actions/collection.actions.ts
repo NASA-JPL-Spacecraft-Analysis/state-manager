@@ -19,12 +19,12 @@ export const createCollectionFailure = createAction(
 
 export const deleteCollection = createAction(
   '[collection] deleteCollection',
-  props<{ id: number, name: string }>()
+  props<{ id: string, name: string }>()
 );
 
 export const deleteCollectionSuccess = createAction(
   '[collection] deleteCollectionSuccess',
-  props<{ id: number }>()
+  props<{ id: string }>()
 );
 
 export const deleteCollectionFailure = createAction(
@@ -34,7 +34,7 @@ export const deleteCollectionFailure = createAction(
 
 export const updateCollection = createAction(
   '[collection] updateCollection',
-  props<{ collectionId: number, name: string }>()
+  props<{ collectionId: string, name: string }>()
 );
 
 export const updateCollectionSuccess = createAction(
@@ -59,5 +59,5 @@ export const fetchCollectionsSuccess = createAction(
 
 export const setSelectedCollection = createAction(
   '[collection] setSelectedCollection',
-  props<{ id: number }>()
+  props<{ id: string }>()
 );

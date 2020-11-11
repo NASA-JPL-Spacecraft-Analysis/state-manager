@@ -36,7 +36,7 @@ export class RelationshipsComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateMap: StateMap;
 
-  private collectionId: number;
+  private collectionId: string;
   private subscriptions = new SubSink();
 
   constructor(

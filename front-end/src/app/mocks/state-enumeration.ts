@@ -1,10 +1,10 @@
 import { StateEnumerationMap, StateEnumeration, StateEnumerationUpload } from '../models';
 
 export const mockStateEnumerationOne: StateEnumeration = {
-  id: 1,
-  stateId: 1,
+  id: '1',
+  stateId: '1',
   label: 'test off',
-  value: 0
+  value: '0'
 };
 
 export const mockStateEnumerationUploadOne: StateEnumerationUpload = {
@@ -14,10 +14,10 @@ export const mockStateEnumerationUploadOne: StateEnumerationUpload = {
 };
 
 export const mockStateEnumerationTwo: StateEnumeration = {
-  id: 2,
-  stateId: 1,
+  id: '2',
+  stateId: '1',
   label: 'test on',
-  value: 1
+  value: '1'
 };
 
 export const mockStateEnumerationUploadTwo: StateEnumerationUpload = {

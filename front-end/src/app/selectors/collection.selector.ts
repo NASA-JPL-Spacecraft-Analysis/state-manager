@@ -14,5 +14,5 @@ export const getCollectionMap = createSelector(
 
 export const getSelectedCollectionId = createSelector(
   getCollectionState,
-  (state: CollectionState): number => state.selectedCollectionId
+  (state: CollectionState): string => state.selectedCollectionId
 );

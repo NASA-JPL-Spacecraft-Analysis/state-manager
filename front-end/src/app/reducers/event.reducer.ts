@@ -4,7 +4,7 @@ import { EventActions, FileUploadActions } from '../actions';
 import { EventMap, Event } from '../models';
 
 export interface EventState {
-  eventIdentifierMap: Map<string, number>;
+  eventIdentifierMap: Map<string, string>;
   eventMap: EventMap;
   eventHistoryMap: EventMap;
   selectedEvent: Event;
@@ -42,7 +42,7 @@ export const reducer = createReducer(
   }),
   on(EventActions.setEvents, (state, { events }) => {
     const eventMap = {};
-    const eventIdentifierMap = new Map<string, number>();
+    const eventIdentifierMap = new Map<string, string>();
 
     for (const event of events) {
       eventMap[event.id] = event;
@@ -86,7 +86,7 @@ function modifyEvent(state: EventState, event: Event) {
 
   for (const identifier of Object.keys(eventIdentifierMap)) {
     // Remove the old identifier from our map
-    if (Number(eventIdentifierMap[identifier]) === event.id) {
+    if (eventIdentifierMap[identifier] === event.id) {
       delete eventIdentifierMap[identifier];
     }
   }

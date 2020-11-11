@@ -15,7 +15,7 @@ export class EventService {
     private apollo: Apollo
   ) {}
 
-  public createEvent(collectionId: number, event: Event): Observable<Event> {
+  public createEvent(collectionId: string, event: Event): Observable<Event> {
     return this.apollo
       .mutate<{ createEvent: Event }>({
         fetchPolicy: 'no-cache',
@@ -32,7 +32,7 @@ export class EventService {
       .pipe(map(({ data: { createEvent }}) => createEvent));
   }
 
-  public createEvents(collectionId: number, events: Event[]): Observable<Event[]> {
+  public createEvents(collectionId: string, events: Event[]): Observable<Event[]> {
     return this.apollo
       .mutate<{ createEvents: Event[] }>({
         fetchPolicy: 'no-cache',
@@ -45,7 +45,7 @@ export class EventService {
       .pipe(map(({ data: { createEvents } }) => createEvents));
   }
 
-  public getEvents(collectionId: number): Observable<Event[]> {
+  public getEvents(collectionId: string): Observable<Event[]> {
     return this.apollo
       .query<{ events: Event[] }>({
         fetchPolicy: 'no-cache',
@@ -57,7 +57,7 @@ export class EventService {
       .pipe(map(({ data: { events } }) => events));
   }
 
-  public getEventHistory(collectionId: number): Observable<Event[]> {
+  public getEventHistory(collectionId: string): Observable<Event[]> {
     return this.apollo
       .query<{ eventHistory: Event[] }>({
         fetchPolicy: 'no-cache',
@@ -79,8 +79,7 @@ export class EventService {
           display_name: event.displayName,
           editable: event.editable,
           external_link: event.externalLink,
-          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
-          id: Number(event.id),
+          id: event.id,
           identifier: event.identifier
         }
       })

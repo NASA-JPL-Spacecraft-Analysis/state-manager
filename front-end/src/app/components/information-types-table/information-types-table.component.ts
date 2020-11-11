@@ -17,7 +17,7 @@ export class InformationTypesTableComponent implements OnChanges {
   public dataSource: MatTableDataSource<InformationTypes>;
   public displayedColumns: string[] = [];
   public informationTypesList: InformationTypes[];
-  public typeMap: Map<number, string>;
+  public typeMap: Map<string, string>;
 
   constructor() {
     this.displayedColumns.push(
@@ -46,7 +46,7 @@ export class InformationTypesTableComponent implements OnChanges {
     }
 
     // Sort by id
-    this.informationTypesList.sort((a, b) => a.id - b.id);
+    this.informationTypesList.sort();
 
     this.dataSource = new MatTableDataSource(this.informationTypesList);
 

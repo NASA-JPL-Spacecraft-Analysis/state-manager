@@ -125,7 +125,7 @@ export class FileUploadEffects {
               stateEnumerations
             ).pipe(
               switchMap((createStateEnumerations: StateEnumeration[]) => {
-                let stateId = -1;
+                let stateId;
 
                 if (createStateEnumerations.length > 0) {
                   stateId = createStateEnumerations[0].stateId;

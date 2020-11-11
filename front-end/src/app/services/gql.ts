@@ -17,7 +17,7 @@ export const CREATE_COLLECTION = gql(`
 
 export const CREATE_EVENT = gql(`
   mutation CreateEvent(
-    $collection_id: Float!
+    $collection_id: ID!
     $description: String
     $displayName: String
     $editable: Boolean
@@ -41,7 +41,7 @@ export const CREATE_EVENT = gql(`
 
 export const CREATE_EVENTS = gql(`
   mutation CreateEvents(
-    $collection_id: Float!
+    $collection_id: ID!
     $events: [CreateEventInput!]!
   ) {
     createEvents(
@@ -61,7 +61,7 @@ export const CREATE_EVENTS = gql(`
 
 export const CREATE_INFORMATION_TYPES = gql(`
   mutation CreateInformationTypes(
-    $collection_id: Float!
+    $collection_id: ID!
     $informationTypes: [CreateInformationTypeInput!]!
   ) {
     createInformationTypes(
@@ -82,13 +82,13 @@ export const CREATE_INFORMATION_TYPES = gql(`
 
 export const CREATE_RELATIONSHIP = gql(`
   mutation CreateRelationship(
-    $collection_id: Float!
+    $collection_id: ID!
     $description: String
     $display_name: String!
     $subject_type: InformationTypeEnum!
-    $subject_type_id: Float!
+    $subject_type_id: ID!
     $target_type: InformationTypeEnum!
-    $target_type_id: Float!
+    $target_type_id: ID!
   ) {
     createRelationship(
       data: {
@@ -114,7 +114,7 @@ export const CREATE_RELATIONSHIP = gql(`
 
 export const CREATE_RELATIONSHIPS = gql(`
   mutation CreateRelationships(
-    $collection_id: Float!
+    $collection_id: ID!
     $relationships: [UploadRelationshipInput!]!
   ) {
     createRelationships(
@@ -136,7 +136,7 @@ export const CREATE_RELATIONSHIPS = gql(`
 
 export const CREATE_STATE = gql(`
   mutation CreateState(
-    $collection_id: Float!
+    $collection_id: ID!
     $description: String
     $display_name: String!
     $identifier: String!
@@ -164,7 +164,7 @@ export const CREATE_STATE = gql(`
 
 export const CREATE_STATES = gql(`
   mutation CreateStates(
-    $collection_id: Float!
+    $collection_id: ID!
     $states: [CreateStateInput!]!
   ) {
     createStates(
@@ -187,7 +187,7 @@ export const CREATE_STATES = gql(`
 
 export const DELETE_COLLECTION = gql(`
   mutation DeleteCollection(
-    $id: Float!
+    $id: ID!
   ) {
     deleteCollection(
       id: $id
@@ -223,7 +223,7 @@ export const GET_COLLECTIONS = gql(`
 `);
 
 export const GET_EVENTS = gql(`
-  query events($collection_id: Float!) {
+  query events($collection_id: ID!) {
     events(collection_id: $collection_id) {
       description
       displayName: display_name
@@ -235,7 +235,7 @@ export const GET_EVENTS = gql(`
 `);
 
 export const GET_EVENT_HISTORY = gql(`
-  query eventHistory($collection_id: Float!) {
+  query eventHistory($collection_id: ID!) {
     eventHistory(collection_id: $collection_id) {
       description
       displayName: display_name
@@ -249,7 +249,7 @@ export const GET_EVENT_HISTORY = gql(`
 `);
 
 export const GET_INFORMATION_TYPES = gql(`
-  query informationTypes($collection_id: Float!) {
+  query informationTypes($collection_id: ID!) {
     informationTypes(collection_id: $collection_id) {
       description
       displayName: display_name
@@ -262,7 +262,7 @@ export const GET_INFORMATION_TYPES = gql(`
 `);
 
 export const GET_RELATIONSHIPS = gql(`
-  query relationships($collection_id: Float!) {
+  query relationships($collection_id: ID!) {
     relationships(collection_id: $collection_id) {
       description
       displayName: display_name
@@ -276,7 +276,7 @@ export const GET_RELATIONSHIPS = gql(`
 `);
 
 export const GET_RELATIONSHIP_HISTORY = gql(`
-  query relationshipHistory($collection_id: Float!) {
+  query relationshipHistory($collection_id: ID!) {
     relationshipHistory(collection_id: $collection_id) {
       description
       displayName: display_name
@@ -292,7 +292,7 @@ export const GET_RELATIONSHIP_HISTORY = gql(`
 `);
 
 export const GET_STATES = gql(`
-  query states($collection_id: Float!) {
+  query states($collection_id: ID!) {
     states(collection_id: $collection_id) {
       description
       displayName: display_name
@@ -312,7 +312,7 @@ export const GET_STATES = gql(`
 `);
 
 export const GET_STATE_HISTORY = gql(`
-  query stateHistory($collection_id: Float!) {
+  query stateHistory($collection_id: ID!) {
     stateHistory(collection_id: $collection_id) {
       description
       displayName: display_name
@@ -330,7 +330,7 @@ export const GET_STATE_HISTORY = gql(`
 
 export const SAVE_ENUMERATIONS = gql(`
   mutation SaveEnumerations(
-    $collection_id: Float!
+    $collection_id: ID!
     $enumerations: [StateEnumerationInput!]!
   ) {
     saveEnumerations(
@@ -349,7 +349,7 @@ export const SAVE_ENUMERATIONS = gql(`
 
 export const UPDATE_COLLECTION = gql(`
   mutation UpdateCollection(
-    $id: Float!
+    $id: ID!
     $name: String!
   ) {
     updateCollection(
@@ -370,7 +370,7 @@ export const UPDATE_EVENT = gql(`
     $displayName: String
     $editable: Boolean
     $externalLink: String
-    $id: Float!
+    $id: ID!
     $identifier: String!
   ) {
     updateEvent(
@@ -392,11 +392,11 @@ export const UPDATE_RELATIONSHIP = gql(`
   mutation UpdateRelationship(
     $description: String
     $display_name: String!
-    $id: Float!
+    $id: ID!
     $subject_type: InformationTypeEnum!
-    $subject_type_id: Float!
+    $subject_type_id: ID!
     $target_type: InformationTypeEnum!
-    $target_type_id: Float!
+    $target_type_id: ID!
   ) {
     updateRelationship(
       data: {
@@ -424,7 +424,7 @@ export const UPDATE_STATE = gql(`
   mutation UpdateState(
     $description: String
     $display_name: String!
-    $id: Float!
+    $id: ID!
     $identifier: String!
     $source: String!
     $subsystem: String!

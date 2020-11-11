@@ -15,7 +15,7 @@ export class StateService {
     private apollo: Apollo
   ) {}
 
-  public createState(collectionId: number, state: State): Observable<State> {
+  public createState(collectionId: string, state: State): Observable<State> {
     return this.apollo
       .mutate<{ createState: State }>({
         fetchPolicy: 'no-cache',
@@ -34,7 +34,7 @@ export class StateService {
       .pipe(map(({ data: { createState } }) => createState));
   }
 
-  public createStates(collectionId: number, states: State[]): Observable<State[]> {
+  public createStates(collectionId: string, states: State[]): Observable<State[]> {
     return this.apollo
       .mutate<{ createStates: State[] }>({
         fetchPolicy: 'no-cache',
@@ -47,7 +47,7 @@ export class StateService {
       .pipe(map(({ data: { createStates } }) => createStates));
   }
 
-  public deleteEnumerations(enumerationIds: number[], stateId: number): Observable<boolean> {
+  public deleteEnumerations(enumerationIds: string[], stateId: string): Observable<boolean> {
     return this.apollo
       .mutate<{ deleteEnumerations: boolean }>({
         fetchPolicy: 'no-cache',
@@ -63,7 +63,7 @@ export class StateService {
   /**
    * TODO: Figure out a way to exclude enumerations for when we query for states on the relationships page.
    */
-  public getStates(collectionId: number): Observable<State[]> {
+  public getStates(collectionId: string): Observable<State[]> {
     return this.apollo
       .query<{ states: State[] }>({
         fetchPolicy: 'no-cache',
@@ -75,7 +75,7 @@ export class StateService {
       .pipe(map(({ data: { states } }) => states));
   }
 
-  public getStateHistory(collectionId: number): Observable<StateHistory[]> {
+  public getStateHistory(collectionId: string): Observable<StateHistory[]> {
     return this.apollo
       .query<{ stateHistory: StateHistory[] }>({
         fetchPolicy: 'no-cache',
@@ -86,7 +86,7 @@ export class StateService {
   }
 
   public saveEnumerations(
-    collectionId: number,
+    collectionId: string,
     enumerations: StateEnumeration[] | StateEnumerationUpload[]
   ): Observable<StateEnumeration[]> {
     return this.apollo
@@ -109,8 +109,7 @@ export class StateService {
         variables: {
           description: state.description,
           display_name: state.displayName,
-          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
-          id: Number(state.id),
+          id: state.id,
           identifier: state.identifier,
           source: state.source,
           subsystem: state.subsystem,

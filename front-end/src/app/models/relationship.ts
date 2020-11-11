@@ -4,15 +4,15 @@ import { InformationTypeEnum } from './information-types';
 export interface Relationship {
   displayName: string;
   description: string;
-  id: number;
+  id: string;
   subjectType: InformationTypeEnum;
-  subjectTypeId: number;
+  subjectTypeId: string;
   targetType: InformationTypeEnum;
-  targetTypeId: number;
+  targetTypeId: string;
 }
 
 export interface RelationshipHistory extends Relationship {
-  relationshipId: number;
+  relationshipId: string;
   updated: Date;
 }
 

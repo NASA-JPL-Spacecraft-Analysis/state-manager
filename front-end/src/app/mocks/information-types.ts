@@ -1,7 +1,7 @@
 import { InformationTypeEnum, InformationTypes, InformationTypesMap } from '../models';
 
 export const mockInformationType: InformationTypes = {
-  id: 1,
+  id: '1',
   identifier: 'ACTIVITY_TEST',
   displayName: 'Activity',
   description: 'Test activity',
@@ -16,7 +16,7 @@ export const mockInformationTypes: InformationTypes[] = [
 export const mockInformationTypesMap: InformationTypesMap = new Map(
   [
     [1, {
-      [1]: {
+      ['1']: {
         ...mockInformationType
       }
     }]

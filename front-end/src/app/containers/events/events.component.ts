@@ -20,9 +20,9 @@ import { EventSidenavModule, EventTableModule } from 'src/app/components';
 })
 export class EventsComponent implements OnDestroy {
   public event: StateEvent;
-  public eventIdentifierMap;
+  public eventIdentifierMap: Map<string, string>;
   public eventMap: EventMap;
-  public selectedCollectionId: number;
+  public selectedCollectionId: string;
   public showSidenav: boolean;
 
   private subscriptions: SubSink;

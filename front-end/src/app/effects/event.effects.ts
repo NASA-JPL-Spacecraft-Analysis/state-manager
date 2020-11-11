@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of } from 'rxjs';
-import { switchMap, catchError, map, withLatestFrom, concat } from 'rxjs/operators';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
 import { CollectionActions, EventActions, LayoutActions, ToastActions } from '../actions';
 import { EventService } from '../services';
@@ -150,7 +150,7 @@ export class EventEffects {
     );
   });
 
-  private getEventInformation(collectionId: number): Observable<Action> {
+  private getEventInformation(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
 
     if (url === 'events') {

@@ -2,14 +2,13 @@ import { createAction, props } from '@ngrx/store';
 
 import {
   State,
-  StateMap,
   StateEnumeration,
   StateHistory
 } from '../models';
 
 export const createState = createAction(
   '[state] createState',
-  props<{ collectionId: number, state: State }>()
+  props<{ collectionId: string, state: State }>()
 );
 
 export const createStateFailure = createAction(
@@ -29,7 +28,7 @@ export const createStatesSuccess = createAction(
 
 export const deleteEnumerations = createAction(
   '[state] deleteEnumerations',
-  props<{ deletedEnumerationIds: number[], stateId: number }>()
+  props<{ deletedEnumerationIds: string[], stateId: string }>()
 );
 
 export const deleteEnumerationsFailure = createAction(
@@ -39,7 +38,7 @@ export const deleteEnumerationsFailure = createAction(
 
 export const deleteEnumerationsSuccess = createAction(
   '[state] deleteEnumerationsSuccess',
-  props<{ deletedEnumerationIds: number[] }>()
+  props<{ deletedEnumerationIds: string[] }>()
 );
 
 export const fetchIdentifiersFailure = createAction(
@@ -64,12 +63,12 @@ export const fetchStatesFailure = createAction(
 
 export const saveEnumerations = createAction(
   '[state] saveEnumerations',
-  props<{ collectionId: number, stateId: number, enumerations: StateEnumeration[] }>()
+  props<{ collectionId: string, stateId: string, enumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
-  props<{ enumerations: StateEnumeration[], stateId: number }>()
+  props<{ enumerations: StateEnumeration[], stateId: string }>()
 );
 
 export const saveEnumerationsFailure = createAction(

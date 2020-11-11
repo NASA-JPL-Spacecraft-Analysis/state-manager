@@ -13,7 +13,7 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'enum-form.component.html'
 })
 export class EnumFormComponent implements OnChanges {
-  @Input() deletedEnumerationIds: number[];
+  @Input() deletedEnumerationIds: string[];
   @Input() enumerations: StateEnumeration[];
 
   public enumerationsLabel: string;

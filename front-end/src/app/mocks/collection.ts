@@ -1,7 +1,7 @@
 import { Collection, CollectionMap } from '../models';
 
 const collection: Collection = {
-  id: 1,
+  id: '1',
   name: 'Test Collection 1'
 };
 

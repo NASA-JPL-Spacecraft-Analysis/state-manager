@@ -18,7 +18,7 @@ import { CollectionModule } from '../collections/collections.component';
   templateUrl: 'toolbar.component.html'
 })
 export class ToolbarComponent implements OnDestroy {
-  public selectedCollectionId: number;
+  public selectedCollectionId: string;
 
   private subscriptions = new SubSink();
 

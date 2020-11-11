@@ -27,7 +27,7 @@ export class CollectionService {
       .pipe(map(({ data: { createCollection } }) => createCollection));
   }
 
-  public deleteCollection(id: number): Observable<boolean> {
+  public deleteCollection(id: string): Observable<boolean> {
     return this.apollo
       .mutate<{ deleteCollection: boolean }>({
         fetchPolicy: 'no-cache',
@@ -48,7 +48,7 @@ export class CollectionService {
       .pipe(map(({ data: { collections } }) => collections));
   }
 
-  public updateCollection(id: number, name: string): Observable<Collection> {
+  public updateCollection(id: string, name: string): Observable<Collection> {
     return this.apollo
       .mutate<{ updateCollection: Collection }>({
         fetchPolicy: 'no-cache',

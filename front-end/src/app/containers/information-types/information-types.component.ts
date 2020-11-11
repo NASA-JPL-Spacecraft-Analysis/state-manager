@@ -19,7 +19,7 @@ import { FileUploadActions } from 'src/app/actions';
 export class InformationTypesComponent implements OnDestroy {
   public informationTypesMap: InformationTypesMap;
 
-  private collectionId: number;
+  private collectionId: string;
   private subscriptions = new SubSink();
 
   constructor(
