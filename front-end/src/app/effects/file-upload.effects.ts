@@ -7,6 +7,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
 import { Event, StateEnumeration, InformationTypes, Relationship } from '../models';
+import { Action } from '@ngrx/store';
 
 @Injectable()
 export class FileUploadEffects {
@@ -34,7 +35,7 @@ export class FileUploadEffects {
         informationTypes
       })),
       switchMap(({ collectionId, informationTypes }) => {
-        if (informationTypes && informationTypes.length > 0) {
+        if (Array.isArray(informationTypes) && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
             if (!this.validationService.validateInformationType(informationType)) {
               return [
@@ -80,10 +81,7 @@ export class FileUploadEffects {
         }
 
         return [
-          ToastActions.showToast({
-            message: 'Wrong filetype supplied, only csv and json is supported.',
-            toastType: 'error'
-          })
+          this.throwFileParseError(informationTypes)
         ];
       })
     );
@@ -103,7 +101,7 @@ export class FileUploadEffects {
         stateEnumerations
       })),
       switchMap(({ collectionId, stateEnumerations }) => {
-        if (stateEnumerations && stateEnumerations.length > 0) {
+        if (Array.isArray(stateEnumerations) && stateEnumerations.length > 0) {
           for (const stateEnumeration of stateEnumerations) {
             if (!this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
               return [
@@ -156,10 +154,7 @@ export class FileUploadEffects {
         }
 
         return [
-          ToastActions.showToast({
-            message: 'Wrong filetype supplied, only csv and json is supported.',
-            toastType: 'error'
-          })
+          this.throwFileParseError(stateEnumerations)
         ];
       })
     );
@@ -179,7 +174,7 @@ export class FileUploadEffects {
         events
       })),
       switchMap(({ collectionId, events }) => {
-        if (events && events.length > 0) {
+        if (Array.isArray(events) && events.length > 0) {
           for (const event of events) {
             if (!this.validationService.validateEvent(event)) {
               return [
@@ -197,33 +192,37 @@ export class FileUploadEffects {
             event['external_link'] = event.externalLink;
             delete event.externalLink;
           }
-        }
 
-        return concat(
-          this.eventService.createEvents(
-            collectionId,
-            events
-          ).pipe(
-            switchMap((createEvents: Event[]) => [
-              FileUploadActions.uploadEventsSuccess({
-                events: createEvents
+          return concat(
+            this.eventService.createEvents(
+              collectionId,
+              events
+            ).pipe(
+              switchMap((createEvents: Event[]) => [
+                FileUploadActions.uploadEventsSuccess({
+                  events: createEvents
+                }),
+                ToastActions.showToast({
+                  message: 'Events uploaded',
+                  toastType: 'success'
+                })
+              ])
+            ),
+            catchError((error: HttpErrorResponse) => [
+              FileUploadActions.uploadEventsFailure({
+                error
               }),
               ToastActions.showToast({
-                message: 'Events uploaded',
-                toastType: 'success'
+                message: error.error,
+                toastType: 'error'
               })
             ])
-          ),
-          catchError((error: HttpErrorResponse) => [
-            FileUploadActions.uploadEventsFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.error,
-              toastType: 'error'
-            })
-          ])
-        );
+          );
+        }
+
+        return [
+          this.throwFileParseError(events)
+        ];
       })
     );
   });
@@ -242,7 +241,7 @@ export class FileUploadEffects {
         relationships
       })),
       switchMap(({ collectionId, relationships }) => {
-        if (relationships && relationships.length > 0) {
+        if (Array.isArray(relationships) && relationships.length > 0) {
           for (const relationship of relationships) {
             if (!this.validationService.validateRelationship(relationship)) {
               return [
@@ -294,10 +293,7 @@ export class FileUploadEffects {
         }
 
         return [
-          ToastActions.showToast({
-            message: 'Wrong filetype supplied, only csv and json is supported.',
-            toastType: 'error'
-          })
+          this.throwFileParseError(relationships)
         ];
       })
     );
@@ -312,12 +308,12 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, states ]) => ({
+      map(([ collectionId, states  ]) => ({
         collectionId,
         states
       })),
       switchMap(({ collectionId, states }) => {
-        if (states && states.length > 0) {
+        if (Array.isArray(states) && states.length > 0) {
           for (const state of states) {
             // Validate each parsed state, if we come across anything invalid return null so we can error.
             if (!this.validationService.validateState(state)) {
@@ -362,12 +358,17 @@ export class FileUploadEffects {
         }
 
         return [
-          ToastActions.showToast({
-            message: 'Wrong filetype supplied, only csv and json is supported.',
-            toastType: 'error'
-          })
+          this.throwFileParseError(states)
         ];
       })
     );
   });
+
+  // The error will be a string, but we need to check for other types as well.
+  private throwFileParseError(error: string | any[]): Action {
+      return ToastActions.showToast({
+        message: typeof error === 'string' ? error : 'File parsing failed',
+        toastType: 'error'
+      })
+  }
 }
