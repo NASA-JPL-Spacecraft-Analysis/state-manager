@@ -1,8 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import {
-  InformationTypesMap
-} from '../models';
+import { InformationTypes } from '../models';
 
 export const fetchInformationTypesFailure = createAction(
   '[information types] fetchInformationTypesFailure',
@@ -11,5 +9,5 @@ export const fetchInformationTypesFailure = createAction(
 
 export const setInformationTypes = createAction(
   '[information types] setInformationTypes',
-  props<{ informationTypes: InformationTypesMap }>()
+  props<{ informationTypes: InformationTypes[] }>()
 );

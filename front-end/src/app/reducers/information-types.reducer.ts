@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
+import { cloneDeep } from 'lodash';
 
-import { InformationTypesMap } from '../models';
+import { InformationTypes, InformationTypesMap, StringTMap } from '../models';
 import { FileUploadActions, InformationTypesActions } from '../actions';
 
 export interface InformationTypesState {
@@ -16,14 +17,34 @@ export const reducer = createReducer(
   on(InformationTypesActions.setInformationTypes, (state, { informationTypes }) => ({
     ...state,
     informationTypes: {
-      ...informationTypes
+      ...mapInformationTypes(undefined, informationTypes)
     }
   })),
-  on(FileUploadActions.uploadInformationTypesSuccess, (state, { informationTypes }) => ({
-    ...state,
-    informationTypes: {
-      ...state.informationTypes,
-      ...informationTypes
-    }
-  }))
+  on(FileUploadActions.uploadInformationTypesSuccess, (state, { informationTypes }) => {
+    const informationTypeMap = cloneDeep(state.informationTypes);
+    console.log(informationTypeMap);
+
+    return {
+      ...state,
+      informationTypes: {
+        ...mapInformationTypes(informationTypeMap, informationTypes)
+      }
+    };
+  })
 );
+
+function mapInformationTypes(informationTypesMap: InformationTypesMap, informationTypes: InformationTypes[]): InformationTypesMap {
+  if (!informationTypesMap) {
+    informationTypesMap = new Map<number, StringTMap<InformationTypes>>();
+  }
+
+  for (const informationType of informationTypes) {
+    if (informationTypesMap[informationType.type] === undefined) {
+      informationTypesMap[informationType.type] = {};
+    }
+
+    informationTypesMap[informationType.type][informationType.id] = informationType;
+  }
+
+  return informationTypesMap;
+}

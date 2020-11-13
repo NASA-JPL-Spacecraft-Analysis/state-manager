@@ -2,19 +2,17 @@ import { Injectable } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
+import { switchMap, map, catchError } from 'rxjs/operators';
 
-import { StateManagementService } from '../services/state-management.service';
+import { InformationTypesService } from '../services';
 import { ofRoute, mapToParam } from '../functions/router';
 import { InformationTypesActions, CollectionActions } from '../actions';
-import { AppState } from '../app-store';
 
 @Injectable()
 export class InformationTypesEffects {
   constructor(
     private actions: Actions,
-    private stateManagementService: StateManagementService,
-    private store: Store<AppState>
+    private informationTypesService: InformationTypesService
   ) {}
 
   public navInformationTypes = createEffect(() => {
@@ -22,7 +20,7 @@ export class InformationTypesEffects {
       ofRoute('collection/:collectionId/information-types'),
       mapToParam<number>('collectionId'),
       switchMap(collectionId => {
-        return this.getInformationTypes(collectionId);
+        return this.getInformationTypes(Number(collectionId));
       })
     );
   });
@@ -41,7 +39,7 @@ export class InformationTypesEffects {
   });
 
   private getInformationTypes(id: number): Observable<Action> {
-    return this.stateManagementService.getInformationTypes(
+    return this.informationTypesService.getInformationTypes(
       id
     ).pipe(
       map(informationTypes => InformationTypesActions.setInformationTypes({

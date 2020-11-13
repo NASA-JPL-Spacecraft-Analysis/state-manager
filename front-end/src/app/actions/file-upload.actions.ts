@@ -1,10 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 
-import { StateMap, InformationTypesMap, RelationshipMap, StateEnumerationMap, EventMap } from '../models';
+import { Event, State, RelationshipMap, InformationTypes, Relationship } from '../models';
 
 export const uploadStateEnumerations = createAction(
   '[file upload] uploadStateEnumerations',
-  props<{ collectionId: number, file: File, fileType: string }>()
+  props<{ collectionId: number, file: File }>()
 );
 
 export const uploadStateEnumerationsFailure = createAction(
@@ -12,14 +12,9 @@ export const uploadStateEnumerationsFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const uploadStateEnumerationsSuccess = createAction(
-  '[file upload] uploadStateEnumerationsSuccess',
-  props<{ stateEnumerationMap: StateEnumerationMap }>()
-);
-
 export const uploadEvents = createAction(
   '[file upload] uploadEvents',
-  props<{ file: File, fileType: string, collectionId: number }>()
+  props<{ file: File, collectionId: number }>()
 );
 
 export const uploadEventsFailure  = createAction(
@@ -29,12 +24,12 @@ export const uploadEventsFailure  = createAction(
 
 export const uploadEventsSuccess = createAction(
   '[file upload] uploadEventsSuccess',
-  props<{ eventMap: EventMap }>()
+  props<{ events: Event[] }>()
 );
 
 export const uploadInformationTypes = createAction(
-  '[file upload] uploadInfomrationTypes',
-  props<{ file: File, fileType: string, collectionId: number }>()
+  '[file upload] uploadInformationTypes',
+  props<{ file: File, collectionId: number }>()
 );
 
 export const uploadInformationTypesFailure = createAction(
@@ -44,12 +39,12 @@ export const uploadInformationTypesFailure = createAction(
 
 export const uploadInformationTypesSuccess = createAction(
   '[file upload] uploadInformationTypesSuccess',
-  props<{ informationTypes: InformationTypesMap }>()
+  props<{ informationTypes: InformationTypes[] }>()
 );
 
 export const uploadRelationships = createAction(
   '[file upload] uploadRelationships',
-  props<{ file: File, fileType: string, collectionId: number }>()
+  props<{ file: File, collectionId: number }>()
 );
 
 export const uploadRelationshipsFailure = createAction(
@@ -59,20 +54,15 @@ export const uploadRelationshipsFailure = createAction(
 
 export const uploadRelationshipsSuccess = createAction(
   '[file upload] uploadRelationshipsSuccess',
-  props<{ relationshipMap: RelationshipMap }>()
+  props<{ relationships: Relationship[] }>()
 );
 
 export const uploadStates = createAction(
   '[file upload] uploadStates',
-  props<{ collectionId: number, file: File, fileType: string }>()
+  props<{ collectionId: number, file: File }>()
 );
 
 export const uploadStatesFailure = createAction(
   '[file upload] uploadStatesFailure',
   props<{ error: Error }>()
-);
-
-export const uploadStatesSuccess = createAction(
-  '[file upload] uploadStatesSuccess',
-  props<{ stateMap: StateMap }>()
 );

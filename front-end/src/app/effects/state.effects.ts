@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { StateManagementService } from '../services/state-management.service';
+import { StateService } from '../services';
 import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
-import { State } from '../models';
 import { Observable, merge, of, EMPTY } from 'rxjs';
 import { ofRoute, mapToParam } from '../functions/router';
 
@@ -15,77 +14,69 @@ export class StateEffects {
   constructor(
     private actions: Actions,
     private router: Router,
-    private stateManagementService: StateManagementService
+    private stateService: StateService
   ) {}
 
   public createState = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.createState),
-      switchMap(({ collectionId, state, stateEnumerations }) =>
-        this.stateManagementService.createState(
+      switchMap(({ collectionId, state: newState }) =>
+        this.stateService.createState(
           collectionId,
-          state
+          newState
         ).pipe(
-          switchMap(
-            (createdState: State) => [
-              StateActions.createStateSuccess({
-                state: createdState
-              }),
-              StateActions.saveEnumerations({
-                collectionId,
-                stateId: createdState.id,
-                enumerations: stateEnumerations,
-              }),
-              ToastActions.showToast({
-                message: 'State created',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              StateActions.createStateFailure({
-                error
-              }),
-              ToastActions.showToast({
-                message: 'State creation failed',
-                toastType: 'error'
-              })
-            ]
-          )
+          switchMap((state) => [
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            }),
+            StateActions.createStateSuccess({
+              state: {
+                ...newState,
+                id: state.id
+              }
+            }),
+            StateActions.saveEnumerations({
+              collectionId,
+              stateId: newState.id,
+              enumerations: newState.enumerations
+            }),
+            ToastActions.showToast({
+              message: 'State created',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            StateActions.createStateFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'State creation failed',
+              toastType: 'error'
+            })
+          ])
         )
       )
     );
   });
 
-  public editState = createEffect(() => {
+  public deleteEnumerations = createEffect(() => {
     return this.actions.pipe(
-      ofType(StateActions.editState),
-      switchMap(({ collectionId, state }) =>
-        this.stateManagementService.editState(
-          collectionId,
-          state
+      ofType(StateActions.deleteEnumerations),
+      switchMap(({ deletedEnumerationIds, stateId}) =>
+        this.stateService.deleteEnumerations(
+          deletedEnumerationIds,
+          stateId
         ).pipe(
-          switchMap(
-            (editedState: State) => [
-              StateActions.editStateSuccess({
-                state: editedState
-              }),
-              ToastActions.showToast({
-                message: 'State edited',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              StateActions.editStateFailure({ error }),
-              ToastActions.showToast({
-                message: 'State editing failed',
-                toastType: 'error'
-              })
-            ]
-          )
+          switchMap((deleteEnumerations) => [
+            StateActions.deleteEnumerationsSuccess({
+              deletedEnumerationIds
+            })
+          ]),
+          catchError((error: Error) => [
+            StateActions.deleteEnumerationsFailure({
+              error
+            })
+          ])
         )
       )
     );
@@ -95,9 +86,9 @@ export class StateEffects {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
       mapToParam<number>('collectionId'),
-      switchMap(collectionId => {
-        return this.getStates(collectionId);
-      })
+      switchMap(collectionId =>
+        this.getStates(Number(collectionId))
+      )
     );
   });
 
@@ -117,24 +108,79 @@ export class StateEffects {
   public saveEnumerations = createEffect(() => {
     return this.actions.pipe(
       ofType(StateActions.saveEnumerations),
-      switchMap(({ collectionId, stateId, enumerations }) =>
-        this.stateManagementService.saveEnumerations(
+      switchMap(({ collectionId, stateId, enumerations }) => {
+        const saveEnumerations = [];
+
+        // TODO: Track down where the IDs are changing... This format will change after rename fields in backend.
+        stateId = Number(stateId);
+
+        for (const enumeration of enumerations) {
+          let id: number | undefined;
+
+          if (enumeration.id) {
+            id = Number(enumeration.id);
+          }
+
+          saveEnumerations.push(
+            {
+              id,
+              label: enumeration.label.toString(),
+              state_id: Number(stateId),
+              value: enumeration.value.toString()
+            }
+          );
+        }
+
+        return this.stateService.saveEnumerations(
           collectionId,
-          stateId,
-          enumerations
+          saveEnumerations
         ).pipe(
-          switchMap((savedEnumerations) => {
-            return [
-              StateActions.saveEnumerationsSuccess({
-                enumerations: savedEnumerations
-              })
-            ];
-          }),
-          catchError(
-            (error: Error) => [
-              StateActions.saveEnumerationsFailure({ error })
-            ]
-          )
+          switchMap((savedEnumerations) => [
+            StateActions.saveEnumerationsSuccess({
+              enumerations: savedEnumerations,
+              stateId
+            })
+          ]),
+          catchError((error: Error) => [
+            StateActions.saveEnumerationsFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'State enumeration save failed',
+              toastType: 'error'
+            })
+          ])
+        );
+      })
+    );
+  });
+
+  public updateState = createEffect(() => {
+    return this.actions.pipe(
+      ofType(StateActions.updateState),
+      switchMap(({ updatedState }) =>
+        this.stateService.updateState(
+          updatedState
+        ).pipe(
+          switchMap((state) => [
+            StateActions.updateStateSuccess({
+              state: {
+                ...updatedState,
+                id: state.id
+              }
+            }),
+            ToastActions.showToast({
+              message: 'State updated',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            StateActions.updateStateFailure({ error }),
+            ToastActions.showToast({
+              message: 'State updating failed',
+              toastType: 'error'
+            })
+          ])
         )
       )
     );
@@ -148,29 +194,15 @@ export class StateEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getStates(
+        this.stateService.getStates(
           collectionId
         ).pipe(
-          map(stateMap => StateActions.setStates({
-            stateMap
+          map(states => StateActions.setStates({
+            states
           })),
           catchError(
             (error: Error) => [
               StateActions.fetchStatesFailure({
-                error
-              })
-            ]
-          )
-        ),
-        this.stateManagementService.getStateEnumerations(
-          collectionId
-        ).pipe(
-          map(stateEnumerationMap => StateActions.setStateEnumerations({
-            stateEnumerationMap
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStateEnumerationsFailure({
                 error
               })
             ]
@@ -182,11 +214,11 @@ export class StateEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getStateHistory(
+        this.stateService.getStateHistory(
           collectionId
         ).pipe(
-          map(stateHistoryMap => StateActions.setStateHistory({
-            stateHistoryMap
+          map(stateHistory => StateActions.setStateHistory({
+            stateHistory
           })),
           catchError(
             (error: Error) => [
@@ -196,11 +228,11 @@ export class StateEffects {
             ]
           )
         ),
-        this.stateManagementService.getStates(
+        this.stateService.getStates(
           collectionId
         ).pipe(
-          map(stateMap => StateActions.setStates({
-            stateMap
+          map(states => StateActions.setStates({
+            states
           })),
           catchError(
             (error: Error) => [

@@ -1,26 +1,17 @@
 import { initialState, reducer, StateState } from './state.reducer';
 import { StateActions } from '../actions';
 import {
+  mockStateOne,
+  mockStates,
   mockStateMap,
-  mockStateEnumerationList,
+  mockStateEnumerations,
   mockStateEnumerationMap,
   mockStateIdentifierMap
 } from '../mocks';
 
-describe('StateManagementReducer', () => {
+describe('StateReducer', () => {
   describe('createStateSuccess', () => {
     it('should set the selectedState, and update the stateIdentifierMap after creating a state', () => {
-      const state = {
-        id: 3,
-        identifier: 'TEST_2',
-        displayName: 'Test 2',
-        type: '1',
-        units: '1',
-        source: '1',
-        subsystem: '1',
-        description: '1'
-      };
-
       const stateState: StateState = reducer(
         {
           ...initialState,
@@ -32,21 +23,21 @@ describe('StateManagementReducer', () => {
           }
         },
         StateActions.createStateSuccess({
-          state
+          state: mockStateOne
         })
       );
 
       expect(stateState).toEqual({
         ...initialState,
-        selectedState: state,
+        selectedState: mockStateOne,
         stateIdentifierMap: {
           ...stateState.stateIdentifierMap,
-          [state.identifier]: state.id
+          [mockStateOne.identifier]: mockStateOne.id
         },
         stateMap: {
           ...stateState.stateMap,
-          [state.id]: {
-            ...state
+          [mockStateOne.id]: {
+            ...mockStateOne
           }
         }
       });
@@ -55,39 +46,24 @@ describe('StateManagementReducer', () => {
 
   describe('createStatesSuccess', () => {
     it('should set stateMap when we create a batch of new states', () => {
-      const stateMap = {
-        ...mockStateMap
-      };
-
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.createStatesSuccess({
-          stateMap
+          states: [ ...mockStates ]
         })
       );
 
       expect(stateState).toEqual({
         ...initialState,
         stateMap: {
-          ...stateMap
+          ...mockStateMap
         }
       });
     });
   });
 
-  describe('editStateSuccess', () => {
+  describe('updateStateSuccess', () => {
     it('should set the selectedState, and update the stateIdentifierMap after editing a state', () => {
-      const state = {
-        id: 2,
-        identifier: 'TEST_2',
-        displayName: 'Test 2',
-        type: 'test string 2',
-        units: 'na',
-        source: 'na',
-        subsystem: 'na',
-        description: 'This is test string 2.'
-      };
-
       const stateState: StateState = reducer(
         {
           ...initialState,
@@ -98,22 +74,22 @@ describe('StateManagementReducer', () => {
             ...mockStateMap
           }
         },
-        StateActions.editStateSuccess({
-          state
+        StateActions.updateStateSuccess({
+          state: mockStateOne
         })
       );
 
       expect(stateState).toEqual({
         ...initialState,
-        selectedState: state,
+        selectedState: mockStateOne,
         stateIdentifierMap: {
           ...stateState.stateIdentifierMap,
-          [state.identifier]: state.id
+          [mockStateOne.identifier]: mockStateOne.id
         },
         stateMap: {
           ...stateState.stateMap,
-          [state.id]: {
-            ...state
+          [mockStateOne.id]: {
+            ...mockStateOne
           }
         }
       });
@@ -122,14 +98,11 @@ describe('StateManagementReducer', () => {
 
   describe('saveEnumerationsSuccess', () => {
     it('should set enumerations after saving enumerations', () => {
-      const enumerationsList = [
-        ...mockStateEnumerationList
-      ];
-
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.saveEnumerationsSuccess({
-          enumerations: enumerationsList
+          enumerations: mockStateEnumerations,
+          stateId: mockStateOne.id
         })
       );
 
@@ -142,14 +115,10 @@ describe('StateManagementReducer', () => {
 
   describe('setStateEnumerations', () => {
     it('should set stateEnumerations', () => {
-      const stateEnumerationMap = {
-        ...mockStateEnumerationMap
-      };
-
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.setStateEnumerations({
-          stateEnumerationMap
+          stateEnumerations: mockStateEnumerations
         })
       );
 
@@ -185,9 +154,7 @@ describe('StateManagementReducer', () => {
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.setStates({
-          stateMap: {
-            ...mockStateMap
-          }
+          states: [ ...mockStates ]
         })
       );
 

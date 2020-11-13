@@ -53,9 +53,9 @@ export class EventSidenavComponent implements OnChanges {
       this.newEvent = {
         ...this.event
       };
-
-      this.originalIdentifier = this.newEvent.identifier;
     }
+
+    this.originalIdentifier = this.newEvent.identifier;
 
     this.form = new FormGroup({
       id: new FormControl(this.newEvent.id),

@@ -1,7 +1,7 @@
-import { EventMap } from '../models';
+import { Event } from '../models';
 
-export const mockEventMap: EventMap = {
-  [1]: {
+export const mockEvents: Event[] = [
+  {
     id: 1,
     collectionId: 1,
     identifier: 'TEST_EVENT_1',
@@ -10,10 +10,10 @@ export const mockEventMap: EventMap = {
     externalLink: 'https://test.com',
     editable: true
   }
-};
+];
 
-export const mockEventHistoryMap: EventMap = {
-  [1]: {
+export const mockEventHistory: Event[] = [
+  {
     id: 1,
     collectionId: 1,
     identifier: 'TEST_EVENT_1',
@@ -24,4 +24,4 @@ export const mockEventHistoryMap: EventMap = {
     eventId: 1,
     updated: new Date()
   }
-};
+];

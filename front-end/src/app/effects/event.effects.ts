@@ -6,7 +6,7 @@ import { Observable, EMPTY, merge, of } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom, concat } from 'rxjs/operators';
 
 import { CollectionActions, EventActions, LayoutActions, ToastActions } from '../actions';
-import { StateManagementService } from '../services/state-management.service';
+import { EventService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
 import { ValidationService } from '../services/validation.service';
@@ -18,7 +18,7 @@ export class EventEffects {
     private actions: Actions,
     private router: Router,
     private store: Store<AppState>,
-    private stateManagementService: StateManagementService,
+    private eventService: EventService,
     private validationService: ValidationService
   ) {}
 
@@ -41,87 +41,34 @@ export class EventEffects {
           ];
         }
 
-        return merge(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
-          this.stateManagementService.createEvent(
-            action.collectionId,
-            action.event
-          ).pipe(
-            switchMap(
-              (event: Event) => [
-                EventActions.createEventSuccess({
-                  event
-                }),
-                ToastActions.showToast({
-                  message: 'Event created',
-                  toastType: 'success'
-                })
-              ]
-            ),
-            catchError(
-              (error: Error) => [
-                EventActions.createEventFailure({
-                  error
-                }),
-                ToastActions.showToast({
-                  message: 'Event creation failed',
-                  toastType: 'error'
-                })
-              ]
-            )
-          )
-        );
-      })
-    );
-  });
-
-  public editEvent = createEffect(() => {
-    return this.actions.pipe(
-      ofType(EventActions.editEvent),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        if (this.validationService.isDuplicateIdentifier(
-          action.event.identifier,
-          action.event.id,
-          state.events.eventIdentifierMap
-        )) {
-          return [
+        return this.eventService.createEvent(
+          action.collectionId,
+          action.event
+        ).pipe(
+          switchMap((event: Event) => [
+            EventActions.createEventSuccess({
+              event: {
+                ...action.event,
+                id: event.id
+              }
+            }),
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            }),
             ToastActions.showToast({
-              message: '',
+              message: 'Event created',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            EventActions.createEventFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Event creation failed',
               toastType: 'error'
             })
-          ];
-        }
-
-        return merge(
-          this.stateManagementService.editEvent(
-            action.collectionId,
-            action.event
-          ).pipe(
-            switchMap(
-              (editedEvent: Event) => [
-                EventActions.editEventSuccess({
-                  event: editedEvent
-                }),
-                ToastActions.showToast({
-                  message: 'Event edited',
-                  toastType: 'success'
-                })
-              ]
-            ),
-            catchError(
-              (error: Error) => [
-                EventActions.createEventFailure({ error }),
-                ToastActions.showToast({
-                  message: 'Event editing failed',
-                  toastType: 'error'
-                })
-              ]
-            )
-          )
+          ])
         );
       })
     );
@@ -155,6 +102,54 @@ export class EventEffects {
     );
   });
 
+  public updateEvent = createEffect(() => {
+    return this.actions.pipe(
+      ofType(EventActions.updateEvent),
+      withLatestFrom(this.store),
+      map(([action, state]) => ({ action, state })),
+      switchMap(({ action, state }) => {
+        if (this.validationService.isDuplicateIdentifier(
+          action.event.identifier,
+          action.event.id,
+          state.events.eventIdentifierMap
+        )) {
+          return [
+            ToastActions.showToast({
+              message: 'Duplicate identifier provided',
+              toastType: 'error'
+            })
+          ];
+        }
+
+        return this.eventService.updateEvent(
+          action.event
+        ).pipe(
+          switchMap((event: Event) => [
+            EventActions.updateEventSuccess({
+              event: {
+                ...action.event,
+                id: event.id
+              }
+            }),
+            ToastActions.showToast({
+              message: 'Event edited',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            EventActions.createEventFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Event editing failed',
+              toastType: 'error'
+            })
+          ])
+        );
+      })
+    );
+  });
+
   private getEventInformation(collectionId: number): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
 
@@ -163,11 +158,11 @@ export class EventEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getEventMap(
+        this.eventService.getEvents(
           collectionId
         ).pipe(
-          map(eventMap => EventActions.setEventMap({
-            eventMap
+          map(events => EventActions.setEvents({
+            events
           })),
           catchError(
             (error: Error) => [
@@ -183,11 +178,11 @@ export class EventEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
-        this.stateManagementService.getEventHistoryMap(
+        this.eventService.getEventHistory(
           collectionId
         ).pipe(
-          map(eventHistoryMap => EventActions.setEventHistoryMap({
-            eventHistoryMap
+          map(eventHistory => EventActions.setEventHistory({
+            eventHistory
           })),
           catchError(
             (error: Error) => [

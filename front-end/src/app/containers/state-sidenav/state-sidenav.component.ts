@@ -8,7 +8,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { SubSink } from 'subsink';
 
 import { State, StateEnumeration } from '../../models';
-import { getStateEnumerationsForSelectedState, getStateIdentifierMap } from '../../selectors';
+import { getStateIdentifierMap } from '../../selectors';
 import { ToastActions } from '../../actions';
 import { EnumFormModule, IdentifierFormModule } from '../../components';
 import { AppState } from 'src/app/app-store';
@@ -23,12 +23,12 @@ import { MaterialModule } from 'src/app/material';
 export class StateSidenavComponent implements OnChanges, OnDestroy {
   @Input() public state: State;
 
-  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>;
+  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: number[] }>;
   @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
+  public deletedEnumerationIds: number[];
   public newState: State;
   public originalIdentifier: string;
-  public enumerations: StateEnumeration[];
   public form: FormGroup;
   public stateIdentifierMap: Map<string, number>;
 
@@ -43,16 +43,12 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[] }>();
+    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: number[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(
       this.store.pipe(select(getStateIdentifierMap)).subscribe(stateIdentifierMap => {
         this.stateIdentifierMap = stateIdentifierMap;
-        this.changeDetectorRef.markForCheck();
-      }),
-      this.store.pipe(select(getStateEnumerationsForSelectedState)).subscribe(enumerations => {
-        this.enumerations = enumerations;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -72,15 +68,21 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
         units: '',
         source: '',
         subsystem: '',
-        description: ''
+        description: '',
+        enumerations: []
       };
     } else {
       this.newState = {
-        ...this.state
+        ...this.state,
+        enumerations: [
+          ...this.state.enumerations
+        ]
       };
-
-      this.originalIdentifier = this.newState.identifier;
     }
+
+    this.originalIdentifier = this.newState.identifier;
+
+    this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({
       id: new FormControl(this.newState.id),
@@ -109,18 +111,19 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
    * 1) That our identifier is unique (when trimmed)
    */
   public onSubmit(): void {
-    // Process our enumerations before trying to save our state.
-    if (this.processEnumerations()) {
+    // Process our enumerations and make sure the form is valid before trying to save our state.
+    if (this.processEnumerations() && this.form.valid) {
       if (!this.duplicateIdentifier) {
         // Only emit our enumerations seperatly if we're modifying an existing state.
         if (this.newState.id !== undefined) {
-          this.modifyEnumerations.emit(this.enumerations);
+          this.modifyEnumerations.emit(this.newState.enumerations);
         }
 
         // Emit both values, but we'll only use the enumeraion list on creating a new state.
         this.modifyState.emit({
           state: this.form.value,
-          stateEnumerations: this.enumerations
+          stateEnumerations: this.newState.enumerations,
+          deletedEnumerationIds: this.deletedEnumerationIds
         });
       } else {
         // Show the duplicate tooltip.
@@ -151,7 +154,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
    */
   private processEnumerations(): boolean {
     // Check and make sure values are set for all our enumerations.
-    for (const enumeration of this.enumerations) {
+    for (const enumeration of this.newState.enumerations) {
       if (enumeration.label === null || enumeration.value === null) {
         return false;
       }

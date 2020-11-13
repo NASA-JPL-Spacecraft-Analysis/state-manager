@@ -4,8 +4,9 @@
       <mat-select
         [(value)]="relationship[formProperty]"
         (selectionChange)="onValueChange($event)">
+        <!-- TODO: Fix converting these values to numbers after the ID changes. -->
         <mat-option *ngFor="let value of stateMap | keyvalue"
-          [value]="stateMap[value.key].id">
+          [value]="+stateMap[value.key].id">
           {{stateMap[value.key].identifier}}
         </mat-option>
       </mat-select>
@@ -16,7 +17,7 @@
         [(value)]="relationship[formProperty]"
         (selectionChange)="onValueChange($event)">
         <mat-option *ngFor="let value of eventMap | keyvalue"
-          [value]="eventMap[value.key].id">
+          [value]="+eventMap[value.key].id">
           {{eventMap[value.key].identifier}}
         </mat-option>
       </mat-select>
@@ -30,7 +31,7 @@
         [(value)]="relationship[formProperty]"
         (selectionChange)="onValueChange($event)">
         <mat-option *ngFor="let value of currentTypeMap | keyvalue"
-          [value]="currentTypeMap[value.key].id">
+          [value]="+currentTypeMap[value.key].id">
           {{currentTypeMap[value.key].identifier}}
         </mat-option>
       </mat-select>

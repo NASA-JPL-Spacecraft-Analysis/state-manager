@@ -22,23 +22,31 @@ export const reducer = createReducer(
   on(EventActions.createEventSuccess, (state, { event }) => {
     return modifyEvent(state, event);
   }),
-  on(EventActions.editEventSuccess, (state, { event }) => {
+  on(EventActions.updateEventSuccess, (state, { event }) => {
     return modifyEvent(state, event);
   }),
-  on(FileUploadActions.uploadEventsSuccess, (state, { eventMap }) => ({
-    ...state,
-    eventMap: {
-      ...state.eventMap,
-      ...eventMap
+  on(FileUploadActions.uploadEventsSuccess, (state, { events }) => {
+    const eventMap = {};
+
+    for (const event of events) {
+      eventMap[event.id] = event;
     }
-  })),
-  on(EventActions.setEventMap, (state, { eventMap }) => {
+
+    return {
+      ...state,
+      eventMap: {
+        ...state.eventMap,
+        ...eventMap
+      }
+    };
+  }),
+  on(EventActions.setEvents, (state, { events }) => {
+    const eventMap = {};
     const eventIdentifierMap = new Map<string, number>();
 
-    if (eventMap) {
-      for (const key of Object.keys(eventMap)) {
-        eventIdentifierMap[eventMap[key].identifier] = key;
-      }
+    for (const event of events) {
+      eventMap[event.id] = event;
+      eventIdentifierMap[event.identifier] = event.id;
     }
 
     return {
@@ -51,12 +59,20 @@ export const reducer = createReducer(
       }
     };
   }),
-  on(EventActions.setEventHistoryMap, (state, { eventHistoryMap }) => ({
-    ...state,
-    eventHistoryMap: {
-      ...eventHistoryMap
+  on(EventActions.setEventHistory, (state, { eventHistory }) => {
+    const eventHistoryMap = {};
+
+    for (const eventHistoryItem of eventHistory) {
+      eventHistoryMap[eventHistoryItem.id] = eventHistoryItem;
     }
-  })),
+
+    return {
+      ...state,
+      eventHistoryMap: {
+        ...eventHistoryMap
+      }
+    };
+  }),
   on(EventActions.setSelectedEvent, (state, { event }) => ({
     ...state,
     selectedEvent: event

@@ -3,6 +3,7 @@ import { createReducer, on } from '@ngrx/store';
 import { StateActions, FileUploadActions } from '../actions';
 import {
   State,
+  StateEnumeration,
   StateEnumerationMap,
   StateMap
 } from '../models';
@@ -28,53 +29,47 @@ export const reducer = createReducer(
   on(StateActions.createStateSuccess, (stateState, { state }) => {
     return modifyState(stateState, state);
   }),
-  on(StateActions.createStatesSuccess, (stateState, { stateMap }) => ({
+  on(StateActions.createStatesSuccess, (stateState, { states }) => ({
     ...stateState,
     stateMap: {
-      ...stateMap
+      ...stateState.stateMap,
+      ...mapStates(states)
     }
   })),
-  on(StateActions.editStateSuccess, (stateState, { state }) => {
+  on(StateActions.updateStateSuccess, (stateState, { state }) => {
     return modifyState(stateState, state);
   }),
-  on(StateActions.saveEnumerationsSuccess, (state, { enumerations }) => {
-    const stateEnumerationMap: StateEnumerationMap = {};
-    let stateId = null;
+  on(StateActions.saveEnumerationsSuccess, (stateState, { enumerations }) => ({
+    ...stateState,
+    stateEnumerationMap: {
+      ...mapEnumerations(enumerations)
+    }
+  })),
+  on(StateActions.setStateEnumerations, (stateState, { stateEnumerations }) => ({
+    ...stateState,
+    stateEnumerationMap: {
+      ...mapEnumerations(stateEnumerations)
+    }
+  })),
+  on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
+    const stateHistoryMap = {};
 
-    for (const enumeration of enumerations) {
-      stateId = enumeration.stateId;
-
-      if (stateEnumerationMap[stateId] === undefined) {
-        stateEnumerationMap[stateId] = [];
-      }
-
-      stateEnumerationMap[stateId].push(enumeration);
+    for (const stateHistoryItem of stateHistory) {
+      stateHistoryMap[stateHistoryItem.id] = stateHistoryItem;
     }
 
     return {
-      ...state,
-      stateEnumerationMap: {
-        ...stateEnumerationMap
-      }
+      ...stateState,
+      stateHistoryMap
     };
   }),
-  on(StateActions.setStateEnumerations, (stateState, { stateEnumerationMap }) => ({
-    ...stateState,
-    stateEnumerationMap: {
-      ...stateEnumerationMap
-    }
-  })),
-  on(StateActions.setStateHistory, (stateState, { stateHistoryMap }) => ({
-    ...stateState,
-    stateHistoryMap
-  })),
-  on(StateActions.setStates, (stateState, { stateMap }) => {
+  on(StateActions.setStates, (stateState, { states }) => {
+    const stateMap = {};
     const stateIdentifierMap = new Map<string, number>();
 
-    if (stateMap) {
-      for (const key of Object.keys(stateMap)) {
-        stateIdentifierMap[stateMap[key].identifier] = key;
-      }
+    for (const state of states) {
+      stateMap[state.id] = state;
+      stateIdentifierMap[state.identifier] = state.id;
     }
 
     return {
@@ -90,19 +85,6 @@ export const reducer = createReducer(
   on(StateActions.setSelectedState, (stateState, { state }) => ({
     ...stateState,
     selectedState: state
-  })),
-  on(FileUploadActions.uploadStateEnumerationsSuccess, (state, { stateEnumerationMap }) => ({
-    ...state,
-    stateEnumerationMap: {
-      ...stateEnumerationMap
-    }
-  })),
-  on(FileUploadActions.uploadStatesSuccess, (stateState, { stateMap }) => ({
-    ...stateState,
-    stateMap: {
-      ...stateState.stateMap,
-      ...stateMap
-    }
   }))
 );
 
@@ -132,4 +114,28 @@ function modifyState(stateState: StateState, state: State): StateState {
       }
     }
   };
+}
+
+function mapStates(states: State[]): StateMap {
+  const stateMap = {};
+
+  for (const state of states) {
+    stateMap[state.id] = state;
+  }
+
+  return stateMap;
+}
+
+function mapEnumerations(stateEnumerations: StateEnumeration[]): StateEnumerationMap {
+  const stateEnumerationMap = {};
+
+  for (const stateEnumeration of stateEnumerations) {
+    if (!stateEnumerationMap[stateEnumeration.id]) {
+      stateEnumerationMap[stateEnumeration.id] = [];
+    }
+
+    stateEnumerationMap[stateEnumeration.id].push(stateEnumeration);
+  }
+
+  return stateEnumerationMap;
 }

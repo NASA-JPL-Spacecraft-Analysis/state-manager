@@ -81,12 +81,10 @@ export class RelationshipsComponent implements OnDestroy {
 
   public onFileUpload(fileEvent: Event): void {
     const file = (fileEvent.target as HTMLInputElement).files[0];
-    const fileType = file.name.split('.').pop().toLowerCase();
 
-    if (file && (fileType === 'csv' || fileType === 'json')) {
+    if (file) {
       this.store.dispatch(FileUploadActions.uploadRelationships({
         file,
-        fileType,
         collectionId: this.collectionId
       }));
     } else {
@@ -110,8 +108,7 @@ export class RelationshipsComponent implements OnDestroy {
    * @param relationship The relationship that is being modified.
    */
   public onModifyRelationship(relationship?: Relationship): void {
-    // TODO: Check for events and information types here as well.
-    if (this.stateMap) {
+    if (this.stateMap || this.eventMap || this.informationTypesMap) {
       this.store.dispatch(RelationshipActions.setSelectedRelationship({
         relationship
       }));
@@ -139,8 +136,7 @@ export class RelationshipsComponent implements OnDestroy {
           relationship
         }));
       } else {
-        this.store.dispatch(RelationshipActions.editRelationship({
-          collectionId: this.collectionId,
+        this.store.dispatch(RelationshipActions.updateRelationship({
           relationship
         }));
       }
