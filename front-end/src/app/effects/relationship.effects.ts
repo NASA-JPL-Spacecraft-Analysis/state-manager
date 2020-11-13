@@ -1,86 +1,52 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store, Action } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, withLatestFrom, map } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, EMPTY } from 'rxjs';
 
-import { StateManagementService } from '../services/state-management.service';
+import { EventService, InformationTypesService, StateService, RelationshipService } from '../services';
 import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypesActions, StateActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { AppState } from '../app-store';
 import { Relationship } from '../models';
 
 @Injectable()
 export class RelationshipEffects {
   constructor(
     private actions: Actions,
+    private eventService: EventService,
+    private informationTypesService: InformationTypesService,
     private router: Router,
-    private stateManagementService: StateManagementService,
-    private store: Store<AppState>
+    private relationshipService: RelationshipService,
+    private stateService: StateService
   ) {}
 
   public createRelationship = createEffect(() => {
     return this.actions.pipe(
       ofType(RelationshipActions.createRelationship),
       switchMap(({ collectionId, relationship }) =>
-        this.stateManagementService.createRelationship(
+        this.relationshipService.createRelationship(
           collectionId,
           relationship
         ).pipe(
-          switchMap(
-            (createdRelationship: Relationship) => [
-              RelationshipActions.createRelationshipSuccess({
-                relationship: createdRelationship
-              }),
-              ToastActions.showToast({
-                message: 'Relationship created',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              RelationshipActions.createRelationshipFailure({ error }),
-              ToastActions.showToast({
-                message: 'Relationship creation failed',
-                toastType: 'error'
-              })
-            ]
-          )
-        )
-      )
-    );
-  });
-
-  public editRelationship = createEffect(() => {
-    return this.actions.pipe(
-      ofType(RelationshipActions.editRelationship),
-      switchMap(({ collectionId, relationship }) =>
-        this.stateManagementService.editRelationship(
-          collectionId,
-          relationship
-        ).pipe(
-          switchMap(
-            (editedRelationship: Relationship) => [
-              RelationshipActions.editRelationshipSuccess({
-                relationship: editedRelationship
-              }),
-              ToastActions.showToast({
-                message: 'Relationship edited',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: Error) => [
-              RelationshipActions.editRelationshipFailure({ error }),
-              ToastActions.showToast({
-                message: 'Relationship editing failed',
-                toastType: 'error'
-              })
-            ]
-          )
+          switchMap((createdRelationship: Relationship) => [
+            RelationshipActions.createRelationshipSuccess({
+              relationship: createdRelationship
+            }),
+            ToastActions.showToast({
+              message: 'Relationship created',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            RelationshipActions.createRelationshipFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Relationship creation failed',
+              toastType: 'error'
+            })
+          ])
         )
       )
     );
@@ -90,9 +56,9 @@ export class RelationshipEffects {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/relationships', 'collection/:collectionId/relationship-history' ]),
       mapToParam<number>('collectionId'),
-      switchMap(collectionId => {
-        return this.getRelationships(collectionId);
-      })
+      switchMap(collectionId =>
+        this.getRelationships(Number(collectionId))
+      )
     );
   });
 
@@ -109,14 +75,44 @@ export class RelationshipEffects {
     );
   });
 
+  public updateRelationship = createEffect(() => {
+    return this.actions.pipe(
+      ofType(RelationshipActions.updateRelationship),
+      switchMap(({ relationship }) =>
+        this.relationshipService.updateRelationship(
+          relationship
+        ).pipe(
+          switchMap((updatedRelationship: Relationship) => [
+            RelationshipActions.updateRelationshipSuccess({
+              relationship: updatedRelationship
+            }),
+            ToastActions.showToast({
+              message: 'Relationship edited',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            RelationshipActions.updateRelationshipFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Updating relationship failed',
+              toastType: 'error'
+            })
+          ])
+        )
+      )
+    );
+  });
+
   private getRelationships(collectionId: number): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
     const sharedActions = merge(
-      this.stateManagementService.getEventMap(
+      this.eventService.getEvents(
         collectionId
       ).pipe(
-        map(eventMap => EventActions.setEventMap({
-          eventMap
+        map(events => EventActions.setEvents({
+          events
         })),
         catchError(
           (error: Error) => [
@@ -126,7 +122,7 @@ export class RelationshipEffects {
           ]
         )
       ),
-      this.stateManagementService.getInformationTypes(
+      this.informationTypesService.getInformationTypes(
         collectionId
       ).pipe(
         map(informationTypes => InformationTypesActions.setInformationTypes({
@@ -140,11 +136,11 @@ export class RelationshipEffects {
           ]
         )
       ),
-      this.stateManagementService.getStates(
+      this.stateService.getStates(
         collectionId
       ).pipe(
-        map(stateMap => StateActions.setStates({
-          stateMap
+        map(states => StateActions.setStates({
+          states
         })),
         catchError(
           (error: Error) => [
@@ -159,7 +155,7 @@ export class RelationshipEffects {
     if (url === 'relationships') {
       return merge(
         sharedActions,
-        this.stateManagementService.getRelationships(
+        this.relationshipService.getRelationships(
           collectionId
         ).pipe(
           map(relationships => RelationshipActions.setRelationships({
@@ -177,7 +173,7 @@ export class RelationshipEffects {
     } else if (url === 'relationship-history') {
       return merge(
         sharedActions,
-        this.stateManagementService.getRelationshipHistory(
+        this.relationshipService.getRelationshipHistory(
           collectionId
         ).pipe(
           map(relationshipHistory => RelationshipActions.setRelationshipHistory({

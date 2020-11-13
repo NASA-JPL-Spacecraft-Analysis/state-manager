@@ -1,54 +1,88 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { concat, forkJoin, of } from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { StateManagementService } from '../services/state-management.service';
-import { FileUploadActions, ToastActions } from '../actions';
-import { InformationTypesMap, StateEnumerationMap, StateMap, RelationshipMap, EventMap } from '../models';
+import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
+import { FileUploadActions, StateActions, ToastActions } from '../actions';
+import { Event, StateEnumeration, InformationTypes, Relationship } from '../models';
+import { Action } from '@ngrx/store';
 
 @Injectable()
 export class FileUploadEffects {
   constructor(
     private actions: Actions,
-    private stateManagementService: StateManagementService
+    private eventService: EventService,
+    private informationTypesService: InformationTypesService,
+    private parseService: ParseService,
+    private stateService: StateService,
+    private relationshipService: RelationshipService,
+    private validationService: ValidationService
   ) {}
 
   public uploadInformationTypes = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
-      switchMap(({ file, fileType, collectionId }) => {
-        let saveInformationTypes: Observable<InformationTypesMap>;
+      switchMap(({ file, collectionId }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, informationTypes ]) => ({
+        collectionId,
+        informationTypes
+      })),
+      switchMap(({ collectionId, informationTypes }) => {
+        if (Array.isArray(informationTypes) && informationTypes.length > 0) {
+          for (const informationType of informationTypes) {
+            if (!this.validationService.validateInformationType(informationType)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesCsv(file, collectionId);
-        } else {
-          saveInformationTypes = this.stateManagementService.saveInformationTypesJson(file, collectionId);
+            // TODO: Once we rename the db fields, remove this.
+            informationType['display_name'] = informationType.displayName;
+            delete informationType.displayName;
+            informationType['external_link'] = informationType.external_link;
+            delete informationType.externalLink;
+          }
+
+          return concat(
+            this.informationTypesService.createInformationTypes(
+              collectionId,
+              informationTypes
+            ).pipe(
+              switchMap((createdInformationTypes: InformationTypes[]) => [
+                FileUploadActions.uploadInformationTypesSuccess({
+                  informationTypes: createdInformationTypes
+                }),
+                ToastActions.showToast({
+                  message: 'Information types uploaded',
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadInformationTypesFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.error,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
         }
 
-        return saveInformationTypes.pipe(
-          switchMap(
-            (informationTypes: InformationTypesMap) => [
-              FileUploadActions.uploadInformationTypesSuccess({
-                informationTypes
-              }),
-              ToastActions.showToast({
-                message: 'Information types uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadInformationTypesFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [
+          this.throwFileParseError(informationTypes)
+        ];
       })
     );
   });
@@ -56,43 +90,72 @@ export class FileUploadEffects {
   public uploadEnumerations = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadStateEnumerations),
-      switchMap(({ collectionId, file, fileType }) => {
-        let saveEnumerations: Observable<StateEnumerationMap>;
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, stateEnumerations ]) => ({
+        collectionId,
+        stateEnumerations
+      })),
+      switchMap(({ collectionId, stateEnumerations }) => {
+        if (Array.isArray(stateEnumerations) && stateEnumerations.length > 0) {
+          for (const stateEnumeration of stateEnumerations) {
+            if (!this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveEnumerations = this.stateManagementService.saveEnumerationsCsv(
-            collectionId,
-            file
-          );
-        } else {
-          saveEnumerations = this.stateManagementService.saveEnumerationsJson(
-            collectionId,
-            file
+            // TODO: Once we rename the db fields, remove this.
+            stateEnumeration['state_identifier'] = stateEnumeration.stateIdentifier;
+            delete stateEnumeration.stateIdentifier;
+          }
+
+          return concat(
+            this.stateService.saveEnumerations(
+              collectionId,
+              stateEnumerations
+            ).pipe(
+              switchMap((createStateEnumerations: StateEnumeration[]) => {
+                let stateId = -1;
+
+                if (createStateEnumerations.length > 0) {
+                  stateId = createStateEnumerations[0].stateId;
+                }
+
+                return [
+                  StateActions.saveEnumerationsSuccess({
+                    enumerations: createStateEnumerations,
+                    stateId
+                  }),
+                  ToastActions.showToast({
+                    message: 'Enumerations uploaded',
+                    toastType: 'success'
+                  })
+                ];
+              }),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadStateEnumerationsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.toString(),
+                  toastType: 'error'
+                })
+              ])
+            )
           );
         }
 
-        return saveEnumerations.pipe(
-          switchMap(
-            (stateEnumerationMap: StateEnumerationMap) => [
-              FileUploadActions.uploadStateEnumerationsSuccess({
-                stateEnumerationMap
-              }),
-              ToastActions.showToast({
-                message: 'Enumerations uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadStateEnumerationsFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [
+          this.throwFileParseError(stateEnumerations)
+        ];
       })
     );
   });
@@ -100,37 +163,66 @@ export class FileUploadEffects {
   public uploadEvents = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadEvents),
-      switchMap(({ file, fileType, collectionId }) => {
-        let saveEvents: Observable<EventMap>;
+      switchMap(({ file, collectionId }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, events ]) => ({
+        collectionId,
+        events
+      })),
+      switchMap(({ collectionId, events }) => {
+        if (Array.isArray(events) && events.length > 0) {
+          for (const event of events) {
+            if (!this.validationService.validateEvent(event)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveEvents = this.stateManagementService.saveEventsCsv(file, collectionId);
-        } else {
-          saveEvents = this.stateManagementService.saveEventsJson(file, collectionId);
-        }
+            // TODO: Once we rename the db fields, remove this.
+            event['display_name'] = event.displayName;
+            delete event.displayName;
 
-        return saveEvents.pipe(
-          switchMap(
-            (eventMap: EventMap) => [
-              FileUploadActions.uploadEventsSuccess({
-                eventMap
+            event['external_link'] = event.externalLink;
+            delete event.externalLink;
+          }
+
+          return concat(
+            this.eventService.createEvents(
+              collectionId,
+              events
+            ).pipe(
+              switchMap((createEvents: Event[]) => [
+                FileUploadActions.uploadEventsSuccess({
+                  events: createEvents
+                }),
+                ToastActions.showToast({
+                  message: 'Events uploaded',
+                  toastType: 'success'
+                })
+              ])
+            ),
+            catchError((error: HttpErrorResponse) => [
+              FileUploadActions.uploadEventsFailure({
+                error
               }),
-              ToastActions.showToast({
-                message: 'Events uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadEventsFailure({ error }),
               ToastActions.showToast({
                 message: error.error,
                 toastType: 'error'
               })
-            ]
-          )
-        );
+            ])
+          );
+        }
+
+        return [
+          this.throwFileParseError(events)
+        ];
       })
     );
   });
@@ -138,37 +230,71 @@ export class FileUploadEffects {
   public uploadRelationship = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
-      switchMap(({ file, fileType, collectionId }) => {
-        let saveRelationships: Observable<RelationshipMap>;
+      switchMap(({ file, collectionId }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, relationships ]) => ({
+        collectionId,
+        relationships
+      })),
+      switchMap(({ collectionId, relationships }) => {
+        if (Array.isArray(relationships) && relationships.length > 0) {
+          for (const relationship of relationships) {
+            if (!this.validationService.validateRelationship(relationship)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveRelationships = this.stateManagementService.saveRelationshipsCsv(collectionId, file);
-        } else {
-          saveRelationships = this.stateManagementService.saveRelationshipsJson(collectionId, file);
+            // TODO: Once we rename the db fields, remove this.
+            relationship['display_name'] = relationship.displayName;
+            delete relationship.displayName;
+            relationship['subject_type'] = relationship.subjectType;
+            delete relationship.subjectType;
+            relationship['subject_identifier'] = relationship.subjectIdentifier;
+            delete relationship.subjectIdentifier;
+            relationship['target_type'] = relationship.targetType;
+            delete relationship.targetType;
+            relationship['target_identifier'] = relationship.targetIdentifier;
+            delete relationship.targetIdentifier;
+          }
+
+          return concat(
+            this.relationshipService.createRelationships(
+              collectionId,
+              relationships
+            ).pipe(
+              switchMap((createdRelationships: Relationship[]) => [
+                FileUploadActions.uploadRelationshipsSuccess({
+                  relationships: createdRelationships
+                }),
+                ToastActions.showToast({
+                  message: 'Relationship(s) uploaded',
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadRelationshipsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.error,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
         }
 
-        return saveRelationships.pipe(
-          switchMap(
-            (relationshipMap: RelationshipMap) => [
-              FileUploadActions.uploadRelationshipsSuccess({
-                relationshipMap
-              }),
-              ToastActions.showToast({
-                message: 'Relationship(s) uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadRelationshipsFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [
+          this.throwFileParseError(relationships)
+        ];
       })
     );
   });
@@ -176,44 +302,73 @@ export class FileUploadEffects {
   public uploadStates = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadStates),
-      switchMap(({ collectionId, file, fileType }) => {
-        let saveStates: Observable<StateMap>;
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, states  ]) => ({
+        collectionId,
+        states
+      })),
+      switchMap(({ collectionId, states }) => {
+        if (Array.isArray(states) && states.length > 0) {
+          for (const state of states) {
+            // Validate each parsed state, if we come across anything invalid return null so we can error.
+            if (!this.validationService.validateState(state)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
 
-        if (fileType === 'csv') {
-          saveStates = this.stateManagementService.saveStatesCsv(
-            collectionId,
-            file
-          );
-        } else {
-          saveStates = this.stateManagementService.saveStatesJson(
-            collectionId,
-            file
+            // TODO: Once we rename the db fields, remove this.
+            state['display_name'] = state.displayName;
+            delete state.displayName;
+          }
+
+          return concat(
+            this.stateService.createStates(
+              collectionId,
+              states
+            ).pipe(
+              switchMap((createStates) => [
+                StateActions.createStatesSuccess({
+                  states: createStates
+                }),
+                ToastActions.showToast({
+                  message: 'State(s) uploaded',
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: HttpErrorResponse) => [
+                FileUploadActions.uploadStatesFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.toString(),
+                  toastType: 'error'
+                })
+              ])
+            )
           );
         }
 
-        return saveStates.pipe(
-          switchMap(
-            (stateMap: StateMap) => [
-              FileUploadActions.uploadStatesSuccess({
-                stateMap
-              }),
-              ToastActions.showToast({
-                message: 'State(s) uploaded',
-                toastType: 'success'
-              })
-            ]
-          ),
-          catchError(
-            (error: HttpErrorResponse) => [
-              FileUploadActions.uploadStatesFailure({ error }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ]
-          )
-        );
+        return [
+          this.throwFileParseError(states)
+        ];
       })
     );
   });
+
+  // The error will be a string, but we need to check for other types as well.
+  private throwFileParseError(error: string | any[]): Action {
+      return ToastActions.showToast({
+        message: typeof error === 'string' ? error : 'File parsing failed',
+        toastType: 'error'
+      })
+  }
 }

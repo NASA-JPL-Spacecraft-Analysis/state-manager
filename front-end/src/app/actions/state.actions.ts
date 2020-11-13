@@ -4,12 +4,12 @@ import {
   State,
   StateMap,
   StateEnumeration,
-  StateEnumerationMap
+  StateHistory
 } from '../models';
 
 export const createState = createAction(
   '[state] createState',
-  props<{ collectionId: number, state: State, stateEnumerations: StateEnumeration[] }>()
+  props<{ collectionId: number, state: State }>()
 );
 
 export const createStateFailure = createAction(
@@ -24,22 +24,22 @@ export const createStateSuccess = createAction(
 
 export const createStatesSuccess = createAction(
   '[state] createStatesSuccess',
-  props<{ stateMap: StateMap }>()
+  props<{ states: State[] }>()
 );
 
-export const editState = createAction(
-  '[state] editState',
-  props<{ collectionId: number, state: State }>()
+export const deleteEnumerations = createAction(
+  '[state] deleteEnumerations',
+  props<{ deletedEnumerationIds: number[], stateId: number }>()
 );
 
-export const editStateFailure = createAction(
-  '[state] editStateFailure',
+export const deleteEnumerationsFailure = createAction(
+  '[state] deleteEnumerationsFailure',
   props<{ error: Error }>()
 );
 
-export const editStateSuccess = createAction(
-  '[state] editStateSuccess',
-  props<{ state: State }>()
+export const deleteEnumerationsSuccess = createAction(
+  '[state] deleteEnumerationsSuccess',
+  props<{ deletedEnumerationIds: number[] }>()
 );
 
 export const fetchIdentifiersFailure = createAction(
@@ -69,7 +69,7 @@ export const saveEnumerations = createAction(
 
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
-  props<{ enumerations: StateEnumeration[] }>()
+  props<{ enumerations: StateEnumeration[], stateId: number }>()
 );
 
 export const saveEnumerationsFailure = createAction(
@@ -79,20 +79,35 @@ export const saveEnumerationsFailure = createAction(
 
 export const setStateEnumerations = createAction(
   '[state] setStateEnumerations',
-  props<{ stateEnumerationMap: StateEnumerationMap }>()
+  props<{ stateEnumerations: StateEnumeration[] }>()
 );
 
 export const setStateHistory = createAction(
   '[state] setStateHistory',
-  props<{ stateHistoryMap: StateMap }>()
+  props<{ stateHistory: StateHistory[] }>()
 );
 
 export const setStates = createAction(
   '[state] setStates',
-  props<{ stateMap: StateMap }>()
+  props<{ states: State[] }>()
 );
 
 export const setSelectedState = createAction(
   '[state] setSelectedState',
+  props<{ state: State }>()
+);
+
+export const updateState = createAction(
+  '[state] updateState',
+  props<{ updatedState: State }>()
+);
+
+export const updateStateFailure = createAction(
+  '[state] updateStateFailure',
+  props<{ error: Error }>()
+);
+
+export const updateStateSuccess = createAction(
+  '[state] updateStateSuccess',
   props<{ state: State }>()
 );

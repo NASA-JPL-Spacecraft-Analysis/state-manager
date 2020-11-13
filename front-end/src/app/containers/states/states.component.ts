@@ -85,14 +85,17 @@ export class StateComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[] }): void {
+  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds?: number[] }): void {
     if (result === undefined) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
     } else {
-      const { state} = result;
-      const { stateEnumerations } = result;
+      const { state } = result;
+
+      state.enumerations = [
+        ...result.stateEnumerations
+      ];
 
       if (state !== undefined) {
         // Try and set the state id so we don't get duplicate identifier errors.
@@ -103,14 +106,19 @@ export class StateComponent implements OnDestroy {
         if (state.id === null) {
           this.store.dispatch(StateActions.createState({
             collectionId: this.collectionId,
-            state,
-            stateEnumerations
-          }));
-        } else {
-          this.store.dispatch(StateActions.editState({
-            collectionId: this.collectionId,
             state
           }));
+        } else {
+          this.store.dispatch(StateActions.updateState({
+            updatedState: state
+          }));
+
+          if (result.deletedEnumerationIds && result.deletedEnumerationIds.length > 0) {
+            this.store.dispatch(StateActions.deleteEnumerations({
+              deletedEnumerationIds: result.deletedEnumerationIds,
+              stateId: state.id
+            }));
+          }
         }
       }
     }
@@ -124,23 +132,20 @@ export class StateComponent implements OnDestroy {
    */
   public onFileUpload(fileEvent: Event, type: UploadableTypes): void {
     const file = (fileEvent.target as HTMLInputElement).files[0];
-    const fileType = file.name.split('.').pop().toLowerCase();
 
-    if (file && (fileType === 'csv' || fileType === 'json')) {
+    if (file) {
       switch (type) {
         case UploadableTypes.Enumerations:
           this.store.dispatch(FileUploadActions.uploadStateEnumerations({
             collectionId: this.collectionId,
-            file,
-            fileType
+            file
           }));
 
           break;
         case UploadableTypes.States:
           this.store.dispatch(FileUploadActions.uploadStates({
             collectionId: this.collectionId,
-            file,
-            fileType
+            file
           }));
 
           break;

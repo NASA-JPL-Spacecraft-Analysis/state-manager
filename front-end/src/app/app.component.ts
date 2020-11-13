@@ -1,10 +1,13 @@
 import { NgModule, Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
-import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
+import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
+import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ToastrModule } from 'ngx-toastr';
 
 import {
@@ -21,7 +24,7 @@ import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
 import { MaterialModule } from './material';
 import { ToolbarModule } from './containers';
-import { HttpRequestInterceptor } from './services';
+import { environment } from './../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -35,10 +38,12 @@ export class AppComponent {}
     AppComponent
   ],
   imports: [
+    ApolloModule,
     AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    HttpLinkModule,
     MaterialModule,
     EffectsModule.forRoot([
       CollectionEffects,
@@ -71,7 +76,16 @@ export class AppComponent {}
     ToolbarModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }
+    {
+      deps: [ HttpLink ],
+      provide: APOLLO_OPTIONS,
+      useFactory: (httpLink: HttpLink) => ({
+        cache: new InMemoryCache(),
+        link: httpLink.create({
+          uri: environment.apolloServerUrl
+        })
+      })
+    }
   ],
   bootstrap: [
     AppComponent

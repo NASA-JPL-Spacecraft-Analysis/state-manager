@@ -6,9 +6,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { switchMap, map, withLatestFrom } from 'rxjs/operators';
 
 import { CollectionActions, ToastActions } from '../actions';
-import { StateManagementService } from '../services/state-management.service';
+import { CollectionService } from '../services';
 import { Collection } from '../models';
-import { of, forkJoin, concat, merge } from 'rxjs';
+import { of, forkJoin, concat } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components';
 import { AppState } from '../app-store';
 
@@ -16,9 +16,9 @@ import { AppState } from '../app-store';
 export class CollectionEffects {
   constructor(
     private actions: Actions,
+    private collectionService: CollectionService,
     private dialog: MatDialog,
     private router: Router,
-    private stateManagementService: StateManagementService,
     private store: Store<AppState>
   ) {}
 
@@ -26,23 +26,21 @@ export class CollectionEffects {
     return this.actions.pipe(
       ofType(CollectionActions.createCollection),
       switchMap(({ name }) =>
-        this.stateManagementService.createCollection(
+        this.collectionService.createCollection(
           name
         ).pipe(
-          switchMap(
-            (collection: Collection) => [
-              CollectionActions.createCollectionSuccess({
-                collection
-              }),
-              CollectionActions.setSelectedCollection({
-                id: collection.id
-              }),
-              ToastActions.showToast({
-                message: 'Collection created',
-                toastType: 'success'
-              })
-            ]
-          )
+          switchMap((createCollection: Collection) => [
+            CollectionActions.createCollectionSuccess({
+              collection: createCollection
+            }),
+            CollectionActions.setSelectedCollection({
+              id: createCollection.id
+            }),
+            ToastActions.showToast({
+              message: 'Collection created',
+              toastType: 'success'
+            })
+          ])
         )
       )
     );
@@ -75,13 +73,13 @@ export class CollectionEffects {
       switchMap(({ id, result }) => {
         if (result) {
           return concat(
-            this.stateManagementService.deleteCollection(
+            this.collectionService.deleteCollection(
               id
             ).pipe(
               switchMap(
-                (deletedCollectionId: number) => [
+                (deleteCollection: boolean) => [
                   CollectionActions.deleteCollectionSuccess({
-                    id: deletedCollectionId
+                    id
                   }),
                   CollectionActions.setSelectedCollection({
                     id: null
@@ -108,25 +106,23 @@ export class CollectionEffects {
     );
   });
 
-  public editCollection = createEffect(() => {
+  public updateCollection = createEffect(() => {
     return this.actions.pipe(
-      ofType(CollectionActions.editCollection),
+      ofType(CollectionActions.updateCollection),
       switchMap(({ collectionId, name }) =>
-        this.stateManagementService.editCollection(
+        this.collectionService.updateCollection(
           collectionId,
           name
         ).pipe(
-          switchMap(
-            (collection: Collection) => [
-              CollectionActions.editCollectionSuccess({
-                collection
-              }),
-              ToastActions.showToast({
-                message: 'Collection edited',
-                toastType: 'success'
-              })
-            ]
-          )
+          switchMap((updateCollection: Collection) => [
+            CollectionActions.updateCollectionSuccess({
+              collection: updateCollection
+            }),
+            ToastActions.showToast({
+              message: 'Collection edited',
+              toastType: 'success'
+            })
+          ])
         )
       )
     );
@@ -135,9 +131,13 @@ export class CollectionEffects {
   public fetchCollectionsSuccess = createEffect(() => {
     return this.actions.pipe(
       ofType(CollectionActions.fetchCollectionsSuccess),
-      switchMap(({ collectionMap }) => {
-        const keys = Object.keys(collectionMap);
+      switchMap(({ collections }) => {
+        const keys = [];
         let collectionId = null;
+
+        for (const collection of collections) {
+          keys.push(collection.id);
+        }
 
         // Search our URL for a valid collectionId.
         for (const splitUrl of this.router.url.split('/')) {

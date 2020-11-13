@@ -3,7 +3,8 @@ table, th, td {
 }
 
 th, td {
-  padding: .5em;
+  background-color: rgba(0,0,0,.04);
+  padding: .4em;
 }
 
 table {
@@ -20,17 +21,37 @@ table tr td:nth-child(odd) {
   background-color: #f1f3f5;
 }
 
+table td {
+  background-color: #fff;
+}
+
+
 .enumerations-header {
   display: flex;
   justify-content: space-between;
 }
 
 .enumeration-label {
-  position: relative;
-  top: .75em;
+  color: rgba(0,0,0,.6);
+  font-size: 14px;
+  padding-bottom: .2em;
 }
 
 /* Make our label column the widest. */
 .label-column {
   width: 100%;
+}
+
+/*use Icon styling for size, and plain button for hover state for delete button*/
+.mat-button.mat-icon-button{
+  height: 24px;
+  line-height: 24px;
+  width: 24px;
+}
+
+/*Add a hover state for enum button*/
+#add-enum{
+  font-style: italic;
+  line-height: 24px;
+  padding: 0;
 }

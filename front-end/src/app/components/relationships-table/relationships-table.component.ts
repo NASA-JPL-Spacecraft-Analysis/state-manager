@@ -70,19 +70,19 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
   public getTypeIdentifier(id: number, type: string): string {
     switch (type) {
       case InformationTypeEnum[InformationTypeEnum.Event]:
-        if (this.eventMap[id]) {
+        if (this.eventMap && this.eventMap[id]) {
           return this.eventMap[id].identifier;
         }
 
         break;
       case InformationTypeEnum[InformationTypeEnum.State]:
-        if (this.stateMap[id]) {
+        if (this.stateMap && this.stateMap[id]) {
           return this.stateMap[id].identifier;
         }
 
         break;
       default:
-        if (type && id && this.informationTypesMap[type][id]) {
+        if (type && id && this.informationTypesMap && this.informationTypesMap[type][id]) {
           return this.informationTypesMap[type][id].identifier;
         }
     }

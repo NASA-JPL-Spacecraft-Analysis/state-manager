@@ -25,29 +25,6 @@ export const getSelectedState = createSelector(
   (stateState: StateState) => stateState.selectedState
 );
 
-/**
- * Gets the enumerations for the selected state.
- * Only look for enumerations if we have enumerations, a selected state,
- * and we have enumerations for the selected state.
- */
-export const getStateEnumerationsForSelectedState = createSelector(
-  getStateEnumerations,
-  getSelectedState,
-  (stateEnumerationMap: StateEnumerationMap, selectedState: State): StateEnumeration[] => {
-    const selectedStateEnumerations: StateEnumeration[] = [];
-
-    if (stateEnumerationMap && selectedState && stateEnumerationMap[selectedState.id]) {
-      for (const enumeration of stateEnumerationMap[selectedState.id]) {
-        selectedStateEnumerations.push({
-          ...enumeration
-        });
-      }
-    }
-
-    return selectedStateEnumerations;
-  }
-);
-
 export const getStates = createSelector(
   getStatesState,
   (stateState: StateState) => stateState.stateMap

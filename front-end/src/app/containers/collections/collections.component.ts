@@ -53,7 +53,7 @@ export class CollectionComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
-        this.selectedCollectionId = selectedCollectionId;
+        this.selectedCollectionId = Number(selectedCollectionId);
 
         if (this.collectionMap) {
           this.setCollectioName();
@@ -84,7 +84,7 @@ export class CollectionComponent implements OnDestroy {
 
     if (collectionName) {
       if (this.selectedCollectionId && collectionName !== this.collectionMap[this.selectedCollectionId].name) {
-        this.store.dispatch(CollectionActions.editCollection({
+        this.store.dispatch(CollectionActions.updateCollection({
           collectionId: this.selectedCollectionId,
           name: collectionName
         }));

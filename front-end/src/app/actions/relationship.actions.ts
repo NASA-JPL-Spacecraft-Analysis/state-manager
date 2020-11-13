@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { Relationship, RelationshipMap } from '../models';
+import { Relationship, RelationshipHistory } from '../models';
 
 export const createRelationship = createAction(
   '[relationship] createRelationship',
@@ -17,21 +17,6 @@ export const createRelationshipSuccess = createAction(
   props<{ relationship: Relationship }>()
 );
 
-export const editRelationship = createAction(
-  '[relationship] editRelationship',
-  props<{ collectionId: number, relationship: Relationship }>()
-);
-
-export const editRelationshipFailure = createAction(
-  '[relationship] editRelationshipFailure',
-  props<{ error: Error }>()
-);
-
-export const editRelationshipSuccess = createAction(
-  '[relationship] editRelationshipSuccess',
-  props<{ relationship: Relationship }>()
-);
-
 export const fetchRelationshipsFailure = createAction(
   '[relationship] fetchRelationshipsFailure',
   props<{ error: Error }>()
@@ -44,15 +29,30 @@ export const fetchRelationshipHistoryFailure = createAction(
 
 export const setRelationships = createAction(
   '[relationship] setRelationships',
-  props<{ relationships: RelationshipMap }>()
+  props<{ relationships: Relationship[] }>()
 );
 
 export const setRelationshipHistory = createAction(
   '[relationship] setRelationshipHistory',
-  props<{ relationshipHistory: RelationshipMap }>()
+  props<{ relationshipHistory: RelationshipHistory[] }>()
 );
 
 export const setSelectedRelationship = createAction(
   '[relationship] setSelectedRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const updateRelationship = createAction(
+  '[relationship] updateRelationship',
+  props<{ relationship: Relationship }>()
+);
+
+export const updateRelationshipFailure = createAction(
+  '[relationship] updateRelationshipFailure',
+  props<{ error: Error }>()
+);
+
+export const updateRelationshipSuccess = createAction(
+  '[relationship] updateRelationshipSuccess',
   props<{ relationship: Relationship }>()
 );
