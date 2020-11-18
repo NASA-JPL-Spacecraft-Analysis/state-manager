@@ -3,7 +3,6 @@
 
 // Colors
 
-
 $light-secondary-text: #ebf0ff;
 
 $mat-primary: (
@@ -80,13 +79,6 @@ $theme: mat-light-theme($primary, $accent);
 
 // Mixins
 
-@mixin headline-6 {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: .15px;
-}
-
 @mixin body-2 {
   font-size: 14px;
   font-weight: 400;
@@ -98,6 +90,13 @@ $theme: mat-light-theme($primary, $accent);
   font-weight: 900;
   letter-spacing: .02em;
   line-height: 16px;
+}
+
+@mixin headline-6 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: .15px;
 }
 
 // Typography
@@ -122,29 +121,19 @@ table {
   }
 }
 
+.filter-container > div {
+  padding: 1em;
+  border-bottom: 1px solid mat-color($mat-grey, 400);
+  box-shadow: 0px 4px 5px mat-color($mat-grey, 250);
+}
+
 .mat-button.mat-button-base {
   background-color: mat-color($primary, 900);
   color: $light-primary-text;
 }
 
-.mat-toolbar.mat-primary .mat-button.mat-button-base {
-  color: $light-secondary-text;
-  background-color:  mat-color($primary, 850);
-  letter-spacing: .05em;
-  font-weight: 400;
-  line-height: 32px;
-}
-
-.mat-toolbar.mat-primary .mat-raised-button.mat-button-base {
-  line-height: 32px;
-}
-
 .mat-button, .mat-raised-button {
   @include button();
-}
-
-.mat-form-field-infix {
-  border-top: none;
 }
 
 .mat-form-field-underline {
@@ -153,12 +142,6 @@ table {
 
 .mat-form-field-appearance-fill .mat-form-field-flex{
   background-color: mat-color($mat-grey, 100);
-}
-
-.filter-container > div{
-  padding: 1em;
-  border-bottom: 1px solid mat-color($mat-grey, 400);
-  box-shadow: 0px 4px 5px mat-color($mat-grey, 250);
 }
 
 .mat-toolbar {
@@ -175,12 +158,22 @@ table {
   }
 }
 
+.mat-toolbar.mat-primary .mat-button.mat-button-base {
+  color: $light-secondary-text;
+  background-color:  mat-color($primary, 850);
+  letter-spacing: .05em;
+  font-weight: 400;
+  line-height: 32px;
+}
+
 .mat-toolbar.mat-primary {
   background-color: mat-color($primary, 850);
+}
+
+.mat-toolbar.mat-primary .mat-raised-button.mat-button-base {
+  line-height: 32px;
 }
 
 .mat-toolbar.mat-toolbar-page {
   background-color: mat-color($primary, 900);
 }
-
-
