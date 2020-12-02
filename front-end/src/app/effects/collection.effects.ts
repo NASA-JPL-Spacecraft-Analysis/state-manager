@@ -162,7 +162,6 @@ export class CollectionEffects {
           }
         }
 
-        // TODO: We need to handle what happens if there aren't any collections.
         return [];
       })
     );

@@ -21,7 +21,7 @@ export class InformationTypesService {
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_INFORMATION_TYPES,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           informationTypes
         }
       })
@@ -34,7 +34,7 @@ export class InformationTypesService {
         fetchPolicy: 'no-cache',
         query: gql.GET_INFORMATION_TYPES,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { informationTypes } }) => informationTypes));

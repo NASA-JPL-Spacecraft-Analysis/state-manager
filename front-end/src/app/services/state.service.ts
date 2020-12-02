@@ -21,9 +21,9 @@ export class StateService {
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATE,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           description: state.description,
-          display_name: state.displayName,
+          displayName: state.displayName,
           identifier: state.identifier,
           source: state.source,
           subsystem: state.subsystem,
@@ -40,7 +40,7 @@ export class StateService {
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATES,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           states
         }
       })
@@ -54,7 +54,7 @@ export class StateService {
         mutation: gql.DELETE_ENUMERATIONS,
         variables: {
           enumerationIds,
-          state_id: stateId
+          stateId
         }
       })
       .pipe(map(({ data: { deleteEnumerations } }) => deleteEnumerations));
@@ -69,7 +69,7 @@ export class StateService {
         fetchPolicy: 'no-cache',
         query: gql.GET_STATES,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { states } }) => states));
@@ -80,7 +80,9 @@ export class StateService {
       .query<{ stateHistory: StateHistory[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_STATE_HISTORY,
-        variables: { collection_id: collectionId }
+        variables: {
+          collectionId
+        }
       })
       .pipe(map(({ data: { stateHistory } }) => stateHistory));
   }
@@ -94,7 +96,7 @@ export class StateService {
         fetchPolicy: 'no-cache',
         mutation: gql.SAVE_ENUMERATIONS,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           enumerations
         }
       })
@@ -108,7 +110,7 @@ export class StateService {
         mutation: gql.UPDATE_STATE,
         variables: {
           description: state.description,
-          display_name: state.displayName,
+          displayName: state.displayName,
           id: state.id,
           identifier: state.identifier,
           source: state.source,

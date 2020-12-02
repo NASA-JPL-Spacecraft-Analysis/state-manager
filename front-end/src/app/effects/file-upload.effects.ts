@@ -36,6 +36,9 @@ export class FileUploadEffects {
       switchMap(({ collectionId, informationTypes }) => {
         if (informationTypes && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
+            informationType.type = informationType.informationType;
+            delete informationType.informationType;
+
             if (!this.validationService.validateInformationType(informationType)) {
               return [
                 ToastActions.showToast({
@@ -44,12 +47,6 @@ export class FileUploadEffects {
                 })
               ];
             }
-
-            // TODO: Once we rename the db fields, remove this.
-            informationType['display_name'] = informationType.displayName;
-            delete informationType.displayName;
-            informationType['external_link'] = informationType.external_link;
-            delete informationType.externalLink;
           }
 
           return concat(
@@ -113,10 +110,6 @@ export class FileUploadEffects {
                 })
               ];
             }
-
-            // TODO: Once we rename the db fields, remove this.
-            stateEnumeration['state_identifier'] = stateEnumeration.stateIdentifier;
-            delete stateEnumeration.stateIdentifier;
           }
 
           return concat(
@@ -189,13 +182,6 @@ export class FileUploadEffects {
                 })
               ];
             }
-
-            // TODO: Once we rename the db fields, remove this.
-            event['display_name'] = event.displayName;
-            delete event.displayName;
-
-            event['external_link'] = event.externalLink;
-            delete event.externalLink;
           }
         }
 
@@ -252,18 +238,6 @@ export class FileUploadEffects {
                 })
               ];
             }
-
-            // TODO: Once we rename the db fields, remove this.
-            relationship['display_name'] = relationship.displayName;
-            delete relationship.displayName;
-            relationship['subject_type'] = relationship.subjectType;
-            delete relationship.subjectType;
-            relationship['subject_identifier'] = relationship.subjectIdentifier;
-            delete relationship.subjectIdentifier;
-            relationship['target_type'] = relationship.targetType;
-            delete relationship.targetType;
-            relationship['target_identifier'] = relationship.targetIdentifier;
-            delete relationship.targetIdentifier;
           }
 
           return concat(
@@ -328,10 +302,6 @@ export class FileUploadEffects {
                 })
               ];
             }
-
-            // TODO: Once we rename the db fields, remove this.
-            state['display_name'] = state.displayName;
-            delete state.displayName;
           }
 
           return concat(

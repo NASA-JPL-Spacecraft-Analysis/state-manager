@@ -21,13 +21,13 @@ export class RelationshipService {
         fetchPolicy: 'no-cache',
         query: gql.CREATE_RELATIONSHIP,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           description: relationship.description,
-          display_name: relationship.displayName,
-          subject_type: relationship.subjectType,
-          target_type: relationship.targetType,
-          subject_type_id: relationship.subjectTypeId,
-          target_type_id: relationship.targetTypeId
+          displayName: relationship.displayName,
+          subjectType: relationship.subjectType,
+          targetType: relationship.targetType,
+          subjectTypeId: relationship.subjectTypeId,
+          targetTypeId: relationship.targetTypeId
         }
       })
     .pipe(map(({ data: { createRelationship } }) => createRelationship));
@@ -39,7 +39,7 @@ export class RelationshipService {
         fetchPolicy: 'no-cache',
         query: gql.CREATE_RELATIONSHIPS,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           relationships
         }
       })
@@ -52,7 +52,7 @@ export class RelationshipService {
         fetchPolicy: 'no-cache',
         query: gql.GET_RELATIONSHIPS,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { relationships } }) => relationships));
@@ -64,7 +64,7 @@ export class RelationshipService {
         fetchPolicy: 'no-cache',
         query: gql.GET_RELATIONSHIP_HISTORY,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { relationshipHistory } }) => relationshipHistory));
@@ -77,12 +77,12 @@ export class RelationshipService {
         query: gql.UPDATE_RELATIONSHIP,
         variables: {
           description: relationship.description,
-          display_name: relationship.displayName,
+          displayName: relationship.displayName,
           id: relationship.id,
-          subject_type: relationship.subjectType,
-          target_type: relationship.targetType,
-          subject_type_id: relationship.subjectTypeId,
-          target_type_id: relationship.targetTypeId
+          subjectType: relationship.subjectType,
+          targetType: relationship.targetType,
+          subjectTypeId: relationship.subjectTypeId,
+          targetTypeId: relationship.targetTypeId
         }
       })
     .pipe(map(({ data: { updateRelationship } }) => updateRelationship));

@@ -17,7 +17,7 @@ export const CREATE_COLLECTION = gql(`
 
 export const CREATE_EVENT = gql(`
   mutation CreateEvent(
-    $collection_id: ID!
+    $collectionId: ID!
     $description: String
     $displayName: String
     $editable: Boolean
@@ -26,11 +26,11 @@ export const CREATE_EVENT = gql(`
   ) {
     createEvent(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         description: $description
-        display_name: $displayName
+        displayName: $displayName
         editable: $editable
-        external_link: $externalLink
+        externalLink: $externalLink
         identifier: $identifier
       }
     ) {
@@ -41,18 +41,18 @@ export const CREATE_EVENT = gql(`
 
 export const CREATE_EVENTS = gql(`
   mutation CreateEvents(
-    $collection_id: ID!
+    $collectionId: ID!
     $events: [CreateEventInput!]!
   ) {
     createEvents(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         events: $events
       }
     ) {
       description
-      displayName: display_name
-      externalLink: external_link
+      displayName
+      externalLink
       id
       identifier
     }
@@ -61,20 +61,20 @@ export const CREATE_EVENTS = gql(`
 
 export const CREATE_INFORMATION_TYPES = gql(`
   mutation CreateInformationTypes(
-    $collection_id: ID!
+    $collectionId: ID!
     $informationTypes: [CreateInformationTypeInput!]!
   ) {
     createInformationTypes(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         informationTypes: $informationTypes
       }
     ) {
       id
       identifier
       description
-      displayName: display_name
-      externalLink: external_link
+      displayName
+      externalLink
       type
     }
   }
@@ -82,63 +82,63 @@ export const CREATE_INFORMATION_TYPES = gql(`
 
 export const CREATE_RELATIONSHIP = gql(`
   mutation CreateRelationship(
-    $collection_id: ID!
+    $collectionId: ID!
     $description: String
-    $display_name: String!
-    $subject_type: InformationTypeEnum!
-    $subject_type_id: ID!
-    $target_type: InformationTypeEnum!
-    $target_type_id: ID!
+    $displayName: String!
+    $subjectType: InformationTypeEnum!
+    $subjectTypeId: ID!
+    $targetType: InformationTypeEnum!
+    $targetTypeId: ID!
   ) {
     createRelationship(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         description: $description
-        display_name: $display_name
-        subject_type: $subject_type
-        subject_type_id: $subject_type_id
-        target_type: $target_type
-        target_type_id: $target_type_id
+        displayName: $displayName
+        subjectType: $subjectType
+        subjectTypeId: $subjectTypeId
+        targetType: $targetType
+        targetTypeId: $targetTypeId
       }
     ) {
       description
-      displayName: display_name
+      displayName
       id
-      subjectType: subject_type
-      subjectTypeId: subject_type_id
-      targetType: target_type
-      targetTypeId: target_type_id
+      subjectType
+      subjectTypeId
+      targetType
+      targetTypeId
     }
   }
 `);
 
 export const CREATE_RELATIONSHIPS = gql(`
   mutation CreateRelationships(
-    $collection_id: ID!
+    $collectionId: ID!
     $relationships: [UploadRelationshipInput!]!
   ) {
     createRelationships(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         relationships: $relationships
       }
     ) {
       description
-      displayName: display_name
+      displayName
       id
-      subjectType: subject_type
-      subjectTypeId: subject_type_id
-      targetType: target_type
-      targetTypeId: target_type_id
+      subjectType
+      subjectTypeId
+      targetType
+      targetTypeId
     }
   }
 `);
 
 export const CREATE_STATE = gql(`
   mutation CreateState(
-    $collection_id: ID!
+    $collectionId: ID!
     $description: String
-    $display_name: String!
+    $displayName: String!
     $identifier: String!
     $source: String!
     $subsystem: String!
@@ -147,9 +147,9 @@ export const CREATE_STATE = gql(`
   ) {
     createState(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         description: $description
-        display_name: $display_name
+        displayName: $displayName
         identifier: $identifier
         source: $source
         subsystem: $subsystem
@@ -164,17 +164,17 @@ export const CREATE_STATE = gql(`
 
 export const CREATE_STATES = gql(`
   mutation CreateStates(
-    $collection_id: ID!
+    $collectionId: ID!
     $states: [CreateStateInput!]!
   ) {
     createStates(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         states: $states
       }
     ) {
       description
-      displayName: display_name
+      displayName
       id
       identifier
       source
@@ -200,12 +200,12 @@ export const DELETE_COLLECTION = gql(`
 export const DELETE_ENUMERATIONS = gql(`
   mutation DeleteEnumerations(
     $enumerationIds: [ID!]!
-    $state_id: ID!
+    $stateId: ID!
   ) {
     deleteEnumerations(
       data: {
         enumerationIds: $enumerationIds
-        state_id: $state_id
+        stateId: $stateId
       }
     ) {
       success
@@ -223,11 +223,11 @@ export const GET_COLLECTIONS = gql(`
 `);
 
 export const GET_EVENTS = gql(`
-  query events($collection_id: ID!) {
-    events(collection_id: $collection_id) {
+  query events($collectionId: ID!) {
+    events(collectionId: $collectionId) {
       description
-      displayName: display_name
-      externalLink: external_link
+      displayName
+      externalLink
       id
       identifier
     }
@@ -235,12 +235,12 @@ export const GET_EVENTS = gql(`
 `);
 
 export const GET_EVENT_HISTORY = gql(`
-  query eventHistory($collection_id: ID!) {
-    eventHistory(collection_id: $collection_id) {
+  query eventHistory($collectionId: ID!) {
+    eventHistory(collectionId: $collectionId) {
       description
-      displayName: display_name
-      eventId: event_id
-      externalLink: external_link
+      displayName
+      eventId
+      externalLink
       id
       identifier
       updated
@@ -249,11 +249,11 @@ export const GET_EVENT_HISTORY = gql(`
 `);
 
 export const GET_INFORMATION_TYPES = gql(`
-  query informationTypes($collection_id: ID!) {
-    informationTypes(collection_id: $collection_id) {
+  query informationTypes($collectionId: ID!) {
+    informationTypes(collectionId: $collectionId) {
       description
-      displayName: display_name
-      externalLink: external_link
+      displayName
+      externalLink
       id
       identifier
       type
@@ -262,40 +262,40 @@ export const GET_INFORMATION_TYPES = gql(`
 `);
 
 export const GET_RELATIONSHIPS = gql(`
-  query relationships($collection_id: ID!) {
-    relationships(collection_id: $collection_id) {
+  query relationships($collectionId: ID!) {
+    relationships(collectionId: $collectionId) {
       description
-      displayName: display_name
+      displayName
       id
-      subjectType: subject_type
-      subjectTypeId: subject_type_id
-      targetType: target_type
-      targetTypeId: target_type_id
+      subjectType
+      subjectTypeId
+      targetType
+      targetTypeId
     }
   }
 `);
 
 export const GET_RELATIONSHIP_HISTORY = gql(`
-  query relationshipHistory($collection_id: ID!) {
-    relationshipHistory(collection_id: $collection_id) {
+  query relationshipHistory($collectionId: ID!) {
+    relationshipHistory(collectionId: $collectionId) {
       description
-      displayName: display_name
+      displayName
       id
-      relationshipId: relationship_id
-      subjectType: subject_type
-      subjectTypeId: subject_type_id
-      targetType: target_type
-      targetTypeId: target_type_id
+      relationshipId
+      subjectType
+      subjectTypeId
+      targetType
+      targetTypeId
       updated
     }
   }
 `);
 
 export const GET_STATES = gql(`
-  query states($collection_id: ID!) {
-    states(collection_id: $collection_id) {
+  query states($collectionId: ID!) {
+    states(collectionId: $collectionId) {
       description
-      displayName: display_name
+      displayName
       enumerations {
         id
         label
@@ -312,14 +312,14 @@ export const GET_STATES = gql(`
 `);
 
 export const GET_STATE_HISTORY = gql(`
-  query stateHistory($collection_id: ID!) {
-    stateHistory(collection_id: $collection_id) {
+  query stateHistory($collectionId: ID!) {
+    stateHistory(collectionId: $collectionId) {
       description
-      displayName: display_name
+      displayName
       id
       identifier
       source
-      stateId: state_id
+      stateId
       subsystem
       type
       units
@@ -330,19 +330,19 @@ export const GET_STATE_HISTORY = gql(`
 
 export const SAVE_ENUMERATIONS = gql(`
   mutation SaveEnumerations(
-    $collection_id: ID!
+    $collectionId: ID!
     $enumerations: [StateEnumerationInput!]!
   ) {
     saveEnumerations(
       data: {
-        collection_id: $collection_id
+        collectionId: $collectionId
         enumerations: $enumerations
       }
     ) {
       id
       label
       value
-      stateId: state_id
+      stateId
     }
   }
 `);
@@ -376,9 +376,9 @@ export const UPDATE_EVENT = gql(`
     updateEvent(
       data: {
         description: $description
-        display_name: $displayName
+        displayName: $displayName
         editable: $editable
-        external_link: $externalLink
+        externalLink: $externalLink
         id: $id
         identifier: $identifier
       }
@@ -391,31 +391,31 @@ export const UPDATE_EVENT = gql(`
 export const UPDATE_RELATIONSHIP = gql(`
   mutation UpdateRelationship(
     $description: String
-    $display_name: String!
+    $displayName: String!
     $id: ID!
-    $subject_type: InformationTypeEnum!
-    $subject_type_id: ID!
-    $target_type: InformationTypeEnum!
-    $target_type_id: ID!
+    $subjectType: InformationTypeEnum!
+    $subjectTypeId: ID!
+    $targetType: InformationTypeEnum!
+    $targetTypeId: ID!
   ) {
     updateRelationship(
       data: {
         description: $description
-        display_name: $display_name
+        displayName: $displayName
         id: $id
-        subject_type: $subject_type
-        subject_type_id: $subject_type_id
-        target_type: $target_type
-        target_type_id: $target_type_id
+        subjectType: $subjectType
+        subjectTypeId: $subjectTypeId
+        targetType: $targetType
+        targetTypeId: $targetTypeId
       }
     ) {
       description
-      displayName: display_name
+      displayName
       id
-      subjectType: subject_type
-      subjectTypeId: subject_type_id
-      targetType: target_type
-      targetTypeId: target_type_id
+      subjectType
+      subjectTypeId
+      targetType
+      targetTypeId
     }
   }
 `);
@@ -423,7 +423,7 @@ export const UPDATE_RELATIONSHIP = gql(`
 export const UPDATE_STATE = gql(`
   mutation UpdateState(
     $description: String
-    $display_name: String!
+    $displayName: String!
     $id: ID!
     $identifier: String!
     $source: String!
@@ -434,7 +434,7 @@ export const UPDATE_STATE = gql(`
     updateState(
       data: {
         description: $description
-        display_name: $display_name
+        displayName: $displayName
         id: $id
         identifier: $identifier
         source: $source

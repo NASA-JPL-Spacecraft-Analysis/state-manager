@@ -21,11 +21,11 @@ export class EventService {
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_EVENT,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           description: event.description,
-          display_name: event.displayName,
+          displayName: event.displayName,
           editable: event.editable,
-          external_link: event.externalLink,
+          externalLink: event.externalLink,
           identifier: event.identifier
         }
       })
@@ -38,7 +38,7 @@ export class EventService {
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_EVENTS,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           events
         }
       })
@@ -51,7 +51,7 @@ export class EventService {
         fetchPolicy: 'no-cache',
         query: gql.GET_EVENTS,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { events } }) => events));
@@ -63,7 +63,7 @@ export class EventService {
         fetchPolicy: 'no-cache',
         query: gql.GET_EVENT_HISTORY,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { eventHistory } }) => eventHistory));
@@ -76,9 +76,9 @@ export class EventService {
         mutation: gql.UPDATE_EVENT,
         variables: {
           description: event.description,
-          display_name: event.displayName,
+          displayName: event.displayName,
           editable: event.editable,
-          external_link: event.externalLink,
+          externalLink: event.externalLink,
           id: event.id,
           identifier: event.identifier
         }

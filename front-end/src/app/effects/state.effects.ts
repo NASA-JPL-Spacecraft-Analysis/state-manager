@@ -122,7 +122,7 @@ export class StateEffects {
             {
               id,
               label: enumeration.label.toString(),
-              state_id: stateId,
+              stateId,
               value: enumeration.value.toString()
             }
           );
