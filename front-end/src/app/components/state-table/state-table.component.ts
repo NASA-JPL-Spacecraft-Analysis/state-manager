@@ -8,7 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'state-table',
+  selector: 'app-state-table',
   styleUrls: [ 'state-table.component.css' ],
   templateUrl: 'state-table.component.html'
 })

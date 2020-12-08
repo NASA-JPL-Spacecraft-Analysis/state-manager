@@ -43,11 +43,21 @@
             "accessibility": "explicit"
           }
         ],
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "enumMember",
+            "format": [ "PascalCase" ]
+          }
+        ],
+        "@typescript-eslint/no-shadow": "error",
+        "@typescript-eslint/prefer-literal-enum-member": 2,
         "arrow-parens": [
           "off",
           "always"
         ],
-        "import/order": "off"
+        "import/order": "off",
+        "no-shadow": "off"
       }
     },
     {

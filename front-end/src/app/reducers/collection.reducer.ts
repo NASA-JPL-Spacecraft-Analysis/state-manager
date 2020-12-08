@@ -49,7 +49,7 @@ export const reducer = createReducer(
   })),
   on(CollectionActions.fetchCollectionsSuccess, (state, { collections }) => {
     const collectionMap = {};
-    let firstCollectionId;
+    let firstCollectionId: string;
 
     for (const collection of collections) {
       if (!firstCollectionId) {
@@ -79,7 +79,7 @@ export const reducer = createReducer(
   })
 );
 
-function getFirstCollection(collectionMap: CollectionMap): string {
+const getFirstCollection = (collectionMap: CollectionMap): string => {
   if (collectionMap) {
     const keys = Object.keys(collectionMap);
 
@@ -89,4 +89,4 @@ function getFirstCollection(collectionMap: CollectionMap): string {
   }
 
   return undefined;
-}
+};

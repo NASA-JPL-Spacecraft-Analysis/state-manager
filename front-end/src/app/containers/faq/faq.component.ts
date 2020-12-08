@@ -3,7 +3,7 @@ import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'faq',
+  selector: 'app-faq',
   styleUrls: [ 'faq.component.css' ],
   templateUrl: 'faq.component.html'
 })

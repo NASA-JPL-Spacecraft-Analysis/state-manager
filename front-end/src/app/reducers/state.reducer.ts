@@ -26,9 +26,7 @@ export const initialState: StateState = {
 
 export const reducer = createReducer(
   initialState,
-  on(StateActions.createStateSuccess, (stateState, { state }) => {
-    return modifyState(stateState, state);
-  }),
+  on(StateActions.createStateSuccess, (stateState, { state }) => modifyState(stateState, state)),
   on(StateActions.createStatesSuccess, (stateState, { states }) => ({
     ...stateState,
     stateMap: {
@@ -36,9 +34,7 @@ export const reducer = createReducer(
       ...mapStates(states)
     }
   })),
-  on(StateActions.updateStateSuccess, (stateState, { state }) => {
-    return modifyState(stateState, state);
-  }),
+  on(StateActions.updateStateSuccess, (stateState, { state }) => modifyState(stateState, state)),
   on(StateActions.saveEnumerationsSuccess, (stateState, { enumerations }) => ({
     ...stateState,
     stateEnumerationMap: {
@@ -88,7 +84,7 @@ export const reducer = createReducer(
   }))
 );
 
-function modifyState(stateState: StateState, state: State): StateState {
+const modifyState = (stateState: StateState, state: State): StateState => {
   const stateIdentifierMap = {
     ...stateState.stateIdentifierMap
   };
@@ -114,9 +110,9 @@ function modifyState(stateState: StateState, state: State): StateState {
       }
     }
   };
-}
+};
 
-function mapStates(states: State[]): StateMap {
+const mapStates = (states: State[]): StateMap => {
   const stateMap = {};
 
   for (const state of states) {
@@ -124,9 +120,9 @@ function mapStates(states: State[]): StateMap {
   }
 
   return stateMap;
-}
+};
 
-function mapEnumerations(stateEnumerations: StateEnumeration[]): StateEnumerationMap {
+const mapEnumerations = (stateEnumerations: StateEnumeration[]): StateEnumerationMap => {
   const stateEnumerationMap = {};
 
   for (const stateEnumeration of stateEnumerations) {
@@ -138,4 +134,4 @@ function mapEnumerations(stateEnumerations: StateEnumeration[]): StateEnumeratio
   }
 
   return stateEnumerationMap;
-}
+};

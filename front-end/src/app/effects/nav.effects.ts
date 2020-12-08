@@ -7,11 +7,6 @@ import { CollectionActions } from '../actions';
 
 @Injectable()
 export class NavEffects {
-  constructor(
-    private actions: Actions,
-    private collectionService: CollectionService
-  ) {}
-
   public effectsInit = createEffect(() =>
     this.actions.pipe(
       ofType(ROOT_EFFECTS_INIT),
@@ -31,4 +26,9 @@ export class NavEffects {
       )
     )
   );
+
+  constructor(
+    private actions: Actions,
+    private collectionService: CollectionService
+  ) {}
 }

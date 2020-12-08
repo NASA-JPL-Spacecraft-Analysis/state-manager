@@ -11,6 +11,7 @@ export class ParseService {
 
   /**
    * Read the incoming file and parse out the values.
+   *
    * @param file The file we are parsing.
    */
   private readFile(file: File): Promise<any[]> {

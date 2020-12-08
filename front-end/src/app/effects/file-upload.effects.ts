@@ -10,18 +10,8 @@ import { Event, StateEnumeration, InformationTypes, Relationship } from '../mode
 
 @Injectable()
 export class FileUploadEffects {
-  constructor(
-    private actions: Actions,
-    private eventService: EventService,
-    private informationTypesService: InformationTypesService,
-    private parseService: ParseService,
-    private stateService: StateService,
-    private relationshipService: RelationshipService,
-    private validationService: ValidationService
-  ) {}
-
-  public uploadInformationTypes = createEffect(() => {
-    return this.actions.pipe(
+  public uploadInformationTypes = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
       switchMap(({ file, collectionId }) =>
         forkJoin([
@@ -83,11 +73,11 @@ export class FileUploadEffects {
           })
         ];
       })
-    );
-  });
+    )
+  );
 
-  public uploadEnumerations = createEffect(() => {
-    return this.actions.pipe(
+  public uploadEnumerations = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadStateEnumerations),
       switchMap(({ collectionId, file }) =>
         forkJoin([
@@ -155,11 +145,11 @@ export class FileUploadEffects {
           })
         ];
       })
-    );
-  });
+    )
+  );
 
-  public uploadEvents = createEffect(() => {
-    return this.actions.pipe(
+  public uploadEvents = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadEvents),
       switchMap(({ file, collectionId }) =>
         forkJoin([
@@ -211,11 +201,11 @@ export class FileUploadEffects {
           ])
         );
       })
-    );
-  });
+    )
+  );
 
-  public uploadRelationship = createEffect(() => {
-    return this.actions.pipe(
+  public uploadRelationship = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
       switchMap(({ file, collectionId }) =>
         forkJoin([
@@ -274,11 +264,11 @@ export class FileUploadEffects {
           })
         ];
       })
-    );
-  });
+    )
+  );
 
-  public uploadStates = createEffect(() => {
-    return this.actions.pipe(
+  public uploadStates = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadStates),
       switchMap(({ collectionId, file }) =>
         forkJoin([
@@ -338,6 +328,16 @@ export class FileUploadEffects {
           })
         ];
       })
-    );
-  });
+    )
+  );
+
+  constructor(
+    private actions: Actions,
+    private eventService: EventService,
+    private informationTypesService: InformationTypesService,
+    private parseService: ParseService,
+    private stateService: StateService,
+    private relationshipService: RelationshipService,
+    private validationService: ValidationService
+  ) {}
 }

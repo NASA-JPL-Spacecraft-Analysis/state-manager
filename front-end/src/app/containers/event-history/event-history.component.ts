@@ -11,7 +11,7 @@ import { getEventHistoryMap } from 'src/app/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'event-history',
+  selector: 'app-event-history',
   styleUrls: [ 'event-history.component.css' ],
   templateUrl: 'event-history.component.html'
 })
@@ -29,7 +29,7 @@ export class EventHistoryComponent implements OnDestroy {
         this.eventHistoryMap = eventHistoryMap;
         this.changeDetectorRef.markForCheck();
       })
-    )
+    );
   }
 
   public ngOnDestroy() {
