@@ -1,10 +1,10 @@
-import { Field, InputType } from 'type-graphql';
+import { Field, InputType, ID } from 'type-graphql';
 
 import { UploadRelationshipInput } from './upload-relationship.input';
 
 @InputType()
 export class CreateRelationshipsInput {
-  @Field()
+  @Field(() => ID)
   public collectionId!: string;
 
   @Field(() => [ UploadRelationshipInput ])
