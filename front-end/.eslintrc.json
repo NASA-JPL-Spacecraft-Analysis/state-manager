@@ -10,8 +10,7 @@
       ],
       "parserOptions": {
         "project": [
-          "tsconfig.json",
-          "e2e/tsconfig.json"
+          "tsconfig.json"
         ],
         "createDefaultProgram": true
       },
@@ -69,5 +68,13 @@
       ],
       "rules": {}
     }
-  ]
+  ],
+  "settings": {
+    "eslint.workingDirectories": [
+      {
+        "directory": "front-end/tsconfig.json",
+        "changeProcessCWD": true
+      }
+    ]
+  }
 }
