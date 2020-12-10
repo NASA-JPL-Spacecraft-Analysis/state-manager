@@ -15,55 +15,55 @@ export class EventService {
     private apollo: Apollo
   ) {}
 
-  public createEvent(collectionId: number, event: Event): Observable<Event> {
+  public createEvent(collectionId: string, event: Event): Observable<Event> {
     return this.apollo
       .mutate<{ createEvent: Event }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_EVENT,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           description: event.description,
-          display_name: event.displayName,
+          displayName: event.displayName,
           editable: event.editable,
-          external_link: event.externalLink,
+          externalLink: event.externalLink,
           identifier: event.identifier
         }
       })
       .pipe(map(({ data: { createEvent }}) => createEvent));
   }
 
-  public createEvents(collectionId: number, events: Event[]): Observable<Event[]> {
+  public createEvents(collectionId: string, events: Event[]): Observable<Event[]> {
     return this.apollo
       .mutate<{ createEvents: Event[] }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_EVENTS,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           events
         }
       })
       .pipe(map(({ data: { createEvents } }) => createEvents));
   }
 
-  public getEvents(collectionId: number): Observable<Event[]> {
+  public getEvents(collectionId: string): Observable<Event[]> {
     return this.apollo
       .query<{ events: Event[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_EVENTS,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { events } }) => events));
   }
 
-  public getEventHistory(collectionId: number): Observable<Event[]> {
+  public getEventHistory(collectionId: string): Observable<Event[]> {
     return this.apollo
       .query<{ eventHistory: Event[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_EVENT_HISTORY,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { eventHistory } }) => eventHistory));
@@ -76,11 +76,10 @@ export class EventService {
         mutation: gql.UPDATE_EVENT,
         variables: {
           description: event.description,
-          display_name: event.displayName,
+          displayName: event.displayName,
           editable: event.editable,
-          external_link: event.externalLink,
-          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
-          id: Number(event.id),
+          externalLink: event.externalLink,
+          id: event.id,
           identifier: event.identifier
         }
       })

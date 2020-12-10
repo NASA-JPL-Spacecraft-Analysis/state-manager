@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnDestroy, NgModule, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnDestroy, NgModule, ChangeDetectorRef } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
@@ -24,7 +24,7 @@ export class CollectionComponent implements OnDestroy {
   public collectionName: string;
   public deleting: boolean;
   public editing: boolean;
-  public selectedCollectionId: number;
+  public selectedCollectionId: string;
 
   private subscriptions: SubSink;
 
@@ -53,7 +53,7 @@ export class CollectionComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
-        this.selectedCollectionId = Number(selectedCollectionId);
+        this.selectedCollectionId = selectedCollectionId;
 
         if (this.collectionMap) {
           this.setCollectioName();
@@ -68,7 +68,7 @@ export class CollectionComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public onCollectionChange(collectionId: number): void {
+  public onCollectionChange(collectionId: string): void {
     // Don't try and do anything if we don't have a valid collectionId.
     if (collectionId) {
       this.store.dispatch(CollectionActions.setSelectedCollection({

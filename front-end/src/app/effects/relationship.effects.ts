@@ -55,9 +55,9 @@ export class RelationshipEffects {
   public navRelationships = createEffect(() => {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/relationships', 'collection/:collectionId/relationship-history' ]),
-      mapToParam<number>('collectionId'),
+      mapToParam<string>('collectionId'),
       switchMap(collectionId =>
-        this.getRelationships(Number(collectionId))
+        this.getRelationships(collectionId)
       )
     );
   });
@@ -105,7 +105,7 @@ export class RelationshipEffects {
     );
   });
 
-  private getRelationships(collectionId: number): Observable<Action> {
+  private getRelationships(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
     const sharedActions = merge(
       this.eventService.getEvents(

@@ -16,8 +16,8 @@ import { IdentifierFormModule } from '../identifier-form/identifier-form.compone
 })
 export class EventSidenavComponent implements OnChanges {
   @Input() public event: Event;
-  @Input() public eventIdentifierMap: Map<string, number>;
-  @Input() public selectedCollectionId: number;
+  @Input() public eventIdentifierMap: Map<string, string>;
+  @Input() public selectedCollectionId: string;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public modifyEvent: EventEmitter<Event>;

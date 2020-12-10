@@ -1,10 +1,10 @@
 import { StringTMap } from './string-t-map';
 
 export interface StateEnumeration {
-  id: number;
-  stateId: number;
+  id: string;
+  stateId: string;
   label: string;
-  value: number;
+  value: string;
 }
 
 export interface StateEnumerationUpload {

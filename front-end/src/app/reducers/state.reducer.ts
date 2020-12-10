@@ -9,7 +9,7 @@ import {
 } from '../models';
 
 export interface StateState {
-  stateIdentifierMap: Map<string, number>;
+  stateIdentifierMap: Map<string, string>;
   selectedState: State;
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
@@ -65,7 +65,7 @@ export const reducer = createReducer(
   }),
   on(StateActions.setStates, (stateState, { states }) => {
     const stateMap = {};
-    const stateIdentifierMap = new Map<string, number>();
+    const stateIdentifierMap = new Map<string, string>();
 
     for (const state of states) {
       stateMap[state.id] = state;
@@ -95,7 +95,7 @@ function modifyState(stateState: StateState, state: State): StateState {
 
   for (const identifier of Object.keys(stateIdentifierMap)) {
     // Remove the old identifier from our map
-    if (Number(stateIdentifierMap[identifier]) === state.id) {
+    if (stateIdentifierMap[identifier] === state.id) {
       delete stateIdentifierMap[identifier];
     }
   }

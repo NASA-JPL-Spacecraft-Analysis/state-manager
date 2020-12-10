@@ -5,7 +5,7 @@ export interface State {
   description: string;
   displayName: string;
   enumerations: StateEnumeration[];
-  id: number;
+  id: string;
   identifier: string;
   source: string; // enum?
   subsystem: string;
@@ -14,7 +14,7 @@ export interface State {
 }
 
 export interface StateHistory extends State {
-  stateId: number;
+  stateId: string;
   updated: Date;
 }
 

@@ -1,15 +1,18 @@
 import { StringTMap } from './string-t-map';
 
 export interface Event {
-  id: number;
-  collectionId: number;
-  eventId?: number;
+  id: string;
+  collectionId: string;
   identifier: string;
   displayName: string;
   description: string;
   externalLink: string;
   editable: boolean;
-  updated?: Date;
+}
+
+export interface EventHistory extends Event {
+  eventId: string;
+  updated: Date;
 }
 
 export type EventMap = StringTMap<Event>;

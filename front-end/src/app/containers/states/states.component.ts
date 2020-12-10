@@ -5,7 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { State, StateMap, StateEnumeration } from '../../models';
-import { getStates, getSelectedState, getShowSidenav, getCollectionState, getSelectedCollectionId } from '../../selectors';
+import { getStates, getSelectedState, getShowSidenav, getSelectedCollectionId } from '../../selectors';
 import { StateActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
 import { StateTableModule } from '../../components';
 import { AppState } from 'src/app/app-store';
@@ -25,7 +25,7 @@ enum UploadableTypes {
   templateUrl: 'states.component.html'
 })
 export class StateComponent implements OnDestroy {
-  public collectionId: number;
+  public collectionId: string;
   public showSidenav: boolean;
   public stateMap: StateMap;
   public state: State;
@@ -85,7 +85,7 @@ export class StateComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds?: number[] }): void {
+  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds?: string[] }): void {
     if (result === undefined) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false

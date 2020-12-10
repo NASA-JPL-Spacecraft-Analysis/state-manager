@@ -1,7 +1,7 @@
 import { StringTMap } from './string-t-map';
 
 export interface Collection {
-  id: number;
+  id: string;
   name: string;
 }
 

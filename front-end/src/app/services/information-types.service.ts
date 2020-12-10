@@ -15,26 +15,26 @@ export class InformationTypesService {
     private apollo: Apollo
   ) {}
 
-  public createInformationTypes(collectionId: number, informationTypes: InformationTypes[]): Observable<InformationTypes[]> {
+  public createInformationTypes(collectionId: string, informationTypes: InformationTypes[]): Observable<InformationTypes[]> {
     return this.apollo
       .mutate<{ createInformationTypes: InformationTypes[] }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_INFORMATION_TYPES,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           informationTypes
         }
       })
       .pipe(map(({ data: { createInformationTypes } }) => createInformationTypes));
   }
 
-  public getInformationTypes(collectionId: number): Observable<InformationTypes[]> {
+  public getInformationTypes(collectionId: string): Observable<InformationTypes[]> {
     return this.apollo
       .query<{ informationTypes: InformationTypes[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_INFORMATION_TYPES,
         variables: {
-          collection_id: Number(collectionId)
+          collectionId
         }
       })
       .pipe(map(({ data: { informationTypes } }) => informationTypes));

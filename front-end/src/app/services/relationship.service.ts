@@ -15,57 +15,56 @@ export class RelationshipService {
     private apollo: Apollo
   ) {}
 
-  public createRelationship(collectionId: number, relationship: Relationship): Observable<Relationship> {
+  public createRelationship(collectionId: string, relationship: Relationship): Observable<Relationship> {
     return this.apollo
       .query<{ createRelationship: Relationship }>({
         fetchPolicy: 'no-cache',
         query: gql.CREATE_RELATIONSHIP,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           description: relationship.description,
-          display_name: relationship.displayName,
-          subject_type: relationship.subjectType,
-          target_type: relationship.targetType,
-          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
-          subject_type_id: Number(relationship.subjectTypeId),
-          target_type_id: Number(relationship.targetTypeId)
+          displayName: relationship.displayName,
+          subjectType: relationship.subjectType,
+          targetType: relationship.targetType,
+          subjectTypeId: relationship.subjectTypeId,
+          targetTypeId: relationship.targetTypeId
         }
       })
     .pipe(map(({ data: { createRelationship } }) => createRelationship));
   }
 
-  public createRelationships(collectionId: number, relationships: RelationshipUpload[]): Observable<Relationship[]> {
+  public createRelationships(collectionId: string, relationships: RelationshipUpload[]): Observable<Relationship[]> {
     return this.apollo
       .query<{ createRelationships: Relationship[] }>({
         fetchPolicy: 'no-cache',
         query: gql.CREATE_RELATIONSHIPS,
         variables: {
-          collection_id: collectionId,
+          collectionId,
           relationships
         }
       })
     .pipe(map(({ data: { createRelationships } }) => createRelationships));
   }
 
-  public getRelationships(collectionId: number): Observable<Relationship[]> {
+  public getRelationships(collectionId: string): Observable<Relationship[]> {
     return this.apollo
       .query<{ relationships: Relationship[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_RELATIONSHIPS,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { relationships } }) => relationships));
   }
 
-  public getRelationshipHistory(collectionId: number): Observable<RelationshipHistory[]> {
+  public getRelationshipHistory(collectionId: string): Observable<RelationshipHistory[]> {
     return this.apollo
       .query<{ relationshipHistory: RelationshipHistory[] }>({
         fetchPolicy: 'no-cache',
         query: gql.GET_RELATIONSHIP_HISTORY,
         variables: {
-          collection_id: collectionId
+          collectionId
         }
       })
       .pipe(map(({ data: { relationshipHistory } }) => relationshipHistory));
@@ -78,13 +77,12 @@ export class RelationshipService {
         query: gql.UPDATE_RELATIONSHIP,
         variables: {
           description: relationship.description,
-          display_name: relationship.displayName,
-          // TODO: Track down where the id is turned into a string at some point so we can remove this conversion.
-          id: Number(relationship.id),
-          subject_type: relationship.subjectType,
-          target_type: relationship.targetType,
-          subject_type_id: Number(relationship.subjectTypeId),
-          target_type_id: Number(relationship.targetTypeId)
+          displayName: relationship.displayName,
+          id: relationship.id,
+          subjectType: relationship.subjectType,
+          targetType: relationship.targetType,
+          subjectTypeId: relationship.subjectTypeId,
+          targetTypeId: relationship.targetTypeId
         }
       })
     .pipe(map(({ data: { updateRelationship } }) => updateRelationship));

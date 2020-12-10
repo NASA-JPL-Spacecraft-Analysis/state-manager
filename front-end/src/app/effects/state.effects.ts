@@ -85,9 +85,9 @@ export class StateEffects {
   public navStates = createEffect(() => {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
-      mapToParam<number>('collectionId'),
+      mapToParam<string>('collectionId'),
       switchMap(collectionId =>
-        this.getStates(Number(collectionId))
+        this.getStates(collectionId)
       )
     );
   });
@@ -111,21 +111,18 @@ export class StateEffects {
       switchMap(({ collectionId, stateId, enumerations }) => {
         const saveEnumerations = [];
 
-        // TODO: Track down where the IDs are changing... This format will change after rename fields in backend.
-        stateId = Number(stateId);
-
         for (const enumeration of enumerations) {
-          let id: number | undefined;
+          let id: string | undefined;
 
           if (enumeration.id) {
-            id = Number(enumeration.id);
+            id = enumeration.id;
           }
 
           saveEnumerations.push(
             {
               id,
               label: enumeration.label.toString(),
-              state_id: Number(stateId),
+              stateId,
               value: enumeration.value.toString()
             }
           );
@@ -186,7 +183,7 @@ export class StateEffects {
     );
   });
 
-  private getStates(collectionId: number): Observable<Action> {
+  private getStates(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
 
     if (url === 'states') {

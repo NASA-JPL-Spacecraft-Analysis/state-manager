@@ -23,14 +23,14 @@ import { MaterialModule } from 'src/app/material';
 export class StateSidenavComponent implements OnChanges, OnDestroy {
   @Input() public state: State;
 
-  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: number[] }>;
+  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: string[] }>;
   @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
-  public deletedEnumerationIds: number[];
+  public deletedEnumerationIds: string[];
   public newState: State;
   public originalIdentifier: string;
   public form: FormGroup;
-  public stateIdentifierMap: Map<string, number>;
+  public stateIdentifierMap: Map<string, string>;
 
   private duplicateIdentifier: boolean;
   private subscriptions = new SubSink();
@@ -43,7 +43,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: number[] }>();
+    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: string[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(

@@ -22,7 +22,6 @@ export const reducer = createReducer(
   })),
   on(FileUploadActions.uploadInformationTypesSuccess, (state, { informationTypes }) => {
     const informationTypeMap = cloneDeep(state.informationTypes);
-    console.log(informationTypeMap);
 
     return {
       ...state,

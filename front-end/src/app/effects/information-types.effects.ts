@@ -18,9 +18,9 @@ export class InformationTypesEffects {
   public navInformationTypes = createEffect(() => {
     return this.actions.pipe(
       ofRoute('collection/:collectionId/information-types'),
-      mapToParam<number>('collectionId'),
+      mapToParam<string>('collectionId'),
       switchMap(collectionId => {
-        return this.getInformationTypes(Number(collectionId));
+        return this.getInformationTypes(collectionId);
       })
     );
   });
@@ -38,7 +38,7 @@ export class InformationTypesEffects {
     );
   });
 
-  private getInformationTypes(id: number): Observable<Action> {
+  private getInformationTypes(id: string): Observable<Action> {
     return this.informationTypesService.getInformationTypes(
       id
     ).pipe(

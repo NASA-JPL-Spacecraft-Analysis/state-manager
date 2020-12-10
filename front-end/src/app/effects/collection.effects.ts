@@ -156,13 +156,12 @@ export class CollectionEffects {
           } else {
             return [
               CollectionActions.setSelectedCollection({
-                id: Number(keys[0])
+                id: keys[0]
               })
             ];
           }
         }
 
-        // TODO: We need to handle what happens if there aren't any collections.
         return [];
       })
     );
@@ -177,7 +176,7 @@ export class CollectionEffects {
         let id = action.id;
 
         if (!id) {
-          id = Number(Object.keys(state.collection.collectionMap)[0]);
+          id = Object.keys(state.collection.collectionMap)[0];
         }
 
         const route = this.router.url.split('/').pop();

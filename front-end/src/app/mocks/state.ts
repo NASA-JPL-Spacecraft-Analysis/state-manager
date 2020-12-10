@@ -1,7 +1,7 @@
 import { State, StateMap } from '../models';
 
 export const mockStateOne: State = {
-  id: 1,
+  id: '1',
   identifier: 'TEST',
   displayName: 'Test',
   type: 'test string',
@@ -13,7 +13,7 @@ export const mockStateOne: State = {
 };
 
 export const mockStateTwo: State = {
-  id: 2,
+  id: '2',
   identifier: 'TEST_1',
   displayName: 'Test 1',
   type: 'test string 1',
@@ -24,7 +24,7 @@ export const mockStateTwo: State = {
   enumerations: []
 };
 
-export const mockStateIdentifierMap: Map<string, number> = new Map([
+export const mockStateIdentifierMap: Map<string, string> = new Map([
   [mockStateOne.identifier, mockStateOne.id],
   [mockStateTwo.identifier, mockStateTwo.id]
 ]);

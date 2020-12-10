@@ -1,7 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import { StateState } from '../reducers/state.reducer';
-import { StateEnumeration, StateEnumerationMap, State } from '../models';
 
 const getStatesState = createFeatureSelector<StateState>('states');
 

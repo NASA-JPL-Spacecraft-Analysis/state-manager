@@ -5,7 +5,7 @@ import { CollectionActions } from '../actions';
 
 export interface CollectionState {
   collectionMap: CollectionMap;
-  selectedCollectionId: number;
+  selectedCollectionId: string;
 }
 
 export const initialState: CollectionState = {
@@ -49,11 +49,11 @@ export const reducer = createReducer(
   })),
   on(CollectionActions.fetchCollectionsSuccess, (state, { collections }) => {
     const collectionMap = {};
-    let firstCollectionId = -1;
+    let firstCollectionId;
 
     for (const collection of collections) {
-      if (firstCollectionId === -1) {
-        firstCollectionId = Number(collection.id);
+      if (!firstCollectionId) {
+        firstCollectionId = collection.id;
       }
 
       collectionMap[collection.id] = collection;
@@ -79,14 +79,14 @@ export const reducer = createReducer(
   })
 );
 
-function getFirstCollection(collectionMap: CollectionMap): number {
+function getFirstCollection(collectionMap: CollectionMap): string {
   if (collectionMap) {
     const keys = Object.keys(collectionMap);
 
     if (keys.length > 0) {
-      return Number(keys[0]);
+      return keys[0];
     }
   }
 
-  return -1;
+  return undefined;
 }
