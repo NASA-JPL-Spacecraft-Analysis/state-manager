@@ -5,7 +5,7 @@
 
 Before running, clone the project, and then run:
 1. `npm i`
-2. Create a new file named `ormconfig.json` at the root of the project and fill it in with your database information.
+2. Create a new file named `ormconfig.json` inside the `backend/` directory and fill it in with your database information.
 
 ```
 {
