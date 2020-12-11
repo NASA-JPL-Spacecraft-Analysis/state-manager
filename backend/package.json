@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "name": "state-management-apollo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "nodemon -w src --ext ts --exec ts-node src/index.ts"
+  },
+  "keywords": [],
+  "dependencies": {
+    "apollo-server": "^2.16.0",
+    "class-validator": "^0.12.2",
+    "mysql": "^2.18.1",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.0.0-rc.3",
+    "typeorm": "^0.2.25"
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "graphql": "^15.3.0",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.2",
+    "typedi": "^0.8.0",
+    "typescript": "^3.9.7"
+  }
+}

@@ -1,55 +1,30 @@
 # State Management Pilot
 
-## Requirements
+# State Manager
 
-To be able to run the application you need the following software installed:
-- [Docker](https://docs.docker.com/install/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+### Requirements
+To be able to run and develop the application you need the following software installed:
 - [MySQL](https://www.mysql.com/)
-
-To be able to develop the application you additionally need the following software installed:
 - [NPM](https://www.npmjs.com/get-npm)
-- [Maven](https://maven.apache.org/install.html)
 - [Angular CLI](https://cli.angular.io/)
 
-## Initial setup
-1. First start MySQL and create a schema named `state-management-db`.
-1. Next create the `state-management-db-user` database user and grant it all privileges on our schema.
-1. To setup the database, connect to the MySQL server, and execute `database-setup.sql`.
-1. If needed, change the `JDBC_URL` and `JDBC_PASS` in the docker-compose.yml file to point to your MySQL database and use the correct password for the database user.
+### Initial Setup
+1. Clone the project from Github.
+2. First start MySQL and create a schema named `state-manager`.
+3. Next create the `state-management-db-user` database user and grant it all privileges on our schema.
+4. To setup the database, connect to the MySQL server, and execute `backend/database-setup.sql`.
 
-## Running the application
+### Running The Application
 1. Ensure MySQL server is running.
-1. Ensure that `CORS_ALLOW_ORIGIN` in the docker-compose.yml file is set to `http://localhost`.
-1. Run `docker-compose build` to build both the frontend and backend
-1. Run `docker-compose up` to spin up the application. The application will be running at `http://localhost`.
+2. Follow the run instruction for the [front-end](front-end/README.md).
+3. Follow the run instruction for the [backend](backend/README.md).
 
-## Running for development
-1. Ensure MySQL server is running.
-1. Change the `CORS_ALLOW_ORIGIN` in the docker-compose.yml file to `http://localhost:4200`.
-1. Run `docker-compose build backend` to build only the backend.
-1. Run `docker-compose up backend` to spin up only the backend.
-1. Navigate to the `front-end` folder, and run `npm install` to install all the dependencies the front-end application needs.
-1. Finally, run `ng serve` and the front-end application will be running at `http://localhost:4200/state-management`.  This serves the front-end, so it needs to continue running.
-
-## Making changes
-When changing the front-end in the development mode setup, the application will automatically be rebuilt and deployed after saving a file.
-If you're changing the backend, after you've made your changes the `.war` file needs to be rebuilt and redeployed to the Docker container.
-There are two ways to do this:
-1. Without maven:
-    1. `docker-compose down`
-    1. `docker-compose build backend`
-    1. `docker-compose up backend`
-1. With maven:
-    1. Run `. build.sh` from the main project folder.
-
-## Usage
+### Usage
 
 CSV / Json Upload
-
 Each type has a different format listed below:
 
-### State Enumeration Upload
+#### State Enumeration Upload
 
 CSV:
 ```
@@ -74,7 +49,7 @@ JSON:
 ]
 ```
 
-### Events Upload
+#### Events Upload
 
 CSV:
 ```
@@ -97,7 +72,7 @@ JSON:
 ]
 ```
 
-### Information Types Upload
+#### Information Types Upload
 
 CSV:
 ```
@@ -157,7 +132,7 @@ JSON:
 ]
 ```
 
-### Relationships Upload
+#### Relationships Upload
 
 CSV:
 ```
@@ -182,7 +157,7 @@ JSON:
 ]
 ```
 
-### State Upload
+#### State Upload
 
 CSV:
 ```
