@@ -10,13 +10,14 @@ services:
     image: state_management_backend:latest
     restart: always
     environment:
-      #JDBC_URL: jdbc:mysql://host.docker.internal:3306/state-management-db
-      JDBC_URL: jdbc:mysql://eurc-dev-fspa-proto-db.cluster-cn3jpdgibyif.us-gov-west-1.rds.amazonaws.com:3306/state-management-db
-      JDBC_USER: "state-management-db-user"
-      JDBC_PASS: "testing"
-      CORS_ALLOW_ORIGIN: "http://localhost"
+      #DB_URL: host.docker.internal
+      DB_URL: eurc-dev-fspa-proto-db.cluster-cn3jpdgibyif.us-gov-west-1.rds.amazonaws.com
+      DB_NAME: "state-manager"
+      DB_PORT: 3306
+      DB_USER: "state-management-db-user"
+      DB_PASS: "testing"
     ports:
-      - "8080:8080"
+      - "8080:4000"
   frontend:
     build: ./front-end
     image: state_management_gui:latest
@@ -24,4 +25,4 @@ services:
     environment:
       API_URL: http://localhost:8080
     ports:
-      - "80:80"
+      - "8000:80"
