@@ -23,7 +23,7 @@ To be able to run and develop the application you need the following software in
 ### Initial Setup
 1. If the environment variables in the `docker-compose.yml` file are not correct for your database connection, update them.
 1. Create a `.env` file in the main project directory with the database connection password: `DB_PASS=somePassword`
-  a. Note: The `.env` file will not be checked in to Github.
+    1. Note: The `.env` file will not be checked in to Github.
 
 ### Subsequent Runs
 1. If changes have been made, rebuild the docker images: `docker-compose build`
