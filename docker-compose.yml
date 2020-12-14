@@ -15,7 +15,7 @@ services:
       DB_NAME: "state-manager"
       DB_PORT: 3306
       DB_USER: "state-management-db-user"
-      DB_PASS: "testing"
+      DB_PASS: "${DB_PASS}"
     ports:
       - "8080:4000"
   frontend:
