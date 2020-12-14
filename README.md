@@ -28,6 +28,7 @@ To be able to run and develop the application you need the following software in
 ### Subsequent Runs
 1. If changes have been made, rebuild the docker images: `docker-compose build`
 1. Run State Manager: `docker-compose up`
+    1. State Manager should now be running on localhost:8000
 1. When done, clean up docker containers with: `docker-compose down`
 ### Usage
 
