@@ -19,6 +19,17 @@ To be able to run and develop the application you need the following software in
 2. Follow the run instruction for the [front-end](front-end/README.md).
 3. Follow the run instruction for the [backend](backend/README.md).
 
+## Running the Application in Docker
+### Initial Setup
+1. If the environment variables in the `docker-compose.yml` file are not correct for your database connection, update them.
+1. Create a `.env` file in the main project directory with the database connection password: `DB_PASS=somePassword`
+    1. Note: The `.env` file will not be checked in to Github.
+
+### Subsequent Runs
+1. If changes have been made, rebuild the docker images: `docker-compose build`
+1. Run State Manager: `docker-compose up`
+    1. State Manager should now be running on localhost:8000
+1. When done, clean up docker containers with: `docker-compose down`
 ### Usage
 
 CSV / Json Upload
