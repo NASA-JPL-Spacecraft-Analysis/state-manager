@@ -1,12 +1,12 @@
 CREATE TABLE `collections` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `enabled` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `event_history` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `eventId` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE `event_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `events` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
   `displayName` text,
@@ -29,8 +29,22 @@ CREATE TABLE `events` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `group_mapping` (
+  `id` VARCHAR(36) NOT NULL,
+  `groupId` VARCHAR(36) NOT NULL,
+  `itemId` VARCHAR(36) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `groups` (
+  `id` VARCHAR(36) NOT NULL,
+  `collectionId` VARCHAR(36) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `information_types` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) DEFAULT NULL,
   `type` int(11) NOT NULL,
   `identifier` varchar(45) NOT NULL,
@@ -41,7 +55,7 @@ CREATE TABLE `information_types` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `relationship_history` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `relationshipId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
@@ -55,7 +69,7 @@ CREATE TABLE `relationship_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `relationships` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
   `description` text,
@@ -67,7 +81,7 @@ CREATE TABLE `relationships` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_enumerations` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `stateId` varchar(36) NOT NULL,
   `label` text,
@@ -76,7 +90,7 @@ CREATE TABLE `state_enumerations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_history` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `stateId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
@@ -91,7 +105,7 @@ CREATE TABLE `state_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `states` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
   `displayName` text,
@@ -125,6 +139,25 @@ DROP TRIGGER IF EXISTS `state-manager`.`events_BEFORE_INSERT`;
 DELIMITER $$
 USE `state-manager`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`events_BEFORE_INSERT` BEFORE INSERT ON `events` FOR EACH ROW
+BEGIN
+	set new.id = uuid();
+END$$
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS `state-manager`.`group_mapping_BEFORE_INSERT`;
+DELIMITER $$
+USE `state-manager`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`group_mapping_BEFORE_INSERT` BEFORE INSERT ON `states` FOR EACH ROW
+BEGIN
+	set new.id = uuid();
+END$$
+DELIMITER ;
+
+
+DROP TRIGGER IF EXISTS `state-manager`.`groups_BEFORE_INSERT`;
+DELIMITER $$
+USE `state-manager`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`collections_BEFORE_INSERT` BEFORE INSERT ON `collections` FOR EACH ROW
 BEGIN
 	set new.id = uuid();
 END$$

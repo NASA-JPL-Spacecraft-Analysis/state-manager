@@ -1,6 +1,7 @@
 export * from './collection-resolver';
 export * from './event-history.resolver';
 export * from './event-resolver';
+export * from './group-resolver';
 export * from './identifier-type.resolver';
 export * from './information-type.resolver';
 export * from './relationship-history.resolver';
