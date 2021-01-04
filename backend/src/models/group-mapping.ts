@@ -22,19 +22,19 @@ export class GroupMapping extends Node {
 }
 
 export const GroupMappingItemUnion = createUnionType({
-  name: 'GroupMappingItemType',
+  name: 'GroupMappingItemUnion',
   types: () => [ Event, InformationType, State ] as const,
   resolveType: value => {
-    if ('type' in value) {
+    if (value instanceof Event) {
+      return Event;
+    }
+
+    if (value instanceof InformationType) {
       return InformationType;
     }
 
-    if ('enumerations' in value) {
+    if (value instanceof State) {
       return State;
-    }
-
-    if ('externalLink' in value) {
-      return Event;
     }
 
     return undefined;

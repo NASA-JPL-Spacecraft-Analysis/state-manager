@@ -4,6 +4,11 @@ import { Event, GroupMapping, GroupMappingItemUnion, InformationType, State } fr
 
 @Resolver(() => GroupMapping)
 export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
+  /**
+   * Finds the item attached to a group mapping, and returns the correct value.
+   * 
+   * @param groupMapping
+   */
   @FieldResolver()
   public async item(@Root() groupMapping: GroupMapping): Promise<typeof GroupMappingItemUnion | undefined> {
     const event = await Event.findOne({ where: { id: groupMapping.itemId }});
