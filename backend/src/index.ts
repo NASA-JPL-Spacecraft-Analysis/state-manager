@@ -36,6 +36,13 @@ async function main() {
   });
 
   const server = new ApolloServer({
+    cors: {
+      origin: (origin, callback) => {
+        // Respond with the origin set to the caller.
+        callback(null, true);
+      },
+      credentials: true
+    },
     introspection: true,
     playground: true,
     schema,
