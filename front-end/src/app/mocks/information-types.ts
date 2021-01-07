@@ -6,7 +6,7 @@ export const mockInformationType: InformationTypes = {
   displayName: 'Activity',
   description: 'Test activity',
   externalLink: '',
-  type: InformationTypeEnum.Activity
+  informationType: InformationTypeEnum.Activity
 };
 
 export const mockInformationTypes: InformationTypes[] = [

@@ -1,0 +1,25 @@
+<mat-toolbar class="toolbar">
+  GROUPS
+</mat-toolbar>
+
+<div class="content-container">
+  <div class="content">
+    <ng-container *ngIf="groups.length > 0; else noGroups">
+      <mat-list *ngFor="let group of groups">
+        <div mat-subheader>{{group.name}}</div>
+
+        <mat-list-item *ngFor="let mapping of group.groupMappings">
+          <div mat-line>{{mapping.item.identifier}}</div>
+        </mat-list-item>
+
+        <ng-template *ngIf="groups.indexOf(group) !== groups.length - 1">
+          <mat-divider></mat-divider>
+        </ng-template>
+      </mat-list>
+    </ng-container>
+
+    <ng-template #noGroups>
+      <span>This collection does not have any groups.</span>
+    </ng-template>
+  </div>
+</div>

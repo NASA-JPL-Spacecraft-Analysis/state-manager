@@ -38,11 +38,11 @@ function mapInformationTypes(informationTypesMap: InformationTypesMap, informati
   }
 
   for (const informationType of informationTypes) {
-    if (informationTypesMap[informationType.type] === undefined) {
-      informationTypesMap[informationType.type] = {};
+    if (informationTypesMap[informationType.informationType] === undefined) {
+      informationTypesMap[informationType.informationType] = {};
     }
 
-    informationTypesMap[informationType.type][informationType.id] = informationType;
+    informationTypesMap[informationType.informationType][informationType.id] = informationType;
   }
 
   return informationTypesMap;

@@ -17,5 +17,5 @@ export class InformationType extends IdentifierType {
 
   @Field(() => InformationTypeEnum)
   @Column()
-  public type!: InformationTypeEnum;
+  public informationType!: InformationTypeEnum;
 }

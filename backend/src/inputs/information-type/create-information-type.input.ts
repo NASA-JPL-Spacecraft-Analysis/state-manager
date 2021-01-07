@@ -20,5 +20,5 @@ export class CreateInformationTypeInput implements Partial<InformationType> {
   public identifier!: string;
 
   @Field(() => InformationTypeEnum)
-  public type!: InformationTypeEnum;
+  public informationType!: InformationTypeEnum;
 }

@@ -18,7 +18,8 @@ import {
   CollectionEffects,
   InformationTypesEffects,
   StateEffects,
-  RelationshipEffects
+  RelationshipEffects,
+  GroupEffects
 } from './effects';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
@@ -49,6 +50,7 @@ export class AppComponent {}
       CollectionEffects,
       EventEffects,
       FileUploadEffects,
+      GroupEffects,
       InformationTypesEffects,
       NavEffects,
       RelationshipEffects,

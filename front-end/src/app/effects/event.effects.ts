@@ -74,7 +74,7 @@ export class EventEffects {
     );
   });
 
-  public getEventByStateCollectionId = createEffect(() => {
+  public getEventBySelectedCollectionId = createEffect(() => {
     return this.actions.pipe(
       ofRoute([ 'collection/:collectionId/events', 'collection/:collectionId/event-history' ]),
       withLatestFrom(this.store),

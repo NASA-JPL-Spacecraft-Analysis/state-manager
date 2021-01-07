@@ -32,7 +32,7 @@ CREATE TABLE `event_history` (
 CREATE TABLE `information_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `collection_id` int(11) DEFAULT NULL,
-  `type` int(11) NOT NULL,
+  `informationType` int(11) NOT NULL,
   `identifier` varchar(45) NOT NULL,
   `display_name` varchar(45) DEFAULT NULL,
   `description` text,

@@ -30,6 +30,10 @@
       <button mat-menu-item [routerLink]="'/faqs'" class="menu-button">
         <span>FAQs</span>
       </button>
+
+      <button mat-menu-item routerLink="/collection/{{selectedCollectionId}}/groups" class="menu-button">
+        <span>Groups</span>
+      </button>
     </mat-menu>
   </div>
 </mat-toolbar>

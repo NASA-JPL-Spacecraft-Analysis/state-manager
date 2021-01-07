@@ -8,6 +8,7 @@ import {
   RelationshipsComponent,
   RelationshipHistoryComponent,
   FaqComponent,
+  GroupsComponent,
   InformationTypesComponent,
   EventsComponent,
   EventHistoryComponent
@@ -34,6 +35,10 @@ export const routes: Routes = [
       {
         component: EventHistoryComponent,
         path: 'event-history'
+      },
+      {
+        component: GroupsComponent,
+        path: 'groups'
       },
       {
         component: InformationTypesComponent,

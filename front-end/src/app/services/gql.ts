@@ -75,7 +75,7 @@ export const CREATE_INFORMATION_TYPES = gql(`
       description
       displayName
       externalLink
-      type
+      informationType
     }
   }
 `);
@@ -248,6 +248,49 @@ export const GET_EVENT_HISTORY = gql(`
   }
 `);
 
+export const GET_GROUPS_AND_MAPPINGS = gql(`
+  query groups($collectionId: ID!) {
+    groups(collectionId: $collectionId) {
+      name
+      id
+      groupMappings {
+        item {
+          ... on Event {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
+          ... on InformationType {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+            informationType
+          }
+          ... on State {
+            description
+            displayName
+            enumerations {
+              id
+              label
+              value
+            }
+            id
+            identifier
+            source
+            subsystem
+            type
+            units
+          }
+        }
+      }
+    }
+  }
+`);
+
 export const GET_INFORMATION_TYPES = gql(`
   query informationTypes($collectionId: ID!) {
     informationTypes(collectionId: $collectionId) {
@@ -256,7 +299,7 @@ export const GET_INFORMATION_TYPES = gql(`
       externalLink
       id
       identifier
-      type
+      informationType
     }
   }
 `);

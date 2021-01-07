@@ -17,7 +17,21 @@ table {
   display: flex;
 }
 
+.mat-toolbar button:not(:last-child) {
+  margin-right: 1em;
+}
+
 /* Global Styles */
+.content {
+  flex-grow: 1;
+  margin: 1em;
+}
+
+.content-container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
 .form-input {
   background: #FAFAFA;
   border: 1px solid #BEBEBE;
@@ -45,6 +59,11 @@ table {
 
 .table-row {
   cursor: pointer;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
 }
 
 /* Sidenav Specific Styles */
