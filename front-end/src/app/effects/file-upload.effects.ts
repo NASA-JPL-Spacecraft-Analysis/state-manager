@@ -339,6 +339,6 @@ export class FileUploadEffects {
       return ToastActions.showToast({
         message: typeof error === 'string' ? error : 'File parsing failed',
         toastType: 'error'
-      })
+      });
   }
 }
