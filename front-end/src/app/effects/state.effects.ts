@@ -11,14 +11,8 @@ import { ofRoute, mapToParam } from '../functions/router';
 
 @Injectable()
 export class StateEffects {
-  constructor(
-    private actions: Actions,
-    private router: Router,
-    private stateService: StateService
-  ) {}
-
-  public createState = createEffect(() => {
-    return this.actions.pipe(
+  public createState = createEffect(() =>
+    this.actions.pipe(
       ofType(StateActions.createState),
       switchMap(({ collectionId, state: newState }) =>
         this.stateService.createState(
@@ -56,11 +50,11 @@ export class StateEffects {
           ])
         )
       )
-    );
-  });
+    )
+  );
 
-  public deleteEnumerations = createEffect(() => {
-    return this.actions.pipe(
+  public deleteEnumerations = createEffect(() =>
+    this.actions.pipe(
       ofType(StateActions.deleteEnumerations),
       switchMap(({ deletedEnumerationIds, stateId}) =>
         this.stateService.deleteEnumerations(
@@ -79,21 +73,21 @@ export class StateEffects {
           ])
         )
       )
-    );
-  });
+    )
+  );
 
-  public navStates = createEffect(() => {
-    return this.actions.pipe(
+  public navStates = createEffect(() =>
+    this.actions.pipe(
       ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId =>
         this.getStates(collectionId)
       )
-    );
-  });
+    )
+  );
 
-  public navStatesByCollectionId = createEffect(() => {
-    return this.actions.pipe(
+  public navStatesByCollectionId = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.setSelectedCollection),
       switchMap(({ id }) => {
         if (id !== null) {
@@ -102,11 +96,11 @@ export class StateEffects {
 
         return [];
       })
-    );
-  });
+    )
+  );
 
-  public saveEnumerations = createEffect(() => {
-    return this.actions.pipe(
+  public saveEnumerations = createEffect(() =>
+    this.actions.pipe(
       ofType(StateActions.saveEnumerations),
       switchMap(({ collectionId, stateId, enumerations }) => {
         const saveEnumerations = [];
@@ -149,11 +143,11 @@ export class StateEffects {
           ])
         );
       })
-    );
-  });
+    )
+  );
 
-  public updateState = createEffect(() => {
-    return this.actions.pipe(
+  public updateState = createEffect(() =>
+    this.actions.pipe(
       ofType(StateActions.updateState),
       switchMap(({ updatedState }) =>
         this.stateService.updateState(
@@ -180,8 +174,14 @@ export class StateEffects {
           ])
         )
       )
-    );
-  });
+    )
+  );
+
+  constructor(
+    private actions: Actions,
+    private router: Router,
+    private stateService: StateService
+  ) {}
 
   private getStates(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();

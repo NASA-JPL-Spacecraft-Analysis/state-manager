@@ -40,21 +40,17 @@ export const ROOT_REDUCERS = new InjectionToken<
   })
 });
 
-export function logger(
-  reducer: ActionReducer<AppState>,
-): ActionReducer<AppState> {
-  return (state: AppState, action: any): AppState => {
-    const result = reducer(state, action);
+export const logger = (reducer: ActionReducer<AppState>): ActionReducer<AppState> => (state: AppState, action: any): AppState => {
+  const result = reducer(state, action);
 
-    console.groupCollapsed(action.type);
-    console.log('prev state', state);
-    console.log('action', action);
-    console.log('next state', result);
-    console.groupEnd();
+  console.groupCollapsed(action.type);
+  console.log('prev state', state);
+  console.log('action', action);
+  console.log('next state', result);
+  console.groupEnd();
 
-    return result;
-  };
-}
+  return result;
+};
 
 export const metaReducers: MetaReducer<AppState>[] = !environment.production
   ? [logger]

@@ -15,7 +15,7 @@ import { CollectionInputModule } from 'src/app/components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'collections',
+  selector: 'app-collections',
   styleUrls: [ 'collections.component.css' ],
   templateUrl: 'collections.component.html'
 })

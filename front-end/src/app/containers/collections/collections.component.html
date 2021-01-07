@@ -40,9 +40,9 @@
   </div>
 
   <div *ngIf="editing">
-    <collection-input
+    <app-collection-input
       [focus]="editing"
       (collectionNameOutput)="onCollectionInputOutput($event)">
-    </collection-input>
+    </app-collection-input>
   </div>
 </div>

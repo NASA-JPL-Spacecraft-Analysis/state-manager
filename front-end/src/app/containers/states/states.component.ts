@@ -20,7 +20,7 @@ enum UploadableTypes {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'states',
+  selector: 'app-states',
   styleUrls: [ 'states.component.css' ],
   templateUrl: 'states.component.html'
 })
@@ -72,8 +72,8 @@ export class StateComponent implements OnDestroy {
 
   /**
    * Called on creation or edit of a state.
-   * @param state The state that we're creating or modifing. Can be undefined
-   * if the user is creating a new state.
+   *
+   * @param state The state that we're creating or modifing. Can be undefined if the user is creating a new state.
    */
   public onModifyState(state?: State): void {
     this.store.dispatch(StateActions.setSelectedState({
@@ -85,7 +85,7 @@ export class StateComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { state?: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds?: string[] }): void {
+  public onSidenavOutput(result: { state?: State; stateEnumerations: StateEnumeration[]; deletedEnumerationIds?: string[] }): void {
     if (result === undefined) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
@@ -127,6 +127,7 @@ export class StateComponent implements OnDestroy {
   /**
    * Only dispatch a valid file, if file is null then we couldn't parse the file
    * due to a filetype issue.
+   *
    * @param fileEvent The Event for the current file.
    * @param type The type of items that are being uploaded, either 'states', or 'enumerations'.
    */

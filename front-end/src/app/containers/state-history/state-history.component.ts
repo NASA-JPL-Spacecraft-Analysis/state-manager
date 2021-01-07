@@ -11,7 +11,7 @@ import { StateTableModule } from 'src/app/components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'state-history',
+  selector: 'app-state-history',
   styleUrls: [ 'state-history.component.css' ],
   templateUrl: 'state-history.component.html'
 })

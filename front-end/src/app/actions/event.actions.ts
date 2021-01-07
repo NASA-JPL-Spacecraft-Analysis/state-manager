@@ -4,7 +4,7 @@ import { Event } from '../models';
 
 export const createEvent = createAction(
   '[event] createEvent',
-  props<{ collectionId: string, event: Event }>()
+  props<{ collectionId: string; event: Event }>()
 );
 
 export const createEventFailure = createAction(

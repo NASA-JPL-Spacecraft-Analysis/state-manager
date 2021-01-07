@@ -16,14 +16,14 @@ import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'state-sidenav',
+  selector: 'app-state-sidenav',
   styleUrls: [ 'state-sidenav.component.css' ],
   templateUrl: 'state-sidenav.component.html'
 })
 export class StateSidenavComponent implements OnChanges, OnDestroy {
   @Input() public state: State;
 
-  @Output() public modifyState: EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: string[] }>;
+  @Output() public modifyState: EventEmitter<{ state: State; stateEnumerations: StateEnumeration[]; deletedEnumerationIds: string[] }>;
   @Output() public modifyEnumerations: EventEmitter<StateEnumeration[]>;
 
   public deletedEnumerationIds: string[];
@@ -43,7 +43,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.modifyState = new EventEmitter<{ state: State, stateEnumerations: StateEnumeration[], deletedEnumerationIds: string[] }>();
+    this.modifyState = new EventEmitter<{ state: State; stateEnumerations: StateEnumeration[]; deletedEnumerationIds: string[] }>();
     this.modifyEnumerations = new EventEmitter<StateEnumeration[]>();
 
     this.subscriptions.add(

@@ -10,7 +10,7 @@ import { IdentifierFormModule } from '../identifier-form/identifier-form.compone
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'event-sidenav',
+  selector: 'app-event-sidenav',
   styleUrls: [ 'event-sidenav.component.css' ],
   templateUrl: 'event-sidenav.component.html'
 })

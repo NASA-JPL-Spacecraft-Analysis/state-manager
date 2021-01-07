@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store, Action } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { switchMap, map, catchError } from 'rxjs/operators';
@@ -10,23 +10,16 @@ import { InformationTypesActions, CollectionActions } from '../actions';
 
 @Injectable()
 export class InformationTypesEffects {
-  constructor(
-    private actions: Actions,
-    private informationTypesService: InformationTypesService
-  ) {}
-
-  public navInformationTypes = createEffect(() => {
-    return this.actions.pipe(
+  public navInformationTypes = createEffect(() =>
+    this.actions.pipe(
       ofRoute('collection/:collectionId/information-types'),
       mapToParam<string>('collectionId'),
-      switchMap(collectionId => {
-        return this.getInformationTypes(collectionId);
-      })
-    );
-  });
+      switchMap(collectionId => this.getInformationTypes(collectionId))
+    )
+  );
 
-  public getInformationTypesByCollectionId = createEffect(() => {
-    return this.actions.pipe(
+  public getInformationTypesByCollectionId = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.setSelectedCollection),
       switchMap(({ id }) => {
         if (id !== null) {
@@ -35,8 +28,13 @@ export class InformationTypesEffects {
 
         return [];
       })
-    );
-  });
+    )
+  );
+
+  constructor(
+    private actions: Actions,
+    private informationTypesService: InformationTypesService
+  ) {}
 
   private getInformationTypes(id: string): Observable<Action> {
     return this.informationTypesService.getInformationTypes(

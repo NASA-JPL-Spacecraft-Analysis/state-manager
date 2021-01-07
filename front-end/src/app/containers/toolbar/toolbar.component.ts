@@ -13,7 +13,7 @@ import { CollectionModule } from '../collections/collections.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'toolbar',
+  selector: 'app-toolbar',
   styleUrls: [ 'toolbar.component.css' ],
   templateUrl: 'toolbar.component.html'
 })

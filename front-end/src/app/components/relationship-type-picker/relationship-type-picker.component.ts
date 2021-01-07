@@ -16,7 +16,7 @@ import {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'relationship-type-picker',
+  selector: 'app-relationship-type-picker',
   styleUrls: [ 'relationship-type-picker.component.css' ],
   templateUrl: 'relationship-type-picker.component.html'
 })

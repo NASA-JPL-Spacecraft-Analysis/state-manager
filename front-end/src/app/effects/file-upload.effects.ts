@@ -11,18 +11,8 @@ import { Action } from '@ngrx/store';
 
 @Injectable()
 export class FileUploadEffects {
-  constructor(
-    private actions: Actions,
-    private eventService: EventService,
-    private informationTypesService: InformationTypesService,
-    private parseService: ParseService,
-    private stateService: StateService,
-    private relationshipService: RelationshipService,
-    private validationService: ValidationService
-  ) {}
-
-  public uploadInformationTypes = createEffect(() => {
-    return this.actions.pipe(
+  public uploadInformationTypes = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
       switchMap(({ file, collectionId }) =>
         forkJoin([
@@ -81,11 +71,11 @@ export class FileUploadEffects {
           this.throwFileParseError(informationTypes)
         ];
       })
-    );
-  });
+    )
+  );
 
-  public uploadEnumerations = createEffect(() => {
-    return this.actions.pipe(
+  public uploadEnumerations = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadStateEnumerations),
       switchMap(({ collectionId, file }) =>
         forkJoin([
@@ -150,11 +140,11 @@ export class FileUploadEffects {
           this.throwFileParseError(stateEnumerations)
         ];
       })
-    );
-  });
+    )
+  );
 
-  public uploadEvents = createEffect(() => {
-    return this.actions.pipe(
+  public uploadEvents = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadEvents),
       switchMap(({ file, collectionId }) =>
         forkJoin([
@@ -210,11 +200,11 @@ export class FileUploadEffects {
           this.throwFileParseError(events)
         ];
       })
-    );
-  });
+    )
+  );
 
-  public uploadRelationship = createEffect(() => {
-    return this.actions.pipe(
+  public uploadRelationship = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
       switchMap(({ file, collectionId }) =>
         forkJoin([
@@ -270,11 +260,11 @@ export class FileUploadEffects {
           this.throwFileParseError(relationships)
         ];
       })
-    );
-  });
+    )
+  );
 
-  public uploadStates = createEffect(() => {
-    return this.actions.pipe(
+  public uploadStates = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadStates),
       switchMap(({ collectionId, file }) =>
         forkJoin([
@@ -331,8 +321,18 @@ export class FileUploadEffects {
           this.throwFileParseError(states)
         ];
       })
-    );
-  });
+    )
+  );
+
+  constructor(
+    private actions: Actions,
+    private eventService: EventService,
+    private informationTypesService: InformationTypesService,
+    private parseService: ParseService,
+    private stateService: StateService,
+    private relationshipService: RelationshipService,
+    private validationService: ValidationService
+  ) {}
 
   // The error will be a string, but we need to check for other types as well.
   private throwFileParseError(error: string | any[]): Action {
