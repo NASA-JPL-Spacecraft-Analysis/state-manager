@@ -33,7 +33,7 @@ export class ValidationService {
     return (
       informationType.hasOwnProperty('identifier')
       && informationType.hasOwnProperty('displayName')
-      && informationType.hasOwnProperty('type')
+      && informationType.hasOwnProperty('informationType')
     );
   }
 

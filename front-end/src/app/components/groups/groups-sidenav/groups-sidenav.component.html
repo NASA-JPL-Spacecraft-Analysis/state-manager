@@ -1,0 +1,34 @@
+<div class ="sidenav-container">
+  <div class="sidenav-header">
+    <identifier-form
+      [originalIdentifier]="originalGroupName"
+      [identifierMap]="groupNameMap"
+      (duplicateIdentifier)="onDuplicateGroupName($event)"
+      (identifierEmitter)="onGroupNameChange($event)">
+    </identifier-form>
+
+    <button mat-icon-button (click)="onCancel()">
+      <mat-icon svgIcon="clear"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <mat-select #itemSelector
+      [disabled]="collectionItems.length === 0"
+      (selectionChange)="onItemSelect($event)">
+      <mat-option [value]="item" *ngFor="let item of collectionItems">
+        {{item.identifier}}
+      </mat-option>
+    </mat-select>
+
+    <p>Items:</p>
+
+    <mat-list-item *ngFor="let mapping of groupMappings">
+      <div mat-line>{{mapping.item.identifier}}</div>
+    </mat-list-item>
+
+    <div class="sidenav-actions">
+      <button mat-raised-button color="primary" type="submit">Save</button>
+    </div>
+  </form>
+</div>

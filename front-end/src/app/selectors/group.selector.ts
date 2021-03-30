@@ -8,3 +8,8 @@ export const getGroups = createSelector(
   getGroupState,
   (state: GroupState) => state.groups
 );
+
+export const getSelectedGroup = createSelector(
+  getGroupState,
+  (state: GroupState) => state.selectedGroup
+);

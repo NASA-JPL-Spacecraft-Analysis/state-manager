@@ -46,7 +46,7 @@ CREATE TABLE `groups` (
 CREATE TABLE `information_types` (
   `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) DEFAULT NULL,
-  `type` int(11) NOT NULL,
+  `informationType` int(11) NOT NULL,
   `identifier` varchar(45) NOT NULL,
   `displayName` text,
   `description` text,
@@ -152,7 +152,6 @@ BEGIN
 	set new.id = uuid();
 END$$
 DELIMITER ;
-
 
 DROP TRIGGER IF EXISTS `state-manager`.`groups_BEFORE_INSERT`;
 DELIMITER $$

@@ -37,9 +37,6 @@ export class FileUploadEffects {
       switchMap(({ collectionId, informationTypes }) => {
         if (Array.isArray(informationTypes) && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
-            informationType.type = informationType.informationType;
-            delete informationType.informationType;
-
             if (!this.validationService.validateInformationType(informationType)) {
               return [
                 ToastActions.showToast({

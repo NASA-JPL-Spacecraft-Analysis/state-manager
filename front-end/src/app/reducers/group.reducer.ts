@@ -4,11 +4,13 @@ import { GroupActions } from '../actions';
 import { Group } from '../models';
 
 export interface GroupState {
-  groups: Group[]
+  groups: Group[];
+  selectedGroup: Group;
 };
 
 export const initialState: GroupState = {
-  groups: []
+  groups: [],
+  selectedGroup: null
 };
 
 export const reducer = createReducer(
@@ -18,5 +20,9 @@ export const reducer = createReducer(
     groups: [
       ...groups
     ]
+  })),
+  on(GroupActions.setSelectedGroup, (state, { group }) => ({
+    ...state,
+    selectedGroup: group
   }))
 );

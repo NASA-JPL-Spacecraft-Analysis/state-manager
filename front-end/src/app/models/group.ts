@@ -3,6 +3,7 @@ import { InformationTypes } from './information-types';
 import { State } from './state';
 
 export interface Group {
+  collectionId: string;
   groupMappings: GroupMapping[];
   id: string;
   name: string;
@@ -10,6 +11,11 @@ export interface Group {
 
 export interface GroupMapping {
   id: string;
-  item: Event | InformationTypes | State;
+  item: GroupItemType;
   itemId: string;
 }
+
+export type GroupItemType =
+  | Event
+  | InformationTypes
+  | State;

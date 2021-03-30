@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class IdentifierFormComponent {
   @Input() public originalIdentifier: string;
+  // TODO: Change identifierMap to a set.
   @Input() public identifierMap: Map<string, string>;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;

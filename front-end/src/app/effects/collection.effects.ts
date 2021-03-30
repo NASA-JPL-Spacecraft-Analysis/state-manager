@@ -133,7 +133,7 @@ export class CollectionEffects {
       ofType(CollectionActions.fetchCollectionsSuccess),
       switchMap(({ collections }) => {
         const keys = [];
-        let collectionId = null;
+        let collectionId: string = null;
 
         for (const collection of collections) {
           keys.push(collection.id);
@@ -142,7 +142,7 @@ export class CollectionEffects {
         // Search our URL for a valid collectionId.
         for (const splitUrl of this.router.url.split('/')) {
           if (keys.includes(splitUrl)) {
-            collectionId = Number(splitUrl);
+            collectionId = splitUrl;
           }
         }
 

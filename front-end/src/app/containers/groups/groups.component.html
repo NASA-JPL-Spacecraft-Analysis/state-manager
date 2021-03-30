@@ -1,12 +1,19 @@
 <mat-toolbar class="toolbar">
   GROUPS
+
+  <div>
+    <button mat-raised-button class="gray-button" (click)="onModifyGroup()">
+      Create New Group
+    </button>
+  </div>
+
 </mat-toolbar>
 
 <div class="content-container">
   <div class="content">
     <ng-container *ngIf="groups.length > 0; else noGroups">
       <mat-list *ngFor="let group of groups">
-        <div mat-subheader>{{group.name}}</div>
+        <div mat-subheader (click)="onModifyGroup(group)">{{group.name}}</div>
 
         <mat-list-item *ngFor="let mapping of group.groupMappings">
           <div mat-line>{{mapping.item.identifier}}</div>
@@ -21,5 +28,18 @@
     <ng-template #noGroups>
       <span>This collection does not have any groups.</span>
     </ng-template>
+  </div>
+
+  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
+    <groups-sidenav
+      [informationTypesMap]="informationTypesMap"
+      [eventMap]="eventMap"
+      [group]="group"
+      [groupNameMap]="groupNameMap"
+      [selectedCollectionId]="selectedCollectionId"
+      [stateMap]="stateMap"
+      (duplicateGroupName)="onDuplicateGroupName($event)"
+      (modifyGroup)="onSidenavOutput($event)">
+    </groups-sidenav>
   </div>
 </div>
