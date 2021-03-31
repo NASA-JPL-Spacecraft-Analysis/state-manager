@@ -59,6 +59,24 @@ export const CREATE_EVENTS = gql(`
   }
 `);
 
+export const CREATE_GROUP = gql(`
+  mutation CreateGroup(
+    $collectionId: ID!
+    $name: String!
+    $groupMappings: [GroupMappings]!
+  ) {
+    createGroup(
+      data: {
+        collectionId: $collectionId
+        name: $name
+        groupMappings: $groupMappings
+      }
+    ) {
+      id
+    }
+  }
+`);
+
 export const CREATE_INFORMATION_TYPES = gql(`
   mutation CreateInformationTypes(
     $collectionId: ID!

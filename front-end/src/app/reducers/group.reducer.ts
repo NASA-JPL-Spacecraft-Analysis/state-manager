@@ -15,6 +15,13 @@ export const initialState: GroupState = {
 
 export const reducer = createReducer(
   initialState,
+  on(GroupActions.createGroupSuccess, (state, { group }) => ({
+    ...state,
+    groups: [
+      ...state.groups,
+      group
+    ]
+  })),
   on(GroupActions.setGroups, (state, { groups }) => ({
     ...state,
     groups: [

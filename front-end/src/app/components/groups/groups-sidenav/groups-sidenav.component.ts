@@ -2,7 +2,7 @@ import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Outp
 import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MaterialModule } from 'src/app/material';
 import { EventMap, Group, GroupItemType, GroupMapping, InformationTypesMap, StateMap, StringTMap } from 'src/app/models';
@@ -84,12 +84,24 @@ export class GroupsSidenavComponent implements OnChanges {
     this.originalGroupName = this.newGroup.name;
 
     this.formGroup = new FormGroup({
-      name: new FormControl(this.newGroup.name)
+      name: new FormControl(this.newGroup.name, [ Validators.required ]),
+      mappings: new FormControl(this.newGroup.groupMappings, [ Validators.required ])
     });
   }
 
   public onCancel(): void {
     this.modifyGroup.emit(undefined);
+  }
+
+  public onDeleteItem(item: GroupItemType): void {
+    // Remove the item from our mappings.
+    this.groupMappings = this.groupMappings.filter(mapping => mapping.item.id !== item.id);
+
+    // Remove the item from the map of group items.
+    this.groupItemMap.delete(item.id);
+
+    // Add the item back to the list of selectable items.
+    this.collectionItems.push(item);
   }
 
   public onDuplicateGroupName(duplicateGroupName: boolean): void {
@@ -119,14 +131,13 @@ export class GroupsSidenavComponent implements OnChanges {
     // Remove the item from out collection item list.
     this.collectionItems = this.collectionItems.filter(item => item.id !== value.id);
 
-    this.collectionItems = [ ...this.collectionItems ];
-
     this.itemSelector.value = null;
-    this.changeDetectorRef.markForCheck();
   }
 
   public onSubmit(): void {
-    if (!this.isDuplicateGroupName) {
+    if (!this.isDuplicateGroupName && this.newGroup.name !== '') {
+      this.formGroup.get('mappings').setValue(this.groupMappings);
+
       this.modifyGroup.emit(this.formGroup.value);
     } else {
       this.duplicateGroupName.emit(true);

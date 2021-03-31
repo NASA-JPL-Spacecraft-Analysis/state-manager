@@ -5,10 +5,11 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
-import { CollectionActions, EventActions, GroupActions, InformationTypesActions, LayoutActions, StateActions } from '../actions';
+import { CollectionActions, EventActions, GroupActions, LayoutActions, StateActions, ToastActions } from '../actions';
 import { AppState } from '../app-store';
 import { mapToParam, ofRoute } from '../functions/router';
-import { EventService, GroupService, InformationTypesService, StateService } from '../services';
+import { EventService, GroupService, StateService } from '../services';
+import { Group } from '../models';
 
 @Injectable()
 export class GroupEffects {
@@ -16,11 +17,47 @@ export class GroupEffects {
     private actions: Actions,
     private eventService: EventService,
     private groupService: GroupService,
-    private informationTypesService: InformationTypesService,
     private router: Router,
     private stateService: StateService,
     private store: Store<AppState>
   ) {}
+
+  public createGroup = createEffect(() => {
+    return this.actions.pipe(
+      ofType(GroupActions.createGroup),
+      switchMap(({ collectionId, group }) => {
+        return this.groupService.createGroup(
+          collectionId,
+          group
+        ).pipe(
+          switchMap((createdGroup: Group) => [
+            GroupActions.createGroupSuccess({
+              group: {
+                ...group,
+                id: createdGroup.id
+              }
+            }),
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            }),
+            ToastActions.showToast({
+              message: 'Group Created',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            GroupActions.createGroupFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Group creation failed',
+              toastType: 'error'
+            })
+          ])
+        )
+      })
+    )
+  });
 
   public getGroupsAndMappingsByCollectionId = createEffect(() => {
     return this.actions.pipe(

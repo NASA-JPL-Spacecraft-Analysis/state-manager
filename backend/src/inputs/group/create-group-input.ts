@@ -1,5 +1,6 @@
 import { Field, ID, InputType } from 'type-graphql';
-import { Group } from '../../models';
+
+import { Group, GroupMapping } from '../../models';
 
 @InputType()
 export class CreateGroupInput implements Partial<Group> {
@@ -8,4 +9,7 @@ export class CreateGroupInput implements Partial<Group> {
 
   @Field()
   public name!: string;
+
+  @Field(() => [ GroupMapping ])
+  public groupMappings!: GroupMapping[];
 }

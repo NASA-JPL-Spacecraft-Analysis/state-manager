@@ -8,7 +8,7 @@ import { Collection, Group, GroupMapping } from '../models';
 @Resolver(() => Group)
 export class GroupResolver implements ResolverInterface<Group> {
   @Mutation(() => GroupMapping)
-  public async addItemToGroup(@Arg('data') data: AddItemToGroupInput): Promise<GroupMapping> {
+  public async addItemToGroup(@Arg('data') data: AddItemToGroupInput): Promise<GroupMapping[]> {
     const group = await Group.findOne({
       id: data.groupId
     });
@@ -17,11 +17,7 @@ export class GroupResolver implements ResolverInterface<Group> {
       throw new UserInputError(`A group with the id "${data.groupId} does not exist, please pass a valid id and try again`);
     }
 
-    // TODO: Right now we're not doing any validation on the incoming item id, think about a way to check this.
-    const groupMapping = GroupMapping.create(data);
-    await groupMapping.save();
-
-    return groupMapping;
+    return await this.createNewGroupMappings(group);
   }
 
   @Mutation(() => Group)
@@ -47,6 +43,8 @@ export class GroupResolver implements ResolverInterface<Group> {
     const group = Group.create(data);
     await group.save();
 
+    group.groupMappings = await this.createNewGroupMappings(group);
+
     return group;
   }
 
@@ -67,6 +65,22 @@ export class GroupResolver implements ResolverInterface<Group> {
   @Query(() => [ Group ])
   public groups(@Args() { collectionId }: CollectionIdArgs): Promise<Group[]> {
     return this.findGroupsByCollectionId(collectionId);
+  }
+
+  private async createNewGroupMappings(group: Group): Promise<GroupMapping[]> {
+    const groupMappings: GroupMapping[] = [];
+
+    // TODO: Right now we're not doing any validation on the incoming item id, think about a way to check this.
+
+    for (const groupMapping of group.groupMappings) {
+      const newGroupMapping = GroupMapping.create(groupMapping);
+      newGroupMapping.groupId = group.id;
+
+      await newGroupMapping.save();
+    }
+
+
+    return groupMappings;
   }
 
   private findGroupByName(collectionId: string, name: string): Promise<Group | undefined> {

@@ -13,6 +13,8 @@
   </div>
 
   <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <p>Add Item:</p>
+
     <mat-select #itemSelector
       [disabled]="collectionItems.length === 0"
       (selectionChange)="onItemSelect($event)">
@@ -24,7 +26,11 @@
     <p>Items:</p>
 
     <mat-list-item *ngFor="let mapping of groupMappings">
-      <div mat-line>{{mapping.item.identifier}}</div>
+      <div mat-line class="item-line">
+        {{mapping.item.identifier}}
+
+        <mat-icon svgIcon="clear" matTooltip="Delete this item" (click)="onDeleteItem(mapping.item)"></mat-icon>
+      </div>
     </mat-list-item>
 
     <div class="sidenav-actions">

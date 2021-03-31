@@ -7,6 +7,16 @@ export const createGroup = createAction(
   props<{ collectionId: string, group: Group }>()
 );
 
+export const createGroupFailure = createAction(
+  '[group] createGroupFailure',
+  props<{ error: Error }>()
+);
+
+export const createGroupSuccess = createAction(
+  '[group] createGroupSuccess',
+  props<{ group: Group }>()
+);
+
 export const fetchGroupsFailure = createAction(
   '[group] fetchGroupsFailure',
   props<{ error: Error }>()
