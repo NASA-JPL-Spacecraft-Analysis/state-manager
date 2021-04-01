@@ -28,6 +28,7 @@ export class ToolbarComponent implements OnDestroy {
     private domSanitizer: DomSanitizer,
     private matIconRegistry: MatIconRegistry
   ) {
+    this.matIconRegistry.addSvgIcon('help', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/help.svg'));
     this.matIconRegistry.addSvgIcon('more_vert', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/more_vert.svg'));
 
     this.subscriptions.add(

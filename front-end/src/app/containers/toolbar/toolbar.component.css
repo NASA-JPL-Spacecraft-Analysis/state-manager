@@ -3,6 +3,11 @@ button {
   color: white;
 }
 
+.help-icon {
+  color: white;
+  vertical-align: middle;
+}
+
 .mat-toolbar {
   display: flex;
   justify-content: space-between;
