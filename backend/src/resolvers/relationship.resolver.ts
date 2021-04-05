@@ -3,7 +3,7 @@ import { UserInputError } from 'apollo-server';
 
 import { CollectionIdArgs, IdArgs } from '../args';
 import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
-import { Relationship, IdentifierType, InformationTypeEnum, InformationType, Event, State, RelationshipHistory } from '../models';
+import { Relationship, InformationType, InformationTypeEnum, Event, State, RelationshipHistory, IdentifierTypeUnion } from '../models';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
@@ -22,10 +22,8 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     for (const relationship of data.relationships) {
       relationship.collectionId = data.collectionId;
 
-      const subject = await this.getSubjectOrTarget(relationship.subjectType,
-        { collectionId: data.collectionId, identifier: relationship.subjectIdentifier });
-      const target = await this.getSubjectOrTarget(relationship.targetType,
-        { collectionId: data.collectionId, identifier: relationship.targetIdentifier });
+      const subject = await this.getSubjectOrTarget(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
+      const target = await this.getSubjectOrTarget(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
 
       if (!subject) {
         throw new UserInputError(`Subject with provided identifier: ${relationship.subjectIdentifier} does not exist.`);
@@ -68,14 +66,22 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     });
   }
 
-  @FieldResolver()
-  public async subject(@Root() relationship: Relationship): Promise<IdentifierType | undefined> {
-    return this.getSubjectOrTarget(relationship.subjectType, { id: relationship.subjectTypeId });
+  @FieldResolver(() => IdentifierTypeUnion)
+  public async subject(@Root() relationship: Relationship): Promise<typeof IdentifierTypeUnion | undefined> {
+    return this.getSubjectOrTarget(
+      relationship.collectionId,
+      relationship.subjectType,
+      relationship.subjectTypeId
+    );
   }
 
-  @FieldResolver()
-  public async target(@Root() relationship: Relationship): Promise<IdentifierType | undefined> {
-    return this.getSubjectOrTarget(relationship.targetType, { id: relationship.targetTypeId });
+  @FieldResolver(() => IdentifierTypeUnion)
+  public async target(@Root() relationship: Relationship): Promise<typeof IdentifierTypeUnion | undefined> {
+    return this.getSubjectOrTarget(
+      relationship.collectionId,
+      relationship.targetType,
+      relationship.targetTypeId
+      );
   }
 
   @Mutation(() => Relationship)
@@ -105,37 +111,48 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
 
   /**
    * Finds the subject or target of the relationship based on id or identifier.
-   * @param type The type of the thing we're looking for.
    * @param id The optional id of the thing we're looking for.
    * @param identifier The optional identifier of the thing we're looking for.
    */
-  private async getSubjectOrTarget<T extends IdentifierType | undefined>(
-    type: InformationTypeEnum, args: { collectionId?: string, id?: string, identifier?: string }
-  ): Promise<T | undefined> {
-    switch (type) {
-      case InformationTypeEnum.Activity: {
-        return await InformationType.findOne(args) as T;
+  private async getSubjectOrTarget(collectionId: string, relationshipType: InformationTypeEnum, id?: string, identifier?: string)
+    : Promise<typeof IdentifierTypeUnion | undefined> {
+    if (id || identifier) {
+      let query;
+
+      if (id) {
+        query = {
+          id: id
+        };
+      } else {
+        query = {
+          collectionId: collectionId,
+          identifier: identifier
+        };
       }
-      case InformationTypeEnum.Command: {
-        return await InformationType.findOne(args) as T;
+
+      if (relationshipType === InformationTypeEnum.Event) {
+        const event = await Event.findOne(query);
+
+        if (event) {
+          return event;
+        }
       }
-      case InformationTypeEnum.Event: {
-        return await Event.findOne(args) as T;
+      
+      if (relationshipType === InformationTypeEnum.State) {
+        const state = await State.findOne(query);
+
+        if (state) {
+          return state;
+        }
       }
-      case InformationTypeEnum.FSWParameter: {
-        return await InformationType.findOne(args) as T;
+
+      const informationType = await InformationType.findOne(query);
+
+      if (informationType) {
+        return informationType;
       }
-      case InformationTypeEnum.FlightRule: {
-        return await InformationType.findOne(args) as T;
-      }
-      case InformationTypeEnum.Model: {
-        return await State.findOne(args) as T;
-      }
-      case InformationTypeEnum.State: {
-        return await State.findOne(args) as T;
-      }
-      default:
-        return undefined;
     }
+
+    return undefined;
   }
 }

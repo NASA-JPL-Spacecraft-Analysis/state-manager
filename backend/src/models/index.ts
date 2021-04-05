@@ -1,6 +1,7 @@
 export * from './collection';
 export * from './event-history';
 export * from './event';
+export * from './identifier-type-union';
 export * from './identifier-type';
 export * from './information-type';
 export * from './information-type.enum';

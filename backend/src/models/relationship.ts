@@ -1,9 +1,8 @@
-
 import { Entity, Column } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 
-import { InformationTypeEnum } from './information-type.enum';
-import { IdentifierType } from './identifier-type';
+// This fixes the circular dependency import issue by importing all our models at once.
+import * as Models from './';
 import { Node } from './node';
 
 @Entity('relationships')
@@ -21,23 +20,23 @@ export class Relationship extends Node {
   @Column({ default: null, nullable: true })
   public displayName?: string;
 
-  @Field(() => IdentifierType, { nullable: true })
-  public subject?: IdentifierType;
+  @Field(() => Models.IdentifierTypeUnion, { nullable: true })
+  public subject?: typeof Models.IdentifierTypeUnion;
 
-  @Field(() => InformationTypeEnum)
+  @Field(() => Models.InformationTypeEnum)
   @Column()
-  public subjectType!: InformationTypeEnum;
+  public subjectType!: Models.InformationTypeEnum;
 
   @Field(() => ID)
   @Column()
   public subjectTypeId!: string;
 
-  @Field(() => IdentifierType, { nullable: true })
-  public target?: IdentifierType;
+  @Field(() => Models.IdentifierTypeUnion, { nullable: true })
+  public target?: typeof Models.IdentifierTypeUnion;
 
-  @Field(() => InformationTypeEnum)
+  @Field(() => Models.InformationTypeEnum)
   @Column()
-  public targetType!: InformationTypeEnum;
+  public targetType!: Models.InformationTypeEnum;
 
   @Field(() => ID)
   @Column()
