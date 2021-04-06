@@ -20,7 +20,8 @@ export const reducer = createReducer(
     groups: [
       ...state.groups,
       group
-    ]
+    ],
+    selectedGroup: group
   })),
   on(GroupActions.setGroups, (state, { groups }) => ({
     ...state,

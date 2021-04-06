@@ -2,7 +2,8 @@ import { UserInputError } from 'apollo-server';
 import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
 import { CollectionIdArgs } from '../args';
-import { AddItemToGroupInput, CreateGroupInput, UpdateGroupInput } from '../inputs';
+import { CreateGroupInput, UpdateGroupInput } from '../inputs';
+import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping } from '../models';
 
 @Resolver(() => Group)
@@ -30,7 +31,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     const group = Group.create(data);
     await group.save();
 
-    group.groupMappings = await this.createNewGroupMappings(group);
+    group.groupMappings = await this.createNewGroupMappings(data.groupMappings, group.id);
 
     return group;
   }
@@ -108,19 +109,18 @@ export class GroupResolver implements ResolverInterface<Group> {
     return group;
   }
 
-  private async createNewGroupMappings(group: Group): Promise<GroupMapping[]> {
-    const groupMappings: GroupMapping[] = [];
+  private async createNewGroupMappings(groupMappings: CreateGroupMappingInput[], groupId: string): Promise<GroupMapping[]> {
+    const createdGroupMappings: GroupMapping[] = [];
 
     // TODO: Right now we're not doing any validation on the incoming item id, think about a way to check this.
-    for (const groupMapping of group.groupMappings) {
+    for (const groupMapping of groupMappings) {
       const newGroupMapping = GroupMapping.create(groupMapping);
-      newGroupMapping.groupId = group.id;
+      newGroupMapping.groupId = groupId;
 
-      await newGroupMapping.save();
+      createdGroupMappings.push(await newGroupMapping.save());
     }
 
-
-    return groupMappings;
+    return createdGroupMappings;
   }
 
   private findGroupByName(collectionId: string, name: string): Promise<Group | undefined> {

@@ -25,25 +25,17 @@ export class GroupEffects {
   public createGroup = createEffect(() => {
     return this.actions.pipe(
       ofType(GroupActions.createGroup),
-      switchMap(({ collectionId, group }) => {
-        // We don't need to send item information during the creation, so delete it.
-        for (const mapping of group.groupMappings) {
-          delete mapping.item;
-        }
-
-        return this.groupService.createGroup(
+      switchMap(({ collectionId, group }) =>
+        this.groupService.createGroup(
           collectionId,
           group
         ).pipe(
           switchMap((createdGroup: Group) => [
             GroupActions.createGroupSuccess({
               group: {
-                ...group,
+                ...createdGroup,
                 id: createdGroup.id
               }
-            }),
-            LayoutActions.toggleSidenav({
-              showSidenav: false
             }),
             ToastActions.showToast({
               message: 'Group Created',
@@ -60,7 +52,7 @@ export class GroupEffects {
             })
           ])
         )
-      })
+      )
     )
   });
 

@@ -62,17 +62,52 @@ export const CREATE_EVENTS = gql(`
 export const CREATE_GROUP = gql(`
   mutation CreateGroup(
     $collectionId: ID!
+    $groupMappings: [CreateGroupMappingInput!]!
     $name: String!
-    $groupMappings: [GroupMappings]!
   ) {
     createGroup(
       data: {
         collectionId: $collectionId
-        name: $name
         groupMappings: $groupMappings
+        name: $name
       }
     ) {
+      groupMappings {
+        item {
+          ... on Event {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
+          ... on InformationType {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+            informationType: type 
+          }
+          ... on State {
+            description
+            displayName
+            enumerations {
+              id
+              label
+              value
+            }
+            id
+            identifier
+            source
+            subsystem
+            type
+            units
+          }
+        }
+      }
       id
+      name
     }
   }
 `);
