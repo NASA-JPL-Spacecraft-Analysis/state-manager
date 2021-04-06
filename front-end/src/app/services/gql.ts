@@ -93,7 +93,7 @@ export const CREATE_INFORMATION_TYPES = gql(`
       description
       displayName
       externalLink
-      informationType
+      type
     }
   }
 `);
@@ -286,7 +286,7 @@ export const GET_GROUPS_AND_MAPPINGS = gql(`
             externalLink
             id
             identifier
-            informationType
+            informationType: type 
           }
           ... on State {
             description
@@ -317,7 +317,7 @@ export const GET_INFORMATION_TYPES = gql(`
       externalLink
       id
       identifier
-      informationType
+      type 
     }
   }
 `);
@@ -445,6 +445,59 @@ export const UPDATE_EVENT = gql(`
       }
     ) {
       id
+    }
+  }
+`);
+
+export const UPDATE_GROUP = gql(`
+  mutation UpdateGroup(
+    $groupMappings: [CreateGroupMappingInput!]!
+    $id: ID!
+    $name: String!
+  ) {
+    updateGroup(
+      data: {
+        groupMappings: $groupMappings
+        id: $id
+        name: $name
+      }
+    ) {
+      groupMappings {
+        item {
+          ... on Event {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
+          ... on InformationType {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+            informationType: type 
+          }
+          ... on State {
+            description
+            displayName
+            enumerations {
+              id
+              label
+              value
+            }
+            id
+            identifier
+            source
+            subsystem
+            type
+            units
+          }
+        }
+      }
+      id
+      name
     }
   }
 `);

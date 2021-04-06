@@ -31,5 +31,28 @@ export const reducer = createReducer(
   on(GroupActions.setSelectedGroup, (state, { group }) => ({
     ...state,
     selectedGroup: group
-  }))
+  })),
+  on(GroupActions.updateGroupSuccess, (state, { group }) => {
+    let index = 0;
+
+    for (const existingGroup of state.groups) {
+      if (existingGroup.id === group.id) {
+        break;
+      }
+
+      index++;
+    }
+
+    const groups = [ ...state.groups ];
+
+    groups.splice(index, 1, group);
+
+    return {
+      ...state,
+      groups: [
+        ...groups
+      ],
+      selectedGroup: group,
+    };
+  })
 );

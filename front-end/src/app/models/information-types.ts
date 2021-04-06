@@ -7,7 +7,7 @@ export class InformationTypes {
   displayName: string;
   description: string;
   externalLink: string;
-  informationType: InformationTypeEnum;
+  type: InformationTypeEnum;
 }
 
 export type InformationTypesMap = Map<InformationTypeEnum, StringTMap<InformationTypes>>;

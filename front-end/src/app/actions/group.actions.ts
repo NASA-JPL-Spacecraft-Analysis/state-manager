@@ -36,3 +36,13 @@ export const updateGroup = createAction(
   '[group] updateGroup',
   props<{ group: Group }>()
 );
+
+export const updateGroupFailure = createAction(
+  '[group] updateGroupFailure',
+  props<{ error: Error }>()
+);
+
+export const updateGroupSuccess = createAction(
+  '[group] updateGroupSuccess',
+  props<{ group: Group }>()
+);

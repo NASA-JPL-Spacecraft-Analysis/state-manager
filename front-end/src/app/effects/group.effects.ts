@@ -26,6 +26,11 @@ export class GroupEffects {
     return this.actions.pipe(
       ofType(GroupActions.createGroup),
       switchMap(({ collectionId, group }) => {
+        // We don't need to send item information during the creation, so delete it.
+        for (const mapping of group.groupMappings) {
+          delete mapping.item;
+        }
+
         return this.groupService.createGroup(
           collectionId,
           group
@@ -93,6 +98,38 @@ export class GroupEffects {
       mapToParam<string>('collectionId'),
       switchMap(collectionId =>
         this.getItems(collectionId)
+      )
+    )
+  });
+
+  public updateGroup = createEffect(() => {
+    return this.actions.pipe(
+      ofType(GroupActions.updateGroup),
+      switchMap(({ group }) =>
+        this.groupService.updateGroup(
+          group
+        ).pipe(
+          switchMap((updateGroup: Group) => [
+            GroupActions.updateGroupSuccess({
+              group: {
+                ...updateGroup
+              }
+            }),
+            ToastActions.showToast({
+              message: 'Group Updated',
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            GroupActions.updateGroupFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Group update failed',
+              toastType: 'error'
+            })
+          ])
+        )
       )
     )
   });

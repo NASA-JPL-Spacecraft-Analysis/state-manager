@@ -2,24 +2,11 @@ import { UserInputError } from 'apollo-server';
 import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
 import { CollectionIdArgs } from '../args';
-import { AddItemToGroupInput, CreateGroupInput } from '../inputs';
+import { AddItemToGroupInput, CreateGroupInput, UpdateGroupInput } from '../inputs';
 import { Collection, Group, GroupMapping } from '../models';
 
 @Resolver(() => Group)
 export class GroupResolver implements ResolverInterface<Group> {
-  @Mutation(() => GroupMapping)
-  public async addItemToGroup(@Arg('data') data: AddItemToGroupInput): Promise<GroupMapping[]> {
-    const group = await Group.findOne({
-      id: data.groupId
-    });
-
-    if (!group) {
-      throw new UserInputError(`A group with the id "${data.groupId} does not exist, please pass a valid id and try again`);
-    }
-
-    return await this.createNewGroupMappings(group);
-  }
-
   @Mutation(() => Group)
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<Group> {
     const collection = await Collection.findOne({
@@ -67,11 +54,64 @@ export class GroupResolver implements ResolverInterface<Group> {
     return this.findGroupsByCollectionId(collectionId);
   }
 
+  @Mutation(() => Group)
+  public async updateGroup(@Arg('data') data: UpdateGroupInput): Promise<Group> {
+    const group = await Group.findOne(data.id);
+
+    if (!group) {
+      throw new UserInputError(`A group with id ${data.id} does not exist, please pass a valid group id and try again`);
+    }
+
+    Object.assign(group, data);
+    await group.save();
+
+    group.groupMappings = await GroupMapping.find({
+      where: {
+        groupId: group.id
+      }
+    });
+
+    // Create and populate a set of the incoming group mappings.
+    const groupMappingsSet = new Set<string>();
+
+    for (const mapping of data.groupMappings) {
+      groupMappingsSet.add(mapping.itemId);
+    }
+
+    // Loop over our existing group mappings to see what needs to be saved or deleted.
+    for (const mapping of group.groupMappings) {
+      // If the incoming list has the group mapping, remove it from the set and do nothing.
+      if (groupMappingsSet.has(mapping.itemId)) {
+        groupMappingsSet.delete(mapping.itemId);
+      } else {
+        // If we don't see the item in the incoming mapping list, delete it from the group.
+        await mapping.remove();
+      }
+    }
+
+    // Look at the remaining mappings, save them all to the group.
+    for (const itemId of groupMappingsSet) {
+      const groupMapping = GroupMapping.create({
+        groupId: group.id,
+        itemId
+      });
+
+      await groupMapping.save();
+    }
+
+    group.groupMappings = await GroupMapping.find({
+      where: {
+        groupId: group.id
+      }
+    });
+
+    return group;
+  }
+
   private async createNewGroupMappings(group: Group): Promise<GroupMapping[]> {
     const groupMappings: GroupMapping[] = [];
 
     // TODO: Right now we're not doing any validation on the incoming item id, think about a way to check this.
-
     for (const groupMapping of group.groupMappings) {
       const newGroupMapping = GroupMapping.create(groupMapping);
       newGroupMapping.groupId = group.id;

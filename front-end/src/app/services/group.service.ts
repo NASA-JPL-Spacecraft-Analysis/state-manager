@@ -40,4 +40,18 @@ export class GroupService {
       })
       .pipe(map(({ data: { groups } }) => groups));
   }
+
+  public updateGroup(group: Group): Observable<Group> {
+    return this.apollo
+      .mutate<{ updateGroup: Group }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.UPDATE_GROUP,
+        variables: {
+          name: group.name,
+          id: group.id,
+          groupMappings: group.groupMappings
+        }
+      })
+      .pipe(map(({ data: { updateGroup } }) => updateGroup));
+  }
 }

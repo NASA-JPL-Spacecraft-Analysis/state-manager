@@ -100,7 +100,6 @@ export class GroupsComponent implements OnDestroy {
   }
 
   public onSidenavOutput(group: Group): void {
-    console.log(group);
     if (group === undefined) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false

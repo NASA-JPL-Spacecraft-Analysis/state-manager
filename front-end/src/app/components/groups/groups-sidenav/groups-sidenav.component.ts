@@ -1,4 +1,4 @@
-import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges, Injectable, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -39,7 +39,6 @@ export class GroupsSidenavComponent implements OnChanges {
   private groupItemMap: Map<string, GroupItemType>;
 
   constructor(
-    private changeDetectorRef: ChangeDetectorRef,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer
   ) {
@@ -77,15 +76,17 @@ export class GroupsSidenavComponent implements OnChanges {
     this.addToCollectionItems(this.eventMap);
     this.addToCollectionItems(this.stateMap);
 
-    for (const informationType of Object.keys(this.informationTypesMap)) {
-      this.addToCollectionItems(this.informationTypesMap[informationType]);
+    if (this.informationTypesMap) {
+      for (const informationType of Object.keys(this.informationTypesMap)) {
+        this.addToCollectionItems(this.informationTypesMap[informationType]);
+      }
     }
 
     this.originalGroupName = this.newGroup.name;
 
     this.formGroup = new FormGroup({
       name: new FormControl(this.newGroup.name, [ Validators.required ]),
-      mappings: new FormControl(this.newGroup.groupMappings, [ Validators.required ])
+      groupMappings: new FormControl(this.newGroup.groupMappings, [ Validators.required ])
     });
   }
 
@@ -136,9 +137,20 @@ export class GroupsSidenavComponent implements OnChanges {
 
   public onSubmit(): void {
     if (!this.isDuplicateGroupName && this.newGroup.name !== '') {
-      this.formGroup.get('mappings').setValue(this.groupMappings);
+      this.formGroup.get('groupMappings').setValue(this.groupMappings);
 
-      this.modifyGroup.emit(this.formGroup.value);
+      const groupMappingIds = [];
+
+      // Pull out just the item ids so we can save the mappings.
+      for (const mapping of this.groupMappings) {
+        groupMappingIds.push({
+          itemId: mapping.item.id
+        });
+      }
+
+      this.newGroup.groupMappings = groupMappingIds;
+
+      this.modifyGroup.emit(this.newGroup);
     } else {
       this.duplicateGroupName.emit(true);
     }
