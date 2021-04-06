@@ -486,12 +486,14 @@ export const UPDATE_EVENT = gql(`
 
 export const UPDATE_GROUP = gql(`
   mutation UpdateGroup(
+    $collectionId: ID!
     $groupMappings: [CreateGroupMappingInput!]!
     $id: ID!
     $name: String!
   ) {
     updateGroup(
       data: {
+        collectionId: $collectionId
         groupMappings: $groupMappings
         id: $id
         name: $name

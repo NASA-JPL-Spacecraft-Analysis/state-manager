@@ -34,7 +34,7 @@ export const setSelectedGroup = createAction(
 
 export const updateGroup = createAction(
   '[group] updateGroup',
-  props<{ group: Group }>()
+  props<{ collectionId: string, group: Group }>()
 );
 
 export const updateGroupFailure = createAction(

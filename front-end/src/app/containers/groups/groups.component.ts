@@ -112,6 +112,7 @@ export class GroupsComponent implements OnDestroy {
         }));
       } else {
         this.store.dispatch(GroupActions.updateGroup({
+          collectionId: this.selectedCollectionId,
           group
         }));
       }

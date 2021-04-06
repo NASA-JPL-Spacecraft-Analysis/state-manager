@@ -10,25 +10,10 @@ import { Collection, Group, GroupMapping } from '../models';
 export class GroupResolver implements ResolverInterface<Group> {
   @Mutation(() => Group)
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<Group> {
-    const collection = await Collection.findOne({
-      where: {
-        id: data.collectionId
-      }
-    });
-
-    if (!collection) {
-      throw new UserInputError(`A collection with id ${data.collectionId} does not exist, please pass a valid collection id and try again`);
-    }
-
-    const collectionGroups = await this.findGroupsByCollectionId(data.collectionId);
-
-    for (const collectionGroup of collectionGroups) {
-      if (collectionGroup.name === data.name) {
-        throw new UserInputError(`A group with name "${data.name}" already exists in this colleciton, please change the name and try again`);
-      }
-    }
-
     const group = Group.create(data);
+
+    this.checkForDuplicateGroupName(group);
+
     await group.save();
 
     group.groupMappings = await this.createNewGroupMappings(data.groupMappings, group.id);
@@ -64,6 +49,9 @@ export class GroupResolver implements ResolverInterface<Group> {
     }
 
     Object.assign(group, data);
+
+    this.checkForDuplicateGroupName(group);
+
     await group.save();
 
     group.groupMappings = await GroupMapping.find({
@@ -107,6 +95,26 @@ export class GroupResolver implements ResolverInterface<Group> {
     });
 
     return group;
+  }
+
+  private async checkForDuplicateGroupName(group: Group): Promise<void> {
+    const collection = await Collection.findOne({
+      where: {
+        id: group.collectionId
+      }
+    });
+
+    if (!collection) {
+      throw new UserInputError(`A collection with id ${group.collectionId} does not exist, please pass a valid collection id and try again`);
+    }
+
+    const collectionGroups = await this.findGroupsByCollectionId(group.collectionId);
+
+    for (const collectionGroup of collectionGroups) {
+      if (collectionGroup.name === group.name) {
+        throw new UserInputError(`A group with name "${group.name}" already exists in this colleciton, please change the name and try again`);
+      }
+    }
   }
 
   private async createNewGroupMappings(groupMappings: CreateGroupMappingInput[], groupId: string): Promise<GroupMapping[]> {

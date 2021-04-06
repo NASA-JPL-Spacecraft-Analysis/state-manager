@@ -97,9 +97,10 @@ export class GroupEffects {
   public updateGroup = createEffect(() => {
     return this.actions.pipe(
       ofType(GroupActions.updateGroup),
-      switchMap(({ group }) =>
+      switchMap(({ collectionId, group }) =>
         this.groupService.updateGroup(
-          group
+          group,
+          collectionId
         ).pipe(
           switchMap((updateGroup: Group) => [
             GroupActions.updateGroupSuccess({
