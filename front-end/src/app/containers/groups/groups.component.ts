@@ -88,11 +88,9 @@ export class GroupsComponent implements OnDestroy {
   }
 
   public onModifyGroup(group?: Group): void {
-    if (group) {
-      this.store.dispatch(GroupActions.setSelectedGroup({
-        group
-      }))
-    }
+    this.store.dispatch(GroupActions.setSelectedGroup({
+      group
+    }))
 
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true

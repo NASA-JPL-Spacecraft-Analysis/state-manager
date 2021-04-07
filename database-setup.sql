@@ -29,6 +29,20 @@ CREATE TABLE `event_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `group_mapping` (
+  `id` varchar(36) NOT NULL,
+  `groupId` varchar(36) NOT NULL,
+  `itemId` varchar(36) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `groups` (
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `information_types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `collection_id` int(11) DEFAULT NULL,

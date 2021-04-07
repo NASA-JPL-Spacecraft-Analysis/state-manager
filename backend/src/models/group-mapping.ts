@@ -14,17 +14,12 @@ export class GroupMapping extends Node {
   public groupId!: string;
 
   @Field(() => GroupMappingItemUnion, { nullable: true })
-  public item?: GroupItemType;
+  public item?: typeof GroupMappingItemUnion;
 
   @Field(() => ID)
   @Column()
   public itemId!: string;
 }
-
-export type GroupItemType =
-  | Event
-  | InformationType
-  | State;
 
 export const GroupMappingItemUnion = createUnionType({
   name: 'GroupMappingItemUnion',
