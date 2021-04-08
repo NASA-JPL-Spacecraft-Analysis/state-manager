@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { StateActions, FileUploadActions } from '../actions';
+import { StateActions } from '../actions';
 import {
   State,
   StateEnumeration,

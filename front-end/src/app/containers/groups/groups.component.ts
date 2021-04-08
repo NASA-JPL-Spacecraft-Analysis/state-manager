@@ -44,7 +44,7 @@ export class GroupsComponent implements OnDestroy {
         this.groups = groups;
 
         for (const group of groups) {
-          this.groupNameMap.set(group.name, group.collectionId);
+          this.groupNameMap.set(group.name, group.id);
         }
 
         this.changeDetectorRef.markForCheck();
