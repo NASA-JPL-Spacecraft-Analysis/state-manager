@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { Event, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
+import { Event, IdentifierMap, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ValidationService {
-  public isDuplicateIdentifier(identifier: string, id: string, identifierMap: Map<string, string>) {
+  public isDuplicateIdentifier(identifier: string, id: string, identifierMap: IdentifierMap) {
     /**
      * If we come across a duplicate identifier
      * AND we have an id

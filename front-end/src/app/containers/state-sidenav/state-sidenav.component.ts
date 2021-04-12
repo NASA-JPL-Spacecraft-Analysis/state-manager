@@ -7,7 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { MatIconRegistry } from '@angular/material/icon';
 import { SubSink } from 'subsink';
 
-import { State, StateEnumeration } from '../../models';
+import { IdentifierMap, State, StateEnumeration } from '../../models';
 import { getStateIdentifierMap } from '../../selectors';
 import { ToastActions } from '../../actions';
 import { EnumFormModule, IdentifierFormModule } from '../../components';
@@ -30,7 +30,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public newState: State;
   public originalIdentifier: string;
   public form: FormGroup;
-  public stateIdentifierMap: Map<string, string>;
+  public stateIdentifierMap: IdentifierMap;
 
   private duplicateIdentifier: boolean;
   private subscriptions = new SubSink();

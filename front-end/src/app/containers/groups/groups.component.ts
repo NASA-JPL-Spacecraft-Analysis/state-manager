@@ -7,7 +7,7 @@ import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { getEventMap, getGroups, getInformationTypes, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
 import { GroupsSidenavModule } from 'src/app/components/groups';
-import { EventMap, Group, InformationTypesMap, StateMap } from 'src/app/models';
+import { EventMap, Group, IdentifierMap, InformationTypesMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 
 @Component({
@@ -20,7 +20,7 @@ export class GroupsComponent implements OnDestroy {
   public eventMap: EventMap;
   public group: Group;
   public groups: Group[];
-  public groupNameMap: Map<string, string>;
+  public groupNameMap: IdentifierMap;
   public informationTypesMap: InformationTypesMap;
   public showSidenav: boolean;
   public selectedCollectionId: string;
@@ -33,7 +33,7 @@ export class GroupsComponent implements OnDestroy {
     private store: Store<AppState>
   ) {
     this.subscriptions = new SubSink();
-    this.groupNameMap = new Map();
+    this.groupNameMap = {};
 
     this.subscriptions.add(
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
@@ -44,7 +44,7 @@ export class GroupsComponent implements OnDestroy {
         this.groups = groups;
 
         for (const group of groups) {
-          this.groupNameMap.set(group.name, group.id);
+          this.groupNameMap[group.name] = group.id;
         }
 
         this.changeDetectorRef.markForCheck();

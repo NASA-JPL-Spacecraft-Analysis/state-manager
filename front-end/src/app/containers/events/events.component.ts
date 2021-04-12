@@ -8,7 +8,7 @@ import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
 import { EventActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
-import { Event as StateEvent, EventMap } from 'src/app/models';
+import { Event as StateEvent, EventMap, IdentifierMap } from 'src/app/models';
 import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId, getEventIdentifierMap } from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 
@@ -20,7 +20,7 @@ import { EventSidenavModule, EventTableModule } from 'src/app/components';
 })
 export class EventsComponent implements OnDestroy {
   public event: StateEvent;
-  public eventIdentifierMap: Map<string, string>;
+  public eventIdentifierMap: IdentifierMap;
   public eventMap: EventMap;
   public selectedCollectionId: string;
   public showSidenav: boolean;

@@ -6,6 +6,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MaterialModule } from 'src/app/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentifierMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,9 +14,9 @@ import { FormsModule } from '@angular/forms';
   styleUrls: [ 'identifier-form.component.css' ],
   templateUrl: 'identifier-form.component.html'
 })
-export class IdentifierFormComponent implements OnInit {
+export class IdentifierFormComponent {
   @Input() public originalIdentifier: string;
-  @Input() public identifierMap: Map<string, string>;
+  @Input() public identifierMap: IdentifierMap;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public identifierEmitter: EventEmitter<string>;
@@ -35,20 +36,13 @@ export class IdentifierFormComponent implements OnInit {
     this.identifierEmitter = new EventEmitter<string>();
   }
 
-  public ngOnInit(): void {
-    // Convert our incoming object to a map if it's not one.
-    if (!(this.identifierMap instanceof Map)) {
-      this.identifierMap = new Map(Object.entries(this.identifierMap));
-    }
-  }
-
   /**
    * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
    * if the identifier isn't empty.
    * @param identifier The current identifier.
    */
   public onIdentifierChange(identifier: string): void {
-    if (this.identifierMap && this.identifierMap.size > 0) {
+    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
         this.identifierTooltipText = 'Your identifier is a duplicate';
@@ -78,8 +72,8 @@ export class IdentifierFormComponent implements OnInit {
    * @param identifier The current identifier.
    */
   private isIdentifierDuplicate(identifier: string): boolean {
-    if (this.identifierMap && this.identifierMap.size > 0) {
-      return this.identifierMap.get(identifier)
+    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
+      return this.identifierMap[identifier]
         && (!this.originalIdentifier || identifier !== this.originalIdentifier);
     }
 

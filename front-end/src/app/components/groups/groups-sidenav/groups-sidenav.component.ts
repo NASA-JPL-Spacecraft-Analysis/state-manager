@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MaterialModule } from 'src/app/material';
-import { EventMap, Group, GroupItemType, GroupMapping, InformationTypesMap, StateMap, StringTMap } from 'src/app/models';
+import { EventMap, Group, GroupItemType, GroupMapping, IdentifierMap, InformationTypesMap, StateMap, StringTMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 
@@ -18,7 +18,7 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 export class GroupsSidenavComponent implements OnChanges {
   @Input() public eventMap: EventMap;
   @Input() public group: Group;
-  @Input() public groupNameMap: Map<string, string>;
+  @Input() public groupNameMap: IdentifierMap;
   @Input() public informationTypesMap: InformationTypesMap;
   @Input() public selectedCollectionId: string;
   @Input() public stateMap: StateMap;
