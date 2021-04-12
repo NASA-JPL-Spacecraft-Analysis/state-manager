@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'identifier-form',
+  selector: 'app-identifier-form',
   styleUrls: [ 'identifier-form.component.css' ],
   templateUrl: 'identifier-form.component.html'
 })
@@ -38,6 +38,7 @@ export class IdentifierFormComponent {
   /**
    * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
    * if the identifier isn't empty.
+   *
    * @param identifier The current identifier.
    */
   public onIdentifierChange(identifier: string): void {
@@ -68,6 +69,7 @@ export class IdentifierFormComponent {
    * 1) That we have some identifiers
    * 2) That we have a unique identifier
    * 3) AND that we're not flagging an edited identifier on it's own value
+   *
    * @param identifier The current identifier.
    */
   private isIdentifierDuplicate(identifier: string): boolean {

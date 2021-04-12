@@ -19,19 +19,19 @@
 
 <div class="events-content-container">
   <div class="events-content">
-    <event-table
+    <app-event-table
       [eventMap]="eventMap"
       (eventSelected)="onModifyEvent($event)">
-    </event-table>
+    </app-event-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <event-sidenav
+    <app-event-sidenav
       [eventIdentifierMap]="eventIdentifierMap"
       [event]="event"
       [selectedCollectionId]="selectedCollectionId"
       (duplicateIdentifier)="onDuplicateIdentifier($event)"
       (modifyEvent)="onSidenavOutput($event)">
-    </event-sidenav>
+    </app-event-sidenav>
   </div>
 </div>

@@ -17,9 +17,9 @@ export const initialState: RelationshipState = {
 
 export const reducer = createReducer(
   initialState,
-  on(RelationshipActions.createRelationshipSuccess, (relationshipState, { relationship }) => {
-    return modifyRelationship(relationshipState, relationship);
-  }),
+  on(RelationshipActions.createRelationshipSuccess, (relationshipState, { relationship }) =>
+    modifyRelationship(relationshipState, relationship)
+  ),
   on(RelationshipActions.setRelationships, (relationshipState, { relationships }) => ({
     ...relationshipState,
     relationships: mapRelationships(relationships)
@@ -32,9 +32,9 @@ export const reducer = createReducer(
     ...relationshipState,
     selectedRelationship: relationship
   })),
-  on(RelationshipActions.updateRelationshipSuccess, (relationshipState, { relationship }) => {
-    return modifyRelationship(relationshipState, relationship);
-  }),
+  on(RelationshipActions.updateRelationshipSuccess, (relationshipState, { relationship }) =>
+    modifyRelationship(relationshipState, relationship)
+  ),
   on(FileUploadActions.uploadRelationshipsSuccess, (relationshipState, { relationships }) => ({
     ...relationshipState,
     relationships: {
@@ -44,20 +44,18 @@ export const reducer = createReducer(
   }))
 );
 
-function modifyRelationship(relationshipState: RelationshipState, relationship: Relationship): RelationshipState {
-  return {
-    ...relationshipState,
-    selectedRelationship: relationship,
-    relationships: {
-      ...relationshipState.relationships,
-      [relationship.id]: {
-        ...relationship
-      }
+const modifyRelationship = (relationshipState: RelationshipState, relationship: Relationship): RelationshipState => ({
+  ...relationshipState,
+  selectedRelationship: relationship,
+  relationships: {
+    ...relationshipState.relationships,
+    [relationship.id]: {
+      ...relationship
     }
-  };
-}
+  }
+});
 
-function mapRelationships(relationships: Relationship[]): RelationshipMap {
+const mapRelationships = (relationships: Relationship[]): RelationshipMap => {
   const relationshipMap = {};
 
   for (const relationship of relationships) {
@@ -65,4 +63,4 @@ function mapRelationships(relationships: Relationship[]): RelationshipMap {
   }
 
   return relationshipMap;
-}
+};

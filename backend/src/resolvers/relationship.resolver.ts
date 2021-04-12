@@ -100,42 +100,43 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     relationshipHistory.relationshipId = relationship.id;
     relationshipHistory.updated = new Date();
 
-    relationshipHistory.save();
+    void relationshipHistory.save();
   }
 
   /**
    * Finds the subject or target of the relationship based on id or identifier.
+   *
    * @param type The type of the thing we're looking for.
    * @param id The optional id of the thing we're looking for.
    * @param identifier The optional identifier of the thing we're looking for.
    */
   private async getSubjectOrTarget<T extends IdentifierType | undefined>(
-    type: InformationTypeEnum, args: { collectionId?: string, id?: string, identifier?: string }
+    type: InformationTypeEnum, args: { collectionId?: string; id?: string; identifier?: string }
   ): Promise<T | undefined> {
     switch (type) {
-      case InformationTypeEnum.Activity: {
-        return await InformationType.findOne(args) as T;
-      }
-      case InformationTypeEnum.Command: {
-        return await InformationType.findOne(args) as T;
-      }
-      case InformationTypeEnum.Event: {
-        return await Event.findOne(args) as T;
-      }
-      case InformationTypeEnum.FSWParameter: {
-        return await InformationType.findOne(args) as T;
-      }
-      case InformationTypeEnum.FlightRule: {
-        return await InformationType.findOne(args) as T;
-      }
-      case InformationTypeEnum.Model: {
-        return await State.findOne(args) as T;
-      }
-      case InformationTypeEnum.State: {
-        return await State.findOne(args) as T;
-      }
-      default:
-        return undefined;
+    case InformationTypeEnum.Activity: {
+      return await InformationType.findOne(args) as T;
+    }
+    case InformationTypeEnum.Command: {
+      return await InformationType.findOne(args) as T;
+    }
+    case InformationTypeEnum.Event: {
+      return await Event.findOne(args) as T;
+    }
+    case InformationTypeEnum.FSWParameter: {
+      return await InformationType.findOne(args) as T;
+    }
+    case InformationTypeEnum.FlightRule: {
+      return await InformationType.findOne(args) as T;
+    }
+    case InformationTypeEnum.Model: {
+      return await State.findOne(args) as T;
+    }
+    case InformationTypeEnum.State: {
+      return await State.findOne(args) as T;
+    }
+    default:
+      return undefined;
     }
   }
 }

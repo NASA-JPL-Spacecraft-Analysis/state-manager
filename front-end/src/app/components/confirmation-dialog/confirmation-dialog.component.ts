@@ -13,7 +13,7 @@ interface ConfirmationDialogData {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'confirmation-dialog',
+  selector: 'app-confirmation-dialog',
   styleUrls: [ 'confirmation-dialog.component.css' ],
   templateUrl: 'confirmation-dialog.component.html'
 })

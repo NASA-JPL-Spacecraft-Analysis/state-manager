@@ -31,7 +31,7 @@
       </mat-select>
     </mat-form-field>
 
-    <relationship-type-picker
+    <app-relationship-type-picker
       [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [isSubject]="true"
@@ -39,7 +39,7 @@
       [relationship]="newRelationship"
       [stateMap]="stateMap"
       [type]="subjectType">
-    </relationship-type-picker>
+    </app-relationship-type-picker>
 
     <mat-form-field class="target-type-picker">
       <mat-select placeholder="Target Type" [(value)]="targetType">
@@ -49,14 +49,14 @@
       </mat-select>
     </mat-form-field>
 
-    <relationship-type-picker
+    <app-relationship-type-picker
       [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [parentFormGroup]="form"
       [relationship]="newRelationship"
       [stateMap]="stateMap"
       [type]="targetType">
-    </relationship-type-picker>
+    </app-relationship-type-picker>
 
     <div class="sidenav-actions">
       <button mat-raised-button color="primary" type="submit">Save</button>

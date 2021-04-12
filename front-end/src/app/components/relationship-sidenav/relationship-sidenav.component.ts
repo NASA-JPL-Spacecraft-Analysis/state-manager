@@ -12,7 +12,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'relationship-sidenav',
+  selector: 'app-relationship-sidenav',
   styleUrls: [ 'relationship-sidenav.component.css' ],
   templateUrl: 'relationship-sidenav.component.html'
 })

@@ -18,6 +18,7 @@ export class CollectionResolver implements ResolverInterface<Collection> {
   /**
    * Marks the collection as disabled, will error if the user tries to delete
    * an already deleted collection.
+   *
    * @param id The id of the collection we're deleting.
    */
   @Mutation(() => Boolean)
@@ -34,7 +35,7 @@ export class CollectionResolver implements ResolverInterface<Collection> {
     }
 
     collection.enabled = false;
-    collection.save();
+    void collection.save();
 
     return {
       success: true
@@ -65,6 +66,7 @@ export class CollectionResolver implements ResolverInterface<Collection> {
   /**
    * Updates a single collection. Will error if the collection with the given id doesn't
    * exist.
+   *
    * @param id The id of the collection we're updating.
    */
   @Mutation(() => Collection)

@@ -11,7 +11,7 @@ import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'relationship-history',
+  selector: 'app-relationship-history',
   styleUrls: [ 'relationship-history.component.css' ],
   templateUrl: 'relationship-history.component.html'
 })

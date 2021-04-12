@@ -19,12 +19,8 @@ export const initialState: EventState = {
 
 export const reducer = createReducer(
   initialState,
-  on(EventActions.createEventSuccess, (state, { event }) => {
-    return modifyEvent(state, event);
-  }),
-  on(EventActions.updateEventSuccess, (state, { event }) => {
-    return modifyEvent(state, event);
-  }),
+  on(EventActions.createEventSuccess, (state, { event }) => modifyEvent(state, event)),
+  on(EventActions.updateEventSuccess, (state, { event }) => modifyEvent(state, event)),
   on(FileUploadActions.uploadEventsSuccess, (state, { events }) => {
     const eventMap = {};
 
@@ -79,7 +75,7 @@ export const reducer = createReducer(
   }))
 );
 
-function modifyEvent(state: EventState, event: Event) {
+const modifyEvent = (state: EventState, event: Event) => {
   const eventIdentifierMap = {
     ...state.eventIdentifierMap
   };
@@ -105,4 +101,4 @@ function modifyEvent(state: EventState, event: Event) {
     },
     selectedEvent: event
   };
-}
+};

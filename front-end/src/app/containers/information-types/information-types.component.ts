@@ -12,7 +12,7 @@ import { FileUploadActions } from 'src/app/actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'information-types',
+  selector: 'app-information-types',
   styleUrls: [ 'information-types.component.css' ],
   templateUrl: 'information-types.component.html'
 })
