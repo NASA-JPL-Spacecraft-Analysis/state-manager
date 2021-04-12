@@ -22,3 +22,8 @@ button {
   display: flex;
   align-items: center;
 }
+
+.version-text {
+  line-height: 3em;
+  padding: 0 1em;
+}
