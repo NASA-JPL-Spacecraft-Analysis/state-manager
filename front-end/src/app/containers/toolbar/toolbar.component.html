@@ -22,7 +22,13 @@
       Information Types 
     </button>
 
-    <mat-icon class="help-icon" svgIcon="help" matTooltip="State Manager V3.0"></mat-icon>
+    <button mat-icon-button [matMenuTriggerFor]="versionMenu">
+      <mat-icon class="help-icon" svgIcon="help"></mat-icon>
+    </button>
+
+    <mat-menu #versionMenu="matMenu">
+      <span class="version-text">State Manager V3.0</span>
+    </mat-menu>
 
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon svgIcon="more_vert"></mat-icon>
