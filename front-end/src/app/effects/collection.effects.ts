@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MatDialog } from '@angular/material/dialog';
-import { switchMap, map, withLatestFrom } from 'rxjs/operators';
+import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
 import { CollectionActions, ToastActions } from '../actions';
 import { CollectionService } from '../services';
@@ -39,6 +39,15 @@ export class CollectionEffects {
             ToastActions.showToast({
               message: 'Collection created',
               toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            CollectionActions.createCollectionFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Collection creation failed',
+              toastType: 'error'
             })
           ])
         )
@@ -89,7 +98,16 @@ export class CollectionEffects {
                     toastType: 'success'
                   })
                 ]
-              )
+              ),
+              catchError((error: Error) => [
+                CollectionActions.deleteCollectionFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: 'Collection deletion failed',
+                  toastType: 'error'
+                })
+              ])
             )
           );
         }
@@ -121,6 +139,15 @@ export class CollectionEffects {
             ToastActions.showToast({
               message: 'Collection edited',
               toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            CollectionActions.updateCollectionFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: 'Collection update failed',
+              toastType: 'error'
             })
           ])
         )

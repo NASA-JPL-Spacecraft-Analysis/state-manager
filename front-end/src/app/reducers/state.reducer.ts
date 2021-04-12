@@ -45,12 +45,6 @@ export const reducer = createReducer(
       ...mapEnumerations(enumerations)
     }
   })),
-  on(StateActions.setStateEnumerations, (stateState, { stateEnumerations }) => ({
-    ...stateState,
-    stateEnumerationMap: {
-      ...mapEnumerations(stateEnumerations)
-    }
-  })),
   on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
     const stateHistoryMap = {};
 

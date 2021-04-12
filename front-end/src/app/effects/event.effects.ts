@@ -137,7 +137,7 @@ export class EventEffects {
             })
           ]),
           catchError((error: Error) => [
-            EventActions.createEventFailure({
+            EventActions.updateEventFailure({
               error
             }),
             ToastActions.showToast({

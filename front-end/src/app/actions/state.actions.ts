@@ -41,16 +41,6 @@ export const deleteEnumerationsSuccess = createAction(
   props<{ deletedEnumerationIds: string[] }>()
 );
 
-export const fetchIdentifiersFailure = createAction(
-  '[state] fetchIdentifiersFailure',
-  props<{ error: Error }>()
-);
-
-export const fetchStateEnumerationsFailure = createAction(
-  '[state] fetchStateEnumerationsFailure',
-  props<{ error: Error }>()
-);
-
 export const fetchStateHistoryFailure = createAction(
   '[state] fetchStateHistoryFailure',
   props<{ error: Error }>()
@@ -74,11 +64,6 @@ export const saveEnumerationsSuccess = createAction(
 export const saveEnumerationsFailure = createAction(
   '[state] saveEnumerationsFailure',
   props<{ error: Error }>()
-);
-
-export const setStateEnumerations = createAction(
-  '[state] setStateEnumerations',
-  props<{ stateEnumerations: StateEnumeration[] }>()
 );
 
 export const setStateHistory = createAction(
