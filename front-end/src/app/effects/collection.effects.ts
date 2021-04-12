@@ -142,7 +142,7 @@ export class CollectionEffects {
         // Search our URL for a valid collectionId.
         for (const splitUrl of this.router.url.split('/')) {
           if (keys.includes(splitUrl)) {
-            collectionId = Number(splitUrl);
+            collectionId = splitUrl;
           }
         }
 
