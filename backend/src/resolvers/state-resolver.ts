@@ -55,8 +55,7 @@ export class StateResolver implements ResolverInterface<State> {
 
     // Loop over the ids that we're trying to delete, find and delete the associated enumeration.
     for (const id of data.enumerationIds) {
-      // TODO: Right now we're saving IDs as ints, so === comparison won't work.  Fix later.
-      const enumeration = enumerations.find((e) => e.id == id);
+      const enumeration = enumerations.find((e) => e.id === id);
 
       if (!enumeration) {
         throw new UserInputError(`Enumeration with given id: ${id} not found`);
@@ -166,6 +165,6 @@ export class StateResolver implements ResolverInterface<State> {
     stateHistory.stateId = state.id;
     stateHistory.updated = new Date();
 
-    stateHistory.save();
+    void stateHistory.save();
   }
 }

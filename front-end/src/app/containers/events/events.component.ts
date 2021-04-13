@@ -14,7 +14,7 @@ import { EventSidenavModule, EventTableModule } from 'src/app/components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'events',
+  selector: 'app-events',
   styleUrls: [ 'events.component.css' ],
   templateUrl: 'events.component.html'
 })

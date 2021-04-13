@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+
 import { StringTMap } from './string-t-map';
 
 // TODO: Rename this class.

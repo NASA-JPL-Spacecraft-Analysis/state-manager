@@ -7,7 +7,7 @@ import { EventMap, Event } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'event-table',
+  selector: 'app-event-table',
   styleUrls: [ 'event-table.component.css' ],
   templateUrl: 'event-table.component.html'
 })
@@ -62,16 +62,16 @@ export class EventTableComponent implements OnChanges, OnInit {
     this.dataSource.filter = filterValue;
   }
 
+  public onRowClick(event: Event): void {
+    this.eventSelected.emit(event);
+  }
+
   // Check each field for the filter value, this will eventually change to search by field.
   private filter(event: Event, filterValue: string): boolean {
     return event.description?.toLowerCase().includes(filterValue)
       || event.displayName?.toLowerCase().includes(filterValue)
       || event.externalLink?.toLowerCase().includes(filterValue)
       || event.identifier?.toLowerCase().includes(filterValue);
-  }
-
-  public onRowClick(event: Event): void {
-    this.eventSelected.emit(event);
   }
 }
 

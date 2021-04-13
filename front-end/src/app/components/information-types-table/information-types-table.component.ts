@@ -7,7 +7,7 @@ import { InformationTypesMap, InformationTypes } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'information-types-table',
+  selector: 'app-information-types-table',
   styleUrls: [ 'information-types-table.component.css' ],
   templateUrl: 'information-types-table.component.html'
 })

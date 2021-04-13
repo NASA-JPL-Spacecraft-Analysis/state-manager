@@ -106,7 +106,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     relationshipHistory.relationshipId = relationship.id;
     relationshipHistory.updated = new Date();
 
-    relationshipHistory.save();
+    void relationshipHistory.save();
   }
 
   /**

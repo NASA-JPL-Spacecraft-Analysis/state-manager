@@ -12,17 +12,9 @@ import { Relationship } from '../models';
 
 @Injectable()
 export class RelationshipEffects {
-  constructor(
-    private actions: Actions,
-    private eventService: EventService,
-    private informationTypesService: InformationTypesService,
-    private router: Router,
-    private relationshipService: RelationshipService,
-    private stateService: StateService
-  ) {}
 
-  public createRelationship = createEffect(() => {
-    return this.actions.pipe(
+  public createRelationship = createEffect(() =>
+    this.actions.pipe(
       ofType(RelationshipActions.createRelationship),
       switchMap(({ collectionId, relationship }) =>
         this.relationshipService.createRelationship(
@@ -49,21 +41,21 @@ export class RelationshipEffects {
           ])
         )
       )
-    );
-  });
+    )
+  );
 
-  public navRelationships = createEffect(() => {
-    return this.actions.pipe(
+  public navRelationships = createEffect(() =>
+    this.actions.pipe(
       ofRoute([ 'collection/:collectionId/relationships', 'collection/:collectionId/relationship-history' ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId =>
         this.getRelationships(collectionId)
       )
-    );
-  });
+    )
+  );
 
-  public navRelationshipsByCollectionId = createEffect(() => {
-    return this.actions.pipe(
+  public navRelationshipsByCollectionId = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.setSelectedCollection),
       switchMap(({ id }) => {
         if (id !== null) {
@@ -72,11 +64,11 @@ export class RelationshipEffects {
 
         return [];
       })
-    );
-  });
+    )
+  );
 
-  public updateRelationship = createEffect(() => {
-    return this.actions.pipe(
+  public updateRelationship = createEffect(() =>
+    this.actions.pipe(
       ofType(RelationshipActions.updateRelationship),
       switchMap(({ relationship }) =>
         this.relationshipService.updateRelationship(
@@ -102,8 +94,17 @@ export class RelationshipEffects {
           ])
         )
       )
-    );
-  });
+    )
+  );
+
+  constructor(
+    private actions: Actions,
+    private eventService: EventService,
+    private informationTypesService: InformationTypesService,
+    private router: Router,
+    private relationshipService: RelationshipService,
+    private stateService: StateService
+  ) {}
 
   private getRelationships(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();

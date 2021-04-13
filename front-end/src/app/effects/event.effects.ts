@@ -14,16 +14,8 @@ import { Event } from '../models';
 
 @Injectable()
 export class EventEffects {
-  constructor(
-    private actions: Actions,
-    private router: Router,
-    private store: Store<AppState>,
-    private eventService: EventService,
-    private validationService: ValidationService
-  ) {}
-
-  public createEvent = createEffect(() => {
-    return this.actions.pipe(
+  public createEvent = createEffect(() =>
+    this.actions.pipe(
       ofType(EventActions.createEvent),
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
@@ -71,11 +63,11 @@ export class EventEffects {
           ])
         );
       })
-    );
-  });
+    )
+  );
 
-  public getEventByStateCollectionId = createEffect(() => {
-    return this.actions.pipe(
+  public getEventByStateCollectionId = createEffect(() =>
+    this.actions.pipe(
       ofRoute([ 'collection/:collectionId/events', 'collection/:collectionId/event-history' ]),
       withLatestFrom(this.store),
       map(([_, state]) => state),
@@ -86,11 +78,11 @@ export class EventEffects {
 
         return [];
       })
-    );
-  });
+    )
+  );
 
-  public getEventByCollectionId = createEffect(() => {
-    return this.actions.pipe(
+  public getEventByCollectionId = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.setSelectedCollection),
       switchMap(({ id }) => {
         if (id !== null) {
@@ -99,11 +91,11 @@ export class EventEffects {
 
         return [];
       })
-    );
-  });
+    )
+  );
 
-  public updateEvent = createEffect(() => {
-    return this.actions.pipe(
+  public updateEvent = createEffect(() =>
+    this.actions.pipe(
       ofType(EventActions.updateEvent),
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
@@ -147,8 +139,16 @@ export class EventEffects {
           ])
         );
       })
-    );
-  });
+    )
+  );
+
+  constructor(
+    private actions: Actions,
+    private router: Router,
+    private store: Store<AppState>,
+    private eventService: EventService,
+    private validationService: ValidationService
+  ) {}
 
   private getEventInformation(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();

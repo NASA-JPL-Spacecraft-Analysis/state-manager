@@ -14,16 +14,8 @@ import { AppState } from '../app-store';
 
 @Injectable()
 export class CollectionEffects {
-  constructor(
-    private actions: Actions,
-    private collectionService: CollectionService,
-    private dialog: MatDialog,
-    private router: Router,
-    private store: Store<AppState>
-  ) {}
-
-  public createCollection = createEffect(() => {
-    return this.actions.pipe(
+  public createCollection = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.createCollection),
       switchMap(({ name }) =>
         this.collectionService.createCollection(
@@ -43,11 +35,11 @@ export class CollectionEffects {
           ])
         )
       )
-    );
-  });
+    )
+  );
 
-  public deleteCollection = createEffect(() => {
-    return this.actions.pipe(
+  public deleteCollection = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.deleteCollection),
       switchMap(({ id, name }) => {
         const dialog = this.dialog.open(
@@ -103,11 +95,11 @@ export class CollectionEffects {
           })
         ];
       })
-    );
-  });
+    )
+  );
 
-  public updateCollection = createEffect(() => {
-    return this.actions.pipe(
+  public updateCollection = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.updateCollection),
       switchMap(({ collectionId, name }) =>
         this.collectionService.updateCollection(
@@ -125,11 +117,11 @@ export class CollectionEffects {
           ])
         )
       )
-    );
-  });
+    )
+  );
 
-  public fetchCollectionsSuccess = createEffect(() => {
-    return this.actions.pipe(
+  public fetchCollectionsSuccess = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.fetchCollectionsSuccess),
       switchMap(({ collections }) => {
         const keys = [];
@@ -142,7 +134,7 @@ export class CollectionEffects {
         // Search our URL for a valid collectionId.
         for (const splitUrl of this.router.url.split('/')) {
           if (keys.includes(splitUrl)) {
-            collectionId = Number(splitUrl);
+            collectionId = splitUrl;
           }
         }
 
@@ -164,11 +156,11 @@ export class CollectionEffects {
 
         return [];
       })
-    );
-  });
+    )
+  );
 
-  public setSelectedCollection = createEffect(() => {
-    return this.actions.pipe(
+  public setSelectedCollection = createEffect(() =>
+    this.actions.pipe(
       ofType(CollectionActions.setSelectedCollection),
       withLatestFrom(this.store),
       map(([action, state]) => ({ action, state })),
@@ -190,6 +182,14 @@ export class CollectionEffects {
 
         return [];
       })
-    );
-  });
+    )
+  );
+
+  constructor(
+    private actions: Actions,
+    private collectionService: CollectionService,
+    private dialog: MatDialog,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
 }

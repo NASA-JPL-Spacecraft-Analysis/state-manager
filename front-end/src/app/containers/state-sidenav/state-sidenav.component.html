@@ -9,12 +9,12 @@
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div *ngIf="stateIdentifierMap !== null">
-      <identifier-form
+      <app-identifier-form
         [originalIdentifier]="originalIdentifier"
         [identifierMap]="stateIdentifierMap"
         (duplicateIdentifier)="onDuplicateIdentifier($event)"
         (identifierEmitter)="onIdentifierChange($event)">
-      </identifier-form>
+      </app-identifier-form>
 
       <mat-form-field>
         <input matInput
@@ -67,10 +67,10 @@
           formControlName="description"></textarea>
       </mat-form-field>
 
-      <enum-form
+      <app-enum-form
         [enumerations]="newState.enumerations"
         [deletedEnumerationIds]="deletedEnumerationIds">
-      </enum-form>
+      </app-enum-form>
     </div>
 
     <div class="sidenav-actions">

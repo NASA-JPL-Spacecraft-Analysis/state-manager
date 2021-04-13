@@ -4,7 +4,7 @@ import { Relationship, RelationshipHistory } from '../models';
 
 export const createRelationship = createAction(
   '[relationship] createRelationship',
-  props<{ collectionId: string, relationship: Relationship }>()
+  props<{ collectionId: string; relationship: Relationship }>()
 );
 
 export const createRelationshipFailure = createAction(

@@ -32,7 +32,7 @@ export const reducer = createReducer(
   })
 );
 
-function mapInformationTypes(informationTypesMap: InformationTypesMap, informationTypes: InformationTypes[]): InformationTypesMap {
+const mapInformationTypes = (informationTypesMap: InformationTypesMap, informationTypes: InformationTypes[]): InformationTypesMap => {
   if (!informationTypesMap) {
     informationTypesMap = new Map<number, StringTMap<InformationTypes>>();
   }
@@ -46,4 +46,4 @@ function mapInformationTypes(informationTypesMap: InformationTypesMap, informati
   }
 
   return informationTypesMap;
-}
+};
