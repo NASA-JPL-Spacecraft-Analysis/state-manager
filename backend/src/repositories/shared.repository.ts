@@ -1,7 +1,9 @@
 import { UserInputError } from 'apollo-server-errors';
-import { BaseEntity, Connection, ObjectType, Repository } from 'typeorm';
+import { Connection, ObjectType, Repository } from 'typeorm';
 
-export class SharedRepository<T extends BaseEntity> extends Repository<T> {
+import { IdentifierType } from '../models';
+
+export class SharedRepository<T extends IdentifierType> extends Repository<T> {
   private entity: ObjectType<T>;
 
   constructor(connection: Connection, entity: ObjectType<T>) {
