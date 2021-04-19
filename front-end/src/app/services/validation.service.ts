@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Event, IdentifierMap, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
+import { Event, Group, IdentifierMap, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,13 @@ export class ValidationService {
     return (
       event.hasOwnProperty('identifier')
       && event.hasOwnProperty('displayName')
+    );
+  }
+
+  public isGroup(group: Group): group is Group {
+    return (
+      group.name !== undefined
+      && group.groupMappings !== undefined
     );
   }
 

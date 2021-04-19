@@ -29,6 +29,19 @@ export class GroupService {
       .pipe(map(({ data: { createGroup } }) => createGroup));
   }
 
+  public createGroups(collectionId: string, groups: Group[]): Observable<Group[]> {
+    return this.apollo
+      .mutate<{ createGroups: Group[] }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_GROUPS,
+        variables: {
+          collectionId,
+          groups
+        }
+      })
+      .pipe(map(({ data: { createGroups } }) => createGroups ));
+  }
+
   public getGroupsAndMappings(collectionId: string): Observable<Group[]> {
     return this.apollo
       .query<{ groups: Group[] }>({

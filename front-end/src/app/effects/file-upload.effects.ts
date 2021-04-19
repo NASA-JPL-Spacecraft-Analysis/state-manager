@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
+import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { EventService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
+import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { Event, StateEnumeration, InformationTypes, Relationship } from '../models';
-import { Action } from '@ngrx/store';
+import { Event, StateEnumeration, InformationTypes, Relationship, Group, ParseTypes, StateEnumerationUpload, RelationshipUpload, State } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
   constructor(
     private actions: Actions,
     private eventService: EventService,
+    private groupService: GroupService,
     private informationTypesService: InformationTypesService,
     private parseService: ParseService,
     private stateService: StateService,
@@ -30,11 +31,13 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, informationTypes ]) => ({
+      map(([ collectionId, parsedInformationTypes ]) => ({
         collectionId,
-        informationTypes
+        parsedInformationTypes
       })),
-      switchMap(({ collectionId, informationTypes }) => {
+      switchMap(({ collectionId, parsedInformationTypes }) => {
+        const informationTypes = parsedInformationTypes as InformationTypes[];
+
         if (Array.isArray(informationTypes) && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
             if (!this.validationService.validateInformationType(informationType)) {
@@ -90,11 +93,13 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, stateEnumerations ]) => ({
+      map(([ collectionId, parsedStateEnumerations ]) => ({
         collectionId,
-        stateEnumerations
+        parsedStateEnumerations
       })),
-      switchMap(({ collectionId, stateEnumerations }) => {
+      switchMap(({ collectionId, parsedStateEnumerations }) => {
+        const stateEnumerations = parsedStateEnumerations as StateEnumerationUpload[];
+
         if (Array.isArray(stateEnumerations) && stateEnumerations.length > 0) {
           for (const stateEnumeration of stateEnumerations) {
             if (!this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
@@ -159,11 +164,13 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, events ]) => ({
+      map(([ collectionId, parsedEvents ]) => ({
         collectionId,
-        events
+        parsedEvents
       })),
-      switchMap(({ collectionId, events }) => {
+      switchMap(({ collectionId, parsedEvents }) => {
+        const events = parsedEvents as Event[];
+
         if (Array.isArray(events) && events.length > 0) {
           for (const event of events) {
             if (!this.validationService.validateEvent(event)) {
@@ -210,6 +217,68 @@ export class FileUploadEffects {
     );
   });
 
+  public uploadGroups = createEffect(() => {
+    return this.actions.pipe(
+      ofType(FileUploadActions.uploadGroups),
+      switchMap(({ file, collectionId }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, parsedGroups ]) => ({
+        collectionId,
+        parsedGroups
+      })),
+      switchMap(({ collectionId, parsedGroups }) => {
+        if (Array.isArray(parsedGroups) && parsedGroups.length > 0) {
+          const groups = parsedGroups as Group[];
+
+          for (const group of groups) {
+            if (!this.validationService.isGroup(group)) {
+              return [
+                ToastActions.showToast({
+                  message: 'File parsing failed',
+                  toastType: 'error'
+                })
+              ];
+            }
+          }
+
+          return concat(
+            this.groupService.createGroups(
+              collectionId,
+              groups
+            ).pipe(
+              switchMap((createGroups: Group[]) => [
+                FileUploadActions.uploadGroupsSuccess({
+                  groups: createGroups
+                }),
+                ToastActions.showToast({
+                  message: 'Groups uploaded',
+                  toastType: 'success'
+                })
+              ])
+            ),
+            catchError((error: HttpErrorResponse) => [
+              FileUploadActions.uploadEventsFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.error,
+                toastType: 'error'
+              })
+            ])
+          );
+        }
+
+        return [
+          this.throwFileParseError(parsedGroups)
+        ];
+      })
+    );
+  });
+
   public uploadRelationship = createEffect(() => {
     return this.actions.pipe(
       ofType(FileUploadActions.uploadRelationships),
@@ -219,11 +288,13 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, relationships ]) => ({
+      map(([ collectionId, parsedRelationships ]) => ({
         collectionId,
-        relationships
+        parsedRelationships
       })),
-      switchMap(({ collectionId, relationships }) => {
+      switchMap(({ collectionId, parsedRelationships }) => {
+        const relationships = parsedRelationships as RelationshipUpload[];
+
         if (Array.isArray(relationships) && relationships.length > 0) {
           for (const relationship of relationships) {
             if (!this.validationService.validateRelationship(relationship)) {
@@ -279,11 +350,13 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, states  ]) => ({
+      map(([ collectionId, parsedStates  ]) => ({
         collectionId,
-        states
+        parsedStates
       })),
-      switchMap(({ collectionId, states }) => {
+      switchMap(({ collectionId, parsedStates }) => {
+        const states = parsedStates as State[];
+
         if (Array.isArray(states) && states.length > 0) {
           for (const state of states) {
             // Validate each parsed state, if we come across anything invalid return null so we can error.
@@ -332,10 +405,10 @@ export class FileUploadEffects {
   });
 
   // The error will be a string, but we need to check for other types as well.
-  private throwFileParseError(error: string | any[]): Action {
-      return ToastActions.showToast({
-        message: typeof error === 'string' ? error : 'File parsing failed',
-        toastType: 'error'
-      })
+  private throwFileParseError(error: string | ParseTypes): Action {
+    return ToastActions.showToast({
+      message: typeof error === 'string' ? error : 'File parsing failed',
+      toastType: 'error'
+    });
   }
 }
