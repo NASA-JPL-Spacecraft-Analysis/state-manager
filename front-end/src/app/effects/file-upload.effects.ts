@@ -245,6 +245,8 @@ export class FileUploadEffects {
             }
           }
 
+          console.log(groups);
+
           return concat(
             this.groupService.createGroups(
               collectionId,
@@ -261,7 +263,7 @@ export class FileUploadEffects {
               ])
             ),
             catchError((error: HttpErrorResponse) => [
-              FileUploadActions.uploadEventsFailure({
+              FileUploadActions.uploadGroupsFailure({
                 error
               }),
               ToastActions.showToast({

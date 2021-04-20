@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server';
 import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
 import { CollectionIdArgs } from '../args';
-import { CreateGroupInput, UpdateGroupInput } from '../inputs';
+import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping } from '../models';
 
@@ -12,13 +12,31 @@ export class GroupResolver implements ResolverInterface<Group> {
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<Group> {
     const group = Group.create(data);
 
-    this.checkForDuplicateGroupName(group);
+    this.checkForDuplicateGroupName(group.collectionId, [ group.name ]);
 
     await group.save();
 
     group.groupMappings = await this.createNewGroupMappings(data.groupMappings, group.id);
 
     return group;
+  }
+
+  @Mutation(() => [ Group ])
+  public createGroups(@Arg('data') data: UploadGroupsInput): Promise<Group[]> {
+    const groupNames = [];
+
+    for (const group of data.groups) {
+      groupNames.push(group.name);
+    }
+
+    this.checkForDuplicateGroupName(data.collectionId, groupNames);
+
+    for (const group of data.groups) {
+      for (const mapping of group.groupMappings) {
+      }
+    }
+
+    return this.groups({ collectionId: data.collectionId });
   }
 
   @Query(() => Group)
@@ -50,7 +68,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
     Object.assign(group, data);
 
-    this.checkForDuplicateGroupName(group);
+    this.checkForDuplicateGroupName(group.collectionId, [ group.name ]);
 
     await group.save();
 
@@ -97,22 +115,30 @@ export class GroupResolver implements ResolverInterface<Group> {
     return group;
   }
 
-  private async checkForDuplicateGroupName(group: Group): Promise<void> {
+  /**
+   * This method queries the DB for a collection and a collection's groups and then checks the incoming list of names
+   * for a duplicate.
+   * @param collectionId The ID of the collection we're looking at.
+   * @param groupNames A list of group names that we should check for.
+   */
+  private async checkForDuplicateGroupName(collectionId: string, groupNames: string[]): Promise<void> {
     const collection = await Collection.findOne({
       where: {
-        id: group.collectionId
+        id: collectionId
       }
     });
 
     if (!collection) {
-      throw new UserInputError(`A collection with id ${group.collectionId} does not exist, please pass a valid collection id and try again`);
+      throw new UserInputError(`A collection with id ${collectionId} does not exist, please pass a valid collection id and try again`);
     }
 
-    const collectionGroups = await this.findGroupsByCollectionId(group.collectionId);
+    const collectionGroups = await this.findGroupsByCollectionId(collectionId);
 
     for (const collectionGroup of collectionGroups) {
-      if (collectionGroup.name === group.name) {
-        throw new UserInputError(`A group with name "${group.name}" already exists in this colleciton, please change the name and try again`);
+      for (const name of groupNames) {
+        if (collectionGroup.name === name) {
+          throw new UserInputError(`A group with name "${name}" already exists in this colleciton, please change the name and try again`);
+        }
       }
     }
   }
