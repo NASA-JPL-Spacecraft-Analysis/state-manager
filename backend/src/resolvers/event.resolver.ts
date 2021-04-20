@@ -86,6 +86,6 @@ export class EventResolver {
     eventHistory.eventId = event.id;
     eventHistory.updated = new Date();
 
-    eventHistory.save();
+    void eventHistory.save();
   }
 }

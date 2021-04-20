@@ -4,7 +4,7 @@ import { Event, Group, InformationTypes, Relationship } from '../models';
 
 export const uploadStateEnumerations = createAction(
   '[file upload] uploadStateEnumerations',
-  props<{ collectionId: string, file: File }>()
+  props<{ collectionId: string; file: File }>()
 );
 
 export const uploadStateEnumerationsFailure = createAction(
@@ -14,7 +14,7 @@ export const uploadStateEnumerationsFailure = createAction(
 
 export const uploadEvents = createAction(
   '[file upload] uploadEvents',
-  props<{ file: File, collectionId: string }>()
+  props<{ file: File; collectionId: string }>()
 );
 
 export const uploadEventsFailure  = createAction(
@@ -44,7 +44,7 @@ export const uploadGroupsSuccess = createAction(
 
 export const uploadInformationTypes = createAction(
   '[file upload] uploadInformationTypes',
-  props<{ file: File, collectionId: string }>()
+  props<{ file: File; collectionId: string }>()
 );
 
 export const uploadInformationTypesFailure = createAction(
@@ -59,7 +59,7 @@ export const uploadInformationTypesSuccess = createAction(
 
 export const uploadRelationships = createAction(
   '[file upload] uploadRelationships',
-  props<{ file: File, collectionId: string }>()
+  props<{ file: File; collectionId: string }>()
 );
 
 export const uploadRelationshipsFailure = createAction(
@@ -74,7 +74,7 @@ export const uploadRelationshipsSuccess = createAction(
 
 export const uploadStates = createAction(
   '[file upload] uploadStates',
-  props<{ collectionId: string, file: File }>()
+  props<{ collectionId: string; file: File }>()
 );
 
 export const uploadStatesFailure = createAction(

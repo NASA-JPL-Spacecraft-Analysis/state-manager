@@ -19,23 +19,23 @@
 
 <div class="relationships-content-container">
   <div class="relationships-content">
-    <relationships-table
+    <app-relationships-table
       [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [relationshipMap]="relationshipMap"
       [stateMap]="stateMap"
       (relationshipSelected)="onModifyRelationship($event)">
-    </relationships-table>
+    </app-relationships-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav">
-    <relationship-sidenav
+    <app-relationship-sidenav
       [eventMap]="eventMap"
       [informationTypesMap]="informationTypesMap"
       [relationship]="relationship"
       [stateMap]="stateMap"
       (formError)="onFormErrorOutput($event)"
       (modifyRelationship)="onRelationshipOutput($event)">
-    </relationship-sidenav>
+    </app-relationship-sidenav>
   </div>
 </div>

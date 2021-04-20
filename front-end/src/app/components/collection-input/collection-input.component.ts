@@ -1,10 +1,21 @@
-import { Component, ChangeDetectionStrategy, NgModule, ViewChild, ElementRef, Input, OnChanges, EventEmitter, Output, HostListener } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  NgModule,
+  ViewChild,
+  ElementRef,
+  Input,
+  OnChanges,
+  EventEmitter,
+  Output,
+  HostListener
+} from '@angular/core';
 
 import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'collection-input',
+  selector: 'app-collection-input',
   styleUrls: [ 'collection-input.component.css' ],
   templateUrl: 'collection-input.component.html'
 })

@@ -8,7 +8,7 @@ import { StateEnumeration } from '../../models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
-  selector: 'enum-form',
+  selector: 'app-enum-form',
   styleUrls: [ 'enum-form.component.css' ],
   templateUrl: 'enum-form.component.html'
 })

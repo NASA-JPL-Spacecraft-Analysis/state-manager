@@ -18,7 +18,7 @@ import {
   StateResolver
 } from './resolvers/';
 
-async function main() {
+const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
@@ -40,6 +40,13 @@ async function main() {
   });
 
   const server = new ApolloServer({
+    cors: {
+      origin: (origin, callback) => {
+        // Respond with the origin set to the caller.
+        callback(null, true);
+      },
+      credentials: true
+    },
     introspection: true,
     playground: true,
     schema,
@@ -49,6 +56,6 @@ async function main() {
   await server.listen(4000);
 
   console.log('Server has started!');
-}
+};
 
-main();
+void main();

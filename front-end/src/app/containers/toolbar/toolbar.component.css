@@ -3,6 +3,11 @@ button {
   color: white;
 }
 
+.help-icon {
+  color: white;
+  vertical-align: middle;
+}
+
 .mat-toolbar {
   display: flex;
   justify-content: space-between;
@@ -16,4 +21,9 @@ button {
 .toolbar-container {
   display: flex;
   align-items: center;
+}
+
+.version-text {
+  line-height: 3em;
+  padding: 0 1em;
 }

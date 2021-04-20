@@ -7,11 +7,6 @@ import { ToastActions } from '../actions';
 
 @Injectable()
 export class ToastEffects {
-  constructor(
-    private actions: Actions,
-    private toastrService: ToastrService
-  ) {}
-
   public showToast = createEffect(() =>
     this.actions.pipe(
       ofType(ToastActions.showToast),
@@ -32,4 +27,9 @@ export class ToastEffects {
     ),
     { dispatch: false }
   );
+
+  constructor(
+    private actions: Actions,
+    private toastrService: ToastrService
+  ) {}
 }

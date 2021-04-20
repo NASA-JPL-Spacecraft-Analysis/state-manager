@@ -24,7 +24,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'relationships',
+  selector: 'app-relationships',
   styleUrls: [ 'relationships.component.css' ],
   templateUrl: 'relationships.component.html'
 })
@@ -105,6 +105,7 @@ export class RelationshipsComponent implements OnDestroy {
   /**
    * Only dispatch our actions if we have states, otherwise tell the user they need state
    * before they can create relationships.
+   *
    * @param relationship The relationship that is being modified.
    */
   public onModifyRelationship(relationship?: Relationship): void {

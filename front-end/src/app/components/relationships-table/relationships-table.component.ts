@@ -7,7 +7,7 @@ import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'relationships-table',
+  selector: 'app-relationships-table',
   styleUrls: [ 'relationships-table.component.css' ],
   templateUrl: 'relationships-table.component.html'
 })

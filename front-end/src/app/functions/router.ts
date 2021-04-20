@@ -5,32 +5,27 @@ import { filter, map } from 'rxjs/operators';
 
 import { RouterState } from 'src/app/app-routing.module';
 
-export function isRoute(route: string | string[] | RegExp): (action: Action) => boolean {
-  return (action: Action) => {
-    if (action.type === ROUTER_NAVIGATED) {
-      const routerAction = action as RouterNavigatedAction<RouterState>;
-      const { path } = routerAction.payload.routerState;
+export const isRoute = (route: string | string[] | RegExp): (action: Action) => boolean => (action: Action) => {
+  if (action.type === ROUTER_NAVIGATED) {
+    const routerAction = action as RouterNavigatedAction<RouterState>;
+    const { path } = routerAction.payload.routerState;
 
-      if (Array.isArray(route)) {
-        return route.indexOf(path) > -1;
-      } else if (route instanceof RegExp) {
-        route.test(path);
-      }
-
-      return route === path;
+    if (Array.isArray(route)) {
+      return route.indexOf(path) > -1;
+    } else if (route instanceof RegExp) {
+      route.test(path);
     }
 
-    return false;
-  };
-}
+    return route === path;
+  }
 
-export function ofRoute(route: string | string[] | RegExp): MonoTypeOperatorFunction<Action> {
-  return filter<Action>(isRoute(route));
-}
+  return false;
+};
 
-export function mapToParam<T>(
-  key: string,
-): OperatorFunction<RouterNavigatedAction<RouterState>, T> {
+export const ofRoute = (route: string | string[] | RegExp): MonoTypeOperatorFunction<Action> => filter<Action>(isRoute(route));
+
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+export function mapToParam<T>(key: string): OperatorFunction<RouterNavigatedAction<RouterState>, T> {
   return map<RouterNavigatedAction<RouterState>, T>(
     routerAction => routerAction.payload.routerState.params[key],
   );

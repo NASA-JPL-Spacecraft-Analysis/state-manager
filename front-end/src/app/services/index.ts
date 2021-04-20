@@ -1,6 +1,7 @@
 export * from './collection.service';
 export * from './event.service';
 export * from './group.service';
+export * from './http-request-interceptor';
 export * from './mock.collection.service';
 export * from './mock.event.service';
 export * from './mock.information-types.service';

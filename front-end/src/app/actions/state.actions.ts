@@ -8,7 +8,7 @@ import {
 
 export const createState = createAction(
   '[state] createState',
-  props<{ collectionId: string, state: State }>()
+  props<{ collectionId: string; state: State }>()
 );
 
 export const createStateFailure = createAction(
@@ -28,7 +28,7 @@ export const createStatesSuccess = createAction(
 
 export const deleteEnumerations = createAction(
   '[state] deleteEnumerations',
-  props<{ deletedEnumerationIds: string[], stateId: string }>()
+  props<{ deletedEnumerationIds: string[]; stateId: string }>()
 );
 
 export const deleteEnumerationsFailure = createAction(
@@ -53,12 +53,12 @@ export const fetchStatesFailure = createAction(
 
 export const saveEnumerations = createAction(
   '[state] saveEnumerations',
-  props<{ collectionId: string, stateId: string, enumerations: StateEnumeration[] }>()
+  props<{ collectionId: string; stateId: string; enumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
-  props<{ enumerations: StateEnumeration[], stateId: string }>()
+  props<{ enumerations: StateEnumeration[]; stateId: string }>()
 );
 
 export const saveEnumerationsFailure = createAction(

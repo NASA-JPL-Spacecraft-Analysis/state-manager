@@ -19,7 +19,7 @@ export const createCollectionFailure = createAction(
 
 export const deleteCollection = createAction(
   '[collection] deleteCollection',
-  props<{ id: string, name: string }>()
+  props<{ id: string; name: string }>()
 );
 
 export const deleteCollectionSuccess = createAction(
