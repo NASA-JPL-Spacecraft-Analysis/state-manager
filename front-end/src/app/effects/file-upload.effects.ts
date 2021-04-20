@@ -7,7 +7,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { Event, StateEnumeration, InformationTypes, Relationship, Group, ParseTypes, StateEnumerationUpload, RelationshipUpload, State } from '../models';
+import { Event, StateEnumeration, InformationTypes, Relationship, Group, ParseTypes, StateEnumerationUpload, RelationshipUpload, State, GroupUpload } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -232,10 +232,10 @@ export class FileUploadEffects {
       })),
       switchMap(({ collectionId, parsedGroups }) => {
         if (Array.isArray(parsedGroups) && parsedGroups.length > 0) {
-          const groups = parsedGroups as Group[];
+          const groups = parsedGroups as GroupUpload[];
 
           for (const group of groups) {
-            if (!this.validationService.isGroup(group)) {
+            if (!this.validationService.isGroupUpload(group)) {
               return [
                 ToastActions.showToast({
                   message: 'File parsing failed',

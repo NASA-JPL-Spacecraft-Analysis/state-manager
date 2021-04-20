@@ -8,7 +8,8 @@ import { MaterialModule } from 'src/app/material';
 import { getEventMap, getGroups, getInformationTypes, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
 import { GroupsSidenavModule } from 'src/app/components/groups';
 import { EventMap, Group, IdentifierMap, InformationTypesMap, StateMap } from 'src/app/models';
-import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
+import { FileUploadActions, GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
+import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -85,6 +86,15 @@ export class GroupsComponent implements OnDestroy {
         })
       );
     }
+  }
+
+  public onFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.selectedCollectionId,
+      csvFormat: undefined,
+      dialogType: 'Group',
+      jsonFormat: StateManagementConstants.groupUploadFormat
+    }));
   }
 
   public onModifyGroup(group?: Group): void {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Event, Group, IdentifierMap, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
+import { Event, Group, GroupUpload, IdentifierMap, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +29,18 @@ export class ValidationService {
     );
   }
 
-  public isGroup(group: Group): group is Group {
-    return (
-      group.name !== undefined
-      && group.groupMappings !== undefined
-    );
+  public isGroupUpload(group: GroupUpload): group is GroupUpload {
+    if (group.name === undefined || group.groupMappings === undefined) {
+      return false;
+    }
+
+    for (const groupMapping of group.groupMappings) {
+      if (!groupMapping.itemIdentifier || !groupMapping.itemType) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   public validateInformationType(informationType: InformationTypes): boolean {

@@ -1,6 +1,23 @@
 import { InformationTypeEnum } from '../models';
 
 export class StateManagementConstants {
+  public static groupUploadFormat: string = `
+  [
+    {
+      "name": "Test Upload Group",
+      "groupMappings": [
+        {
+          "itemIdentifier": "Test Item Identifier",
+          "itemType": "Test Item Type"
+        },
+        {
+          ...
+        }
+      ]
+    }
+  ]
+  `;
+
   /**
    * TODO: We'll need a better way to store this in the future. We'll need this list
    * to be available to the backend so we can do validation on both sides to make sure

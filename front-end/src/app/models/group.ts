@@ -19,3 +19,13 @@ export type GroupItemType =
   | Event
   | InformationTypes
   | State;
+
+export interface GroupUpload {
+  name: string;
+  groupMappings: GroupMappingUpload[];
+}
+
+interface GroupMappingUpload {
+  itemIdentifier: string;
+  itemType: string;
+}

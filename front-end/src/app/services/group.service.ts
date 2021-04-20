@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Group } from './../models';
+import { Group, GroupUpload } from './../models';
 
 import * as gql from './gql';
 
@@ -29,7 +29,7 @@ export class GroupService {
       .pipe(map(({ data: { createGroup } }) => createGroup));
   }
 
-  public createGroups(collectionId: string, groups: Group[]): Observable<Group[]> {
+  public createGroups(collectionId: string, groups: GroupUpload[]): Observable<Group[]> {
     return this.apollo
       .mutate<{ createGroups: Group[] }>({
         fetchPolicy: 'no-cache',
