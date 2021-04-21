@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { GroupActions } from '../actions';
+import { FileUploadActions, GroupActions } from '../actions';
 import { Group } from '../models';
 
 export interface GroupState {
@@ -55,5 +55,12 @@ export const reducer = createReducer(
       ],
       selectedGroup: group,
     };
-  })
+  }),
+  on(FileUploadActions.uploadGroupsSuccess, (state, { groups }) => ({
+    ...state,
+    groups: [
+      ...state.groups,
+      ...groups
+    ]
+  }))
 );

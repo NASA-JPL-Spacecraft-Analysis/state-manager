@@ -46,7 +46,7 @@ export class GroupResolver implements ResolverInterface<Group> {
         newGroup.name = group.name;
         newGroup.collectionId = data.collectionId;
         newGroup.groupMappings = [];
-        //newGroup = await newGroup.save();
+        newGroup = await newGroup.save();
 
         createdGroups.push(newGroup);
 
@@ -59,7 +59,7 @@ export class GroupResolver implements ResolverInterface<Group> {
             newMapping.itemId = item.id;
             newMapping.groupId = newGroup.id;
 
-            //newMapping = await newMapping.save();
+            newMapping = await newMapping.save();
 
             newGroup.groupMappings.push(newMapping);
           }
