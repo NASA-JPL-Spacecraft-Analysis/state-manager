@@ -115,7 +115,7 @@ export const CREATE_GROUP = gql(`
 export const CREATE_GROUPS = gql(`
   mutation CreateGroups(
     $collectionId: ID!
-    $groups: [CreateGroupInput!]!
+    $groups: [UploadGroupInput!]!
   ) {
     createGroups(
       data: {
@@ -123,42 +123,46 @@ export const CREATE_GROUPS = gql(`
         groups: $groups
       }
     ) {
-      groupMappings {
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
+      groups {
+        groupMappings {
+          item {
+            ... on Event {
+              description
+              displayName
+              externalLink
               id
-              label
-              value
+              identifier
             }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
+            ... on InformationType {
+              description
+              displayName
+              externalLink
+              id
+              identifier
+              informationType: type 
+            }
+            ... on State {
+              description
+              displayName
+              enumerations {
+                id
+                label
+                value
+              }
+              id
+              identifier
+              source
+              subsystem
+              type
+              units
+            }
           }
         }
+        id
+        name
       }
-      id
-      name
+      message
+      success
     }
   }
 `);

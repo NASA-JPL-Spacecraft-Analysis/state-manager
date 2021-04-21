@@ -31,7 +31,7 @@ export class GroupService {
 
   public createGroups(collectionId: string, groups: GroupUpload[]): Observable<Group[]> {
     return this.apollo
-      .mutate<{ createGroups: Group[] }>({
+      .mutate<{ createGroups: { groups: Group[], message: string, success: boolean } }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_GROUPS,
         variables: {
@@ -39,7 +39,13 @@ export class GroupService {
           groups
         }
       })
-      .pipe(map(({ data: { createGroups } }) => createGroups ));
+      .pipe(map(({ data: { createGroups } }) => {
+        if (!createGroups.success) {
+          throw new Error(createGroups.message);
+        }
+
+        return createGroups.groups;
+      }));
   }
 
   public getGroupsAndMappings(collectionId: string): Observable<Group[]> {

@@ -1,13 +1,19 @@
 import { UserInputError } from 'apollo-server';
-import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
+import { Arg, Args, FieldResolver, Mutation, ObjectType, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
 import { CollectionIdArgs } from '../args';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping } from '../models';
+import { GroupsResponse } from '../responses';
+import { IdentifierTypeService } from '../service';
 
 @Resolver(() => Group)
 export class GroupResolver implements ResolverInterface<Group> {
+  constructor(
+    private readonly identifierTypeService: IdentifierTypeService
+  ) {}
+  
   @Mutation(() => Group)
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<Group> {
     const group = Group.create(data);
@@ -21,22 +27,57 @@ export class GroupResolver implements ResolverInterface<Group> {
     return group;
   }
 
-  @Mutation(() => [ Group ])
-  public createGroups(@Arg('data') data: UploadGroupsInput): Promise<Group[]> {
-    const groupNames = [];
+  @Mutation(() => GroupsResponse)
+  public async createGroups(@Arg('data') data: UploadGroupsInput): Promise<GroupsResponse> {
+    try {
+      const groupNames = [];
 
-    for (const group of data.groups) {
-      groupNames.push(group.name);
-    }
+      for (const group of data.groups) {
+        groupNames.push(group.name);
+      }
 
-    this.checkForDuplicateGroupName(data.collectionId, groupNames);
+      await this.checkForDuplicateGroupName(data.collectionId, groupNames);
 
-    for (const group of data.groups) {
-      for (const mapping of group.groupMappings) {
+      const createdGroups: Group[] = [];
+
+      for (const group of data.groups) {
+        let newGroup = Group.create();
+
+        newGroup.name = group.name;
+        newGroup.collectionId = data.collectionId;
+        newGroup.groupMappings = [];
+        //newGroup = await newGroup.save();
+
+        createdGroups.push(newGroup);
+
+        for (const mapping of group.groupMappings) {
+          let newMapping = GroupMapping.create();
+
+          let item = await this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
+
+          if (item) {
+            newMapping.itemId = item.id;
+            newMapping.groupId = newGroup.id;
+
+            //newMapping = await newMapping.save();
+
+            newGroup.groupMappings.push(newMapping);
+          }
+        }
+      }
+
+      return {
+        groups: createdGroups,
+        success: true,
+        message: undefined
+      };
+    } catch (error) {
+      return {
+        groups: undefined,
+        success: false,
+        message: error
       }
     }
-
-    return this.groups({ collectionId: data.collectionId });
   }
 
   @Query(() => Group)
@@ -129,7 +170,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     });
 
     if (!collection) {
-      throw new UserInputError(`A collection with id ${collectionId} does not exist, please pass a valid collection id and try again`);
+      throw await new UserInputError(`A collection with id ${collectionId} does not exist, please pass a valid collection id and try again`);
     }
 
     const collectionGroups = await this.findGroupsByCollectionId(collectionId);
@@ -137,7 +178,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     for (const collectionGroup of collectionGroups) {
       for (const name of groupNames) {
         if (collectionGroup.name === name) {
-          throw new UserInputError(`A group with name "${name}" already exists in this colleciton, please change the name and try again`);
+          throw await new UserInputError(`A group with name "${name}" already exists in this colleciton, please change the name and try again`);
         }
       }
     }

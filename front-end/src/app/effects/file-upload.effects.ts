@@ -234,8 +234,6 @@ export class FileUploadEffects {
             }
           }
 
-          console.log(groups);
-
           return concat(
             this.groupService.createGroups(
               collectionId,
@@ -249,17 +247,17 @@ export class FileUploadEffects {
                   message: 'Groups uploaded',
                   toastType: 'success'
                 })
+              ]),
+              catchError((error: Error) => [
+                FileUploadActions.uploadGroupsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
               ])
-            ),
-            catchError((error: HttpErrorResponse) => [
-              FileUploadActions.uploadGroupsFailure({
-                error
-              }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ])
+            )
           );
         }
 
