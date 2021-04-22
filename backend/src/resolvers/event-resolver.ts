@@ -1,16 +1,22 @@
 import { Resolver, Query, Arg, Mutation, Args } from 'type-graphql';
 import { UserInputError } from 'apollo-server';
+import { getConnection } from 'typeorm';
 
-import { CollectionIdArgs, IdArgs } from '../args';
+import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { Event, EventHistory } from './../models';
 import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs/event';
 import { ValidationService } from '../service';
+import { SharedRepository } from '../repositories';
 
 @Resolver()
 export class EventResolver {
+  private sharedRepository: SharedRepository<Event>;
+
   constructor(
     private readonly validationService: ValidationService
-  ) {}
+  ) {
+    this.sharedRepository = new SharedRepository<Event>(getConnection(), Event);
+  }
 
   @Mutation(() => Event)
   public async createEvent(@Arg('data') data: CreateEventInput): Promise<Event> {
@@ -55,12 +61,8 @@ export class EventResolver {
   }
 
   @Query(() => Event)
-  public event(@Args() { id }: IdArgs): Promise<Event | undefined> {
-    return Event.findOne({
-      where: {
-        id
-      }
-    });
+  public event(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<Event | undefined> {
+    return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
   @Mutation(() => Event)

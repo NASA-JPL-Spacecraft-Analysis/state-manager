@@ -1,7 +1,7 @@
 import { Resolver, Query, ResolverInterface, FieldResolver, Root, Args, Mutation, Arg } from 'type-graphql';
 import { UserInputError } from 'apollo-server';
 
-import { CollectionIdArgs, IdArgs } from '../args';
+import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
 import { Relationship, InformationType, InformationTypeEnum, Event, State, RelationshipHistory, IdentifierTypeUnion } from '../models';
 
@@ -49,7 +49,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   @Query(() => Relationship)
-  public relationship(@Args() { id }: IdArgs): Promise<Relationship | undefined> {
+  public relationship(@Args() { id }: IdentifierArgs): Promise<Relationship | undefined> {
     return Relationship.findOne({
       where: {
         id
