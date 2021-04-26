@@ -2,8 +2,9 @@ import { Resolver, Query, Arg, Mutation, FieldResolver, ResolverInterface, Root,
 import { UserInputError } from 'apollo-server';
 
 import { IdArgs } from '../args';
-import { Collection, Group, Response, State } from '../models';
+import { Collection, Group, State } from '../models';
 import { CreateCollectionInput, UpdateCollectionInput} from '../inputs';
+import { Response } from './../responses';
 
 @Resolver(() => Collection)
 export class CollectionResolver implements ResolverInterface<Collection> {
@@ -38,6 +39,7 @@ export class CollectionResolver implements ResolverInterface<Collection> {
     void collection.save();
 
     return {
+      message: 'Collection Deleted',
       success: true
     };
   }

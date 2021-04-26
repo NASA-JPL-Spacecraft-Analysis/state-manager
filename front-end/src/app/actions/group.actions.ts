@@ -22,6 +22,21 @@ export const fetchGroupsFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const deleteGroup = createAction(
+  '[group] deleteGroup',
+  props<{ id: string }>()
+);
+
+export const deleteGroupFailure = createAction(
+  '[group] deleteGroupFailure',
+  props<{ error: Error }>()
+);
+
+export const deleteGroupSuccess = createAction(
+  '[group] deleteGroupSuccess',
+  props<{ id: string }>()
+);
+
 export const setGroups = createAction(
   '[group] setGroups',
   props<{ groups: Group[] }>()

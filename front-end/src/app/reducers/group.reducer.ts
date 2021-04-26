@@ -10,7 +10,7 @@ export interface GroupState {
 
 export const initialState: GroupState = {
   groups: [],
-  selectedGroup: null
+  selectedGroup: undefined
 };
 
 export const reducer = createReducer(
@@ -22,6 +22,11 @@ export const reducer = createReducer(
       group
     ],
     selectedGroup: group
+  })),
+  on(GroupActions.deleteGroupSuccess, (state, { id }) => ({
+    ...state,
+    groups: state.groups.filter((group) => group.id !== id),
+    selectedGroup: undefined
   })),
   on(GroupActions.setGroups, (state, { groups }) => ({
     ...state,

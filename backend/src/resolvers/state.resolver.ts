@@ -1,11 +1,12 @@
 import { Resolver, Query, Arg, Mutation, ResolverInterface , FieldResolver, Root, Args } from 'type-graphql';
 import { UserInputError } from 'apollo-server';
 
-import { Response, State, StateEnumeration, StateHistory } from './../models';
+import { State, StateEnumeration, StateHistory } from './../models';
 import { CreateStateInput, DeleteEnumerationsInput, SaveEnumerationsInput, UpdateStateInput } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
 import { CollectionIdArgs, IdArgs } from '../args';
+import { Response } from '../responses';
 
 @Resolver(() => State)
 export class StateResolver implements ResolverInterface<State> {
@@ -65,6 +66,7 @@ export class StateResolver implements ResolverInterface<State> {
     }
 
     return {
+      message: 'State Enumeration Deleted',
       success: true
     };
   }

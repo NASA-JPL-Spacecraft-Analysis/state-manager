@@ -65,6 +65,7 @@ CREATE TABLE `groups` (
   `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `name` varchar(45) NOT NULL,
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -1,10 +1,10 @@
 import { Field, ObjectType } from 'type-graphql';
 
 import { Group } from '../../models';
-import { ResponseType } from '../response-type';
+import { Response } from '../response';
 
 @ObjectType()
-export class GroupsResponse extends ResponseType {
+export class GroupsResponse extends Response {
   @Field(() => [ Group ], { nullable: true })
   groups?: Group[];
 }

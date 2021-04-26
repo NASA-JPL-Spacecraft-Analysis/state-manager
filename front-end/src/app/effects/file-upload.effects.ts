@@ -7,7 +7,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { Event, StateEnumeration, InformationTypes, Relationship, Group, ParseTypes, StateEnumerationUpload, RelationshipUpload, State, GroupUpload } from '../models';
+import { Event, StateEnumeration, InformationTypes, Relationship, Group, ParseTypes, StateEnumerationUpload, RelationshipUpload, State, GroupUpload, CreateGroupsResponse } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -239,12 +239,12 @@ export class FileUploadEffects {
               collectionId,
               groups
             ).pipe(
-              switchMap((createGroups: Group[]) => [
+              switchMap((createGroups: CreateGroupsResponse) => [
                 FileUploadActions.uploadGroupsSuccess({
-                  groups: createGroups
+                  groups: createGroups.groups
                 }),
                 ToastActions.showToast({
-                  message: 'Groups uploaded',
+                  message: createGroups.message,
                   toastType: 'success'
                 })
               ]),

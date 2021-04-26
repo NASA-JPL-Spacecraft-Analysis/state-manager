@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Group, GroupUpload } from './../models';
+import { CreateGroupsResponse, Group, GroupUpload, Response } from './../models';
 
 import * as gql from './gql';
 
@@ -29,9 +29,9 @@ export class GroupService {
       .pipe(map(({ data: { createGroup } }) => createGroup));
   }
 
-  public createGroups(collectionId: string, groups: GroupUpload[]): Observable<Group[]> {
+  public createGroups(collectionId: string, groups: GroupUpload[]): Observable<CreateGroupsResponse> {
     return this.apollo
-      .mutate<{ createGroups: { groups: Group[], message: string, success: boolean } }>({
+      .mutate<{ createGroups: CreateGroupsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_GROUPS,
         variables: {
@@ -44,7 +44,25 @@ export class GroupService {
           throw new Error(createGroups.message);
         }
 
-        return createGroups.groups;
+        return createGroups;
+      }));
+  }
+
+  public deleteGroup(id: string): Observable<Response> {
+    return this.apollo
+      .mutate<{ deleteGroup: Response }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.DELETE_GROUP,
+        variables: {
+          id
+        }
+      })
+      .pipe(map(({ data: { deleteGroup } }) => {
+        if (!deleteGroup.success) {
+          throw new Error(deleteGroup.message);
+        }
+
+        return deleteGroup;
       }));
   }
 

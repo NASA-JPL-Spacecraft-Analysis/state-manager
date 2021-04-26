@@ -306,6 +306,19 @@ export const DELETE_COLLECTION = gql(`
   }
 `);
 
+export const DELETE_GROUP = gql(`
+  mutation DeleteGroup(
+    $id: ID!
+  ) {
+    deleteGroup(
+      id: $id
+    ) {
+      message
+      success
+    }
+  }
+`);
+
 export const DELETE_ENUMERATIONS = gql(`
   mutation DeleteEnumerations(
     $enumerationIds: [ID!]!

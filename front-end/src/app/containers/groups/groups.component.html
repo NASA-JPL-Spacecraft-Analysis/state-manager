@@ -42,6 +42,7 @@
       [groupNameMap]="groupNameMap"
       [selectedCollectionId]="selectedCollectionId"
       [stateMap]="stateMap"
+      (deleteGroup)="onDeleteGroup($event)"
       (duplicateGroupName)="onDuplicateGroupName($event)"
       (modifyGroup)="onSidenavOutput($event)">
     </groups-sidenav>

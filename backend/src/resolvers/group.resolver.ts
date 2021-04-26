@@ -1,11 +1,11 @@
 import { UserInputError } from 'apollo-server';
 import { Arg, Args, FieldResolver, Mutation, ObjectType, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
-import { CollectionIdArgs } from '../args';
+import { CollectionIdArgs, IdArgs } from '../args';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping } from '../models';
-import { GroupsResponse } from '../responses';
+import { GroupsResponse, Response } from '../responses';
 import { IdentifierTypeService } from '../service';
 
 @Resolver(() => Group)
@@ -68,15 +68,43 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       return {
         groups: createdGroups,
-        success: true,
-        message: undefined
+        message: 'Groups Created',
+        success: true
       };
     } catch (error) {
       return {
         groups: undefined,
-        success: false,
-        message: error
+        message: error,
+        success: false
       }
+    }
+  }
+
+  @Mutation(() => Response)
+  public async deleteGroup(@Args() { id }: IdArgs): Promise<Response> {
+    try {
+      const group = await Group.findOne({
+        where: {
+          id
+        }
+      });
+
+      if (!group) {
+        throw new UserInputError(`Group with provided id ${id} not found`);
+      }
+
+      group.enabled = false;
+      void group.save();
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+
+    return {
+      message: 'Group Deleted',
+      success: true
     }
   }
 
@@ -101,7 +129,12 @@ export class GroupResolver implements ResolverInterface<Group> {
 
   @Mutation(() => Group)
   public async updateGroup(@Arg('data') data: UpdateGroupInput): Promise<Group> {
-    const group = await Group.findOne(data.id);
+    const group = await Group.findOne({
+      where: {
+        enabled: true,
+        id: data.id
+      }
+    });
 
     if (!group) {
       throw new UserInputError(`A group with id ${data.id} does not exist, please pass a valid group id and try again`);
@@ -202,6 +235,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     return Group.findOne({
       where: {
         collectionId,
+        enabled: true,
         name
       }
     });
@@ -210,7 +244,8 @@ export class GroupResolver implements ResolverInterface<Group> {
   private findGroupsByCollectionId(collectionId: string): Promise<Group[]> {
     return Group.find({
       where: {
-        collectionId
+        collectionId,
+        enabled: true
       }
     });
   }

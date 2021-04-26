@@ -23,6 +23,7 @@ export class GroupsSidenavComponent implements OnChanges {
   @Input() public selectedCollectionId: string;
   @Input() public stateMap: StateMap;
 
+  @Output() public deleteGroup: EventEmitter<boolean>;
   @Output() public duplicateGroupName: EventEmitter<boolean>;
   @Output() public modifyGroup: EventEmitter<Group>;
 
@@ -44,6 +45,7 @@ export class GroupsSidenavComponent implements OnChanges {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
+    this.deleteGroup = new EventEmitter<boolean>();
     this.duplicateGroupName = new EventEmitter<boolean>();
     this.modifyGroup = new EventEmitter<Group>();
   }
@@ -103,6 +105,10 @@ export class GroupsSidenavComponent implements OnChanges {
 
     // Add the item back to the list of selectable items.
     this.collectionItems.push(item);
+  }
+
+  public onDeleteGroup(): void {
+    this.deleteGroup.emit(true);
   }
 
   public onDuplicateGroupName(duplicateGroupName: boolean): void {

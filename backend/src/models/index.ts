@@ -9,7 +9,6 @@ export * from './information-type';
 export * from './information-type.enum';
 export * from './relationship-history';
 export * from './relationship';
-export * from './response';
 export * from './state-enumeration';
 export * from './state';
 export * from './state-history';

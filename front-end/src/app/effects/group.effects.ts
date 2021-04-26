@@ -9,7 +9,7 @@ import { CollectionActions, EventActions, GroupActions, LayoutActions, StateActi
 import { AppState } from '../app-store';
 import { mapToParam, ofRoute } from '../functions/router';
 import { EventService, GroupService, StateService } from '../services';
-import { Group } from '../models';
+import { Group, Response } from '../models';
 
 @Injectable()
 export class GroupEffects {
@@ -55,6 +55,39 @@ export class GroupEffects {
       )
     )
   });
+
+  public deleteGroup = createEffect(() =>
+    this.actions.pipe(
+      ofType(GroupActions.deleteGroup),
+      switchMap(({ id }) =>
+        this.groupService.deleteGroup(
+          id
+        ).pipe(
+          switchMap((deleteGroup: Response) => [
+            GroupActions.deleteGroupSuccess({
+              id
+            }),
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            }),
+            ToastActions.showToast({
+              message: deleteGroup.message,
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            GroupActions.deleteGroupFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: error.message,
+              toastType: 'error'
+            })
+          ])
+        )
+      )
+    )
+  );
 
   public getGroupsAndMappingsByCollectionId = createEffect(() => {
     return this.actions.pipe(

@@ -7,12 +7,16 @@ import { Node } from './node';
 @Entity('groups')
 @ObjectType()
 export class Group extends Node {
-  @Field(() => ID)
   @Column()
+  @Field(() => ID)
   public collectionId!: string;
 
-  @Field()
   @Column()
+  @Field()
+  public enabled!: boolean;
+
+  @Column()
+  @Field()
   public name!: string;
 
   @Field(() => [ GroupMapping ])
