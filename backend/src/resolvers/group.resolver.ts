@@ -1,5 +1,5 @@
 import { UserInputError } from 'apollo-server';
-import { Arg, Args, FieldResolver, Mutation, ObjectType, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
+import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
 import { CollectionIdArgs, IdArgs } from '../args';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';

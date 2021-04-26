@@ -1,2 +1,2 @@
-export * from './groups';
+export * from './group-response';
 export * from './response';

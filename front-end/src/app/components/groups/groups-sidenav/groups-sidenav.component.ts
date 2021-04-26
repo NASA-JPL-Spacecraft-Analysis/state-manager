@@ -8,6 +8,7 @@ import { MaterialModule } from 'src/app/material';
 import { EventMap, Group, GroupItemType, GroupMapping, IdentifierMap, InformationTypesMap, StateMap, StringTMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,8 +25,8 @@ export class GroupsSidenavComponent implements OnChanges {
   @Input() public stateMap: StateMap;
 
   @Output() public deleteGroup: EventEmitter<boolean>;
-  @Output() public duplicateGroupName: EventEmitter<boolean>;
   @Output() public modifyGroup: EventEmitter<Group>;
+  @Output() public showError: EventEmitter<string>;
 
   @ViewChild('itemSelector') public itemSelector: MatSelect;
 
@@ -46,8 +47,8 @@ export class GroupsSidenavComponent implements OnChanges {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
     this.deleteGroup = new EventEmitter<boolean>();
-    this.duplicateGroupName = new EventEmitter<boolean>();
     this.modifyGroup = new EventEmitter<Group>();
+    this.showError = new EventEmitter<string>();
   }
 
   public ngOnChanges(): void {
@@ -143,22 +144,26 @@ export class GroupsSidenavComponent implements OnChanges {
 
   public onSubmit(): void {
     if (!this.isDuplicateGroupName && this.newGroup.name !== '') {
-      this.formGroup.get('groupMappings').setValue(this.groupMappings);
+      if (this.validateGroupName(this.newGroup.name)) {
+        this.formGroup.get('groupMappings').setValue(this.groupMappings);
 
-      const groupMappingIds = [];
+        const groupMappingIds = [];
 
-      // Pull out just the item ids so we can save the mappings.
-      for (const mapping of this.groupMappings) {
-        groupMappingIds.push({
-          itemId: mapping.item.id
-        });
+        // Pull out just the item ids so we can save the mappings.
+        for (const mapping of this.groupMappings) {
+          groupMappingIds.push({
+            itemId: mapping.item.id
+          });
+        }
+
+        this.newGroup.groupMappings = groupMappingIds;
+
+        this.modifyGroup.emit(this.newGroup);
+      } else {
+        this.showError.emit('Your group name contains invalid characters, please only use alphanumerics and underscores');
       }
-
-      this.newGroup.groupMappings = groupMappingIds;
-
-      this.modifyGroup.emit(this.newGroup);
     } else {
-      this.duplicateGroupName.emit(true);
+      this.showError.emit('Please provide a unique group name');
     }
   }
 
@@ -190,6 +195,10 @@ export class GroupsSidenavComponent implements OnChanges {
         this.groupItemMap.set(item.id, item);
       }
     }
+  }
+
+  private validateGroupName(name: string): boolean {
+    return new RegExp(StateManagementConstants.groupNameRegex).test(name);
   }
 }
 

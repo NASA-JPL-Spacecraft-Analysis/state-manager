@@ -1,6 +1,9 @@
 import { InformationTypeEnum } from '../models';
 
 export class StateManagementConstants {
+  // Match the entire string, only allow a-z, A-Z, 0-9, and _.
+  public static groupNameRegex: string = '^[a-zA-Z0-9\_]*$';
+
   public static groupUploadFormat: string = `
   [
     {

@@ -87,15 +87,13 @@ export class GroupsComponent implements OnDestroy {
     }
   }
 
-  public onDuplicateGroupName(duplicateGroupName: boolean): void {
-    if (duplicateGroupName) {
-      this.store.dispatch(
-        ToastActions.showToast({
-          message: 'Please provide a unique group name',
-          toastType: 'error'
-        })
-      );
-    }
+  public onShowError(error: string): void {
+    this.store.dispatch(
+      ToastActions.showToast({
+        message: error,
+        toastType: 'error'
+      })
+    );
   }
 
   public onFileUpload(): void {

@@ -43,8 +43,8 @@
       [selectedCollectionId]="selectedCollectionId"
       [stateMap]="stateMap"
       (deleteGroup)="onDeleteGroup($event)"
-      (duplicateGroupName)="onDuplicateGroupName($event)"
-      (modifyGroup)="onSidenavOutput($event)">
+      (modifyGroup)="onSidenavOutput($event)"
+      (showError)=onShowError($event)>
     </groups-sidenav>
   </div>
 </div>
