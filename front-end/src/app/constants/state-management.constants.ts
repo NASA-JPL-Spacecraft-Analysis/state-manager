@@ -7,11 +7,11 @@ export class StateManagementConstants {
   public static groupUploadFormat: string = `
   [
     {
-      "name": "Test Upload Group",
+      "name": "Test_Upload_Group",
       "groupMappings": [
         {
-          "itemIdentifier": "Test Item Identifier",
-          "itemType": "Test Item Type"
+          "itemIdentifier": "Test State Item Identifier",
+          "itemType": "State"
         },
         {
           ...
