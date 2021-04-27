@@ -4,7 +4,7 @@ import { ParseTypes } from '../models';
 
 export const openFileUploadDialog = createAction(
   '[layout] openFileUploadDialog',
-  props<{ collectionId: string, csvFormat: string, dialogType: string, jsonFormat: string }>()
+  props<{ collectionId: string, csvFormat: string[], dialogType: string, jsonFormat: string }>()
 );
 
 export const toggleSidenav = createAction(

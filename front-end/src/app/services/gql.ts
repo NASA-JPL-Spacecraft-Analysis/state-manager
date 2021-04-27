@@ -112,6 +112,58 @@ export const CREATE_GROUP = gql(`
   }
 `);
 
+export const CREATE_GROUP_MAPPINGS = gql(`
+  mutation CreateGroupMappings(
+    $collectionId: ID!
+    $groupMappings: [UploadGroupMappingInput!]!
+  ) {
+    createGroupMappings(
+      data: {
+        collectionId: $collectionId
+        groupMappings: $groupMappings
+      }
+    ) {
+      groupMappings {
+        groupId
+        item {
+          ... on Event {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
+          ... on InformationType {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+            informationType: type 
+          }
+          ... on State {
+            description
+            displayName
+            enumerations {
+              id
+              label
+              value
+            }
+            id
+            identifier
+            source
+            subsystem
+            type
+            units
+          }
+        }
+      }
+      message
+      success
+    }
+  }
+`);
+
 export const CREATE_GROUPS = gql(`
   mutation CreateGroups(
     $collectionId: ID!

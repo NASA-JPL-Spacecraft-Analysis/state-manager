@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material';
 
 interface FileUploadDialogData {
-  csvFormat: string;
+  csvFormat: string[];
   dialogType: string;
   jsonFormat: string;
 }

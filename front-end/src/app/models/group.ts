@@ -10,6 +10,7 @@ export interface Group {
 }
 
 export interface GroupMapping {
+  groupId?: string;
   id: string;
   item: GroupItemType;
   itemId: string;
@@ -22,10 +23,15 @@ export type GroupItemType =
 
 export interface GroupUpload {
   name: string;
+}
+
+export interface GroupUploadMappings extends GroupUpload {
   groupMappings: GroupMappingUpload[];
 }
 
-interface GroupMappingUpload {
+export interface GroupMappingUpload {
   itemIdentifier: string;
   itemType: string;
 }
+
+export type MappingsUpload = GroupUpload & GroupMappingUpload;

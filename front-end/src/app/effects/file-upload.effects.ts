@@ -2,12 +2,26 @@ import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { concat, forkJoin, of } from 'rxjs';
+import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
-import { Event, StateEnumeration, InformationTypes, Relationship, Group, ParseTypes, StateEnumerationUpload, RelationshipUpload, State, GroupUpload, CreateGroupsResponse } from '../models';
+import {
+  Event,
+  StateEnumeration,
+  InformationTypes,
+  Relationship,
+  ParseTypes,
+  StateEnumerationUpload,
+  RelationshipUpload,
+  State,
+  GroupUpload,
+  CreateGroupsResponse,
+  GroupUploadMappings,
+  MappingsUpload,
+  CreateGroupMappingsResponse
+} from '../models';
 
 @Injectable()
 export class FileUploadEffects {
@@ -221,17 +235,40 @@ export class FileUploadEffects {
       })),
       switchMap(({ collectionId, parsedGroups }) => {
         if (Array.isArray(parsedGroups) && parsedGroups.length > 0) {
-          const groups = parsedGroups as GroupUpload[];
+          const groups: GroupUploadMappings[] = [];
 
-          for (const group of groups) {
-            if (!this.validationService.isGroupUpload(group)) {
-              return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
-              ];
+          for (const parsedGroup of parsedGroups) {
+            let group = parsedGroup as GroupUploadMappings;
+
+            // Matches our JSON upload type, 
+            if (this.validationService.isGroupUploadMappings(group)) {
+              groups.push({ ...group });
+
+              continue;
             }
+
+            let groupUpload = parsedGroup as GroupUpload;
+
+            let mappingsUpload = parsedGroup as MappingsUpload;
+
+            if (this.validationService.isMappingsUpload(mappingsUpload)) {
+              return this.groupMappingsCsvUpload(collectionId, parsedGroups as MappingsUpload[]);
+            }
+            
+            if (this.validationService.isGroupUpload(groupUpload)) {
+              groups.push({
+                name: groupUpload.name,
+                groupMappings: []
+              });
+
+              continue;
+            }
+          }
+
+          if (groups.length === 0) {
+            return [
+              this.throwFileParseError(parsedGroups)
+            ];
           }
 
           return concat(
@@ -403,6 +440,34 @@ export class FileUploadEffects {
     private relationshipService: RelationshipService,
     private validationService: ValidationService
   ) {}
+
+  private groupMappingsCsvUpload(collectionId: string, mappingsUpload: MappingsUpload[]): Observable<Action> {
+    return concat(
+      this.groupService.createGroupMappings(
+        collectionId,
+        mappingsUpload
+      ).pipe(
+        switchMap((createGroupMappings: CreateGroupMappingsResponse) => [
+          FileUploadActions.uploadGroupMappingsSuccess({
+            groupMappings: createGroupMappings.groupMappings
+          }),
+          ToastActions.showToast({
+            message: createGroupMappings.message,
+            toastType: 'success'
+          })
+        ]),
+        catchError((error: Error) => [
+          FileUploadActions.uploadGroupMappingsFailure({
+            error
+          }),
+          ToastActions.showToast({
+            message: error.message,
+            toastType: 'error'
+          })
+        ])
+      )
+    );
+  }
 
   // The error will be a string, but we need to check for other types as well.
   private throwFileParseError(error: string | ParseTypes): Action {

@@ -10,6 +10,7 @@ import { GroupsSidenavModule } from 'src/app/components/groups';
 import { EventMap, Group, IdentifierMap, InformationTypesMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
+import { UploadConstants } from 'src/app/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -99,9 +100,9 @@ export class GroupsComponent implements OnDestroy {
   public onFileUpload(): void {
     this.store.dispatch(LayoutActions.openFileUploadDialog({
       collectionId: this.selectedCollectionId,
-      csvFormat: undefined,
+      csvFormat: [ UploadConstants.groupCsvUploadFormat, UploadConstants.groupMappingCsvUploadFormat ],
       dialogType: 'Group',
-      jsonFormat: StateManagementConstants.groupUploadFormat
+      jsonFormat: UploadConstants.groupJsonUploadFormat
     }));
   }
 

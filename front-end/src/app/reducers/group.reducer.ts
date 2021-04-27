@@ -1,4 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
+import { cloneDeep } from 'lodash';
 
 import { FileUploadActions, GroupActions } from '../actions';
 import { Group } from '../models';
@@ -59,6 +60,24 @@ export const reducer = createReducer(
         ...groups
       ],
       selectedGroup: group,
+    };
+  }),
+  on(FileUploadActions.uploadGroupMappingsSuccess, (state, { groupMappings }) => {
+    const groups = cloneDeep(state.groups);
+
+    for (const group of groups) {
+      for (const groupMapping of groupMappings) {
+        if (group.id === groupMapping.groupId) {
+          group.groupMappings.push(groupMapping);
+        }
+      }
+    }
+
+    return {
+      ...state,
+      groups: [
+        ...groups
+      ]
     };
   }),
   on(FileUploadActions.uploadGroupsSuccess, (state, { groups }) => ({

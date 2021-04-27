@@ -5,13 +5,15 @@
 <div mat-dialog-content *ngIf="data.csvFormat || data.jsonFormat">
   <p>{{data.dialogType}} uploading supports the following upload type(s):</p>
 
-  <div *ngIf="data.csvFormat">
-    <span>CSV:</span>
+  <ng-container *ngIf="data.csvFormat && data.csvFormat.length > 0">
+    <div *ngFor="let example of data.csvFormat">
+      <span>CSV:</span>
 
-    <code>
-      {{data.csvFormat}}
-    </code>
-  </div>
+      <code>
+        {{example}}
+      </code>
+    </div>
+  </ng-container>
 
   <div *ngIf="data.jsonFormat">
     <span>JSON:</span>
