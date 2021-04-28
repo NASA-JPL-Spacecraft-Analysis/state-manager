@@ -40,17 +40,11 @@ export const reducer = createReducer(
     selectedGroup: group
   })),
   on(GroupActions.updateGroupSuccess, (state, { group }) => {
-    let index = 0;
-
-    for (const existingGroup of state.groups) {
-      if (existingGroup.id === group.id) {
-        break;
-      }
-
-      index++;
-    }
-
     const groups = [ ...state.groups ];
+    // Find the index of the group that was updated.
+    const index = state.groups.map((group) => {
+      return group.id;
+    }).indexOf(group.id);
 
     groups.splice(index, 1, group);
 
