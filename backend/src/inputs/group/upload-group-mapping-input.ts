@@ -8,6 +8,6 @@ export class UploadGroupMappingInput {
   @Field()
   public itemType!: string;
 
-  @Field({ nullable: true })
-  public name?: string;
+  @Field()
+  public name!: string;
 }

@@ -203,7 +203,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     });
 
     if (!collection) {
-      throw await new UserInputError(`A collection with id ${collectionId} does not exist, please pass a valid collection id and try again`);
+      throw new UserInputError(`A collection with id ${collectionId} does not exist, please pass a valid collection id and try again`);
     }
 
     const collectionGroups = await this.findGroupsByCollectionId(collectionId);
@@ -211,7 +211,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     for (const collectionGroup of collectionGroups) {
       for (const name of groupNames) {
         if (collectionGroup.name === name) {
-          throw await new UserInputError(`A group with name "${name}" already exists in this colleciton, please change the name and try again`);
+          throw new UserInputError(`A group with name "${name}" already exists in this colleciton, please change the name and try again`);
         }
       }
     }
