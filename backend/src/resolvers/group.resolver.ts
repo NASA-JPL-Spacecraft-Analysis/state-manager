@@ -13,12 +13,12 @@ export class GroupResolver implements ResolverInterface<Group> {
   constructor(
     private readonly identifierTypeService: IdentifierTypeService
   ) {}
-  
+
   @Mutation(() => Group)
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<Group> {
     const group = Group.create(data);
 
-    this.checkForDuplicateGroupName(group.collectionId, [ group.name ]);
+    this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
 
     await group.save();
 
@@ -36,7 +36,7 @@ export class GroupResolver implements ResolverInterface<Group> {
         groupNames.push(group.name);
       }
 
-      await this.checkForDuplicateGroupName(data.collectionId, groupNames);
+      await this.checkForDuplicateGroupName(data.collectionId, undefined, groupNames);
 
       const createdGroups: Group[] = [];
 
@@ -142,7 +142,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
     Object.assign(group, data);
 
-    this.checkForDuplicateGroupName(group.collectionId, [ group.name ]);
+    this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
 
     await group.save();
 
@@ -195,7 +195,7 @@ export class GroupResolver implements ResolverInterface<Group> {
    * @param collectionId The ID of the collection we're looking at.
    * @param groupNames A list of group names that we should check for.
    */
-  private async checkForDuplicateGroupName(collectionId: string, groupNames: string[]): Promise<void> {
+  private async checkForDuplicateGroupName(collectionId: string, groupId: string | undefined, groupNames: string[]): Promise<void> {
     const collection = await Collection.findOne({
       where: {
         id: collectionId
@@ -210,7 +210,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
     for (const collectionGroup of collectionGroups) {
       for (const name of groupNames) {
-        if (collectionGroup.name === name) {
+        if (collectionGroup.name === name && collectionGroup.id !== groupId) {
           throw new UserInputError(`A group with name "${name}" already exists in this colleciton, please change the name and try again`);
         }
       }

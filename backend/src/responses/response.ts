@@ -2,8 +2,8 @@ import { Field, ObjectType } from 'type-graphql';
 
 @ObjectType()
 export class Response {
-  @Field()
-  public message!: string;
+  @Field(() => String)
+  public message!: string | unknown;
 
   @Field()
   public success!: boolean;

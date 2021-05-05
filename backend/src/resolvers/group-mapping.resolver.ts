@@ -23,7 +23,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
       const groupMap = new Map<string, Group>();
 
       for (const groupMapping of data.groupMappings) {
-        let group;
+        let group: Group | undefined;
 
         // Find the group that our mapping is trying to bind to.
         if (groupMap.get(groupMapping.name)) {
@@ -42,14 +42,16 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
         }
 
         // Find the item the mapping is trying to bind to.
-        let item = await this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, groupMapping.itemIdentifier, groupMapping.itemType);
+        const item =
+          await
+          this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, groupMapping.itemIdentifier, groupMapping.itemType);
 
         // Check the group's existing mappings to make sure the input list doesn't contain a duplicate.
         if (this.isDuplicateMapping(await GroupMapping.find({ where: { groupId: group.id } }), item)) {
           throw new UserInputError(GroupConstants.duplicateMappingError(groupMapping.itemIdentifier, groupMapping.itemType));
         }
 
-        let newMapping = GroupMapping.create();
+        const newMapping = GroupMapping.create();
 
         newMapping.itemId = item.id;
         newMapping.groupId = group.id;
@@ -67,7 +69,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
         message: 'Group Mappings Created',
         success: true
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         message: error,
         success: false
@@ -77,7 +79,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
 
   /**
    * Finds the item attached to a group mapping, and returns the correct value.
-   * 
+   *
    * @param groupMapping
    */
   @FieldResolver()
@@ -87,7 +89,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
 
   /**
    * Checks if the passed group already has a mapping to the item being passed.
-   * 
+   *
    * @param group The group we are checking.
    * @param item The item we are looking for.
    * @returns true if there is a duplicate mapping.
