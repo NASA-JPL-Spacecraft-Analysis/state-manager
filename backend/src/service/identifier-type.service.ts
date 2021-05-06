@@ -11,27 +11,32 @@ export class IdentifierTypeService {
     let item: typeof IdentifierTypeUnion | undefined;
 
     switch (type) {
-      case Event.name:
-        item = await Event.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-      case State.name:
-        item = await State.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-      case InformationType.name:
-        item = await InformationType.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
+    case Event.name:
+      item = await Event.findOne({
+        where: {
+          collectionId,
+          identifier
+        }
+      });
+      break;
+    case State.name:
+      item = await State.findOne({
+        where: {
+          collectionId,
+          identifier
+        }
+      });
+      break;
+    }
+
+    // If it wasn't an Event or State, try to find the item as an information type.
+    if (!item) {
+      item = await InformationType.findOne({
+        where: {
+          collectionId,
+          identifier
+        }
+      });
     }
 
     if (!item) {

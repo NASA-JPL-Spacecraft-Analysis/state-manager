@@ -26,7 +26,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
         let group: Group | undefined;
 
         // Find the group that our mapping is trying to bind to.
-        if (groupMap.get(groupMapping.name)) {
+        if (groupMapping.name && groupMap.get(groupMapping.name)) {
           group = groupMap.get(groupMapping.name);
         } else {
           group = await Group.findOne({
@@ -38,7 +38,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
         }
 
         if (!group) {
-          throw new UserInputError(GroupConstants.groupNotFoundError(groupMapping.name));
+          throw new UserInputError(GroupConstants.groupNotFoundError(groupMapping.name ? groupMapping.name : 'undefined'));
         }
 
         // Find the item the mapping is trying to bind to.
@@ -53,7 +53,8 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
 
         const newMapping = GroupMapping.create({
           itemId: item.id,
-          groupId: group.id
+          groupId: group.id,
+          sortOrder: groupMapping.sortOrder
         });
 
         groupMappingsToSave.push(newMapping);
@@ -63,6 +64,20 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
       for (let groupMapping of groupMappingsToSave) {
         groupMapping = await groupMapping.save();
       }
+
+      groupMappingsToSave.sort(
+        (firstMapping, secondMapping) => {
+          if (firstMapping.sortOrder === secondMapping.sortOrder) {
+            return 0;
+          } else if (firstMapping.sortOrder === null || firstMapping.sortOrder === undefined) {
+            return 1;
+          } else if (secondMapping.sortOrder === null || secondMapping.sortOrder === undefined) {
+            return -1;
+          }
+
+          return firstMapping.sortOrder - secondMapping.sortOrder;
+        }
+      );
 
       return {
         groupMappings: groupMappingsToSave,

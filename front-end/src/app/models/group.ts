@@ -32,6 +32,7 @@ export interface GroupUploadMappings extends GroupUpload {
 export interface GroupMappingUpload {
   itemIdentifier: string;
   itemType: string;
+  sortOrder?: number;
 }
 
 export type MappingsUpload = GroupUpload & GroupMappingUpload;

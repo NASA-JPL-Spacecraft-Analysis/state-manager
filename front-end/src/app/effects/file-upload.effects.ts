@@ -442,6 +442,10 @@ export class FileUploadEffects {
   ) {}
 
   private groupMappingsCsvUpload(collectionId: string, mappingsUpload: MappingsUpload[]): Observable<Action> {
+    for (const mapping of mappingsUpload) {
+      mapping.sortOrder = Number(mapping.sortOrder);
+    }
+
     return concat(
       this.groupService.createGroupMappings(
         collectionId,

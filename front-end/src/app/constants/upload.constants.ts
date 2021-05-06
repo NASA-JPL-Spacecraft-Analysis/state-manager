@@ -5,8 +5,8 @@ export class UploadConstants {
   `;
 
   public static groupMappingCsvUploadFormat: string = `
-    name,itemIdentifier,itemType
-    Test_Upload_Group,Test State Item Identifier,State
+    name,itemIdentifier,itemType,sortOrder
+    Test_Upload_Group,Test State Item Identifier,State,1
   `;
 
   public static groupJsonUploadFormat: string = `
@@ -16,7 +16,8 @@ export class UploadConstants {
         "groupMappings": [
           {
             "itemIdentifier": "Test State Item Identifier",
-            "itemType": "State"
+            "itemType": "State",
+            "sortOrder": 1
           },
           {
             ...
