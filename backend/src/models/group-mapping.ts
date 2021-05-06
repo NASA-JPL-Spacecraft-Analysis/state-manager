@@ -19,6 +19,10 @@ export class GroupMapping extends Node {
   @Field(() => ID)
   @Column()
   public itemId!: string;
+
+  @Column()
+  @Field({ nullable: true })
+  public sortOrder?: number;
 }
 
 export const GroupMappingItemUnion = createUnionType({

@@ -4,6 +4,23 @@ import { Event, GroupMapping, GroupMappingItemUnion, InformationType, State } fr
 
 @Service()
 export class GroupService {
+  /**
+   * Gets a list of group mappings, sorted ASC by their sortOrder.
+   *
+   * @param groupId The ID of the group we are getting the mappings for.
+   * @returns A list of sorted group mappings.
+   */
+  public async getGroupMappings(groupId: string): Promise<GroupMapping[]> {
+    return GroupMapping.find({
+      where: {
+        groupId
+      },
+      order: {
+        sortOrder: 'ASC'
+      }
+    });
+  }
+
   public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof GroupMappingItemUnion | undefined> {
     const event = await Event.findOne({ where: { id: groupMapping.itemId }});
 

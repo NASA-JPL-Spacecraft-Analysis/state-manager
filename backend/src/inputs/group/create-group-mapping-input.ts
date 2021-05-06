@@ -9,4 +9,7 @@ export class CreateGroupMappingInput implements Partial<GroupMapping> {
 
   @Field(() => ID)
   public itemId!: string;
+
+  @Field({ nullable: true })
+  public sortOrder?: number;
 }

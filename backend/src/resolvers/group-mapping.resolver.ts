@@ -51,10 +51,10 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
           throw new UserInputError(GroupConstants.duplicateMappingError(groupMapping.itemIdentifier, groupMapping.itemType));
         }
 
-        const newMapping = GroupMapping.create();
-
-        newMapping.itemId = item.id;
-        newMapping.groupId = group.id;
+        const newMapping = GroupMapping.create({
+          itemId: item.id,
+          groupId: group.id
+        });
 
         groupMappingsToSave.push(newMapping);
       }

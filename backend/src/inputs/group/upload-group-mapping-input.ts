@@ -10,4 +10,7 @@ export class UploadGroupMappingInput {
 
   @Field()
   public name!: string;
+
+  @Field({ nullable: true })
+  public sortOrder?: number;
 }

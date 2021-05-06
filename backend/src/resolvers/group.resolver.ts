@@ -6,11 +6,12 @@ import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping } from '../models';
 import { GroupsResponse, Response } from '../responses';
-import { IdentifierTypeService } from '../service';
+import { GroupService, IdentifierTypeService } from '../service';
 
 @Resolver(() => Group)
 export class GroupResolver implements ResolverInterface<Group> {
   constructor(
+    private readonly groupService: GroupService,
     private readonly identifierTypeService: IdentifierTypeService
   ) {}
 
@@ -18,7 +19,7 @@ export class GroupResolver implements ResolverInterface<Group> {
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<Group> {
     const group = Group.create(data);
 
-    this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
+    void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
 
     await group.save();
 
@@ -51,13 +52,17 @@ export class GroupResolver implements ResolverInterface<Group> {
         createdGroups.push(newGroup);
 
         for (const mapping of group.groupMappings) {
-          let newMapping = GroupMapping.create();
+          let newMapping = GroupMapping.create({
+            groupId: newGroup.id,
+            sortOrder: mapping.sortOrder
+          });
 
-          let item = await this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
+          const item =
+            await
+            this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
 
           if (item) {
             newMapping.itemId = item.id;
-            newMapping.groupId = newGroup.id;
 
             newMapping = await newMapping.save();
 
@@ -73,10 +78,9 @@ export class GroupResolver implements ResolverInterface<Group> {
       };
     } catch (error) {
       return {
-        groups: undefined,
         message: error,
         success: false
-      }
+      };
     }
   }
 
@@ -105,7 +109,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     return {
       message: 'Group Deleted',
       success: true
-    }
+    };
   }
 
   @Query(() => Group)
@@ -115,11 +119,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
   @FieldResolver()
   public async groupMappings(@Root() group: Group): Promise<GroupMapping[]> {
-    return GroupMapping.find({
-      where: {
-        groupId: group.id
-      }
-    });
+    return this.groupService.getGroupMappings(group.id);
   }
 
   @Query(() => [ Group ])
@@ -142,28 +142,24 @@ export class GroupResolver implements ResolverInterface<Group> {
 
     Object.assign(group, data);
 
-    this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
+    void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
 
     await group.save();
 
-    group.groupMappings = await GroupMapping.find({
-      where: {
-        groupId: group.id
-      }
-    });
+    group.groupMappings = await this.groupMappings(group);
 
-    // Create and populate a set of the incoming group mappings.
-    const groupMappingsSet = new Set<string>();
+    // Create and populate a map of the incoming group mappings.
+    const groupMappingsMap = new Map<string, CreateGroupMappingInput>();
 
     for (const mapping of data.groupMappings) {
-      groupMappingsSet.add(mapping.itemId);
+      groupMappingsMap.set(mapping.itemId, mapping);
     }
 
     // Loop over our existing group mappings to see what needs to be saved or deleted.
     for (const mapping of group.groupMappings) {
-      // If the incoming list has the group mapping, remove it from the set and do nothing.
-      if (groupMappingsSet.has(mapping.itemId)) {
-        groupMappingsSet.delete(mapping.itemId);
+      // If the incoming list has the group mapping, remove it from the map and do nothing.
+      if (groupMappingsMap.get(mapping.itemId)) {
+        groupMappingsMap.delete(mapping.itemId);
       } else {
         // If we don't see the item in the incoming mapping list, delete it from the group.
         await mapping.remove();
@@ -171,20 +167,17 @@ export class GroupResolver implements ResolverInterface<Group> {
     }
 
     // Look at the remaining mappings, save them all to the group.
-    for (const itemId of groupMappingsSet) {
+    for (const itemId of Object.keys(groupMappingsMap)) {
       const groupMapping = GroupMapping.create({
         groupId: group.id,
-        itemId
+        itemId: groupMappingsMap.get(itemId)?.itemId,
+        sortOrder: groupMappingsMap.get(itemId)?.sortOrder
       });
 
       await groupMapping.save();
     }
 
-    group.groupMappings = await GroupMapping.find({
-      where: {
-        groupId: group.id
-      }
-    });
+    group.groupMappings = await this.groupService.getGroupMappings(group.id);
 
     return group;
   }
@@ -192,6 +185,7 @@ export class GroupResolver implements ResolverInterface<Group> {
   /**
    * This method queries the DB for a collection and a collection's groups and then checks the incoming list of names
    * for a duplicate.
+   *
    * @param collectionId The ID of the collection we're looking at.
    * @param groupNames A list of group names that we should check for.
    */
