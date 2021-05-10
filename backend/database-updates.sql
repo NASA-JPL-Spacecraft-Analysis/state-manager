@@ -10,6 +10,9 @@ ADD COLUMN `editable` TINYINT(4) NOT NULL DEFAULT '1' AFTER `description`;
 ALTER TABLE `state-manager`.`state_history`
 ADD COLUMN `externalLink` TEXT NULL DEFAULT NULL AFTER `editable`;
 
+ALTER TABLE `state-manager`.`state_history`
+ADD COLUMN `type` TEXT NOT NULL AFTER `externalLink`;
+
 ALTER TABLE `state-manager`.`states`
 CHANGE COLUMN `type` `dataType` TEXT NULL DEFAULT NULL ;
 
@@ -18,4 +21,7 @@ ADD COLUMN `editable` TINYINT(4) NOT NULL DEFAULT '1' AFTER `description`;
 
 ALTER TABLE `state-manager`.`states`
 ADD COLUMN `externalLink` TEXT NULL DEFAULT NULL AFTER `editable`;
+
+ALTER TABLE `state-manager`.`states`
+ADD COLUMN `type` TEXT NOT NULL AFTER `externalLink`;
 

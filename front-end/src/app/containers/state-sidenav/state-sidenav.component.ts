@@ -61,15 +61,17 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public ngOnChanges(): void {
     if (this.state === undefined) {
       this.newState = {
+        dataType: '',
+        description: '',
+        displayName: '',
+        enumerations: [],
+        externalLink: '',
         id: undefined,
         identifier: '',
-        displayName: '',
-        type: '',
-        units: '',
         source: '',
         subsystem: '',
-        description: '',
-        enumerations: []
+        type: '',
+        units: ''
       };
     } else {
       this.newState = {
@@ -85,14 +87,16 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
     this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({
+      dataType: new FormControl(this.newState.dataType),
+      displayName: new FormControl(this.newState.displayName, [ Validators.required ]),
+      description: new FormControl(this.newState.description),
+      externalLink: new FormControl(this.newState.externalLink),
       id: new FormControl(this.newState.id),
       identifier: new FormControl(this.newState.identifier, [ Validators.required ]),
-      displayName: new FormControl(this.newState.displayName, [ Validators.required ]),
-      type: new FormControl(this.newState.type, [ Validators.required ]),
-      units: new FormControl(this.newState.units, [ Validators.required ]),
       source: new FormControl(this.newState.source, [ Validators.required ]),
       subsystem: new FormControl(this.newState.subsystem, [ Validators.required ]),
-      description: new FormControl(this.newState.description)
+      type: new FormControl(this.newState.type, [ Validators.required ]),
+      units: new FormControl(this.newState.units, [ Validators.required ]),
     });
   }
 

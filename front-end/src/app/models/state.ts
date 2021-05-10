@@ -2,15 +2,17 @@ import { StateEnumeration } from './state-enumeration';
 import { StringTMap } from './string-t-map';
 
 export interface State {
+  dataType: string;
   description: string;
   displayName: string;
   enumerations: StateEnumeration[];
+  externalLink: string;
   id: string;
   identifier: string;
-  source: string; // enum?
+  source: string;
   subsystem: string;
-  type: string; // enum?
-  units: string; // enum?
+  type: string;
+  units: string;
 }
 
 export interface StateHistory extends State {

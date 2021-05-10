@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
+import { Observable, merge, of, EMPTY } from 'rxjs';
 
 import { StateService } from '../services';
 import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
-import { Observable, merge, of, EMPTY } from 'rxjs';
 import { ofRoute, mapToParam } from '../functions/router';
+import { CreateStateResponse } from '../models';
 
 @Injectable()
 export class StateEffects {
@@ -19,15 +20,12 @@ export class StateEffects {
           collectionId,
           newState
         ).pipe(
-          switchMap((state) => [
+          switchMap((createState: CreateStateResponse) => [
             LayoutActions.toggleSidenav({
               showSidenav: false
             }),
             StateActions.createStateSuccess({
-              state: {
-                ...newState,
-                id: state.id
-              }
+              state: createState.state
             }),
             StateActions.saveEnumerations({
               collectionId,

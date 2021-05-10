@@ -205,7 +205,7 @@ export const CREATE_GROUPS = gql(`
               identifier
               source
               subsystem
-              type
+              dataType
               units
             }
           }
@@ -298,8 +298,10 @@ export const CREATE_RELATIONSHIPS = gql(`
 export const CREATE_STATE = gql(`
   mutation CreateState(
     $collectionId: ID!
+    $dataType: String!
     $description: String
     $displayName: String!
+    $externalLink: String
     $identifier: String!
     $source: String!
     $subsystem: String!
@@ -309,8 +311,10 @@ export const CREATE_STATE = gql(`
     createState(
       data: {
         collectionId: $collectionId
+        dataType: $dataType
         description: $description
         displayName: $displayName
+        externalLink: $externalLink
         identifier: $identifier
         source: $source
         subsystem: $subsystem
@@ -318,7 +322,21 @@ export const CREATE_STATE = gql(`
         units: $units
       }
     ) {
-      id
+      message
+      state {
+        collectionId
+        dataType
+        description
+        displayName
+        externalLink
+        id
+        identifier
+        source
+        subsystem
+        type
+        units
+      }
+      success
     }
   }
 `);
@@ -334,8 +352,10 @@ export const CREATE_STATES = gql(`
         states: $states
       }
     ) {
+      dataType
       description
       displayName
+      externalLink
       id
       identifier
       source
@@ -511,13 +531,16 @@ export const GET_RELATIONSHIP_HISTORY = gql(`
 export const GET_STATES = gql(`
   query states($collectionId: ID!) {
     states(collectionId: $collectionId) {
+      dataType
       description
       displayName
+      editable
       enumerations {
         id
         label
         value
       }
+      externalLink
       id
       identifier
       source
@@ -531,8 +554,11 @@ export const GET_STATES = gql(`
 export const GET_STATE_HISTORY = gql(`
   query stateHistory($collectionId: ID!) {
     stateHistory(collectionId: $collectionId) {
+      dataType
       description
       displayName
+      editable
+      externalLink
       id
       identifier
       source
@@ -694,8 +720,10 @@ export const UPDATE_RELATIONSHIP = gql(`
 
 export const UPDATE_STATE = gql(`
   mutation UpdateState(
+    $dataType: String!
     $description: String
     $displayName: String!
+    $externalLink: String
     $id: ID!
     $identifier: String!
     $source: String!
@@ -705,8 +733,10 @@ export const UPDATE_STATE = gql(`
   ) {
     updateState(
       data: {
+        dataType: $dataType
         description: $description
         displayName: $displayName
+        externalLink: $externalLink
         id: $id
         identifier: $identifier
         source: $source

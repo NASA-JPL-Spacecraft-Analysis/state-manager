@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { State, StateEnumeration, StateHistory, StateEnumerationUpload } from '../models';
+import { CreateStateResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload } from '../models';
 
 import * as gql from './gql';
 
@@ -15,15 +15,17 @@ export class StateService {
     private apollo: Apollo
   ) {}
 
-  public createState(collectionId: string, state: State): Observable<State> {
+  public createState(collectionId: string, state: State): Observable<CreateStateResponse> {
     return this.apollo
-      .mutate<{ createState: State }>({
+      .mutate<{ createState: CreateStateResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATE,
         variables: {
           collectionId,
+          dataType: state.dataType,
           description: state.description,
           displayName: state.displayName,
+          externalLink: state.externalLink,
           identifier: state.identifier,
           source: state.source,
           subsystem: state.subsystem,
@@ -31,7 +33,13 @@ export class StateService {
           units: state.units
         }
       })
-      .pipe(map(({ data: { createState } }) => createState));
+      .pipe(map(({ data: { createState } }) => {
+        if (!createState.success) {
+          throw new Error(createState.message);
+        }
+
+        return createState;
+      }));
   }
 
   public createStates(collectionId: string, states: State[]): Observable<State[]> {

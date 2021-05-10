@@ -172,8 +172,8 @@ JSON:
 
 CSV:
 ```
-identifier,displayName,type,units,source,subsystem,description
-STATE_IDENTIFIER_1,State Identifier 1,test type,test units,test source,identifier 1
+identifier,displayName,dataType,type,units,source,subsystem,description,externalLink
+STATE_IDENTIFIER_1,State Identifier 1,subsystem,state,test units,test source,identifier 1,https://google.com
 ```
 
 JSON:
@@ -182,10 +182,13 @@ JSON:
   {
     "identifier": "STATE_IDENTIFIER_1",
     "displayName": "Test",
+    "dataType": "",
     "type": "asd",
     "units": "asd",
     "source": "asd",
     "subsystem": "asd"
+    "description": "",
+    "externalLink": ""
   },
   {
     ...
