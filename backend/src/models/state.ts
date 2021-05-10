@@ -24,7 +24,8 @@ export class State extends IdentifierType {
 
   @Field({ nullable: true })
   @Column({ default: null, nullable: true })
-  public type?: string;
+  // TODO: Ask Dan what we should rename this field to.
+  public dataType?: string;
 
   @Field({ nullable: true })
   @Column({ default: null, nullable: true })

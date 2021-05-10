@@ -1,18 +1,24 @@
 import { Resolver, Query, Arg, Mutation, ResolverInterface , FieldResolver, Root, Args } from 'type-graphql';
+import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
 import { State, StateEnumeration, StateHistory } from './../models';
 import { CreateStateInput, DeleteEnumerationsInput, SaveEnumerationsInput, UpdateStateInput } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { CollectionIdArgs, IdArgs } from '../args';
 import { Response } from '../responses';
+import { CollectionIdArgs, IdentifierArgs } from '../args';
+import { SharedRepository } from '../repositories';
 
 @Resolver(() => State)
 export class StateResolver implements ResolverInterface<State> {
+  private sharedRepository: SharedRepository<State>;
+
   constructor(
     private readonly validationService: ValidationService
-  ) {}
+  ) {
+    this.sharedRepository = new SharedRepository<State>(getConnection(), State);
+  }
 
   @Mutation(() => State)
   public async createState(@Arg('data') data: CreateStateInput): Promise<State> {
@@ -126,12 +132,8 @@ export class StateResolver implements ResolverInterface<State> {
   }
 
   @Query(() => State)
-  public state(@Args() { id }: IdArgs): Promise<State | undefined> {
-    return State.findOne({
-      where: {
-        id
-      }
-    });
+  public async state(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<State | undefined> {
+    return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
   @Query(() => [ State ])
