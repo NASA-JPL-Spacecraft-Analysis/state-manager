@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { CreateStateResponse, CreateStatesResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload, Response } from '../models';
+import { CreateStateResponse, CreateStatesResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload, Response, SaveEnumerationsResponse } from '../models';
 
 import * as gql from './gql';
 
@@ -110,9 +110,9 @@ export class StateService {
   public saveEnumerations(
     collectionId: string,
     enumerations: StateEnumeration[] | StateEnumerationUpload[]
-  ): Observable<StateEnumeration[]> {
+  ): Observable<SaveEnumerationsResponse> {
     return this.apollo
-      .mutate<{ saveEnumerations: StateEnumeration[] }>({
+      .mutate<{ saveEnumerations: SaveEnumerationsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.SAVE_ENUMERATIONS,
         variables: {
@@ -120,7 +120,13 @@ export class StateService {
           enumerations
         }
       })
-      .pipe(map(({ data: { saveEnumerations } }) => saveEnumerations));
+      .pipe(map(({ data: { saveEnumerations } }) => {
+        if (!saveEnumerations.success) {
+          throw new Error(saveEnumerations.message);
+        }
+
+        return saveEnumerations;
+      }));
   }
 
   public updateState(state: State): Observable<State> {

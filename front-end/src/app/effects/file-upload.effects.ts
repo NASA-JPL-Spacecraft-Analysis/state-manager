@@ -21,7 +21,8 @@ import {
   GroupUploadMappings,
   MappingsUpload,
   CreateGroupMappingsResponse,
-  CreateStatesResponse
+  CreateStatesResponse,
+  SaveEnumerationsResponse
 } from '../models';
 
 @Injectable()
@@ -115,20 +116,20 @@ export class FileUploadEffects {
               collectionId,
               stateEnumerations
             ).pipe(
-              switchMap((createStateEnumerations: StateEnumeration[]) => {
+              switchMap((saveEnumerations: SaveEnumerationsResponse) => {
                 let stateId;
 
-                if (createStateEnumerations.length > 0) {
-                  stateId = createStateEnumerations[0].stateId;
+                if (saveEnumerations.enumerations.length > 0) {
+                  stateId = saveEnumerations.enumerations[0].stateId;
                 }
 
                 return [
                   StateActions.saveEnumerationsSuccess({
-                    enumerations: createStateEnumerations,
+                    enumerations: saveEnumerations.enumerations,
                     stateId
                   }),
                   ToastActions.showToast({
-                    message: 'Enumerations uploaded',
+                    message: saveEnumerations.message,
                     toastType: 'success'
                   })
                 ];
@@ -138,7 +139,7 @@ export class FileUploadEffects {
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.toString(),
+                  message: error.message,
                   toastType: 'error'
                 })
               ])

@@ -1,7 +1,13 @@
 import { Field, ObjectType } from 'type-graphql';
 
 import { Response } from './response';
-import { State } from '../models';
+import { State, StateEnumeration } from '../models';
+
+@ObjectType()
+export class EnumerationsResponse extends Response {
+  @Field(() => [ StateEnumeration ], { nullable: true })
+  public enumerations?: StateEnumeration[];
+}
 
 @ObjectType()
 export class StateResponse extends Response {

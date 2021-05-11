@@ -6,7 +6,7 @@ import { State, StateEnumeration, StateHistory } from './../models';
 import { CreateStateInput, DeleteEnumerationsInput, SaveEnumerationsInput, UpdateStateInput } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { Response, StateResponse, StatesResponse } from '../responses';
+import { EnumerationsResponse, Response, StateResponse, StatesResponse } from '../responses';
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
@@ -119,49 +119,58 @@ export class StateResolver implements ResolverInterface<State> {
     });
   }
 
-  @Mutation(() => [ StateEnumeration ])
-  public async saveEnumerations(@Arg('data') data: SaveEnumerationsInput): Promise<StateEnumeration[]> {
-    const savedEnumerations = [];
-    let currentEnumeration;
+  @Mutation(() => EnumerationsResponse)
+  public async saveEnumerations(@Arg('data') data: SaveEnumerationsInput): Promise<EnumerationsResponse> {
+    try {
+      const savedEnumerations: StateEnumeration[] = [];
+      let currentEnumeration: StateEnumeration | undefined;
 
-    for (const enumeration of data.enumerations) {
-      enumeration.collectionId = data.collectionId;
+      for (const enumeration of data.enumerations) {
+        enumeration.collectionId = data.collectionId;
 
-      if (enumeration.id) {
-        // If we have already saved this enumeration, update it.
-        currentEnumeration = await StateEnumeration.findOne({
-          where: {
-            id: enumeration.id
-          }
-        });
-
-        if (currentEnumeration) {
-          Object.assign(currentEnumeration, enumeration);
-
-          currentEnumeration.id = currentEnumeration.id;
-
-          savedEnumerations.push(await currentEnumeration.save());
-        }
-      } else {
-        if (!enumeration.stateId) {
-          const state = await State.findOne({
+        if (enumeration.id) {
+          // If we have already saved this enumeration, update it.
+          currentEnumeration = await StateEnumeration.findOne({
             where: {
-              collectionId: enumeration.collectionId,
-              identifier: enumeration.stateIdentifier
+              id: enumeration.id
             }
           });
 
-          if (state) {
-            enumeration.stateId = state.id;
+          if (currentEnumeration) {
+            Object.assign(currentEnumeration, enumeration);
+
+            savedEnumerations.push(await currentEnumeration.save());
           }
+        } else {
+          if (!enumeration.stateId) {
+            const state = await State.findOne({
+              where: {
+                collectionId: enumeration.collectionId,
+                identifier: enumeration.stateIdentifier
+              }
+            });
+
+            if (state) {
+              enumeration.stateId = state.id;
+            }
+          }
+
+          // Otherwise create a new enumeration.
+          savedEnumerations.push(await StateEnumeration.create(enumeration).save());
         }
-
-        // Otherwise create a new enumeration.
-        savedEnumerations.push(await StateEnumeration.create(enumeration).save());
       }
-    }
 
-    return savedEnumerations;
+      return {
+        enumerations: savedEnumerations,
+        message: 'Enumerations Saved',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
   }
 
   @Query(() => State)

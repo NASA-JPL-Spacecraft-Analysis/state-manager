@@ -132,10 +132,14 @@ export class StateEffects {
           collectionId,
           saveEnumerations
         ).pipe(
-          switchMap((savedEnumerations) => [
+          switchMap((saveEnumerations) => [
             StateActions.saveEnumerationsSuccess({
-              enumerations: savedEnumerations,
+              enumerations: saveEnumerations.enumerations,
               stateId
+            }),
+            ToastActions.showToast({
+              message: saveEnumerations.message,
+              toastType: 'success'
             })
           ]),
           catchError((error: Error) => [
@@ -143,7 +147,7 @@ export class StateEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'State enumeration save failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
