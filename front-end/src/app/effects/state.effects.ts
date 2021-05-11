@@ -8,7 +8,7 @@ import { Observable, merge, of, EMPTY } from 'rxjs';
 import { StateService } from '../services';
 import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { CreateStateResponse } from '../models';
+import { StateResponse } from '../models';
 
 @Injectable()
 export class StateEffects {
@@ -20,7 +20,7 @@ export class StateEffects {
           collectionId,
           newState
         ).pipe(
-          switchMap((createState: CreateStateResponse) => [
+          switchMap((createState: StateResponse) => [
             LayoutActions.toggleSidenav({
               showSidenav: false
             }),
@@ -163,22 +163,21 @@ export class StateEffects {
         this.stateService.updateState(
           updatedState
         ).pipe(
-          switchMap((state) => [
+          switchMap((updateState: StateResponse) => [
             StateActions.updateStateSuccess({
-              state: {
-                ...updatedState,
-                id: state.id
-              }
+              state: updateState.state
             }),
             ToastActions.showToast({
-              message: 'State updated',
+              message: updateState.message,
               toastType: 'success'
             })
           ]),
           catchError((error: Error) => [
-            StateActions.updateStateFailure({ error }),
+            StateActions.updateStateFailure({
+              error
+            }),
             ToastActions.showToast({
-              message: 'State updating failed',
+              message: error.message,
               toastType: 'error'
             })
           ])

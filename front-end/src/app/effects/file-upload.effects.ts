@@ -21,8 +21,8 @@ import {
   GroupUploadMappings,
   MappingsUpload,
   CreateGroupMappingsResponse,
-  CreateStatesResponse,
-  SaveEnumerationsResponse
+  StatesResponse,
+  EnumerationsResponse
 } from '../models';
 
 @Injectable()
@@ -116,8 +116,8 @@ export class FileUploadEffects {
               collectionId,
               stateEnumerations
             ).pipe(
-              switchMap((saveEnumerations: SaveEnumerationsResponse) => {
-                let stateId;
+              switchMap((saveEnumerations: EnumerationsResponse) => {
+                let stateId: string;
 
                 if (saveEnumerations.enumerations.length > 0) {
                   stateId = saveEnumerations.enumerations[0].stateId;
@@ -391,7 +391,7 @@ export class FileUploadEffects {
               collectionId,
               states
             ).pipe(
-              switchMap((createStates: CreateStatesResponse) => [
+              switchMap((createStates: StatesResponse) => [
                 StateActions.createStatesSuccess({
                   states: createStates.states
                 }),

@@ -187,23 +187,33 @@ export class StateResolver implements ResolverInterface<State> {
     });
   }
 
-  @Mutation(() => State)
-  public async updateState(@Arg('data') data: UpdateStateInput): Promise<State> {
-    const state = await this.state({ id: data.id });
+  @Mutation(() => StateResponse)
+  public async updateState(@Arg('data') data: UpdateStateInput): Promise<StateResponse> {
+    try {
+      const state = await this.state({ id: data.id });
 
-    // If we can't find a state with the given ID, error.
-    if (!state) {
-      throw new UserInputError(`State with provided id ${data.id} not found`);
+      if (!state) {
+        throw new UserInputError(StateConstants.stateNotFoundError(data.id));
+      }
+
+      this.validationService.isDuplicateIdentifier(await this.states({ collectionId: state.collectionId }), data.identifier, state.id);
+
+      Object.assign(state, data);
+      await state.save();
+
+      this.createStateHistory(state);
+
+      return {
+        message: 'State Updated',
+        state,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    this.validationService.isDuplicateIdentifier(await this.states({ collectionId: state.collectionId }), data.identifier, state.id);
-
-    Object.assign(state, data);
-    await state.save();
-
-    this.createStateHistory(state);
-
-    return state;
   }
 
   private createStateHistory(state: State): void {

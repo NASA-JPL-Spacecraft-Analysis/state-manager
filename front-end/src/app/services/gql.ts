@@ -587,10 +587,14 @@ export const SAVE_ENUMERATIONS = gql(`
         enumerations: $enumerations
       }
     ) {
-      id
-      label
-      value
-      stateId
+      enumerations {
+        id
+        label
+        value
+        stateId
+      }
+      message
+      success
     }
   }
 `);
@@ -750,7 +754,21 @@ export const UPDATE_STATE = gql(`
         units: $units
       }
     ) {
-      id
+      message
+      state {
+        collectionId
+        dataType
+        description
+        displayName
+        externalLink
+        id
+        identifier
+        source
+        subsystem
+        type
+        units
+      }
+      success
     }
   }
 `);

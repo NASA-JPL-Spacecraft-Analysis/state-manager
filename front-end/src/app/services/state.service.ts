@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { CreateStateResponse, CreateStatesResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload, Response, SaveEnumerationsResponse } from '../models';
+import { StateResponse, StatesResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload, Response, EnumerationsResponse } from '../models';
 
 import * as gql from './gql';
 
@@ -15,9 +15,9 @@ export class StateService {
     private apollo: Apollo
   ) {}
 
-  public createState(collectionId: string, state: State): Observable<CreateStateResponse> {
+  public createState(collectionId: string, state: State): Observable<StateResponse> {
     return this.apollo
-      .mutate<{ createState: CreateStateResponse }>({
+      .mutate<{ createState: StateResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATE,
         variables: {
@@ -42,9 +42,9 @@ export class StateService {
       }));
   }
 
-  public createStates(collectionId: string, states: State[]): Observable<CreateStatesResponse> {
+  public createStates(collectionId: string, states: State[]): Observable<StatesResponse> {
     return this.apollo
-      .mutate<{ createStates: CreateStatesResponse }>({
+      .mutate<{ createStates: StatesResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATES,
         variables: {
@@ -110,9 +110,9 @@ export class StateService {
   public saveEnumerations(
     collectionId: string,
     enumerations: StateEnumeration[] | StateEnumerationUpload[]
-  ): Observable<SaveEnumerationsResponse> {
+  ): Observable<EnumerationsResponse> {
     return this.apollo
-      .mutate<{ saveEnumerations: SaveEnumerationsResponse }>({
+      .mutate<{ saveEnumerations: EnumerationsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.SAVE_ENUMERATIONS,
         variables: {
@@ -129,12 +129,13 @@ export class StateService {
       }));
   }
 
-  public updateState(state: State): Observable<State> {
+  public updateState(state: State): Observable<StateResponse> {
     return this.apollo
-      .mutate<{ updateState: State }>({
+      .mutate<{ updateState: StateResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.UPDATE_STATE,
         variables: {
+          dataType: state.dataType,
           description: state.description,
           displayName: state.displayName,
           id: state.id,
@@ -145,8 +146,12 @@ export class StateService {
           units: state.units
         }
       })
-      .pipe(
-        map(({ data: { updateState } }) => updateState)
-      );
+      .pipe(map(({ data: { updateState } }) => {
+        if (!updateState.success) {
+          throw new Error(updateState.message);
+        }
+
+        return updateState;
+      }));
   }
 }

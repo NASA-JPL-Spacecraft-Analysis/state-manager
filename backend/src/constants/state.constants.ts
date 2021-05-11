@@ -4,4 +4,7 @@ export class StateConstants {
 
   public static enumerationsNotFoundError = (stateId: string): string =>
     `State with id: ${stateId} not found or has no enumerations`;
+
+  public static stateNotFoundError = (id: string): string =>
+    `State with given id: ${id} not found`;
 }

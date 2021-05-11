@@ -1,6 +1,7 @@
 import { UserInputError } from 'apollo-server';
 import { Service } from 'typedi';
 
+import { ErrorConstants } from '../constants';
 import { CreateInformationTypeInput } from '../inputs';
 import { IdentifierType, InformationTypeEnum } from '../models';
 
@@ -32,7 +33,7 @@ export class ValidationService {
   public isDuplicateIdentifier(items: IdentifierType[], identifier: string | undefined, id?: string): boolean {
     for (const item of items) {
       if (item.id !== id && item.identifier === identifier) {
-        throw new UserInputError(`Duplicate identifier ${identifier} provided, please provide a unique identiifer and try again`);
+        throw new UserInputError(ErrorConstants.duplicateIdentifierError(identifier));
       }
     }
 
