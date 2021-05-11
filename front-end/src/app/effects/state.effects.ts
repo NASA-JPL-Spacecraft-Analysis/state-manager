@@ -62,11 +62,19 @@ export class StateEffects {
           switchMap((deleteEnumerations) => [
             StateActions.deleteEnumerationsSuccess({
               deletedEnumerationIds
+            }),
+            ToastActions.showToast({
+              message: deleteEnumerations.message,
+              toastType: 'success'
             })
           ]),
           catchError((error: Error) => [
             StateActions.deleteEnumerationsFailure({
               error
+            }),
+            ToastActions.showToast({
+              message: error.message,
+              toastType: 'error'
             })
           ])
         )

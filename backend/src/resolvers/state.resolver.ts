@@ -9,6 +9,7 @@ import { CreateStatesInput } from '../inputs/state/create-states.input';
 import { Response, StateResponse, StatesResponse } from '../responses';
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { SharedRepository } from '../repositories';
+import { StateConstants } from '../constants';
 
 @Resolver(() => State)
 export class StateResolver implements ResolverInterface<State> {
@@ -75,27 +76,38 @@ export class StateResolver implements ResolverInterface<State> {
 
   @Mutation(() => Response)
   public async deleteEnumerations(@Arg('data') data: DeleteEnumerationsInput): Promise<Response> {
-    const enumerations = await StateEnumeration.find({
-      where: {
-        stateId: data.stateId
-      }
-    });
+    try {
+      const enumerations = await StateEnumeration.find({
+        where: {
+          stateId: data.stateId
+        }
+      });
 
-    // Loop over the ids that we're trying to delete, find and delete the associated enumeration.
-    for (const id of data.enumerationIds) {
-      const enumeration = enumerations.find((e) => e.id === id);
-
-      if (!enumeration) {
-        throw new UserInputError(`Enumeration with given id: ${id} not found`);
+      if (!enumerations || enumerations.length === 0) {
+        throw new UserInputError(StateConstants.enumerationsNotFoundError(data.stateId));
       }
 
-      await enumeration.remove();
+      // Loop over the ids that we're trying to delete, find and delete the associated enumeration.
+      for (const id of data.enumerationIds) {
+        const enumeration = enumerations.find((e) => e.id === id);
+
+        if (!enumeration) {
+          throw new UserInputError(StateConstants.enumerationNotFoundError(id));
+        }
+
+        await enumeration.remove();
+      }
+
+      return {
+        message: 'State Enumeration Deleted',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    return {
-      message: 'State Enumeration Deleted',
-      success: true
-    };
   }
 
   @FieldResolver()
