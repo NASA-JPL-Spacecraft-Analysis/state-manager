@@ -6,7 +6,7 @@ import { State, StateEnumeration, StateHistory } from './../models';
 import { CreateStateInput, DeleteEnumerationsInput, SaveEnumerationsInput, UpdateStateInput } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { Response, StateResponse } from '../responses';
+import { Response, StateResponse, StatesResponse } from '../responses';
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { SharedRepository } from '../repositories';
 
@@ -43,23 +43,34 @@ export class StateResolver implements ResolverInterface<State> {
     }
   }
 
-  @Mutation(() => [ State ])
-  public async createStates(@Arg('data') data: CreateStatesInput): Promise<State[]> {
-    for (const state of data.states) {
-      this.validationService.isDuplicateIdentifier(await this.states({ collectionId: data.collectionId }), state.identifier);
+  @Mutation(() => StatesResponse)
+  public async createStates(@Arg('data') data: CreateStatesInput): Promise<StatesResponse> {
+    try {
+      for (const state of data.states) {
+        this.validationService.isDuplicateIdentifier(await this.states({ collectionId: data.collectionId }), state.identifier);
 
-      state.collectionId = data.collectionId;
+        state.collectionId = data.collectionId;
+      }
+
+      const states = State.create(data.states);
+
+      for (const state of states) {
+        await state.save();
+
+        this.createStateHistory(state);
+      }
+
+      return {
+        message: 'States Created',
+        states,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    const states = State.create(data.states);
-
-    for (const state of states) {
-      await state.save();
-
-      this.createStateHistory(state);
-    }
-
-    return states;
   }
 
   @Mutation(() => Response)

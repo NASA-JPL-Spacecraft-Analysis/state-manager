@@ -29,11 +29,11 @@ export class StateEffects {
             }),
             StateActions.saveEnumerations({
               collectionId,
-              stateId: newState.id,
+              stateId: createState.state.id,
               enumerations: newState.enumerations
             }),
             ToastActions.showToast({
-              message: 'State created',
+              message: createState.message,
               toastType: 'success'
             })
           ]),
@@ -42,7 +42,7 @@ export class StateEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'State creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])

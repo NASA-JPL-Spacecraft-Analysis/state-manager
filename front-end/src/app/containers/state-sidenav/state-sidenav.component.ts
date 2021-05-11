@@ -77,7 +77,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
       this.newState = {
         ...this.state,
         enumerations: [
-          ...this.state.enumerations
+          ...this.state.enumerations ? this.state.enumerations : []
         ]
       };
     }

@@ -5,7 +5,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
+import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
@@ -20,7 +20,8 @@ import {
   CreateGroupsResponse,
   GroupUploadMappings,
   MappingsUpload,
-  CreateGroupMappingsResponse
+  CreateGroupMappingsResponse,
+  CreateStatesResponse
 } from '../models';
 
 @Injectable()
@@ -45,10 +46,7 @@ export class FileUploadEffects {
           for (const informationType of informationTypes) {
             if (!this.validationService.validateInformationType(informationType)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(informationTypes)
               ];
             }
           }
@@ -107,10 +105,7 @@ export class FileUploadEffects {
           for (const stateEnumeration of stateEnumerations) {
             if (!this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(stateEnumerations)
               ];
             }
           }
@@ -178,10 +173,7 @@ export class FileUploadEffects {
           for (const event of events) {
             if (!this.validationService.validateEvent(event)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(events)
               ];
             }
           }
@@ -325,10 +317,7 @@ export class FileUploadEffects {
           for (const relationship of relationships) {
             if (!this.validationService.validateRelationship(relationship)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(relationships)
               ];
             }
           }
@@ -401,21 +390,21 @@ export class FileUploadEffects {
               collectionId,
               states
             ).pipe(
-              switchMap((createStates) => [
+              switchMap((createStates: CreateStatesResponse) => [
                 StateActions.createStatesSuccess({
-                  states: createStates
+                  states: createStates.states
                 }),
                 ToastActions.showToast({
-                  message: 'State(s) uploaded',
+                  message: createStates.message,
                   toastType: 'success'
                 })
               ]),
-              catchError((error: HttpErrorResponse) => [
+              catchError((error: Error) => [
                 FileUploadActions.uploadStatesFailure({
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.toString(),
+                  message: error.message,
                   toastType: 'error'
                 })
               ])

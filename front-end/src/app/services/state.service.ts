@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { CreateStateResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload } from '../models';
+import { CreateStateResponse, CreateStatesResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload } from '../models';
 
 import * as gql from './gql';
 
@@ -42,9 +42,9 @@ export class StateService {
       }));
   }
 
-  public createStates(collectionId: string, states: State[]): Observable<State[]> {
+  public createStates(collectionId: string, states: State[]): Observable<CreateStatesResponse> {
     return this.apollo
-      .mutate<{ createStates: State[] }>({
+      .mutate<{ createStates: CreateStatesResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATES,
         variables: {
@@ -52,7 +52,13 @@ export class StateService {
           states
         }
       })
-      .pipe(map(({ data: { createStates } }) => createStates));
+      .pipe(map(({ data: { createStates } }) => {
+        if (!createStates.success) {
+          throw new Error(createStates.message);
+        }
+
+        return createStates;
+      }));
   }
 
   public deleteEnumerations(enumerationIds: string[], stateId: string): Observable<boolean> {

@@ -186,7 +186,7 @@ JSON:
     "type": "asd",
     "units": "asd",
     "source": "asd",
-    "subsystem": "asd"
+    "subsystem": "asd",
     "description": "",
     "externalLink": ""
   },

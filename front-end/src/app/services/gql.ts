@@ -352,16 +352,21 @@ export const CREATE_STATES = gql(`
         states: $states
       }
     ) {
-      dataType
-      description
-      displayName
-      externalLink
-      id
-      identifier
-      source
-      subsystem
-      type
-      units
+      message
+      states {
+        collectionId
+        dataType
+        description
+        displayName
+        externalLink
+        id
+        identifier
+        source
+        subsystem
+        type
+        units
+      }
+      success
     }
   }
 `);
