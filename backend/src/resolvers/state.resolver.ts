@@ -2,7 +2,7 @@ import { Resolver, Query, Arg, Mutation, ResolverInterface , FieldResolver, Root
 import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
-import { State, StateEnumeration, StateHistory } from './../models';
+import { State, StateEnumeration, StateHistory, stateTypes } from './../models';
 import { CreateStateInput, DeleteEnumerationsInput, SaveEnumerationsInput, UpdateStateInput } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
@@ -25,8 +25,10 @@ export class StateResolver implements ResolverInterface<State> {
   public async createState(@Arg('data') data: CreateStateInput): Promise<StateResponse> {
     try {
       this.validationService.isDuplicateIdentifier(await this.states({ collectionId: data.collectionId }), data.identifier);
-
       const state = State.create(data);
+
+      this.validationService.hasValidType([ state ], stateTypes);
+
       await state.save();
 
       this.createStateHistory(state);
@@ -54,6 +56,8 @@ export class StateResolver implements ResolverInterface<State> {
       }
 
       const states = State.create(data.states);
+
+      this.validationService.hasValidType(states, stateTypes);
 
       for (const state of states) {
         await state.save();
@@ -199,6 +203,9 @@ export class StateResolver implements ResolverInterface<State> {
       this.validationService.isDuplicateIdentifier(await this.states({ collectionId: state.collectionId }), data.identifier, state.id);
 
       Object.assign(state, data);
+
+      this.validationService.hasValidType([ state ], stateTypes);
+
       await state.save();
 
       this.createStateHistory(state);

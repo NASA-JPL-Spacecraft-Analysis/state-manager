@@ -24,6 +24,23 @@ export class ValidationService {
   }
 
   /**
+   * Checks each item and ensures that they all have a valid type.
+   *
+   * @param items The list of items.
+   * @param types A set of valid types.
+   * @returns True if each item in the list has a valid type.
+   */
+  public hasValidType(items: IdentifierType[], types: Set<string>): boolean {
+    for (const item of items) {
+      if (!types.has(item.type)) {
+        throw new UserInputError(ErrorConstants.invalidTypesError(item.identifier, types));
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Checks to make sure we're not saving a duplicate identifier.
    *
    * @param items The list of our current items that have identifiers.

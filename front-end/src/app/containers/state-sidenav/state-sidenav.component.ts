@@ -7,7 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { MatIconRegistry } from '@angular/material/icon';
 import { SubSink } from 'subsink';
 
-import { IdentifierMap, State, StateEnumeration } from '../../models';
+import { stateTypes, IdentifierMap, State, StateEnumeration } from '../../models';
 import { getStateIdentifierMap } from '../../selectors';
 import { ToastActions } from '../../actions';
 import { EnumFormModule, IdentifierFormModule } from '../../components';
@@ -31,6 +31,7 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public originalIdentifier: string;
   public form: FormGroup;
   public stateIdentifierMap: IdentifierMap;
+  public stateTypes = stateTypes;
 
   private duplicateIdentifier: boolean;
   private subscriptions = new SubSink();
@@ -122,6 +123,8 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
         if (this.newState.id !== undefined) {
           this.modifyEnumerations.emit(this.newState.enumerations);
         }
+
+        this.form.value.type = this.newState.type;
 
         // Emit both values, but we'll only use the enumeraion list on creating a new state.
         this.modifyState.emit({

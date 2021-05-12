@@ -31,3 +31,12 @@ export class State extends IdentifierType {
   @Column({ default: null, nullable: true })
   public units?: string;
 }
+
+export const stateTypes: Set<string> = new Set([
+  'channel',
+  'fsw_parameter',
+  'model_input',
+  'predict',
+  'trend',
+  'user'
+]);

@@ -62,12 +62,11 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput
-          placeholder="Type"
-          type="text"
-          formControlName="type"
-          required
-        />
+        <mat-select placeholder="State Type" [(value)]="newState.type">
+          <mat-option *ngFor="let stateType of stateTypes" [value]="stateType">
+            {{stateType}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
 
       <mat-form-field>
