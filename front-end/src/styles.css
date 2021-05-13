@@ -79,3 +79,7 @@ table {
   padding-bottom: 0;
   line-height: 36px;
 }
+
+td.mat-cell:first-of-type{
+  font-weight: bold;
+}
