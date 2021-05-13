@@ -3,35 +3,11 @@
 
 // Colors
 
-$light-secondary-text: #ebf0ff;
+
+$light-accent-text: #D9E2F4;
+$body: #283346;
 
 $mat-primary: (
-  50: #eaeeff,
-  100: #cbd7ee,
-  200: #b0bcd7,
-  300: #93a1c0,
-  400: #7d8cae,
-  500: #67799d,
-  600: #596a8c,
-  700: #485774,
-  800: #38445e,
-  850: #303850,
-  900: #253046,
-  contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $light-primary-text,
-    400: $light-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text
-  )
-);
-
-$mat-accent: (
   50: #DEF5FB,
   100: #ACE7F4,
   200: #73D8EC,
@@ -43,39 +19,117 @@ $mat-accent: (
   800: #00798D,
   900: #005761,
   contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $dark-primary-text,
-    400: $dark-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text
+    50: $body,
+    100: $body,
+    200: $body,
+    300: $body,
+    400: $body,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white
   )
 );
 
-$mat-grey: (  
-  50: #F8F9FA,
-  100: #F1F3F5,
-  200: #E8EBED,
-  250: #E3E7E9,
-  300: #DEE2E6,
-  400: #CFD4DA,
-  500: #ADB5BD,
-  600: #70777E,
-  650: #868E96,
-  700: #495057,
-  800: #343A40,
-  900: #21252A
+$mat-accent: (
+  50: #eaeeff,
+  100: #cbd7ee,
+  200: #b0bcd7,
+  300: #93a1c0,
+  400: #7d8cae,
+  500: #67799d,
+  600: #596a8c,
+  700: #485774,
+  800: #38445e,
+  850: #303850,
+  900: #253046,
+
+  contrast: (
+    50: $body,
+    100: $body,
+    200: $body,
+    300: $light-accent-text,
+    400: $light-accent-text,
+    500: $light-accent-text,
+    600: $light-accent-text,
+    700: $light-accent-text,
+    800: $light-accent-text,
+    900: $light-accent-text
+  )
 );
 
-$primary: mat-palette($mat-primary, 800);
-$accent: mat-palette($mat-accent, 200);
+$mat-grey: (
+  50: #F7F8FA,
+  75: #F3F5F7,
+  100: #EFF1F5,
+  200: #E8ECF0,
+  250: #E2E6EA,
+  300: #DDE1E7,
+  400: #CBD1DB,
+  500: #A9B1BF,
+  550: #828B9A,
+  600: #868E96,
+  700: #464E60,
+  800: #32394A,
+  900: #202535,
+
+  contrast: (
+    50: $body,
+    75: $body,
+    100: $body,
+    200: $body,
+    250: $body,
+    300: $light-accent-text,
+    400: $light-accent-text,
+    500: $light-accent-text,
+    550: $light-accent-text,
+    600: $light-accent-text,
+    700: $light-accent-text,
+    800: $light-accent-text,
+    900: $light-accent-text
+  )
+);
+
+$primary: mat-palette($mat-primary, 600);
+$accent: mat-palette($mat-accent, 700);
 $theme: mat-light-theme($primary, $accent);
 
+
 @include angular-material-theme($theme);
+
+//$dark-grey-theme: mat-dark-theme((
+//  color: (
+//    primary: mat-palette($mat-grey, 800),
+//    accent: mat-palette($mat-grey, 50),
+//  )
+//));
+//
+//.unicorn-dark-theme {
+//  @include angular-material-theme($dark-grey-theme);
+//}
+
+
+$primary: mat-palette($mat-grey, 100);
+$accent: mat-palette($mat-accent, 700);
+$unicorn-theme: mat-light-theme($primary, $accent);
+
+@include mat-toolbar-color($unicorn-theme);
+
+.mat-toolbar .mat-button.mat-primary{
+  color: inherit;
+}
+
+//
+//$primary: mat-palette($mat-grey, 100);
+//$accent: mat-palette($mat-grey, 100);
+//$unicorn-light-theme: mat-light-theme($primary, $accent);
+//
+//
+//.unicorn-light-theme {
+//  @include mat-toolbar-color($unicorn-light-theme);
+//}
+
 
 // Mixins
 
@@ -116,7 +170,7 @@ table {
 
   tr {
     th.mat-header-cell, td.mat-cell {
-      border-bottom: 1px solid mat-color($mat-grey, 400);
+      border-bottom: 1px solid mat-color($mat-grey, 300);
     }
   }
 }
@@ -125,11 +179,7 @@ table {
   padding: 1em;
   border-bottom: 1px solid mat-color($mat-grey, 400);
   box-shadow: 0px 4px 5px mat-color($mat-grey, 250);
-}
-
-.mat-button.mat-button-base {
-  background-color: mat-color($primary, 900);
-  color: $light-primary-text;
+  background: #eff1f5;
 }
 
 .mat-button, .mat-raised-button {
@@ -141,12 +191,12 @@ table {
 }
 
 .mat-form-field-appearance-fill .mat-form-field-flex{
-  background-color: mat-color($mat-grey, 100);
+  background-color: white;
 }
 
 .mat-toolbar {
   display: flex;
-  height: 2.2em;
+  height: 2.8em;
   justify-content: space-between;
 
   button {
@@ -156,24 +206,19 @@ table {
   h6 {
     @include headline-6();
   }
+  .mat-button.mat-button-base.active{
+    color: mat-color($mat-primary, 100)
+  }
 }
 
 .mat-toolbar.mat-primary .mat-button.mat-button-base {
-  color: $light-secondary-text;
-  background-color:  mat-color($primary, 850);
+  //background-color:  mat-color($primary, 850);
   letter-spacing: .05em;
   font-weight: 400;
   line-height: 32px;
 }
 
-.mat-toolbar.mat-primary {
-  background-color: mat-color($primary, 850);
-}
 
 .mat-toolbar.mat-primary .mat-raised-button.mat-button-base {
   line-height: 32px;
-}
-
-.mat-toolbar.mat-toolbar-page {
-  background-color: mat-color($primary, 900);
 }
