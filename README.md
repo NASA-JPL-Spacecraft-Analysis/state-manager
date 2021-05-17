@@ -64,8 +64,8 @@ JSON:
 
 CSV:
 ```
-identifier,displayName,description,externalLink
-UPLOADED_EVENT_1,Uploaded Event 1,,
+identifier,displayName,type,description,externalLink
+UPLOADED_EVENT_1,Uploaded Event 1,evr,,
 ```
 
 JSON:
@@ -75,7 +75,8 @@ JSON:
     "identifier": "UPLOADED_EVENT_1",
     "displayName": "Uploaded Event 1",
     "description": "",
-    "externalLink": ""
+    "externalLink": "",
+    "type": "evr"
   },
   {
     ...

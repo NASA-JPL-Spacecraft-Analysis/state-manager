@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Event, EventResponse } from './../models';
+import { Event, EventResponse, EventsResponse } from './../models';
 
 import * as gql from './gql';
 
@@ -39,9 +39,9 @@ export class EventService {
       }));
   }
 
-  public createEvents(collectionId: string, events: Event[]): Observable<Event[]> {
+  public createEvents(collectionId: string, events: Event[]): Observable<EventsResponse> {
     return this.apollo
-      .mutate<{ createEvents: Event[] }>({
+      .mutate<{ createEvents: EventsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_EVENTS,
         variables: {
@@ -49,7 +49,13 @@ export class EventService {
           events
         }
       })
-      .pipe(map(({ data: { createEvents } }) => createEvents));
+      .pipe(map(({ data: { createEvents } }) => {
+        if (!createEvents.success) {
+          throw new Error(createEvents.message);
+        }
+
+        return createEvents;
+      }));
   }
 
   public getEvents(collectionId: string): Observable<Event[]> {

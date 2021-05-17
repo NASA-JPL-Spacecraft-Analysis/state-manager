@@ -22,7 +22,8 @@ import {
   MappingsUpload,
   CreateGroupMappingsResponse,
   StatesResponse,
-  EnumerationsResponse
+  EnumerationsResponse,
+  EventsResponse
 } from '../models';
 
 @Injectable()
@@ -184,22 +185,22 @@ export class FileUploadEffects {
               collectionId,
               events
             ).pipe(
-              switchMap((createEvents: Event[]) => [
+              switchMap((createEvents: EventsResponse) => [
                 FileUploadActions.uploadEventsSuccess({
-                  events: createEvents
+                  events: createEvents.events
                 }),
                 ToastActions.showToast({
-                  message: 'Events uploaded',
+                  message: createEvents.message,
                   toastType: 'success'
                 })
               ])
             ),
-            catchError((error: HttpErrorResponse) => [
+            catchError((error: Error) => [
               FileUploadActions.uploadEventsFailure({
                 error
               }),
               ToastActions.showToast({
-                message: error.error,
+                message: error.message,
                 toastType: 'error'
               })
             ])

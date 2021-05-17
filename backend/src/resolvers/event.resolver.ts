@@ -3,11 +3,11 @@ import { UserInputError } from 'apollo-server';
 import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
-import { Event, EventHistory } from './../models';
+import { Event, EventHistory, eventTypes } from './../models';
 import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs/event';
 import { ValidationService } from '../service';
 import { SharedRepository } from '../repositories';
-import { EventResponse } from '../responses';
+import { EventResponse, EventsResponse } from '../responses';
 import { EventConstants } from '../constants';
 
 @Resolver()
@@ -26,6 +26,9 @@ export class EventResolver {
       this.validationService.isDuplicateIdentifier(await this.events({ collectionId: data.collectionId}), data.identifier);
 
       const event = Event.create(data);
+
+      this.validationService.hasValidType([ event ], eventTypes);
+
       await event.save();
 
       this.createEventHistory(event);
@@ -43,24 +46,36 @@ export class EventResolver {
     }
   }
 
-  @Mutation(() => [ Event ])
-  public async createEvents(@Arg('data') data: CreateEventsInput): Promise<Event[]> {
-    for (const event of data.events) {
-      this.validationService.isDuplicateIdentifier(await this.events({ collectionId: data.collectionId }), event.identifier);
+  @Mutation(() => [ EventsResponse ])
+  public async createEvents(@Arg('data') data: CreateEventsInput): Promise<EventsResponse> {
+    try {
+      for (const event of data.events) {
+        this.validationService.isDuplicateIdentifier(await this.events({ collectionId: data.collectionId }), event.identifier);
 
-      event.collectionId = data.collectionId;
+        event.collectionId = data.collectionId;
+      }
+
+      const events = Event.create(data.events);
+
+      this.validationService.hasValidType(events, eventTypes);
+
+      for (const event of events) {
+        await event.save();
+
+        this.createEventHistory(event);
+      }
+
+      return {
+        events,
+        message: 'Events Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    const events = Event.create(data.events);
-
-    for (const event of events) {
-      event.editable = true;
-      await event.save();
-
-      this.createEventHistory(event);
-    }
-
-    return events;
   }
 
   @Query(() => [ Event ])
@@ -89,6 +104,9 @@ export class EventResolver {
       this.validationService.isDuplicateIdentifier(await this.events({ collectionId: event.collectionId}), data.identifier, event.id);
 
       Object.assign(event, data);
+
+      this.validationService.hasValidType([ event ], eventTypes);
+
       await event.save();
 
       this.createEventHistory(event);
@@ -97,7 +115,7 @@ export class EventResolver {
         event,
         message: 'Event Updated',
         success: true
-      }
+      };
     } catch (error) {
       return {
         message: error,
