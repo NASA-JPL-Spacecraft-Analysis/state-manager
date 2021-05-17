@@ -11,6 +11,7 @@ import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
 import { ValidationService } from '../services/validation.service';
 import { Event, EventResponse } from '../models';
+import { updateEvent } from '../actions/event.actions';
 
 @Injectable()
 export class EventEffects {
@@ -79,34 +80,16 @@ export class EventEffects {
   public updateEvent = createEffect(() =>
     this.actions.pipe(
       ofType(EventActions.updateEvent),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        if (this.validationService.isDuplicateIdentifier(
-          action.event.identifier,
-          action.event.id,
-          state.events.eventIdentifierMap
-        )) {
-          return [
-            ToastActions.showToast({
-              message: 'Duplicate identifier provided',
-              toastType: 'error'
-            })
-          ];
-        }
-
+      switchMap(({ event }) => {
         return this.eventService.updateEvent(
-          action.event
+          event
         ).pipe(
-          switchMap((event: Event) => [
+          switchMap((updateEvent: EventResponse) => [
             EventActions.updateEventSuccess({
-              event: {
-                ...action.event,
-                id: event.id
-              }
+              event: updateEvent.event
             }),
             ToastActions.showToast({
-              message: 'Event edited',
+              message: updateEvent.message,
               toastType: 'success'
             })
           ]),
@@ -115,7 +98,7 @@ export class EventEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Event editing failed',
+              message: error.message,
               toastType: 'error'
             })
           ])

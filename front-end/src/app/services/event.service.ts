@@ -76,9 +76,10 @@ export class EventService {
       .pipe(map(({ data: { eventHistory } }) => eventHistory));
   }
 
-  public updateEvent(event: Event): Observable<Event> {
+  public updateEvent(event: Event): Observable<EventResponse> {
+    console.log(event);
     return this.apollo
-      .mutate<{ updateEvent: Event }>({
+      .mutate<{ updateEvent: EventResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.UPDATE_EVENT,
         variables: {
@@ -87,11 +88,16 @@ export class EventService {
           editable: event.editable,
           externalLink: event.externalLink,
           id: event.id,
-          identifier: event.identifier
+          identifier: event.identifier,
+          type: event.type
         }
       })
-      .pipe(
-        map(({ data: { updateEvent }}) => updateEvent)
-      );
+      .pipe(map(({ data: { updateEvent }}) => {
+        if (!updateEvent.success) {
+          throw new Error(updateEvent.message);
+        }
+
+        return updateEvent;
+      }));
   }
 }

@@ -62,9 +62,11 @@ export class StateSidenavComponent implements OnChanges, OnDestroy {
   public ngOnChanges(): void {
     if (this.state === undefined) {
       this.newState = {
+        collectionId: '',
         dataType: '',
         description: '',
         displayName: '',
+        editable: true,
         enumerations: [],
         externalLink: '',
         id: undefined,

@@ -437,11 +437,14 @@ export const GET_COLLECTIONS = gql(`
 export const GET_EVENTS = gql(`
   query events($collectionId: ID!) {
     events(collectionId: $collectionId) {
+      collectionId
       description
       displayName
+      editable
       externalLink
       id
       identifier
+      type
     }
   }
 `);
@@ -449,12 +452,15 @@ export const GET_EVENTS = gql(`
 export const GET_EVENT_HISTORY = gql(`
   query eventHistory($collectionId: ID!) {
     eventHistory(collectionId: $collectionId) {
+      collectionId
       description
       displayName
+      editable
       eventId
       externalLink
       id
       identifier
+      type
       updated
     }
   }
@@ -637,6 +643,7 @@ export const UPDATE_EVENT = gql(`
     $externalLink: String
     $id: ID!
     $identifier: String!
+    $type: String!
   ) {
     updateEvent(
       data: {
@@ -646,9 +653,21 @@ export const UPDATE_EVENT = gql(`
         externalLink: $externalLink
         id: $id
         identifier: $identifier
+        type: $type
       }
     ) {
-      id
+      event {
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
     }
   }
 `);

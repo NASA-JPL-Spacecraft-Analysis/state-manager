@@ -45,7 +45,8 @@ export class EventTableComponent implements OnChanges, OnInit {
       'identifier',
       'displayName',
       'description',
-      'externalLink'
+      'externalLink',
+      'type'
     );
 
     if (this.history) {

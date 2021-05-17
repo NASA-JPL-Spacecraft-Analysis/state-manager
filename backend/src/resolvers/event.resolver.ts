@@ -8,6 +8,7 @@ import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs
 import { ValidationService } from '../service';
 import { SharedRepository } from '../repositories';
 import { EventResponse } from '../responses';
+import { EventConstants } from '../constants';
 
 @Resolver()
 export class EventResolver {
@@ -76,22 +77,33 @@ export class EventResolver {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
-  @Mutation(() => Event)
-  public async updateEvent(@Arg('data') data: UpdateEventInput): Promise<Event> {
-    const event = await this.event({ id: data.id });
+  @Mutation(() => EventResponse)
+  public async updateEvent(@Arg('data') data: UpdateEventInput): Promise<EventResponse> {
+    try {
+      const event = await this.event({ id: data.id });
 
-    if (!event) {
-      throw new UserInputError(`Event with provided id ${data.id} not found`);
+      if (!event) {
+        throw new UserInputError(EventConstants.eventNotFoundError(data.id));
+      }
+
+      this.validationService.isDuplicateIdentifier(await this.events({ collectionId: event.collectionId}), data.identifier, event.id);
+
+      Object.assign(event, data);
+      await event.save();
+
+      this.createEventHistory(event);
+
+      return {
+        event,
+        message: 'Event Updated',
+        success: true
+      }
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    this.validationService.isDuplicateIdentifier(await this.events({ collectionId: event.collectionId}), data.identifier, event.id);
-
-    Object.assign(event, data);
-    await event.save();
-
-    this.createEventHistory(event);
-
-    return event;
   }
 
   private createEventHistory(event: Event): void {

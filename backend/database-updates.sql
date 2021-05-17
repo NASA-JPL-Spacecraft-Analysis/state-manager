@@ -1,3 +1,9 @@
+ALTER TABLE `state-manager`.`event_history`
+ADD COLUMN `type` TEXT NOT NULL AFTER `editable`;
+
+ALTER TABLE `state-manager`.`events`
+ADD COLUMN `type` TEXT NOT NULL AFTER `editable`;
+
 ALTER TABLE `state-manager`.`information_types` 
 ADD COLUMN `editable` TINYINT(4) NOT NULL DEFAULT '1' AFTER `externalLink`;
 
