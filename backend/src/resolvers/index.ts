@@ -1,4 +1,5 @@
 export * from './collection.resolver';
+export * from './constraint.resolver';
 export * from './event-history.resolver';
 export * from './event.resolver';
 export * from './group-mapping.resolver';

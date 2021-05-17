@@ -1,4 +1,5 @@
 export * from './collection';
+export * from './constraint';
 export * from './event-history';
 export * from './event';
 export * from './group-mapping';

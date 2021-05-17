@@ -5,6 +5,32 @@ CREATE TABLE `collections` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `constraint_history` (
+  `id` varchar(36) NOT NULL,
+  `constraintId` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `description` text,
+  `displayName` text,
+  `externalLink` text,
+  `editable` boolean NOT NULL,
+  `identifier` text NOT NULL,
+  `type` text NOT NULL,
+  `updated` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `constraints` (
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `description` text,
+  `displayName` text,
+  `externalLink` text,
+  `editable` boolean NOT NULL,
+  `identifier` text NOT NULL,
+  `type` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `event_history` (
   `id` varchar(36) NOT NULL,
   `eventId` varchar(36) NOT NULL,
