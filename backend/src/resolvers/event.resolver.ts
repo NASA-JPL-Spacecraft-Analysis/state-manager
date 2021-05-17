@@ -7,6 +7,7 @@ import { Event, EventHistory } from './../models';
 import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs/event';
 import { ValidationService } from '../service';
 import { SharedRepository } from '../repositories';
+import { EventResponse } from '../responses';
 
 @Resolver()
 export class EventResolver {
@@ -18,17 +19,27 @@ export class EventResolver {
     this.sharedRepository = new SharedRepository<Event>(getConnection(), Event);
   }
 
-  @Mutation(() => Event)
-  public async createEvent(@Arg('data') data: CreateEventInput): Promise<Event> {
-    this.validationService.isDuplicateIdentifier(await this.events({ collectionId: data.collectionId}), data.identifier);
+  @Mutation(() => EventResponse)
+  public async createEvent(@Arg('data') data: CreateEventInput): Promise<EventResponse> {
+    try {
+      this.validationService.isDuplicateIdentifier(await this.events({ collectionId: data.collectionId}), data.identifier);
 
-    const event = Event.create(data);
-    event.editable = true;
-    await event.save();
+      const event = Event.create(data);
+      await event.save();
 
-    this.createEventHistory(event);
+      this.createEventHistory(event);
 
-    return event;
+      return {
+        event,
+        message: 'Event Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
   }
 
   @Mutation(() => [ Event ])

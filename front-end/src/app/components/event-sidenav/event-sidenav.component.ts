@@ -47,7 +47,8 @@ export class EventSidenavComponent implements OnChanges {
         displayName: '',
         description: '',
         externalLink: '',
-        editable: true
+        editable: true,
+        type: ''
       };
     } else {
       this.newEvent = {

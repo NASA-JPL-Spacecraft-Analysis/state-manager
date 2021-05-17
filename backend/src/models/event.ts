@@ -10,3 +10,11 @@ export class Event extends IdentifierType {
   @Column({ default: null, nullable: true })
   public description?: string;
 }
+
+export const eventTypes: Set<string> = new Set([
+  'evr',
+  'predict_event',
+  'command_instance',
+  'activity_instance',
+  'user'
+]);

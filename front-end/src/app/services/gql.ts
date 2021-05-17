@@ -23,6 +23,7 @@ export const CREATE_EVENT = gql(`
     $editable: Boolean
     $externalLink: String
     $identifier: String!
+    $type: String!
   ) {
     createEvent(
       data: {
@@ -32,9 +33,21 @@ export const CREATE_EVENT = gql(`
         editable: $editable
         externalLink: $externalLink
         identifier: $identifier
+        type: $type
       }
     ) {
-      id
+      event {
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
     }
   }
 `);

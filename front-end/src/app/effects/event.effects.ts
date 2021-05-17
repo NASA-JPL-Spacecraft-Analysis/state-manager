@@ -10,45 +10,27 @@ import { EventService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
 import { ValidationService } from '../services/validation.service';
-import { Event } from '../models';
+import { Event, EventResponse } from '../models';
 
 @Injectable()
 export class EventEffects {
   public createEvent = createEffect(() =>
     this.actions.pipe(
       ofType(EventActions.createEvent),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        if (this.validationService.isDuplicateIdentifier(
-          action.event.identifier,
-          action.event.id,
-          state.events.eventIdentifierMap
-        )) {
-          return [
-            ToastActions.showToast({
-              message: '',
-              toastType: 'error'
-            })
-          ];
-        }
-
-        return this.eventService.createEvent(
-          action.collectionId,
-          action.event
+      switchMap(({ collectionId, event }) =>
+        this.eventService.createEvent(
+          collectionId,
+          event
         ).pipe(
-          switchMap((event: Event) => [
+          switchMap((createEvent: EventResponse) => [
             EventActions.createEventSuccess({
-              event: {
-                ...action.event,
-                id: event.id
-              }
+              event: createEvent.event
             }),
             LayoutActions.toggleSidenav({
               showSidenav: false
             }),
             ToastActions.showToast({
-              message: 'Event created',
+              message: createEvent.message,
               toastType: 'success'
             })
           ]),
@@ -57,12 +39,12 @@ export class EventEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Event creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
-        );
-      })
+        )
+      )
     )
   );
 
