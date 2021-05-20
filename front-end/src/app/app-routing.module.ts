@@ -11,7 +11,8 @@ import {
   GroupsComponent,
   InformationTypesComponent,
   EventsComponent,
-  EventHistoryComponent
+  EventHistoryComponent,
+  ConstraintsComponent
 } from './containers';
 
 export const routes: Routes = [
@@ -27,6 +28,10 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'states'
+      },
+      {
+        component: ConstraintsComponent,
+        path: 'constraints'
       },
       {
         component: EventsComponent,
