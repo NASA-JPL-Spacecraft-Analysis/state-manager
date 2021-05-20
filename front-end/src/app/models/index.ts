@@ -1,5 +1,6 @@
 export * from './responses';
 export * from './collection';
+export * from './constraint';
 export * from './event';
 export * from './group';
 export * from './identifier-map';

@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import {
   CollectionReducer,
   ConfigReducer,
+  ConstraintReducer,
   EventReducer,
   GroupReducer,
   InformationTypesReducer,
@@ -18,6 +19,7 @@ import { ConfigState } from './config';
 export interface AppState {
   collection: CollectionReducer.CollectionState;
   config: ConfigState;
+  constraints: ConstraintReducer.ConstraintState;
   events: EventReducer.EventState;
   groups: GroupReducer.GroupState;
   informationTypes: InformationTypesReducer.InformationTypesState;
@@ -33,6 +35,7 @@ export const ROOT_REDUCERS = new InjectionToken<
   factory: () => ({
     collection: CollectionReducer.reducer,
     config: ConfigReducer.reducer,
+    constraints: ConstraintReducer.reducer,
     events: EventReducer.reducer,
     groups: GroupReducer.reducer,
     informationTypes: InformationTypesReducer.reducer,
