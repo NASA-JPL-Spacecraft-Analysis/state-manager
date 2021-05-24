@@ -7,5 +7,10 @@
 </mat-toolbar>
 
 <div class="content-container">
-
+  <div class="content">
+    <constraint-table
+      [constraintMap]="constraintMap"
+      (constraintSelected)="onConstraintSelected($event)">
+    </constraint-table>
+  </div>
 </div>

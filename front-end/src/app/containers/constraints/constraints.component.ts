@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AppState } from 'src/app/app-store';
-
-import { MaterialModule } from 'src/app/material';
-import { getSelectedCollectionId, getShowSidenav } from 'src/app/selectors';
 import { SubSink } from 'subsink';
+
+import { ConstraintTableModule } from 'src/app/components/constraints';
+import { MaterialModule } from 'src/app/material';
+import { Constraint, ConstraintMap } from 'src/app/models';
+import { getConstraintMap, getSelectedCollectionId, getShowSidenav } from 'src/app/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,6 +16,7 @@ import { SubSink } from 'subsink';
   templateUrl: 'constraints.component.html'
 })
 export class ConstraintsComponent implements OnDestroy {
+  public constraintMap: ConstraintMap;
   public showSidenav: boolean;
   public selectedCollectionId: string;
 
@@ -26,6 +29,10 @@ export class ConstraintsComponent implements OnDestroy {
     this.subscriptions = new SubSink();
 
     this.subscriptions.add(
+      this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {
+        this.constraintMap = constraintMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
@@ -40,6 +47,10 @@ export class ConstraintsComponent implements OnDestroy {
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  public constraintSelected(constraint: Constraint): void {
+    console.log(constraint);
+  }
 }
 
 @NgModule({
@@ -51,6 +62,7 @@ export class ConstraintsComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
+    ConstraintTableModule,
     MaterialModule
   ]
 })

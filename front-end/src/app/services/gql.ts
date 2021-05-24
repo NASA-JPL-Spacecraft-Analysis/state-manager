@@ -426,10 +426,25 @@ export const DELETE_ENUMERATIONS = gql(`
 `);
 
 export const GET_COLLECTIONS = gql(`
-  query collections{
+  query collections {
     collections {
       id
       name
+    }
+  }
+`);
+
+export const GET_CONSTRAINTS = gql(`
+  query constraints($collectionId: ID!) {
+    constraints(collectionId: $collectionId) {
+      collectionId
+      description
+      displayName
+      editable
+      externalLink
+      id
+      identifier
+      type
     }
   }
 `);

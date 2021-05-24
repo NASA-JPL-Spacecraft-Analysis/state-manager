@@ -20,7 +20,8 @@ import {
   StateEffects,
   RelationshipEffects,
   GroupEffects,
-  LayoutEffects
+  LayoutEffects,
+  ConstraintEffects
 } from './effects';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
@@ -50,6 +51,7 @@ export class AppComponent {}
     MaterialModule,
     EffectsModule.forRoot([
       CollectionEffects,
+      ConstraintEffects,
       EventEffects,
       FileUploadEffects,
       GroupEffects,

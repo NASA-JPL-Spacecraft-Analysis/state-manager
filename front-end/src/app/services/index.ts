@@ -1,4 +1,5 @@
 export * from './collection.service';
+export * from './constraint.service';
 export * from './event.service';
 export * from './group.service';
 export * from './http-request-interceptor';

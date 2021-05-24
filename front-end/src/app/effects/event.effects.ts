@@ -9,9 +9,7 @@ import { CollectionActions, EventActions, LayoutActions, ToastActions } from '..
 import { EventService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
-import { ValidationService } from '../services/validation.service';
-import { Event, EventResponse } from '../models';
-import { updateEvent } from '../actions/event.actions';
+import { EventResponse } from '../models';
 
 @Injectable()
 export class EventEffects {
@@ -111,8 +109,7 @@ export class EventEffects {
     private actions: Actions,
     private router: Router,
     private store: Store<AppState>,
-    private eventService: EventService,
-    private validationService: ValidationService
+    private eventService: EventService
   ) {}
 
   private getEventInformation(collectionId: string): Observable<Action> {
