@@ -74,6 +74,36 @@ export class ConstraintEffects {
     )
   );
 
+  public updateConstraint = createEffect(() =>
+    this.actions.pipe(
+      ofType(ConstraintActions.updateConstraint),
+      switchMap(({ constraint }) =>
+        this.constraintService.updateConstraint(
+          constraint
+        ).pipe(
+          switchMap((updateConstraint: ConstraintResponse) => [
+            ConstraintActions.updateConstraintSuccess({
+              constraint: updateConstraint.constraint
+            }),
+            ToastActions.showToast({
+              message: updateConstraint.message,
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            ConstraintActions.updateConstraintFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: error.message,
+              toastType: 'error'
+            })
+          ])
+        )
+      )
+    )
+  );
+
   constructor(
     private actions: Actions,
     private constraintService: ConstraintService,

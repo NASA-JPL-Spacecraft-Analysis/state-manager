@@ -49,5 +49,31 @@ export const reducer = createReducer(
   on(ConstraintActions.setSelectedConstraint, (state, { id }) => ({
     ...state,
     selectedConstraintId: id
-  }))
+  })),
+  on(ConstraintActions.updateConstraintSuccess, (state, { constraint }) => {
+    const constraintIdentifierMap = {
+      ...state.constraintIdentifierMap
+    };
+
+    for (const identifier of Object.keys(constraintIdentifierMap)) {
+      // Remove the old identifier from our map
+      if (constraintIdentifierMap[identifier] === constraint.id) {
+        delete constraintIdentifierMap[identifier];
+      }
+    }
+
+    return {
+      ...state,
+      constraintIdentifierMap: {
+        ...constraintIdentifierMap,
+        [constraint.identifier]: constraint.id
+      },
+      constraintMap: {
+        ...state.constraintMap,
+        [constraint.id]: {
+          ...constraint
+        }
+      }
+    };
+  })
 );

@@ -685,6 +685,43 @@ export const UPDATE_COLLECTION = gql(`
   }
 `);
 
+export const UPDATE_CONSTRAINT = gql(`
+  mutation UpdateConstraint(
+    $description: String
+    $displayName: String
+    $editable: Boolean
+    $externalLink: String
+    $id: ID!
+    $identifier: String!
+    $type: String!
+  ) {
+    updateConstraint(
+      data: {
+        description: $description
+        displayName: $displayName
+        editable: $editable
+        externalLink: $externalLink
+        id: $id
+        identifier: $identifier
+        type: $type
+      }
+    ) {
+      constraint {
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
+    }
+  }
+`);
+
 export const UPDATE_EVENT = gql(`
   mutation UpdateEvent(
     $description: String

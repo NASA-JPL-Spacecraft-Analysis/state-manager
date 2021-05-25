@@ -35,7 +35,7 @@ export class ConstraintService {
         }
 
         return createConstraint;
-      }))
+      }));
   }
 
   public getConstraints(collectionId: string): Observable<Constraint[]> {
@@ -48,5 +48,30 @@ export class ConstraintService {
         }
       })
       .pipe(map(({ data: { constraints } }) => constraints));
+  }
+
+  public updateConstraint(constraint: Constraint): Observable<ConstraintResponse> {
+    return this.apollo
+      .mutate<{ updateConstraint: ConstraintResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.UPDATE_CONSTRAINT,
+        variables: {
+          collectionId: constraint.collectionId,
+          description: constraint.description,
+          displayName: constraint.displayName,
+          editable: constraint.editable,
+          externalLink: constraint.externalLink,
+          id: constraint.id,
+          identifier: constraint.identifier,
+          type: constraint.type
+        }
+      })
+      .pipe(map(({ data: { updateConstraint }}) => {
+        if (!updateConstraint.success) {
+          throw new Error(updateConstraint.message);
+        }
+
+        return updateConstraint;
+      }));
   }
 }

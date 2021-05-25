@@ -36,3 +36,13 @@ export const updateConstraint = createAction(
   '[constraint] updateConstraint',
   props<{ constraint: Constraint }>()
 );
+
+export const updateConstraintFailure = createAction(
+  '[constraint] updateConstraintFailure',
+  props<{ error: Error }>()
+);
+
+export const updateConstraintSuccess = createAction(
+  '[constraint] updateConstraintSuccess',
+  props<{ constraint: Constraint }>()
+);

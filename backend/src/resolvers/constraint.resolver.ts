@@ -1,8 +1,10 @@
+import { UserInputError } from 'apollo-server-errors';
 import { Arg, Args, Mutation, Query, Resolver } from 'type-graphql';
 import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
-import { CreateConstraintInput } from '../inputs';
+import { ConstraintConstants } from '../constants';
+import { CreateConstraintInput, UpdateConstraintInput } from '../inputs';
 import { Constraint, ConstraintHistory, constraintTypes } from '../models';
 import { SharedRepository } from '../repositories';
 import { ConstraintResponse } from '../responses';
@@ -58,6 +60,39 @@ export class ConstraintResolver {
       return {
         constraint,
         message: 'Constraint Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => ConstraintResponse)
+  public async updateConstraint(@Arg('data') data: UpdateConstraintInput): Promise<ConstraintResponse> {
+    try {
+      const constraint = await this.constraint({ id: data.id });
+
+      if (!constraint) {
+        throw new UserInputError(ConstraintConstants.constraintNotFoundError(data.id));
+      }
+
+      this.validationService.isDuplicateIdentifier(
+        await this.constraints({ collectionId: constraint.collectionId}), data.identifier, constraint.id);
+
+      Object.assign(constraint, data);
+
+      this.validationService.hasValidType([ constraint ], constraintTypes);
+
+      await constraint.save();
+
+      this.createConstraintHistory(constraint);
+
+      return {
+        constraint,
+        message: 'Constraint Updated',
         success: true
       };
     } catch (error) {
