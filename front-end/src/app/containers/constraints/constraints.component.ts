@@ -4,10 +4,11 @@ import { select, Store } from '@ngrx/store';
 import { AppState } from 'src/app/app-store';
 import { SubSink } from 'subsink';
 
-import { ConstraintTableModule } from 'src/app/components/constraints';
+import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
 import { MaterialModule } from 'src/app/material';
-import { Constraint, ConstraintMap } from 'src/app/models';
-import { getConstraintMap, getSelectedCollectionId, getShowSidenav } from 'src/app/selectors';
+import { Constraint, ConstraintMap, constraintTypes, IdentifierMap } from 'src/app/models';
+import { getConstraintIdentifierMap, getConstraintMap, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
+import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,6 +17,8 @@ import { getConstraintMap, getSelectedCollectionId, getShowSidenav } from 'src/a
   templateUrl: 'constraints.component.html'
 })
 export class ConstraintsComponent implements OnDestroy {
+  public constraint: Constraint;
+  public constraintIdentifierMap: IdentifierMap;
   public constraintMap: ConstraintMap;
   public showSidenav: boolean;
   public selectedCollectionId: string;
@@ -29,6 +32,10 @@ export class ConstraintsComponent implements OnDestroy {
     this.subscriptions = new SubSink();
 
     this.subscriptions.add(
+      this.store.pipe(select(getConstraintIdentifierMap)).subscribe(constraintIdentifierMap => {
+        this.constraintIdentifierMap = constraintIdentifierMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {
         this.constraintMap = constraintMap;
         this.changeDetectorRef.markForCheck();
@@ -40,7 +47,11 @@ export class ConstraintsComponent implements OnDestroy {
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
         this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
-      })
+      }),
+      this.store.pipe(select(getSelectedConstraint)).subscribe(selectedConstraint => {
+        this.constraint = selectedConstraint
+        this.changeDetectorRef.markForCheck();
+      }),
     );
   }
 
@@ -48,8 +59,53 @@ export class ConstraintsComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public constraintSelected(constraint: Constraint): void {
-    console.log(constraint);
+  public onDuplicateIdentifier(duplicateIdentifier: boolean): void {
+    if (duplicateIdentifier) {
+      this.store.dispatch(
+        ToastActions.showToast({
+          message: 'Please provide a unique identifier',
+          toastType: 'error'
+        })
+      );
+    }
+  }
+
+  public onFileUpload(fileEvent: Event): void {
+    const file = (fileEvent.target as HTMLInputElement).files[0];
+
+    if (file) {
+      // TODO: Implement file upload for constraints.
+    }
+  }
+
+  public onModifyConstraint(constraint?: Constraint): void {
+    this.store.dispatch(ConstraintActions.setSelectedConstraint({
+      id: constraint?.id
+    }));
+
+    this.store.dispatch(LayoutActions.toggleSidenav({
+      showSidenav: true
+    }));
+  }
+
+  public onSidenavOutput(constraint: Constraint): void {
+    if (!constraint) {
+      this.store.dispatch(LayoutActions.toggleSidenav({
+        showSidenav: false
+      }));
+    } else {
+      if (!constraint.id) {
+        constraint.collectionId = this.selectedCollectionId;
+
+        this.store.dispatch(ConstraintActions.createConstraint({
+          constraint
+        }));
+      } else {
+        this.store.dispatch(ConstraintActions.updateConstraint({
+          constraint
+        }));
+      }
+    }
   }
 }
 
@@ -62,6 +118,7 @@ export class ConstraintsComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
+    ConstraintSidenavModule,
     ConstraintTableModule,
     MaterialModule
   ]

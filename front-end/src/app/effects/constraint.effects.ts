@@ -5,13 +5,47 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
-import { CollectionActions, ConstraintActions, LayoutActions } from '../actions';
+import { CollectionActions, ConstraintActions, LayoutActions, ToastActions } from '../actions';
 import { ConstraintService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
+import { ConstraintResponse } from '../models';
 
 @Injectable()
 export class ConstraintEffects {
+  public createConstraint = createEffect(() =>
+    this.actions.pipe(
+      ofType(ConstraintActions.createConstraint),
+      switchMap(({ constraint }) =>
+        this.constraintService.createConstraint(
+          constraint
+        ).pipe(
+          switchMap((createConstraint: ConstraintResponse) => [
+            ConstraintActions.createConstraintSuccess({
+              constraint: createConstraint.constraint
+            }),
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            }),
+            ToastActions.showToast({
+              message: createConstraint.message,
+              toastType: 'success'
+            })
+          ]),
+          catchError((error: Error) => [
+            ConstraintActions.createConstraintFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: error.message,
+              toastType: 'error'
+            })
+          ])
+        )
+      )
+    )
+  );
+
   public getConstraintsByCollectionId = createEffect(() =>
     this.actions.pipe(
       ofRoute([ 'collection/:collectionId/constraints', 'collection/:collectionId/constraint-history' ]),

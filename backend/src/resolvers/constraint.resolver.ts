@@ -58,7 +58,7 @@ export class ConstraintResolver {
       return {
         constraint,
         message: 'Constraint Created',
-        success: false
+        success: true
       };
     } catch (error) {
       return {

@@ -3,7 +3,6 @@ export * from './collection';
 export * from './constraint';
 export * from './event';
 export * from './group';
-export * from './identifier-map';
 export * from './identifier-type';
 export * from './information-types';
 export * from './node';

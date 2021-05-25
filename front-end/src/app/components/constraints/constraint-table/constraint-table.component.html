@@ -1,30 +1,30 @@
 <div *ngIf="showConstraintTable; else noConstraints">
-  <table mat-table [dataSource]="" [ngClass]="{ 'history': history }">
+  <table mat-table [dataSource]="dataSource" [ngClass]="{ 'history': history }">
     <ng-container *ngIf="history">
         <ng-container matColumnDef="constraintId">
           <th mat-header-cell *matHeaderCellDef>Constraint Id</th>
-          <td mat-cell *matCellDef="let event">{{constraint.constraintId}}</td>
+          <td mat-cell *matCellDef="let constraint">{{constraint.constraintId}}</td>
         </ng-container>
 
         <ng-container matColumnDef="updated">
           <th mat-header-cell *matHeaderCellDef>Updated</th>
-          <td mat-cell *matCellDef="let event">{{constraint.updated}}</td>
+          <td mat-cell *matCellDef="let constraint">{{constraint.updated}}</td>
         </ng-container>
     </ng-container>
 
     <ng-container matColumnDef="identifier">
       <th mat-header-cell *matHeaderCellDef>Identifier</th>
-      <td mat-cell *matCellDef="let event">{{constraint.identifier}}</td>
+      <td mat-cell *matCellDef="let constraint">{{constraint.identifier}}</td>
     </ng-container>
 
     <ng-container matColumnDef="displayName">
       <th mat-header-cell *matHeaderCellDef>Display Name</th>
-      <td mat-cell *matCellDef="let event">{{constraint.displayName}}</td>
+      <td mat-cell *matCellDef="let constraint">{{constraint.displayName}}</td>
     </ng-container>
 
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef>Description</th>
-      <td mat-cell *matCellDef="let event">{{constraint.description}}</td>
+      <td mat-cell *matCellDef="let constraint">{{constraint.description}}</td>
     </ng-container>
 
     <ng-container matColumnDef="externalLink">
@@ -38,7 +38,7 @@
 
     <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef>Type</th>
-      <td mat-cell *matCellDef="let event">{{constraint.type}}</td>
+      <td mat-cell *matCellDef="let constraint">{{constraint.type}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

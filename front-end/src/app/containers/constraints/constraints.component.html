@@ -2,7 +2,18 @@
   CONSTRAINTS
 
   <div>
+    <button mat-button routerLink="../constraint-history">
+      History 
+    </button>
 
+    <button mat-raised-button class="gray-button" (click)="onModifyConstraint()">
+      Create New Constraint 
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="constraintFileUpload.click()">
+      Upload Constraints
+    </button>
+    <input #constraintFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
   </div>
 </mat-toolbar>
 
@@ -10,7 +21,16 @@
   <div class="content">
     <constraint-table
       [constraintMap]="constraintMap"
-      (constraintSelected)="onConstraintSelected($event)">
+      (constraintSelected)="onModifyConstraint($event)">
     </constraint-table>
+  </div>
+
+  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
+    <constraint-sidenav
+      [constraint]="constraint"
+      [constraintIdentifierMap]="constraintIdentifierMap"
+      (duplicateIdentifier)="onDuplicateIdentifier($event)"
+      (modifyConstraint)="onSidenavOutput($event)">
+    </constraint-sidenav>
   </div>
 </div>

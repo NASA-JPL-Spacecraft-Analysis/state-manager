@@ -15,6 +15,41 @@ export const CREATE_COLLECTION = gql(`
   }
 `);
 
+export const CREATE_CONSTRAINT = gql(`
+  mutation CreateConstraint(
+    $collectionId: ID!
+    $description: String
+    $displayName: String!
+    $externalLink: String
+    $identifier: String!
+    $type: String!
+  ) {
+    createConstraint(
+      data: {
+        collectionId: $collectionId
+        description: $description
+        displayName: $displayName
+        externalLink: $externalLink
+        identifier: $identifier
+        type: $type
+      }
+    ) {
+      constraint {
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
+    }
+  }
+`);
+
 export const CREATE_EVENT = gql(`
   mutation CreateEvent(
     $collectionId: ID!
