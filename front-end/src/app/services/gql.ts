@@ -20,6 +20,7 @@ export const CREATE_CONSTRAINT = gql(`
     $collectionId: ID!
     $description: String
     $displayName: String!
+    $editable: Boolean!
     $externalLink: String
     $identifier: String!
     $type: String!
@@ -29,6 +30,7 @@ export const CREATE_CONSTRAINT = gql(`
         collectionId: $collectionId
         description: $description
         displayName: $displayName
+        editable: $editable
         externalLink: $externalLink
         identifier: $identifier
         type: $type
@@ -465,6 +467,23 @@ export const GET_COLLECTIONS = gql(`
     collections {
       id
       name
+    }
+  }
+`);
+
+export const GET_CONSTRAINT_HISTORY = gql(`
+  query constraintHistory($collectionId: ID!) {
+    constraintHistory(collectionId: $collectionId) {
+      constraintId
+      collectionId
+      description
+      displayName
+      editable
+      externalLink
+      id
+      identifier
+      type
+      updated
     }
   }
 `);

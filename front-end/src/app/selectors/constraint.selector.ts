@@ -4,14 +4,20 @@ import { ConstraintState } from '../reducers/constraint.reducer';
 
 export const getConstraintState = createFeatureSelector<ConstraintState>('constraints');
 
+export const getConstraintHistory = createSelector(
+  getConstraintState,
+  (state: ConstraintState) => state.constraintHistory
+);
+
 export const getConstraintIdentifierMap = createSelector(
   getConstraintState,
   (state: ConstraintState) => state.constraintIdentifierMap
 );
 
-export const getConstraintMap = createSelector(
+export const getConstraints = createSelector(
   getConstraintState,
-  (state: ConstraintState) => state.constraintMap
+  (state: ConstraintState) => 
+    state.constraintMap ? Object.values(state.constraintMap) : undefined
 );
 
 export const getSelectedConstraint = createSelector(

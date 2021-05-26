@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AppState } from 'src/app/app-store';
 import { SubSink } from 'subsink';
 
 import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
 import { MaterialModule } from 'src/app/material';
-import { Constraint, ConstraintMap, constraintTypes, IdentifierMap } from 'src/app/models';
-import { getConstraintIdentifierMap, getConstraintMap, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
+import { Constraint, IdentifierMap } from 'src/app/models';
+import { getConstraintIdentifierMap, getConstraints, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
 
 @Component({
@@ -19,7 +20,7 @@ import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions'
 export class ConstraintsComponent implements OnDestroy {
   public constraint: Constraint;
   public constraintIdentifierMap: IdentifierMap;
-  public constraintMap: ConstraintMap;
+  public constraints: Constraint[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
 
@@ -36,8 +37,8 @@ export class ConstraintsComponent implements OnDestroy {
         this.constraintIdentifierMap = constraintIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {
-        this.constraintMap = constraintMap;
+      this.store.pipe(select(getConstraints)).subscribe(constraints => {
+        this.constraints = constraints;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
@@ -120,7 +121,8 @@ export class ConstraintsComponent implements OnDestroy {
     CommonModule,
     ConstraintSidenavModule,
     ConstraintTableModule,
-    MaterialModule
+    MaterialModule,
+    RouterModule
   ]
 })
 export class ConstraintsModule {}

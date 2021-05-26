@@ -24,6 +24,7 @@ export class ConstraintService {
           collectionId: constraint.collectionId,
           description: constraint.description,
           displayName: constraint.displayName,
+          editable: constraint.editable,
           externalLink: constraint.externalLink,
           identifier: constraint.identifier,
           type: constraint.type
@@ -36,6 +37,18 @@ export class ConstraintService {
 
         return createConstraint;
       }));
+  }
+  
+  public getConstraintHistory(collectionId: string): Observable<Constraint[]> {
+    return this.apollo
+      .query<{ constraintHistory: Constraint[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_CONSTRAINT_HISTORY,
+        variables: {
+          collectionId
+        }
+      })
+      .pipe(map(({ data: { constraintHistory } }) => constraintHistory));
   }
 
   public getConstraints(collectionId: string): Observable<Constraint[]> {

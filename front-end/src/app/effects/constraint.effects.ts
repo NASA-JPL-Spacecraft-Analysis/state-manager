@@ -24,9 +24,6 @@ export class ConstraintEffects {
             ConstraintActions.createConstraintSuccess({
               constraint: createConstraint.constraint
             }),
-            LayoutActions.toggleSidenav({
-              showSidenav: false
-            }),
             ToastActions.showToast({
               message: createConstraint.message,
               toastType: 'success'
@@ -133,7 +130,27 @@ export class ConstraintEffects {
             ]
           )
         )
-      )
+      );
+    } else if (url === 'constraint-history') {
+      return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        })),
+        this.constraintService.getConstraintHistory(
+          collectionId
+        ).pipe(
+          map(constraintHistory => ConstraintActions.setConstraintHistory({
+            constraintHistory
+          })),
+          catchError(
+            (error: Error) => [
+              ConstraintActions.fetchConstraintHistoryFailure({
+                error
+              })
+            ]
+          )
+        )
+      );
     }
 
     return EMPTY;

@@ -1,15 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { ConstraintActions } from '../actions';
-import { ConstraintMap, IdentifierMap } from '../models';
+import { Constraint, ConstraintMap, IdentifierMap } from '../models';
 
 export interface ConstraintState {
+  constraintHistory: Constraint[];
   constraintIdentifierMap: IdentifierMap,
   constraintMap: ConstraintMap,
   selectedConstraintId: string
 }
 
 export const initialState: ConstraintState = {
+  constraintHistory: undefined,
   constraintIdentifierMap: undefined,
   constraintMap: undefined,
   selectedConstraintId: undefined
@@ -30,6 +32,10 @@ export const reducer = createReducer(
       }
     },
     selectedConstraintId: undefined
+  })),
+  on(ConstraintActions.setConstraintHistory, (state, { constraintHistory }) => ({
+    ...state,
+    constraintHistory
   })),
   on(ConstraintActions.setConstraints, (state, { constraints }) => {
     const constraintIdentifierMap = {};

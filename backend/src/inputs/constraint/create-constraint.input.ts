@@ -13,6 +13,9 @@ export class CreateConstraintInput implements Partial<Constraint> {
   @Field()
   public displayName!: string;
 
+  @Field()
+  public editable!: boolean;
+
   @Field({ nullable: true })
   public externalLink?: string;
 

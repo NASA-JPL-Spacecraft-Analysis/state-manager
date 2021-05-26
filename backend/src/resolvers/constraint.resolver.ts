@@ -104,9 +104,18 @@ export class ConstraintResolver {
   }
 
   private createConstraintHistory(constraint: Constraint): void {
-    const constraintHistory = ConstraintHistory.create(constraint);
-    constraintHistory.constraintId = constraint.id;
-    constraintHistory.updated = new Date();
+    // Create a new ConstraintHistory and omit the Constraint's ID property.
+    const constraintHistory = ConstraintHistory.create({
+      collectionId: constraint.collectionId,
+      constraintId: constraint.id,
+      description: constraint.description,
+      displayName: constraint.displayName,
+      editable: constraint.editable,
+      externalLink: constraint.externalLink,
+      identifier: constraint.identifier,
+      type: constraint.type,
+      updated: new Date()
+    });
 
     void constraintHistory.save();
   }

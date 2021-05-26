@@ -17,9 +17,19 @@ export const createConstraintSuccess = createAction(
   props<{ constraint: Constraint }>()
 );
 
+export const fetchConstraintHistoryFailure = createAction(
+  '[constraint] fetchConstraintHistoryFailure',
+  props<{ error: Error }>()
+);
+
 export const fetchConstraintsFailure = createAction(
   '[constraint] fetchConstraintsFailure',
   props<{ error: Error }>()
+);
+
+export const setConstraintHistory = createAction(
+  '[constraint] setConstraintHistory',
+  props<{ constraintHistory: Constraint[] }>()
 );
 
 export const setConstraints = createAction(

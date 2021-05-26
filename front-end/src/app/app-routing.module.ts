@@ -12,7 +12,8 @@ import {
   InformationTypesComponent,
   EventsComponent,
   EventHistoryComponent,
-  ConstraintsComponent
+  ConstraintsComponent,
+  ConstraintHistoryComponent
 } from './containers';
 
 export const routes: Routes = [
@@ -28,6 +29,10 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'states'
+      },
+      {
+        component: ConstraintHistoryComponent,
+        path: 'constraint-history'
       },
       {
         component: ConstraintsComponent,
