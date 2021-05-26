@@ -83,3 +83,7 @@ table {
 td.mat-cell:first-of-type{
   font-weight: bold;
 }
+
+.mat-toolbar .mat-form-field-infix{
+  border-top-width: 0px;
+}
