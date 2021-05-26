@@ -212,13 +212,16 @@ table {
 }
 
 .mat-toolbar.mat-primary .mat-button.mat-button-base {
-  //background-color:  mat-color($primary, 850);
-  letter-spacing: .05em;
   font-weight: 400;
-  line-height: 32px;
 }
 
-
-.mat-toolbar.mat-primary .mat-raised-button.mat-button-base {
-  line-height: 32px;
+.secondary-toolbar{
+  border-bottom: 1px solid mat-color($mat-grey, 400);
 }
+
+.sidenav-container {
+  padding: 1em;
+  height: 100%;
+  border-left: 1px solid mat-color($mat-grey, 400);
+}
+

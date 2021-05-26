@@ -10,8 +10,3 @@
   display: flex;
   flex-flow: row nowrap;
 }
-
-.events-toolbar {
-  display: flex;
-  justify-content: space-between;
-}
