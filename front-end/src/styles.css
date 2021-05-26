@@ -52,12 +52,6 @@ table {
   justify-content: space-between;
 }
 
-.sidenav-container {
-  padding: 1em;
-  height: 100%;
-  border-left: 1px solid #DEE2E6;
-}
-
 .sidenav-actions {
   margin-top: 1em;
 }

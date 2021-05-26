@@ -91,7 +91,7 @@ $mat-grey: (
   )
 );
 
-$primary: mat-palette($mat-primary, 600);
+$primary: mat-palette($mat-primary, 700);
 $accent: mat-palette($mat-accent, 700);
 $theme: mat-light-theme($primary, $accent);
 
