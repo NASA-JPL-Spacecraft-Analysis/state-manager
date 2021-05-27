@@ -1,22 +1,27 @@
 import { createUnionType } from 'type-graphql';
 
-import { Event } from './event';
-import { InformationType } from './information-type';
-import { State } from './state';
+import { Constraint, constraintTypes } from './constraint';
+import { Event, eventTypes } from './event';
+import { InformationType, informationTypes } from './information-type';
+import { State, stateTypes } from './state';
 
 export const IdentifierTypeUnion = createUnionType({
   name: 'IdentifierTypeUnion',
-  types: () => [ Event, InformationType, State ] as const,
+  types: () => [ Constraint, Event, InformationType, State ] as const,
   resolveType: value => {
-    if (value instanceof Event) {
+    if (constraintTypes.has(value.type)) {
+      return Constraint;
+    }
+
+    if (eventTypes.has(value.type)) {
       return Event;
     }
 
-    if (value instanceof InformationType) {
+    if (informationTypes.has(value.type)) {
       return InformationType;
     }
 
-    if (value instanceof State) {
+    if (stateTypes.has(value.type)) {
       return State;
     }
 

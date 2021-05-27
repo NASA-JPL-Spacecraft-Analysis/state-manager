@@ -3,7 +3,7 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CreateInformationTypesInput } from '../inputs';
-import { InformationType } from '../models';
+import { InformationType, informationTypes } from '../models';
 import { SharedRepository } from '../repositories';
 import { ValidationService } from '../service';
 
@@ -20,18 +20,18 @@ export class InformationTypeResolver {
   @Mutation(() => [ InformationType ])
   public async createInformationTypes(@Arg('data') data: CreateInformationTypesInput): Promise<InformationType[]> {
     for (const informationType of data.informationTypes) {
-      this.validationService.checkInformationType(data.informationTypes);
-
       informationType.collectionId = data.collectionId;
     }
 
-    const informationTypes = InformationType.create(data.informationTypes);
+    const informationTypeList = InformationType.create(data.informationTypes);
 
-    for (const informationType of informationTypes) {
+    this.validationService.hasValidType(informationTypeList, informationTypes);
+
+    for (const informationType of informationTypeList) {
       await informationType.save();
     }
 
-    return informationTypes;
+    return informationTypeList;
   }
 
   @Query(() => InformationType)

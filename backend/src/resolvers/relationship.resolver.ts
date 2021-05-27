@@ -3,13 +3,21 @@ import { UserInputError } from 'apollo-server';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
-import { Relationship, InformationType, InformationTypeEnum, Event, State, RelationshipHistory, IdentifierTypeUnion } from '../models';
+import {
+  Relationship,
+  InformationType,
+  Event,
+  State,
+  RelationshipHistory,
+  IdentifierTypeUnion,
+  Constraint
+} from '../models';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
   @Mutation(() => Relationship)
   public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<Relationship> {
-    const relationship = Relationship.create(data);
+    const relationship: Relationship = Relationship.create(data);
     await relationship.save();
 
     this.createRelationshipHistory(relationship);
@@ -81,7 +89,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
       relationship.collectionId,
       relationship.targetType,
       relationship.targetTypeId
-      );
+    );
   }
 
   @Mutation(() => Relationship)
@@ -111,45 +119,56 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
 
   /**
    * Finds the subject or target of the relationship based on id or identifier.
+   *
    * @param id The optional id of the thing we're looking for.
    * @param identifier The optional identifier of the thing we're looking for.
    */
-  private async getSubjectOrTarget(collectionId: string, relationshipType: InformationTypeEnum, id?: string, identifier?: string)
-    : Promise<typeof IdentifierTypeUnion | undefined> {
+  private async getSubjectOrTarget(collectionId: string, relationshipType: string, id?: string, identifier?: string):
+    Promise<typeof IdentifierTypeUnion | undefined> {
     if (id || identifier) {
       let query;
 
       if (id) {
         query = {
-          id: id
+          id
         };
       } else {
         query = {
-          collectionId: collectionId,
-          identifier: identifier
+          collectionId,
+          identifier
         };
       }
 
-      if (relationshipType === InformationTypeEnum.Event) {
+      if (relationshipType === 'constraint') {
+        const constraint = await Constraint.findOne(query);
+
+        if (constraint) {
+          return constraint;
+        }
+      }
+
+      if (relationshipType === 'event') {
         const event = await Event.findOne(query);
 
         if (event) {
           return event;
         }
       }
-      
-      if (relationshipType === InformationTypeEnum.State) {
+
+      if (relationshipType === 'informationType') {
+        const informationType = await InformationType.findOne(query);
+
+        if (informationType) {
+          return informationType;
+        }
+      }
+
+      if (relationshipType === 'state') {
         const state = await State.findOne(query);
 
         if (state) {
           return state;
         }
-      }
-
-      const informationType = await InformationType.findOne(query);
-
-      if (informationType) {
-        return informationType;
       }
     }
 

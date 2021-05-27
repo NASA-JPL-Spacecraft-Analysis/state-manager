@@ -10,3 +10,8 @@ export class InformationType extends IdentifierType {
   @Column({ default: null, nullable: true })
   public description: string;
 }
+
+export const informationTypes: Set<string> = new Set([
+  'goal',
+  'model'
+]);

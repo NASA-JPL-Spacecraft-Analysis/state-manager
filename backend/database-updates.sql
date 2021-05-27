@@ -57,3 +57,42 @@ ADD COLUMN `externalLink` TEXT NULL DEFAULT NULL AFTER `editable`;
 ALTER TABLE `state-manager`.`states`
 ADD COLUMN `type` TEXT NOT NULL AFTER `externalLink`;
 
+ALTER TABLE `state-manager`.`relationship-history`
+CHANGE `subjectType` `subjectType` text NOT NULL;
+
+ALTER TABLE `state-manager`.`relationship-history`
+CHANGE `targetType` `targetType` text NOT NULL;
+
+ALTER TABLE `state-manager`.`relationships`
+CHANGE `subjectType` `subjectType` text NOT NULL;
+
+ALTER TABLE `state-manager`.`relationships`
+CHANGE `targetType` `targetType` text NOT NULL;
+
+ALTER TABLE `state-manager`.`information_types`
+CHANGE `text` `text` text NOT NULL;
+
+update relationships set
+subjectType = 'informationType'
+where subjectType in (0, 1, 2, 3, 4);
+
+update relationships set
+subjectType = 'event'
+where subjectType = 5;
+
+update relationships set
+subjectType = 'state'
+where subjectType = 6;
+
+update relationships set
+targetType = 'informationType'
+where targetType in (0, 1, 2, 3, 4);
+
+update relationships set
+targetType = 'event'
+where targetType = 5;
+
+update relationships set
+targetType = 'state'
+where targetType = 6;
+

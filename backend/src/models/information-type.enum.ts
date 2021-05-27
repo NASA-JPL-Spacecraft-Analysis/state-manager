@@ -1,15 +1,13 @@
 import { registerEnumType } from 'type-graphql';
 
-export enum InformationTypeEnum {
-  Activity,
-  Command,
-  FlightRule,
-  FSWParameter,
-  Model,
-  Event,
-  State
+export enum IdentifierTypeEnum {
+  'constraint',
+  'event',
+  'flightRule',
+  'informationType',
+  'state'
 }
 
-registerEnumType(InformationTypeEnum, {
-  name: 'InformationTypeEnum'
+registerEnumType(IdentifierTypeEnum, {
+  name: 'IdentifierTypeEnum'
 });

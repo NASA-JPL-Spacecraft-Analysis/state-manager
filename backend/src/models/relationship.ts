@@ -23,9 +23,9 @@ export class Relationship extends Node {
   @Field(() => Models.IdentifierTypeUnion, { nullable: true })
   public subject?: typeof Models.IdentifierTypeUnion;
 
-  @Field(() => Models.InformationTypeEnum)
+  @Field()
   @Column()
-  public subjectType!: Models.InformationTypeEnum;
+  public subjectType!: string;
 
   @Field(() => ID)
   @Column()
@@ -34,9 +34,9 @@ export class Relationship extends Node {
   @Field(() => Models.IdentifierTypeUnion, { nullable: true })
   public target?: typeof Models.IdentifierTypeUnion;
 
-  @Field(() => Models.InformationTypeEnum)
+  @Field()
   @Column()
-  public targetType!: Models.InformationTypeEnum;
+  public targetType!: string;
 
   @Field(() => ID)
   @Column()

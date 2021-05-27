@@ -1,6 +1,6 @@
 import { Field, ID, InputType } from 'type-graphql';
 
-import { InformationTypeEnum, Relationship } from '../../models';
+import { Relationship } from '../../models';
 
 @InputType()
 export class UploadRelationshipInput implements Partial<Relationship> {
@@ -16,8 +16,8 @@ export class UploadRelationshipInput implements Partial<Relationship> {
   @Field()
   public subjectIdentifier!: string;
 
-  @Field(() => InformationTypeEnum)
-  public subjectType!: InformationTypeEnum;
+  @Field()
+  public subjectType!: string;
 
   @Field(() => ID, { nullable: true })
   public subjectTypeId?: string;
@@ -25,8 +25,8 @@ export class UploadRelationshipInput implements Partial<Relationship> {
   @Field()
   public targetIdentifier!: string;
 
-  @Field(() => InformationTypeEnum)
-  public targetType!: InformationTypeEnum;
+  @Field()
+  public targetType!: string;
 
   @Field(() => ID, { nullable: true })
   public targetTypeId?: string;
