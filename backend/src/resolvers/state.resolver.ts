@@ -233,9 +233,21 @@ export class StateResolver implements ResolverInterface<State> {
   }
 
   private createStateHistory(state: State): void {
-    const stateHistory = StateHistory.create(state);
-    stateHistory.stateId = state.id;
-    stateHistory.updated = new Date();
+    const stateHistory = StateHistory.create({
+      collectionId: state.collectionId,
+      dataType: state.dataType,
+      description: state.description,
+      displayName: state.displayName,
+      editable: state.editable,
+      externalLink: state.externalLink,
+      identifier: state.identifier,
+      source: state.source,
+      stateId: state.id,
+      subsystem: state.subsystem,
+      type: state.type,
+      units: state.units,
+      updated: new Date()
+    });
 
     void stateHistory.save();
   }

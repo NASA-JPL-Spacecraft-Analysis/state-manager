@@ -134,9 +134,16 @@ export class EventResolver {
   }
 
   private createEventHistory(event: Event): void {
-    const eventHistory = EventHistory.create(event);
-    eventHistory.eventId = event.id;
-    eventHistory.updated = new Date();
+    const eventHistory = EventHistory.create({
+      collectionId: event.collectionId,
+      description: event.description,
+      displayName: event.displayName,
+      editable: event.editable,
+      eventId: event.id,
+      identifier: event.identifier,
+      type: event.type,
+      updated: new Date()
+    });
 
     void eventHistory.save();
   }

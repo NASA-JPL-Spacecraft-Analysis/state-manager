@@ -119,9 +119,17 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   private createRelationshipHistory(relationship: Relationship): void {
-    const relationshipHistory = RelationshipHistory.create(relationship);
-    relationshipHistory.relationshipId = relationship.id;
-    relationshipHistory.updated = new Date();
+    const relationshipHistory = RelationshipHistory.create({
+      collectionId: relationship.collectionId,
+      description: relationship.description,
+      displayName: relationship.displayName,
+      relationshipId: relationship.id,
+      subjectType: relationship.subjectType,
+      subjectTypeId: relationship.subjectTypeId,
+      targetType: relationship.targetType,
+      targetTypeId: relationship.targetTypeId,
+      updated: new Date()
+    });
 
     void relationshipHistory.save();
   }

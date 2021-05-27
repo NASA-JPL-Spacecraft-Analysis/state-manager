@@ -9,6 +9,11 @@ import { StateEnumeration } from './state-enumeration';
 export class State extends IdentifierType {
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
+  // TODO: Ask Dan what we should rename this field to.
+  public dataType?: string;
+
+  @Column({ default: null, nullable: true })
+  @Field({ nullable: true })
   public source?: string;
 
   @Field(() => [ StateEnumeration ])
@@ -17,11 +22,6 @@ export class State extends IdentifierType {
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
   public subsystem?: string;
-
-  @Column({ default: null, nullable: true })
-  @Field({ nullable: true })
-  // TODO: Ask Dan what we should rename this field to.
-  public dataType?: string;
 
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
