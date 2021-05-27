@@ -78,6 +78,20 @@ export class EventResolver {
     }
   }
 
+  @Query(() => Event)
+  public event(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<Event | undefined> {
+    return this.sharedRepository.getOne(collectionId, id, identifier);
+  }
+
+  @Query(() => [ EventHistory ])
+  public eventHistory(@Args() { collectionId }: CollectionIdArgs): Promise<EventHistory[]> {
+    return EventHistory.find({
+      where: {
+        collectionId
+      }
+    });
+  }
+
   @Query(() => [ Event ])
   public events(@Args() { collectionId }: CollectionIdArgs): Promise<Event[]> {
     return Event.find({
@@ -85,11 +99,6 @@ export class EventResolver {
         collectionId
       }
     });
-  }
-
-  @Query(() => Event)
-  public event(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<Event | undefined> {
-    return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
   @Mutation(() => EventResponse)

@@ -65,6 +65,15 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     });
   }
 
+  @Query(() => [ RelationshipHistory ])
+  public relationshipHistory(@Args() { collectionId }: CollectionIdArgs): Promise<RelationshipHistory[]> {
+    return RelationshipHistory.find({
+      where: {
+        collectionId
+      }
+    });
+  }
+
   @Query(() => [ Relationship ])
   public relationships(@Args() { collectionId }: CollectionIdArgs): Promise<Relationship[]> {
     return Relationship.find({

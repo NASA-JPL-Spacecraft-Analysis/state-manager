@@ -182,6 +182,15 @@ export class StateResolver implements ResolverInterface<State> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
+  @Query(() => [ StateHistory ])
+  public stateHistory(@Args() { collectionId }: CollectionIdArgs): Promise<StateHistory[]> {
+    return StateHistory.find({
+      where: {
+        collectionId
+      }
+    });
+  }
+
   @Query(() => [ State ])
   public states(@Args() { collectionId }: CollectionIdArgs): Promise<State[]> {
     return State.find({
