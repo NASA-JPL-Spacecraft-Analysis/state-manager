@@ -5,26 +5,22 @@ import { IdentifierType } from './identifier-type';
 
 @Entity('constraints')
 @ObjectType()
-export class Constraint extends IdentifierType {
-  @Column({ default: null, nullable: true })
-  @Field(() => String, { nullable: true })
-  public description: string;
-}
+export class Constraint extends IdentifierType {}
 
 @Entity('constraint_history')
 @ObjectType()
 export class ConstraintHistory extends Constraint {
-  @Field(() => ID)
   @Column()
+  @Field(() => ID)
   public constraintId!: string;
 
-  @Field(() => Date)
   @Column()
+  @Field(() => Date)
   public updated!: Date;
 }
 
 export const constraintTypes: Set<string> = new Set([
-  'flight_rule_check',
+  'channel_alarm',
   'downlink_rule_check',
-  'channel_alarm'
+  'flight_rule_check'
 ]);

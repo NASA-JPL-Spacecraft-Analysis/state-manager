@@ -10,6 +10,10 @@ export class IdentifierType extends Node {
   @Field(() => ID)
   public collectionId!: string;
 
+  @Field(() => String, { nullable: true })
+  @Column({ default: null, nullable: true })
+  public description?: string;
+
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
   public displayName?: string;
