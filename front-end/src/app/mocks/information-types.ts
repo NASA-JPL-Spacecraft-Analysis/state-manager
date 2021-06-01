@@ -1,24 +1,22 @@
-import { InformationTypeEnum, InformationTypes, InformationTypesMap } from '../models';
+import { InformationType, InformationTypeMap } from '../models';
 
-export const mockInformationType: InformationTypes = {
-  id: '1',
-  identifier: 'ACTIVITY_TEST',
-  displayName: 'Activity',
-  description: 'Test activity',
+export const mockInformationType: InformationType = {
+  collectionId: '1',
+  displayName: 'Goal',
+  description: 'Test goal',
+  editable: true,
   externalLink: '',
-  type: InformationTypeEnum.Activity
+  id: '1',
+  identifier: 'GOAL_TEST',
+  type: 'goal'
 };
 
-export const mockInformationTypes: InformationTypes[] = [
+export const mockInformationTypes: InformationType[] = [
   mockInformationType
 ];
 
-export const mockInformationTypesMap: InformationTypesMap = new Map(
-  [
-    [1, {
-      ['1']: {
-        ...mockInformationType
-      }
-    }]
-  ]
-);
+export const mockInformationTypeMap: InformationTypeMap = {
+  ['1']: {
+    ...mockInformationType
+  }
+};

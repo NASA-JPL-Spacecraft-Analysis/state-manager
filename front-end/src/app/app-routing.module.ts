@@ -3,7 +3,7 @@ import { RouterModule, Routes, Params, RouterStateSnapshot } from '@angular/rout
 import { RouterStateSerializer } from '@ngrx/router-store';
 
 import {
-  StateComponent,
+  StatesComponent,
   StateHistoryComponent,
   RelationshipsComponent,
   RelationshipHistoryComponent,
@@ -63,7 +63,7 @@ export const routes: Routes = [
         path: 'relationship-history'
       },
       {
-        component: StateComponent,
+        component: StatesComponent,
         path: 'states'
       },
       {

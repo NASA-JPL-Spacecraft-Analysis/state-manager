@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { Event, Group, GroupMapping, InformationTypes, Relationship } from '../models';
+import { Event, Group, GroupMapping, InformationType, Relationship } from '../models';
 
 export const uploadStateEnumerations = createAction(
   '[file upload] uploadStateEnumerations',
@@ -64,7 +64,7 @@ export const uploadInformationTypesFailure = createAction(
 
 export const uploadInformationTypesSuccess = createAction(
   '[file upload] uploadInformationTypesSuccess',
-  props<{ informationTypes: InformationTypes[] }>()
+  props<{ informationTypes: InformationType[] }>()
 );
 
 export const uploadRelationships = createAction(

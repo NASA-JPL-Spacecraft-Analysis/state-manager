@@ -5,12 +5,9 @@ import { MatSelectChange } from '@angular/material/select';
 
 import { MaterialModule } from 'src/app/material';
 import {
-  InformationTypes,
-  InformationTypeEnum,
   StateMap,
   Relationship,
-  InformationTypesMap,
-  StringTMap,
+  InformationTypeMap,
   EventMap
 } from 'src/app/models';
 
@@ -22,24 +19,17 @@ import {
 })
 export class RelationshipTypePickerComponent implements OnChanges {
   @Input() public eventMap: EventMap;
-  @Input() public informationTypesMap: InformationTypesMap;
+  @Input() public informationTypeMap: InformationTypeMap;
   @Input() public isSubject: boolean;
   @Input() public parentFormGroup: FormGroup;
   @Input() public relationship: Relationship;
   @Input() public stateMap: StateMap;
   @Input() public type: string;
 
-  public currentTypeMap: StringTMap<InformationTypes>;
-  public eventEnumName: string = InformationTypeEnum[InformationTypeEnum.Event];
   public formProperty: string;
   public title: string;
-  public stateEnumName: string = InformationTypeEnum[InformationTypeEnum.State];
 
   public ngOnChanges(): void {
-    if (this.type && this.type !== this.stateEnumName) {
-      this.currentTypeMap = this.informationTypesMap[this.type];
-    }
-
     if (this.isSubject) {
       this.title = 'Subject';
       this.formProperty = 'subjectTypeId';

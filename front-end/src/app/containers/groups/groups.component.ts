@@ -5,9 +5,9 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { getEventMap, getGroups, getInformationTypes, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
+import { getEventMap, getGroups, getInformationTypeMap, getInformationTypes, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
 import { GroupsSidenavModule } from 'src/app/components/groups';
-import { EventMap, Group, IdentifierMap, InformationTypesMap, StateMap } from 'src/app/models';
+import { EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { UploadConstants } from 'src/app/constants';
@@ -23,7 +23,7 @@ export class GroupsComponent implements OnDestroy {
   public group: Group;
   public groups: Group[];
   public groupNameMap: IdentifierMap;
-  public informationTypesMap: InformationTypesMap;
+  public informationTypeMap: InformationTypeMap;
   public showSidenav: boolean;
   public selectedCollectionId: string;
   public stateMap: StateMap;
@@ -51,8 +51,8 @@ export class GroupsComponent implements OnDestroy {
 
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getInformationTypes)).subscribe(informationTypesMap => {
-        this.informationTypesMap = informationTypesMap;
+      this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {
+        this.informationTypeMap = informationTypeMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {

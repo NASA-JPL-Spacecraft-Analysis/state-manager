@@ -5,8 +5,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, EMPTY } from 'rxjs';
 
-import { EventService, InformationTypesService, StateService, RelationshipService } from '../services';
-import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypesActions, StateActions } from '../actions';
+import { EventService, InformationTypeService, StateService, RelationshipService } from '../services';
+import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { Relationship } from '../models';
 
@@ -100,7 +100,7 @@ export class RelationshipEffects {
   constructor(
     private actions: Actions,
     private eventService: EventService,
-    private informationTypesService: InformationTypesService,
+    private informationTypeService: InformationTypeService,
     private router: Router,
     private relationshipService: RelationshipService,
     private stateService: StateService
@@ -123,15 +123,15 @@ export class RelationshipEffects {
           ]
         )
       ),
-      this.informationTypesService.getInformationTypes(
+      this.informationTypeService.getInformationTypes(
         collectionId
       ).pipe(
-        map(informationTypes => InformationTypesActions.setInformationTypes({
+        map(informationTypes => InformationTypeActions.setInformationTypes({
           informationTypes
         })),
         catchError(
           (error: Error) => [
-            InformationTypesActions.fetchInformationTypesFailure({
+            InformationTypeActions.fetchInformationTypesFailure({
               error
             })
           ]

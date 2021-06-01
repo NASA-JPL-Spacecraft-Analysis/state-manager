@@ -10,16 +10,16 @@ import {
   getRelationships,
   getSelectedRelationship,
   getStates,
-  getInformationTypes,
   getEventMap,
   getShowSidenav,
-  getSelectedCollectionId
+  getSelectedCollectionId,
+  getInformationTypeMap
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { LayoutActions, ToastActions, FileUploadActions, RelationshipActions } from 'src/app/actions';
 import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
-import { StateMap, InformationTypesMap, EventMap } from 'src/app/models';
+import { StateMap, InformationTypeMap, EventMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -30,7 +30,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
 })
 export class RelationshipsComponent implements OnDestroy {
   public eventMap: EventMap;
-  public informationTypesMap: InformationTypesMap;
+  public informationTypeMap: InformationTypeMap;
   public relationshipMap: RelationshipMap;
   public relationship: Relationship;
   public showSidenav: boolean;
@@ -52,8 +52,8 @@ export class RelationshipsComponent implements OnDestroy {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getInformationTypes)).subscribe(informationTypesMap => {
-        this.informationTypesMap = informationTypesMap;
+      this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {
+        this.informationTypeMap = informationTypeMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getRelationships)).subscribe(relationshipMap => {
@@ -109,7 +109,7 @@ export class RelationshipsComponent implements OnDestroy {
    * @param relationship The relationship that is being modified.
    */
   public onModifyRelationship(relationship?: Relationship): void {
-    if (this.stateMap || this.eventMap || this.informationTypesMap) {
+    if (this.stateMap || this.eventMap || this.informationTypeMap) {
       this.store.dispatch(RelationshipActions.setSelectedRelationship({
         relationship
       }));

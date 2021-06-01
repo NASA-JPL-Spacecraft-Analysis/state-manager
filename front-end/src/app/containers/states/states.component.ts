@@ -24,7 +24,7 @@ enum UploadableTypes {
   styleUrls: [ 'states.component.css' ],
   templateUrl: 'states.component.html'
 })
-export class StateComponent implements OnDestroy {
+export class StatesComponent implements OnDestroy {
   public collectionId: string;
   public showSidenav: boolean;
   public stateMap: StateMap;
@@ -164,10 +164,10 @@ export class StateComponent implements OnDestroy {
 
 @NgModule({
   declarations: [
-    StateComponent
+    StatesComponent
   ],
   exports: [
-    StateComponent
+    StatesComponent
   ],
   imports: [
     StateSidenavModule,
@@ -177,4 +177,4 @@ export class StateComponent implements OnDestroy {
     RouterModule
   ]
 })
-export class StateModule {}
+export class StatesModule {}

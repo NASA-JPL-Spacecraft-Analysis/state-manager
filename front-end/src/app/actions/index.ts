@@ -3,7 +3,7 @@ import * as ConstraintActions from './constraint.actions';
 import * as EventActions from './event.actions';
 import * as FileUploadActions from './file-upload.actions';
 import * as GroupActions from './group.actions';
-import * as InformationTypesActions from './information-types.actions';
+import * as InformationTypeActions from './information-type.actions';
 import * as LayoutActions from './layout.actions';
 import * as RelationshipActions from './relationship.actions';
 import * as StateActions from './state.actions';
@@ -15,7 +15,7 @@ export {
   EventActions,
   FileUploadActions,
   GroupActions,
-  InformationTypesActions,
+  InformationTypeActions,
   LayoutActions,
   RelationshipActions,
   StateActions,

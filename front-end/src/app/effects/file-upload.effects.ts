@@ -5,12 +5,12 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
+import { EventService, GroupService, InformationTypeService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
   StateEnumeration,
-  InformationTypes,
+  InformationType,
   Relationship,
   ParseTypes,
   StateEnumerationUpload,
@@ -42,7 +42,7 @@ export class FileUploadEffects {
         parsedInformationTypes
       })),
       switchMap(({ collectionId, parsedInformationTypes }) => {
-        const informationTypes = parsedInformationTypes as InformationTypes[];
+        const informationTypes = parsedInformationTypes as InformationType[];
 
         if (Array.isArray(informationTypes) && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
@@ -54,11 +54,11 @@ export class FileUploadEffects {
           }
 
           return concat(
-            this.informationTypesService.createInformationTypes(
+            this.informationTypeService.createInformationTypes(
               collectionId,
               informationTypes
             ).pipe(
-              switchMap((createdInformationTypes: InformationTypes[]) => [
+              switchMap((createdInformationTypes: InformationType[]) => [
                 FileUploadActions.uploadInformationTypesSuccess({
                   informationTypes: createdInformationTypes
                 }),
@@ -425,7 +425,7 @@ export class FileUploadEffects {
     private actions: Actions,
     private eventService: EventService,
     private groupService: GroupService,
-    private informationTypesService: InformationTypesService,
+    private informationTypeService: InformationTypeService,
     private parseService: ParseService,
     private stateService: StateService,
     private relationshipService: RelationshipService,

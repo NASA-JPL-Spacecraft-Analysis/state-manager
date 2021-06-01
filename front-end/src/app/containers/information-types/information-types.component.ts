@@ -5,10 +5,10 @@ import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
-import { InformationTypesMap } from 'src/app/models';
+import { InformationTypeMap, InformationType } from 'src/app/models';
 import { getInformationTypes, getSelectedCollectionId } from 'src/app/selectors';
-import { InformationTypesTableModule } from 'src/app/components/information-types-table/information-types-table.component';
 import { FileUploadActions } from 'src/app/actions';
+import { InformationTypeTableModule } from 'src/app/components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +17,8 @@ import { FileUploadActions } from 'src/app/actions';
   templateUrl: 'information-types.component.html'
 })
 export class InformationTypesComponent implements OnDestroy {
-  public informationTypesMap: InformationTypesMap;
+  public informationTypes: InformationType[];
+  public informationTypeMap: InformationTypeMap;
 
   private collectionId: string;
   private subscriptions = new SubSink();
@@ -31,8 +32,8 @@ export class InformationTypesComponent implements OnDestroy {
         this.collectionId = collectionId;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getInformationTypes)).subscribe(informationTypesMap => {
-        this.informationTypesMap = informationTypesMap;
+      this.store.pipe(select(getInformationTypes)).subscribe(informationTypes => {
+        this.informationTypes = informationTypes;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -63,8 +64,8 @@ export class InformationTypesComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
-    MaterialModule,
-    InformationTypesTableModule
+    InformationTypeTableModule,
+    MaterialModule
   ]
 })
 export class InformationTypesModule {}

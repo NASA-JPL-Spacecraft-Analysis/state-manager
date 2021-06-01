@@ -7,8 +7,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { Relationship } from '../../models/relationship';
 import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
 import { MaterialModule } from 'src/app/material';
-import { StateMap, InformationTypesMap, EventMap } from 'src/app/models';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
+import { StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,7 +17,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
 })
 export class RelationshipSidenavComponent implements OnChanges {
   @Input() public eventMap: EventMap;
-  @Input() public informationTypesMap: InformationTypesMap;
+  @Input() public informationTypeMap: InformationTypeMap;
   @Input() public relationship: Relationship;
   @Input() public stateMap: StateMap;
 
@@ -27,7 +26,7 @@ export class RelationshipSidenavComponent implements OnChanges {
 
   public newRelationship: Relationship;
   public form: FormGroup;
-  public informationTypes: string[];
+  public types: string[];
   public subjectType: string;
   public targetType: string;
 
@@ -40,7 +39,7 @@ export class RelationshipSidenavComponent implements OnChanges {
     this.formError = new EventEmitter<string>();
     this.modifyRelationship = new EventEmitter<Relationship>();
 
-    this.informationTypes = StateManagementConstants.relationshipTypes;
+    this.types = Object.values(IdentifierTypeEnum);
   }
 
   public ngOnChanges(): void {

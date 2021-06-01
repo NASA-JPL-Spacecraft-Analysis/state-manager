@@ -9,7 +9,7 @@ import {
   ConstraintReducer,
   EventReducer,
   GroupReducer,
-  InformationTypesReducer,
+  InformationTypeReducer,
   LayoutReducer,
   RelationshipReducer,
   StateReducer,
@@ -22,7 +22,7 @@ export interface AppState {
   constraints: ConstraintReducer.ConstraintState;
   events: EventReducer.EventState;
   groups: GroupReducer.GroupState;
-  informationTypes: InformationTypesReducer.InformationTypesState;
+  informationTypes: InformationTypeReducer.InformationTypeState;
   layout: LayoutReducer.LayoutState;
   relationships: RelationshipReducer.RelationshipState;
   router: fromRouter.RouterReducerState;
@@ -38,7 +38,7 @@ export const ROOT_REDUCERS = new InjectionToken<
     constraints: ConstraintReducer.reducer,
     events: EventReducer.reducer,
     groups: GroupReducer.reducer,
-    informationTypes: InformationTypesReducer.reducer,
+    informationTypes: InformationTypeReducer.reducer,
     layout: LayoutReducer.reducer,
     relationships: RelationshipReducer.reducer,
     router: fromRouter.routerReducer,

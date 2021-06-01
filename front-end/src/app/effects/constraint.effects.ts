@@ -43,7 +43,7 @@ export class ConstraintEffects {
     )
   );
 
-  public getConstraintsByCollectionId = createEffect(() =>
+  public navConstraints = createEffect(() =>
     this.actions.pipe(
       ofRoute([ 'collection/:collectionId/constraints', 'collection/:collectionId/constraint-history' ]),
       withLatestFrom(this.store),
@@ -58,7 +58,7 @@ export class ConstraintEffects {
     )
   );
 
-  public getEventByCollectionId = createEffect(() =>
+  public getConstraintsByCollectionId = createEffect(() =>
     this.actions.pipe(
       ofType(CollectionActions.setSelectedCollection),
       switchMap(({ id }) => {

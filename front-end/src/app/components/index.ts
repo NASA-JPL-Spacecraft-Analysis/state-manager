@@ -5,6 +5,7 @@ export * from './event-sidenav/event-sidenav.component';
 export * from './event-table/event-table.component';
 export * from './file-upload-dialog/file-upload-dialog.component';
 export * from './identifier-form/identifier-form.component';
+export * from './information-type-table/information-type-table.component';
 export * from './relationship-sidenav/relationship-sidenav.component';
 export * from './relationship-type-picker/relationship-type-picker.component';
 export * from './state-table/state-table.component';

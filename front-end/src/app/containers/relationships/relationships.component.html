@@ -21,7 +21,7 @@
   <div class="relationships-content">
     <app-relationships-table
       [eventMap]="eventMap"
-      [informationTypesMap]="informationTypesMap"
+      [informationTypeMap]="informationTypeMap"
       [relationshipMap]="relationshipMap"
       [stateMap]="stateMap"
       (relationshipSelected)="onModifyRelationship($event)">
@@ -31,7 +31,7 @@
   <div class="sidenav" *ngIf="showSidenav">
     <app-relationship-sidenav
       [eventMap]="eventMap"
-      [informationTypesMap]="informationTypesMap"
+      [informationTypeMap]="informationTypeMap"
       [relationship]="relationship"
       [stateMap]="stateMap"
       (formError)="onFormErrorOutput($event)"

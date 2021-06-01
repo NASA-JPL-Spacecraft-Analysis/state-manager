@@ -1,5 +1,5 @@
 import { Event } from './event';
-import { InformationTypes } from './information-types';
+import { InformationType } from './information-type';
 import { State } from './state';
 
 export interface Group {
@@ -18,7 +18,7 @@ export interface GroupMapping {
 
 export type GroupItemType =
   | Event
-  | InformationTypes
+  | InformationType
   | State;
 
 export interface GroupUpload {

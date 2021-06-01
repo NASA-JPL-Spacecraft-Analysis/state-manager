@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MaterialModule } from 'src/app/material';
-import { EventMap, Group, GroupItemType, GroupMapping, IdentifierMap, InformationTypesMap, StateMap, StringTMap } from 'src/app/models';
+import { EventMap, Group, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
@@ -20,7 +20,7 @@ export class GroupsSidenavComponent implements OnChanges {
   @Input() public eventMap: EventMap;
   @Input() public group: Group;
   @Input() public groupNameMap: IdentifierMap;
-  @Input() public informationTypesMap: InformationTypesMap;
+  @Input() public informationTypeMap: InformationTypeMap;
   @Input() public selectedCollectionId: string;
   @Input() public stateMap: StateMap;
 
@@ -76,14 +76,9 @@ export class GroupsSidenavComponent implements OnChanges {
 
     this.populateGroupItemMap();
 
+    this.addToCollectionItems(this.informationTypeMap);
     this.addToCollectionItems(this.eventMap);
     this.addToCollectionItems(this.stateMap);
-
-    if (this.informationTypesMap) {
-      for (const informationType of Object.keys(this.informationTypesMap)) {
-        this.addToCollectionItems(this.informationTypesMap[informationType]);
-      }
-    }
 
     this.originalGroupName = this.newGroup.name;
 

@@ -1,39 +1,34 @@
-<div *ngIf="type">
-  <div class="form-input" *ngIf="type === stateEnumName || type === eventEnumName; else informationType">
-    <div *ngIf="type === stateEnumName">
-      <mat-select
-        [(value)]="relationship[formProperty]"
-        (selectionChange)="onValueChange($event)">
-        <mat-option *ngFor="let value of stateMap | keyvalue"
-          [value]="stateMap[value.key].id">
-          {{stateMap[value.key].identifier}}
-        </mat-option>
-      </mat-select>
-    </div>
-
-    <div *ngIf="type === eventEnumName">
-      <mat-select
-        [(value)]="relationship[formProperty]"
-        (selectionChange)="onValueChange($event)">
-        <mat-option *ngFor="let value of eventMap | keyvalue"
-          [value]="eventMap[value.key].id">
-          {{eventMap[value.key].identifier}}
-        </mat-option>
-      </mat-select>
-    </div>
+<div class="form-input" *ngIf="type">
+  <div *ngIf="type === 'event'">
+    <mat-select
+      [(value)]="relationship[formProperty]"
+      (selectionChange)="onValueChange($event)">
+      <mat-option *ngFor="let value of eventMap | keyvalue"
+        [value]="eventMap[value.key].id">
+        {{eventMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
   </div>
 
-  <ng-template #informationType>
-    <div class="form-input">
-      <mat-select
-        *ngIf="currentTypeMap"
-        [(value)]="relationship[formProperty]"
-        (selectionChange)="onValueChange($event)">
-        <mat-option *ngFor="let value of currentTypeMap | keyvalue"
-          [value]="currentTypeMap[value.key].id">
-          {{currentTypeMap[value.key].identifier}}
-        </mat-option>
-      </mat-select>
-    </div>
-  </ng-template>
+  <div *ngIf="type === 'informationType'">
+    <mat-select
+      [(value)]="relationship[formProperty]"
+      (selectionChange)="onValueChange($event)">
+      <mat-option *ngFor="let value of informationTypeMap | keyvalue"
+        [value]="informationTypeMap[value.key].id">
+        {{informationTypeMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
+  </div>
+
+  <div *ngIf="type === 'state'">
+    <mat-select
+      [(value)]="relationship[formProperty]"
+      (selectionChange)="onValueChange($event)">
+      <mat-option *ngFor="let value of stateMap | keyvalue"
+        [value]="stateMap[value.key].id">
+        {{stateMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
+  </div>
 </div>

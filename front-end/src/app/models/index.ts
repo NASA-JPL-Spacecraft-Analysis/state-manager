@@ -4,7 +4,7 @@ export * from './constraint';
 export * from './event';
 export * from './group';
 export * from './identifier-type';
-export * from './information-types';
+export * from './information-type';
 export * from './node';
 export * from './parse-types';
 export * from './relationship';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Event, Group, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
+import { Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +60,7 @@ export class ValidationService {
       && mappingsUpload.itemType !== undefined;
   }
 
-  public validateInformationType(informationType: InformationTypes): boolean {
+  public validateInformationType(informationType: InformationType): boolean {
     return (
       informationType.hasOwnProperty('identifier')
       && informationType.hasOwnProperty('displayName')

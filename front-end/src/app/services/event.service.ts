@@ -83,7 +83,6 @@ export class EventService {
   }
 
   public updateEvent(event: Event): Observable<EventResponse> {
-    console.log(event);
     return this.apollo
       .mutate<{ updateEvent: EventResponse }>({
         fetchPolicy: 'no-cache',

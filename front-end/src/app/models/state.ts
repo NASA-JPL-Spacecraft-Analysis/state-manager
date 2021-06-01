@@ -4,7 +4,6 @@ import { StringTMap } from './string-t-map';
 
 export interface State extends IdentifierType {
   dataType: string;
-  description: string;
   enumerations: StateEnumeration[];
   source: string;
   subsystem: string;
