@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
+import { Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, informationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -55,17 +55,15 @@ export class ValidationService {
     return groupMapping.itemIdentifier !== undefined && groupMapping.itemType !== undefined;
   }
 
+  public isInformationType(informationType: InformationType): informationType is InformationType {
+    return informationType.identifier !== undefined
+      && informationType.displayName !== undefined
+      && informationTypes.includes(informationType.type);
+  }
+
   public isMappingsUpload(mappingsUpload: MappingsUpload): mappingsUpload is MappingsUpload {
     return mappingsUpload.name !== undefined && mappingsUpload.itemIdentifier !== undefined
       && mappingsUpload.itemType !== undefined;
-  }
-
-  public validateInformationType(informationType: InformationType): boolean {
-    return (
-      informationType.hasOwnProperty('identifier')
-      && informationType.hasOwnProperty('displayName')
-      && informationType.hasOwnProperty('informationType')
-    );
   }
 
   public validateRelationship(relationship: Relationship): boolean {

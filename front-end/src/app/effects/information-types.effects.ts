@@ -18,7 +18,6 @@ export class InformationTypeEffects {
       map(([_, state]) => state),
       switchMap(state => {
         if (state.collection.selectedCollectionId) {
-          console.log('2');
           return this.getInformationTypes(state.collection.selectedCollectionId);
         }
 
@@ -32,7 +31,6 @@ export class InformationTypeEffects {
       ofType(CollectionActions.setSelectedCollection),
       switchMap(({ id }) => {
         if (id !== null) {
-          console.log('1');
           return this.getInformationTypes(id);
         }
 

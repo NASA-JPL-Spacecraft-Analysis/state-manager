@@ -9,7 +9,6 @@ import { EventService, GroupService, InformationTypeService, ParseService, Relat
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
-  StateEnumeration,
   InformationType,
   Relationship,
   ParseTypes,
@@ -23,7 +22,8 @@ import {
   CreateGroupMappingsResponse,
   StatesResponse,
   EnumerationsResponse,
-  EventsResponse
+  EventsResponse,
+  CreateInformationTypesResponse
 } from '../models';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class FileUploadEffects {
 
         if (Array.isArray(informationTypes) && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
-            if (!this.validationService.validateInformationType(informationType)) {
+            if (!this.validationService.isInformationType(informationType)) {
               return [
                 this.throwFileParseError(informationTypes)
               ];
@@ -58,21 +58,21 @@ export class FileUploadEffects {
               collectionId,
               informationTypes
             ).pipe(
-              switchMap((createdInformationTypes: InformationType[]) => [
+              switchMap((createInformationTypes: CreateInformationTypesResponse) => [
                 FileUploadActions.uploadInformationTypesSuccess({
-                  informationTypes: createdInformationTypes
+                  informationTypes: createInformationTypes.informationTypes
                 }),
                 ToastActions.showToast({
-                  message: 'Information types uploaded',
+                  message: createInformationTypes.message,
                   toastType: 'success'
                 })
               ]),
-              catchError((error: HttpErrorResponse) => [
+              catchError((error: Error) => [
                 FileUploadActions.uploadInformationTypesFailure({
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.error,
+                  message: error.message,
                   toastType: 'error'
                 })
               ])

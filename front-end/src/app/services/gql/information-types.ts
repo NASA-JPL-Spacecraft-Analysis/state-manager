@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const CREATE_INFORMATION_TYPES = gql(`
-  mutation CreateInformationTypes(
+  mutation createInformationTypes(
     $collectionId: ID!
     $informationTypes: [CreateInformationTypeInput!]!
   ) {
@@ -11,12 +11,16 @@ export const CREATE_INFORMATION_TYPES = gql(`
         informationTypes: $informationTypes
       }
     ) {
-      id
-      identifier
-      description
-      displayName
-      externalLink
-      type
+      informationTypes {
+        id
+        identifier
+        description
+        displayName
+        externalLink
+        type
+      }
+      message
+      success
     }
   }
 `);

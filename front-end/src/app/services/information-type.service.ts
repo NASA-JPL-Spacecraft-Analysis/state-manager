@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 
 import * as gql from './gql/information-types';
 
-import { InformationType } from './../models';
+import { CreateInformationTypesResponse, InformationType } from './../models';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +15,9 @@ export class InformationTypeService {
     private apollo: Apollo
   ) {}
 
-  public createInformationTypes(collectionId: string, informationTypes: InformationType[]): Observable<InformationType[]> {
+  public createInformationTypes(collectionId: string, informationTypes: InformationType[]): Observable<CreateInformationTypesResponse> {
     return this.apollo
-      .mutate<{ createInformationTypes: InformationType[] }>({
+      .mutate<{ createInformationTypes: CreateInformationTypesResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_INFORMATION_TYPES,
         variables: {
@@ -25,7 +25,13 @@ export class InformationTypeService {
           informationTypes
         }
       })
-      .pipe(map(({ data: { createInformationTypes } }) => createInformationTypes));
+      .pipe(map(({ data: { createInformationTypes } }) => {
+        if (!createInformationTypes.success) {
+          throw new Error(createInformationTypes.message);
+        }
+
+        return createInformationTypes;
+      }));
   }
 
   public getInformationTypes(collectionId: string): Observable<InformationType[]> {
