@@ -43,7 +43,12 @@ export class Relationship extends Node {
   public targetTypeId!: string;
 }
 
-@Entity('relationship_history')
+@Entity({
+  name: 'relationship-history',
+  orderBy: {
+    updated: 'DESC'
+  }
+})
 @ObjectType()
 export class RelationshipHistory extends Relationship {
   @Column()

@@ -7,7 +7,12 @@ import { IdentifierType } from './identifier-type';
 @ObjectType()
 export class Event extends IdentifierType {}
 
-@Entity('event-history')
+@Entity({
+  name: 'event-history',
+  orderBy: {
+    updated: 'DESC'
+  }
+})
 @ObjectType()
 export class EventHistory extends Event {
   @Column()

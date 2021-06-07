@@ -28,7 +28,12 @@ export class State extends IdentifierType {
   public units?: string;
 }
 
-@Entity('state_history')
+@Entity({
+  name: 'state_history',
+  orderBy: {
+    updated: 'DESC'
+  }
+})
 @ObjectType()
 export class StateHistory extends State {
   @Column()
