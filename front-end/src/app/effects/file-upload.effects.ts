@@ -10,7 +10,6 @@ import { FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
   InformationType,
-  Relationship,
   ParseTypes,
   StateEnumerationUpload,
   RelationshipUpload,
@@ -23,7 +22,8 @@ import {
   StatesResponse,
   EnumerationsResponse,
   EventsResponse,
-  CreateInformationTypesResponse
+  CreateInformationTypesResponse,
+  RelationshipsResponse
 } from '../models';
 
 @Injectable()
@@ -329,21 +329,21 @@ export class FileUploadEffects {
               collectionId,
               relationships
             ).pipe(
-              switchMap((createdRelationships: Relationship[]) => [
+              switchMap((createRelationships: RelationshipsResponse) => [
                 FileUploadActions.uploadRelationshipsSuccess({
-                  relationships: createdRelationships
+                  relationships: createRelationships.relationships
                 }),
                 ToastActions.showToast({
-                  message: 'Relationship(s) uploaded',
+                  message: createRelationships.message,
                   toastType: 'success'
                 })
               ]),
-              catchError((error: HttpErrorResponse) => [
+              catchError((error: Error) => [
                 FileUploadActions.uploadRelationshipsFailure({
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.error,
+                  message: error.message,
                   toastType: 'error'
                 })
               ])

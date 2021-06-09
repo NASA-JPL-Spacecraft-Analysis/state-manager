@@ -46,7 +46,7 @@ export class EventResolver {
     }
   }
 
-  @Mutation(() => [ EventsResponse ])
+  @Mutation(() => EventsResponse)
   public async createEvents(@Arg('data') data: CreateEventsInput): Promise<EventsResponse> {
     try {
       for (const event of data.events) {

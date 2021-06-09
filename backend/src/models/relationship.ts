@@ -44,7 +44,7 @@ export class Relationship extends Node {
 }
 
 @Entity({
-  name: 'relationship-history',
+  name: 'relationship_history',
   orderBy: {
     updated: 'DESC'
   }

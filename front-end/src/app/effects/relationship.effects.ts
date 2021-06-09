@@ -8,7 +8,7 @@ import { Observable, merge, EMPTY } from 'rxjs';
 import { EventService, InformationTypeService, StateService, RelationshipService } from '../services';
 import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { Relationship } from '../models';
+import { RelationshipResponse } from '../models';
 
 @Injectable()
 export class RelationshipEffects {
@@ -21,12 +21,12 @@ export class RelationshipEffects {
           collectionId,
           relationship
         ).pipe(
-          switchMap((createdRelationship: Relationship) => [
+          switchMap((createRelationship: RelationshipResponse) => [
             RelationshipActions.createRelationshipSuccess({
-              relationship: createdRelationship
+              relationship: createRelationship.relationship
             }),
             ToastActions.showToast({
-              message: 'Relationship created',
+              message: createRelationship.message,
               toastType: 'success'
             })
           ]),
@@ -35,7 +35,7 @@ export class RelationshipEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Relationship creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -74,12 +74,12 @@ export class RelationshipEffects {
         this.relationshipService.updateRelationship(
           relationship
         ).pipe(
-          switchMap((updatedRelationship: Relationship) => [
+          switchMap((updateRelationship: RelationshipResponse) => [
             RelationshipActions.updateRelationshipSuccess({
-              relationship: updatedRelationship
+              relationship: updateRelationship.relationship
             }),
             ToastActions.showToast({
-              message: 'Relationship edited',
+              message: updateRelationship.message,
               toastType: 'success'
             })
           ]),
@@ -88,7 +88,7 @@ export class RelationshipEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Updating relationship failed',
+              message: error.message,
               toastType: 'error'
             })
           ])

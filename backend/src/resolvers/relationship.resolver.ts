@@ -12,48 +12,74 @@ import {
   IdentifierTypeUnion,
   Constraint
 } from '../models';
+import { RelationshipResponse, RelationshipsResponse } from '../responses';
+import { RelationshipConstants } from '../constants';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
-  @Mutation(() => Relationship)
-  public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<Relationship> {
-    const relationship: Relationship = Relationship.create(data);
-    await relationship.save();
-
-    this.createRelationshipHistory(relationship);
-
-    return relationship;
-  }
-
-  @Mutation(() => [ Relationship ])
-  public async createRelationships(@Arg('data') data: CreateRelationshipsInput): Promise<Relationship[]> {
-    for (const relationship of data.relationships) {
-      relationship.collectionId = data.collectionId;
-
-      const subject = await this.getSubjectOrTarget(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
-      const target = await this.getSubjectOrTarget(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
-
-      if (!subject) {
-        throw new UserInputError(`Subject with provided identifier: ${relationship.subjectIdentifier} does not exist.`);
-      }
-
-      if (!target) {
-        throw new UserInputError(`Target with provided identifier: ${relationship.targetIdentifier} does not exist.`);
-      }
-
-      relationship.subjectTypeId = subject.id;
-      relationship.targetTypeId = target.id;
-    }
-
-    const relationships = Relationship.create(data.relationships);
-
-    for (const relationship of relationships) {
+  @Mutation(() => RelationshipResponse)
+  public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<RelationshipResponse> {
+    try {
+      const relationship: Relationship = Relationship.create(data);
       await relationship.save();
 
       this.createRelationshipHistory(relationship);
-    }
 
-    return relationships;
+      return {
+        message: 'Relationship Created',
+        relationship,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => RelationshipsResponse)
+  public async createRelationships(@Arg('data') data: CreateRelationshipsInput): Promise<RelationshipsResponse> {
+    try {
+      for (const relationship of data.relationships) {
+        relationship.collectionId = data.collectionId;
+
+        const subject =
+          await this.getSubjectOrTarget(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
+        const target =
+          await this.getSubjectOrTarget(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
+
+        if (!subject) {
+          throw new UserInputError(RelationshipConstants.subjectNotFoundError(relationship.subjectIdentifier));
+        }
+
+        if (!target) {
+          throw new UserInputError(RelationshipConstants.targetNotFoundError(relationship.targetIdentifier));
+        }
+
+        relationship.subjectTypeId = subject.id;
+        relationship.targetTypeId = target.id;
+      }
+
+      const relationships = Relationship.create(data.relationships);
+
+      for (const relationship of relationships) {
+        await relationship.save();
+
+        this.createRelationshipHistory(relationship);
+      }
+
+      return {
+        message: 'Relationships Created',
+        relationships,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
   }
 
   @Query(() => Relationship)
@@ -101,21 +127,32 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     );
   }
 
-  @Mutation(() => Relationship)
-  public async updateRelationship(@Arg('data') data: UpdateRelationshipInput): Promise<Relationship> {
-    const relationship = await this.relationship({ id: data.id });
+  @Mutation(() => RelationshipResponse)
+  public async updateRelationship(@Arg('data') data: UpdateRelationshipInput): Promise<RelationshipResponse> {
+    try {
+      const relationship = await this.relationship({ id: data.id });
 
-    // If we can't find a relationship with the given ID, error.
-    if (!relationship) {
-      throw new UserInputError(`Relationship with provided id ${data.id} not found`);
+      // If we can't find a relationship with the given ID, error.
+      if (!relationship) {
+        throw new UserInputError(RelationshipConstants.relationshipNotFoundError(data.id));
+      }
+
+      Object.assign(relationship, data);
+      await relationship.save();
+
+      this.createRelationshipHistory(relationship);
+
+      return {
+        message: 'Relationship Updated',
+        relationship,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    Object.assign(relationship, data);
-    await relationship.save();
-
-    this.createRelationshipHistory(relationship);
-
-    return relationship;
   }
 
   private createRelationshipHistory(relationship: Relationship): void {
