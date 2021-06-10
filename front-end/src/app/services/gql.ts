@@ -1,20 +1,5 @@
 import gql from 'graphql-tag';
 
-export const CREATE_COLLECTION = gql(`
-  mutation CreateCollection(
-    $name: String!
-  ) {
-    createCollection(
-      data: {
-        name: $name
-      }
-    ) {
-      id
-      name
-    }
-  }
-`);
-
 export const CREATE_CONSTRAINT = gql(`
   mutation CreateConstraint(
     $collectionId: ID!
@@ -109,166 +94,6 @@ export const CREATE_EVENTS = gql(`
   }
 `);
 
-export const CREATE_GROUP = gql(`
-  mutation CreateGroup(
-    $collectionId: ID!
-    $groupMappings: [CreateGroupMappingInput!]!
-    $name: String!
-  ) {
-    createGroup(
-      data: {
-        collectionId: $collectionId
-        groupMappings: $groupMappings
-        name: $name
-      }
-    ) {
-      groupMappings {
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-      id
-      name
-    }
-  }
-`);
-
-export const CREATE_GROUP_MAPPINGS = gql(`
-  mutation CreateGroupMappings(
-    $collectionId: ID!
-    $groupMappings: [UploadGroupMappingInput!]!
-  ) {
-    createGroupMappings(
-      data: {
-        collectionId: $collectionId
-        groupMappings: $groupMappings
-      }
-    ) {
-      groupMappings {
-        groupId
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-      message
-      success
-    }
-  }
-`);
-
-export const CREATE_GROUPS = gql(`
-  mutation CreateGroups(
-    $collectionId: ID!
-    $groups: [UploadGroupInput!]!
-  ) {
-    createGroups(
-      data: {
-        collectionId: $collectionId
-        groups: $groups
-      }
-    ) {
-      groups {
-        groupMappings {
-          item {
-            ... on Event {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on InformationType {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-              informationType: type 
-            }
-            ... on State {
-              description
-              displayName
-              enumerations {
-                id
-                label
-                value
-              }
-              id
-              identifier
-              source
-              subsystem
-              dataType
-              units
-            }
-          }
-        }
-        id
-        name
-      }
-      message
-      success
-    }
-  }
-`);
-
 export const CREATE_STATE = gql(`
   mutation CreateState(
     $collectionId: ID!
@@ -345,18 +170,6 @@ export const CREATE_STATES = gql(`
   }
 `);
 
-export const DELETE_COLLECTION = gql(`
-  mutation DeleteCollection(
-    $id: ID!
-  ) {
-    deleteCollection(
-      id: $id
-    ) {
-      success
-    }
-  }
-`);
-
 export const DELETE_GROUP = gql(`
   mutation DeleteGroup(
     $id: ID!
@@ -382,15 +195,6 @@ export const DELETE_ENUMERATIONS = gql(`
       }
     ) {
       success
-    }
-  }
-`);
-
-export const GET_COLLECTIONS = gql(`
-  query collections {
-    collections {
-      id
-      name
     }
   }
 `);
@@ -459,49 +263,6 @@ export const GET_EVENT_HISTORY = gql(`
   }
 `);
 
-export const GET_GROUPS_AND_MAPPINGS = gql(`
-  query groups($collectionId: ID!) {
-    groups(collectionId: $collectionId) {
-      name
-      id
-      groupMappings {
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-    }
-  }
-`);
-
 export const GET_STATES = gql(`
   query states($collectionId: ID!) {
     states(collectionId: $collectionId) {
@@ -564,23 +325,6 @@ export const SAVE_ENUMERATIONS = gql(`
       }
       message
       success
-    }
-  }
-`);
-
-export const UPDATE_COLLECTION = gql(`
-  mutation UpdateCollection(
-    $id: ID!
-    $name: String!
-  ) {
-    updateCollection(
-      data: {
-        id: $id
-        name: $name
-      }
-    ) {
-      id
-      name
     }
   }
 `);
@@ -655,61 +399,6 @@ export const UPDATE_EVENT = gql(`
       }
       message
       success
-    }
-  }
-`);
-
-export const UPDATE_GROUP = gql(`
-  mutation UpdateGroup(
-    $collectionId: ID!
-    $groupMappings: [CreateGroupMappingInput!]!
-    $id: ID!
-    $name: String!
-  ) {
-    updateGroup(
-      data: {
-        collectionId: $collectionId
-        groupMappings: $groupMappings
-        id: $id
-        name: $name
-      }
-    ) {
-      groupMappings {
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-      id
-      name
     }
   }
 `);

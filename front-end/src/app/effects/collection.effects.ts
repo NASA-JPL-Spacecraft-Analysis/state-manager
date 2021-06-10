@@ -7,7 +7,7 @@ import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
 import { CollectionActions, ToastActions } from '../actions';
 import { CollectionService } from '../services';
-import { Collection } from '../models';
+import { CollectionResponse } from '../models';
 import { of, forkJoin, concat } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components';
 import { AppState } from '../app-store';
@@ -21,15 +21,15 @@ export class CollectionEffects {
         this.collectionService.createCollection(
           name
         ).pipe(
-          switchMap((createCollection: Collection) => [
+          switchMap((createCollection: CollectionResponse) => [
             CollectionActions.createCollectionSuccess({
-              collection: createCollection
+              collection: createCollection.collection
             }),
             CollectionActions.setSelectedCollection({
-              id: createCollection.id
+              id: createCollection.collection.id
             }),
             ToastActions.showToast({
-              message: 'Collection created',
+              message: createCollection.message,
               toastType: 'success'
             })
           ]),
@@ -38,7 +38,7 @@ export class CollectionEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Collection creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -124,12 +124,12 @@ export class CollectionEffects {
           collectionId,
           name
         ).pipe(
-          switchMap((updateCollection: Collection) => [
+          switchMap((updateCollection: CollectionResponse) => [
             CollectionActions.updateCollectionSuccess({
-              collection: updateCollection
+              collection: updateCollection.collection
             }),
             ToastActions.showToast({
-              message: 'Collection edited',
+              message: updateCollection.message,
               toastType: 'success'
             })
           ]),
@@ -138,7 +138,7 @@ export class CollectionEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Collection update failed',
+              message: error.message,
               toastType: 'error'
             })
           ])

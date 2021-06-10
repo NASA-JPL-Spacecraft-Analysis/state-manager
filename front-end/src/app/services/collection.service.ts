@@ -3,9 +3,9 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Collection } from './../models';
+import { Collection, CollectionResponse } from './../models';
 
-import * as gql from './gql';
+import * as gql from './gql/collections';
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +15,22 @@ export class CollectionService {
     private apollo: Apollo
   ) {}
 
-  public createCollection(name: string): Observable<Collection> {
+  public createCollection(name: string): Observable<CollectionResponse> {
     return this.apollo
-      .mutate<{ createCollection: Collection }>({
+      .mutate<{ createCollection: CollectionResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_COLLECTION,
         variables: {
           name
         }
       })
-      .pipe(map(({ data: { createCollection } }) => createCollection));
+      .pipe(map(({ data: { createCollection } }) => {
+        if (!createCollection.success) {
+          throw new Error(createCollection.message);
+        }
+
+        return createCollection;
+      }));
   }
 
   public deleteCollection(id: string): Observable<boolean> {
@@ -48,9 +54,9 @@ export class CollectionService {
       .pipe(map(({ data: { collections } }) => collections));
   }
 
-  public updateCollection(id: string, name: string): Observable<Collection> {
+  public updateCollection(id: string, name: string): Observable<CollectionResponse> {
     return this.apollo
-      .mutate<{ updateCollection: Collection }>({
+      .mutate<{ updateCollection: CollectionResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.UPDATE_COLLECTION,
         variables: {
@@ -58,6 +64,12 @@ export class CollectionService {
           name
         }
       })
-      .pipe(map(({ data: { updateCollection } }) => updateCollection));
+      .pipe(map(({ data: { updateCollection } }) => {
+        if (!updateCollection.success) {
+          throw new Error(updateCollection.message);
+        }
+
+        return updateCollection;
+      }));
   }
 }

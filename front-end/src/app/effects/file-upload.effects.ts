@@ -15,10 +15,10 @@ import {
   RelationshipUpload,
   State,
   GroupUpload,
-  CreateGroupsResponse,
+  GroupsResponse,
   GroupUploadMappings,
   MappingsUpload,
-  CreateGroupMappingsResponse,
+  GroupMappingsResponse,
   StatesResponse,
   EnumerationsResponse,
   EventsResponse,
@@ -270,7 +270,7 @@ export class FileUploadEffects {
               collectionId,
               groups
             ).pipe(
-              switchMap((createGroups: CreateGroupsResponse) => [
+              switchMap((createGroups: GroupsResponse) => [
                 FileUploadActions.uploadGroupsSuccess({
                   groups: createGroups.groups
                 }),
@@ -442,7 +442,7 @@ export class FileUploadEffects {
         collectionId,
         mappingsUpload
       ).pipe(
-        switchMap((createGroupMappings: CreateGroupMappingsResponse) => [
+        switchMap((createGroupMappings: GroupMappingsResponse) => [
           FileUploadActions.uploadGroupMappingsSuccess({
             groupMappings: createGroupMappings.groupMappings
           }),
