@@ -2,13 +2,34 @@ import { Resolver, Query, Arg, Mutation, FieldResolver, ResolverInterface, Root,
 import { UserInputError } from 'apollo-server';
 
 import { IdArgs } from '../args';
-import { Collection, Group, State } from '../models';
+import { Collection, Constraint, Event, Group, InformationType, Relationship, State } from '../models';
 import { CreateCollectionInput, UpdateCollectionInput} from '../inputs';
 import { CollectionResponse, Response } from './../responses';
 import { CollectionConstants } from '../constants';
 
 @Resolver(() => Collection)
 export class CollectionResolver implements ResolverInterface<Collection> {
+  /**
+   * Returns a list of enabled collections.
+   */
+  @Query(() => [ Collection ])
+  public collections(): Promise<Collection[]> {
+    return Collection.find({
+      where: {
+        enabled: true
+      }
+    });
+  }
+
+  @FieldResolver()
+  public async constraints(@Root() collection: Collection): Promise<Constraint[]> {
+    return Constraint.find({
+      where: {
+        collectionId: collection.id
+      }
+    });
+  }
+
   @Mutation(() => CollectionResponse)
   public async createCollection(@Arg('data') data: CreateCollectionInput): Promise<CollectionResponse> {
     try {
@@ -56,21 +77,36 @@ export class CollectionResolver implements ResolverInterface<Collection> {
     };
   }
 
-  /**
-   * Returns a list of enabled collections.
-   */
-  @Query(() => [ Collection ])
-  public collections(): Promise<Collection[]> {
-    return Collection.find({
+  @FieldResolver()
+  public async groups(@Root() collection: Collection): Promise<Group[]> {
+    return Group.find({
       where: {
-        enabled: true
+        collectionId: collection.id
       }
     });
   }
 
   @FieldResolver()
-  public async groups(@Root() collection: Collection): Promise<Group[]> {
-    return Group.find({
+  public async events(@Root() collection: Collection): Promise<Event[]> {
+    return Event.find({
+      where: {
+        collectionId: collection.id
+      }
+    });
+  }
+
+  @FieldResolver()
+  public async informationTypes(@Root() collection: Collection): Promise<InformationType[]> {
+    return InformationType.find({
+      where: {
+        collectionId: collection.id
+      }
+    });
+  }
+
+  @FieldResolver()
+  public async relationships(@Root() collection: Collection): Promise<Relationship[]> {
+    return Relationship.find({
       where: {
         collectionId: collection.id
       }
