@@ -1,3 +1,4 @@
+export * from './collection-response';
 export * from './constraint-response';
 export * from './event-response';
 export * from './group-mapping-response';

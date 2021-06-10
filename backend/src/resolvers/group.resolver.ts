@@ -2,10 +2,11 @@ import { UserInputError } from 'apollo-server';
 import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
 import { CollectionIdArgs, IdArgs } from '../args';
+import { CollectionConstants, GroupConstants } from '../constants';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping } from '../models';
-import { GroupsResponse, Response } from '../responses';
+import { GroupResponse, GroupsResponse, Response } from '../responses';
 import { GroupService, IdentifierTypeService } from '../service';
 
 @Resolver(() => Group)
@@ -15,17 +16,28 @@ export class GroupResolver implements ResolverInterface<Group> {
     private readonly identifierTypeService: IdentifierTypeService
   ) {}
 
-  @Mutation(() => Group)
-  public async createGroup(@Arg('data') data: CreateGroupInput): Promise<Group> {
-    const group = Group.create(data);
+  @Mutation(() => GroupResponse)
+  public async createGroup(@Arg('data') data: CreateGroupInput): Promise<GroupResponse> {
+    try {
+      const group = Group.create(data);
 
-    void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
+      void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
 
-    await group.save();
+      await group.save();
 
-    group.groupMappings = await this.createNewGroupMappings(data.groupMappings, group.id);
+      group.groupMappings = await this.createNewGroupMappings(data.groupMappings, group.id);
 
-    return group;
+      return {
+        group,
+        message: 'Group Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
   }
 
   @Mutation(() => GroupsResponse)
@@ -94,7 +106,7 @@ export class GroupResolver implements ResolverInterface<Group> {
       });
 
       if (!group) {
-        throw new UserInputError(`Group with provided id ${id} not found`);
+        throw new UserInputError(GroupConstants.groupNotFoundError(id));
       }
 
       group.enabled = false;
@@ -127,59 +139,70 @@ export class GroupResolver implements ResolverInterface<Group> {
     return this.findGroupsByCollectionId(collectionId);
   }
 
-  @Mutation(() => Group)
-  public async updateGroup(@Arg('data') data: UpdateGroupInput): Promise<Group> {
-    const group = await Group.findOne({
-      where: {
-        enabled: true,
-        id: data.id
-      }
-    });
-
-    if (!group) {
-      throw new UserInputError(`A group with id ${data.id} does not exist, please pass a valid group id and try again`);
-    }
-
-    Object.assign(group, data);
-
-    void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
-
-    await group.save();
-
-    group.groupMappings = await this.groupMappings(group);
-
-    // Create and populate a map of the incoming group mappings.
-    const groupMappingsMap = new Map<string, CreateGroupMappingInput>();
-
-    for (const mapping of data.groupMappings) {
-      groupMappingsMap.set(mapping.itemId, mapping);
-    }
-
-    // Loop over our existing group mappings to see what needs to be saved or deleted.
-    for (const mapping of group.groupMappings) {
-      // If the incoming list has the group mapping, remove it from the map and do nothing.
-      if (groupMappingsMap.get(mapping.itemId)) {
-        groupMappingsMap.delete(mapping.itemId);
-      } else {
-        // If we don't see the item in the incoming mapping list, delete it from the group.
-        await mapping.remove();
-      }
-    }
-
-    // Look at the remaining mappings, save them all to the group.
-    for (const itemId of Object.keys(groupMappingsMap)) {
-      const groupMapping = GroupMapping.create({
-        groupId: group.id,
-        itemId: groupMappingsMap.get(itemId)?.itemId,
-        sortOrder: groupMappingsMap.get(itemId)?.sortOrder
+  @Mutation(() => GroupResponse)
+  public async updateGroup(@Arg('data') data: UpdateGroupInput): Promise<GroupResponse> {
+    try {
+      const group = await Group.findOne({
+        where: {
+          enabled: true,
+          id: data.id
+        }
       });
 
-      await groupMapping.save();
+      if (!group) {
+        throw new UserInputError(GroupConstants.groupNotFoundError(data.id));
+      }
+
+      Object.assign(group, data);
+
+      void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
+
+      await group.save();
+
+      group.groupMappings = await this.groupMappings(group);
+
+      // Create and populate a map of the incoming group mappings.
+      const groupMappingsMap = new Map<string, CreateGroupMappingInput>();
+
+      for (const mapping of data.groupMappings) {
+        groupMappingsMap.set(mapping.itemId, mapping);
+      }
+
+      // Loop over our existing group mappings to see what needs to be saved or deleted.
+      for (const mapping of group.groupMappings) {
+        // If the incoming list has the group mapping, remove it from the map and do nothing.
+        if (groupMappingsMap.get(mapping.itemId)) {
+          groupMappingsMap.delete(mapping.itemId);
+        } else {
+          // If we don't see the item in the incoming mapping list, delete it from the group.
+          await mapping.remove();
+        }
+      }
+
+      // Look at the remaining mappings, save them all to the group.
+      for (const itemId of Object.keys(groupMappingsMap)) {
+        const groupMapping = GroupMapping.create({
+          groupId: group.id,
+          itemId: groupMappingsMap.get(itemId)?.itemId,
+          sortOrder: groupMappingsMap.get(itemId)?.sortOrder
+        });
+
+        await groupMapping.save();
+      }
+
+      group.groupMappings = await this.groupService.getGroupMappings(group.id);
+
+      return {
+        group,
+        message: 'Group Updated',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    group.groupMappings = await this.groupService.getGroupMappings(group.id);
-
-    return group;
   }
 
   /**
@@ -197,7 +220,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     });
 
     if (!collection) {
-      throw new UserInputError(`A collection with id ${collectionId} does not exist, please pass a valid collection id and try again`);
+      throw new UserInputError(CollectionConstants.collectionNotFoundError(collectionId));
     }
 
     const collectionGroups = await this.findGroupsByCollectionId(collectionId);
@@ -205,7 +228,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     for (const collectionGroup of collectionGroups) {
       for (const name of groupNames) {
         if (collectionGroup.name === name && collectionGroup.id !== groupId) {
-          throw new UserInputError(`A group with name "${name}" already exists in this colleciton, please change the name and try again`);
+          throw new UserInputError(GroupConstants.duplicateGroupNameError(name));
         }
       }
     }

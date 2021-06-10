@@ -16,9 +16,9 @@ export class Collection extends Node {
   @Field({ defaultValue: true })
   public name!: string;
 
-  @Field(() => [ Group ])
-  public groups: Group[];
+  @Field(() => [ Group ], { nullable: true })
+  public groups?: Group[];
 
-  @Field(() => [ State ])
-  public states: State[];
+  @Field(() => [ State ], { nullable: true })
+  public states?: State[];
 }

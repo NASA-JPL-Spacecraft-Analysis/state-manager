@@ -4,16 +4,28 @@ import { UserInputError } from 'apollo-server';
 import { IdArgs } from '../args';
 import { Collection, Group, State } from '../models';
 import { CreateCollectionInput, UpdateCollectionInput} from '../inputs';
-import { Response } from './../responses';
+import { CollectionResponse, Response } from './../responses';
+import { CollectionConstants } from '../constants';
 
 @Resolver(() => Collection)
 export class CollectionResolver implements ResolverInterface<Collection> {
-  @Mutation(() => Collection)
-  public async createCollection(@Arg('data') data: CreateCollectionInput): Promise<Collection> {
-    const collection = Collection.create(data);
-    await collection.save();
+  @Mutation(() => CollectionResponse)
+  public async createCollection(@Arg('data') data: CreateCollectionInput): Promise<CollectionResponse> {
+    try {
+      const collection = Collection.create(data);
+      await collection.save();
 
-    return collection;
+      return {
+        collection,
+        message: 'Collection Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
   }
 
   /**
@@ -22,7 +34,7 @@ export class CollectionResolver implements ResolverInterface<Collection> {
    *
    * @param id The id of the collection we're deleting.
    */
-  @Mutation(() => Boolean)
+  @Mutation(() => Response)
   public async deleteCollection(@Args() { id }: IdArgs): Promise<Response> {
     const collection = await Collection.findOne({
       where: {
@@ -32,7 +44,7 @@ export class CollectionResolver implements ResolverInterface<Collection> {
     });
 
     if (!collection) {
-      throw new UserInputError(`Collection with provided id ${id} not found`);
+      throw new UserInputError(CollectionConstants.collectionNotFoundError(id));
     }
 
     collection.enabled = false;
@@ -80,21 +92,32 @@ export class CollectionResolver implements ResolverInterface<Collection> {
    *
    * @param id The id of the collection we're updating.
    */
-  @Mutation(() => Collection)
-  public async updateCollection(@Arg('data') data: UpdateCollectionInput): Promise<Collection> {
-    const collection = await Collection.findOne({
-      where: {
-        id: data.id
+  @Mutation(() => CollectionResponse)
+  public async updateCollection(@Arg('data') data: UpdateCollectionInput): Promise<CollectionResponse> {
+    try {
+      const collection = await Collection.findOne({
+        where: {
+          id: data.id
+        }
+      });
+
+      if (!collection) {
+        throw new UserInputError(CollectionConstants.collectionNotFoundError(data.id));
       }
-    });
 
-    if (!collection) {
-      throw new UserInputError(`Collection with provided id ${data.id} not found`);
+      Object.assign(collection, data);
+      await collection.save();
+
+      return {
+        collection,
+        message: 'Collection Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    Object.assign(collection, data);
-    await collection.save();
-
-    return collection;
   }
 }
