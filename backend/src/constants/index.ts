@@ -1,4 +1,5 @@
 export * from './collection.constants';
+export * from './command.constants';
 export * from './constraint.constants';
 export * from './error.constants';
 export * from './event.constants';

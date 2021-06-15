@@ -1,3 +1,4 @@
+export * from './command.resolver';
 export * from './collection.resolver';
 export * from './constraint.resolver';
 export * from './event.resolver';
