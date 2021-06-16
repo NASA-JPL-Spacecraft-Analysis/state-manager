@@ -1,0 +1,27 @@
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+
+import { CommandState } from '../reducers/command.reducer';
+
+export const getCommandState = createFeatureSelector<CommandState>('commands');
+
+export const getCommandHistory = createSelector(
+  getCommandState,
+  (state: CommandState) => state.commandHistory
+);
+
+export const getCommandIdentifierMap = createSelector(
+  getCommandState,
+  (state: CommandState) => state.commandIdentifierMap
+);
+
+export const getCommands = createSelector(
+  getCommandState,
+  (state: CommandState) => 
+    state.commandMap ? Object.values(state.commandMap) : undefined
+);
+
+export const getSelectedCommand = createSelector(
+  getCommandState,
+  (state: CommandState) => 
+    state.selectedCommandId ? state.commandMap[state.selectedCommandId] : undefined
+);

@@ -5,6 +5,7 @@ import * as fromRouter from '@ngrx/router-store';
 import { environment } from 'src/environments/environment';
 import {
   CollectionReducer,
+  CommandReducer,
   ConfigReducer,
   ConstraintReducer,
   EventReducer,
@@ -18,6 +19,7 @@ import { ConfigState } from './config';
 
 export interface AppState {
   collection: CollectionReducer.CollectionState;
+  commands: CommandReducer.CommandState,
   config: ConfigState;
   constraints: ConstraintReducer.ConstraintState;
   events: EventReducer.EventState;
@@ -34,6 +36,7 @@ export const ROOT_REDUCERS = new InjectionToken<
 >('Root reducers token', {
   factory: () => ({
     collection: CollectionReducer.reducer,
+    commands: CommandReducer.reducer,
     config: ConfigReducer.reducer,
     constraints: ConstraintReducer.reducer,
     events: EventReducer.reducer,

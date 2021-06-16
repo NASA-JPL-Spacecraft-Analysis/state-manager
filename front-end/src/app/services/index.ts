@@ -1,4 +1,5 @@
 export * from './collection.service';
+export * from './command.service';
 export * from './constraint.service';
 export * from './event.service';
 export * from './group.service';

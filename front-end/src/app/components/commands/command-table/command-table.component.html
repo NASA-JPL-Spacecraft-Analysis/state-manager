@@ -1,0 +1,53 @@
+<div *ngIf="showCommandTable; else noCommands">
+  <table mat-table [dataSource]="dataSource" [ngClass]="{ 'history': history }">
+    <ng-container *ngIf="history">
+        <ng-container matColumnDef="commandId">
+          <th mat-header-cell *matHeaderCellDef>Command Id</th>
+          <td mat-cell *matCellDef="let command">{{command.commandId}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="updated">
+          <th mat-header-cell *matHeaderCellDef>Updated</th>
+          <td mat-cell *matCellDef="let command">{{command.updated}}</td>
+        </ng-container>
+    </ng-container>
+
+    <ng-container matColumnDef="identifier">
+      <th mat-header-cell *matHeaderCellDef>Identifier</th>
+      <td mat-cell *matCellDef="let command">{{command.identifier}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="displayName">
+      <th mat-header-cell *matHeaderCellDef>Display Name</th>
+      <td mat-cell *matCellDef="let command">{{command.displayName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>Description</th>
+      <td mat-cell *matCellDef="let command">{{command.description}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="externalLink">
+      <th mat-header-cell *matHeaderCellDef>External Link</th>
+      <td mat-cell *matCellDef="let command">
+        <a [href]="command.externalLink" target="_blank">
+          {{command.externalLink}}
+        </a>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let command">{{command.type}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"
+      (click)="onRowClick(row)">
+    </tr>
+  </table>
+</div>
+
+<ng-template #noCommands>
+  <span>There are no defined commands.</span>
+</ng-template>

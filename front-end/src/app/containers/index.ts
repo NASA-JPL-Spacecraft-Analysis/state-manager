@@ -1,4 +1,5 @@
 export * from './collections/collections.component';
+export * from './commands/commands.component';
 export * from './constraint-history/constraint-history.component';
 export * from './constraints/constraints.component';
 export * from './event-history/event-history.component';

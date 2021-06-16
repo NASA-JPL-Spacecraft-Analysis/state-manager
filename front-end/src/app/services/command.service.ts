@@ -1,0 +1,90 @@
+import { Injectable } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { Command, CommandHistory, CommandResponse } from './../models';
+
+import * as gql from './gql/commands';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CommandService {
+  constructor(
+    private apollo: Apollo
+  ) {}
+
+  public createCommand(command: Command): Observable<CommandResponse> {
+    return this.apollo
+      .mutate<{ createCommand: CommandResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_COMMAND,
+        variables: {
+          collectionId: command.collectionId,
+          description: command.description,
+          displayName: command.displayName,
+          editable: command.editable,
+          externalLink: command.externalLink,
+          identifier: command.identifier,
+          type: command.type
+        }
+      })
+      .pipe(map(({ data: { createCommand }}) => {
+        if (!createCommand.success) {
+          throw new Error(createCommand.message);
+        }
+
+        return createCommand;
+      }));
+  }
+  
+  public getCommandHistory(collectionId: string): Observable<CommandHistory[]> {
+    return this.apollo
+      .query<{ commandHistory: CommandHistory[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_COMMAND_HISTORY,
+        variables: {
+          collectionId
+        }
+      })
+      .pipe(map(({ data: { commandHistory } }) => commandHistory));
+  }
+
+  public getCommands(collectionId: string): Observable<Command[]> {
+    return this.apollo
+      .query<{ commands: Command[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_COMMANDS,
+        variables: {
+          collectionId
+        }
+      })
+      .pipe(map(({ data: { commands } }) => commands));
+  }
+
+  public updateCommand(command: Command): Observable<CommandResponse> {
+    return this.apollo
+      .mutate<{ updateCommand: CommandResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.UPDATE_COMMAND,
+        variables: {
+          collectionId: command.collectionId,
+          description: command.description,
+          displayName: command.displayName,
+          editable: command.editable,
+          externalLink: command.externalLink,
+          id: command.id,
+          identifier: command.identifier,
+          type: command.type
+        }
+      })
+      .pipe(map(({ data: { updateCommand }}) => {
+        if (!updateCommand.success) {
+          throw new Error(updateCommand.message);
+        }
+
+        return updateCommand;
+      }));
+  }
+}

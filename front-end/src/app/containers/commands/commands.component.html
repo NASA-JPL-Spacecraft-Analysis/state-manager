@@ -1,0 +1,36 @@
+<mat-toolbar class="toolbar">
+  COMMANDS 
+
+  <div>
+    <button mat-button routerLink="../command-history">
+      History 
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="onModifyCommand()">
+      Create New Command 
+    </button>
+
+    <button mat-raised-button class="gray-button" (click)="commandFileUpload.click()">
+      Upload Commands
+    </button>
+    <input #commandFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
+  </div>
+</mat-toolbar>
+
+<div class="content-container">
+  <div class="content">
+    <command-table
+      [commands]="commands"
+      (commandSelected)="onModifyCommand($event)">
+    </command-table>
+  </div>
+
+  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
+    <command-sidenav
+      [command]="command"
+      [commandIdentifierMap]="commandIdentifierMap"
+      (duplicateIdentifier)="onDuplicateIdentifier($event)"
+      (modifyCommand)="onSidenavOutput($event)">
+    </command-sidenav>
+  </div>
+</div>

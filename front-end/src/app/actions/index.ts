@@ -1,4 +1,5 @@
 import * as CollectionActions from './collection.actions';
+import * as CommandActions from './command.actions';
 import * as ConstraintActions from './constraint.actions';
 import * as EventActions from './event.actions';
 import * as FileUploadActions from './file-upload.actions';
@@ -11,6 +12,7 @@ import * as ToastActions from './toast.actions';
 
 export {
   CollectionActions,
+  CommandActions,
   ConstraintActions,
   EventActions,
   FileUploadActions,
