@@ -1,6 +1,7 @@
+import { state } from '@angular/animations';
 import { createReducer, on } from '@ngrx/store';
 
-import { CommandActions } from '../actions';
+import { CommandActions, FileUploadActions } from '../actions';
 import { CommandHistory, CommandMap, IdentifierMap } from '../models';
 
 export interface CommandState {
@@ -79,6 +80,27 @@ export const reducer = createReducer(
         [command.id]: {
           ...command
         }
+      }
+    };
+  }),
+  on(FileUploadActions.uploadCommandsSuccess, (state, { commands }) => {
+    const commandIdentifierMap = {};
+    const commandMap = {};
+
+    for (const command of commands) {
+      commandIdentifierMap[command.identifier] = command.id;
+      commandMap[command.id] = command;
+    }
+
+    return {
+      ...state,
+      commandIdentifierMap: {
+        ...state.commandIdentifierMap,
+        ...commandIdentifierMap
+      },
+      commandMap: {
+        ...state.commandMap,
+        ...commandMap
       }
     };
   })

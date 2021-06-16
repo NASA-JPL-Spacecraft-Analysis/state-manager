@@ -37,6 +37,33 @@ export const CREATE_COMMAND = gql(`
   }
 `);
 
+export const CREATE_COMMANDS = gql(`
+  mutation CreateCommands(
+    $collectionId: ID!
+    $commands: [CreateCommandInput!]!
+  ) {
+    createCommands(
+      data: {
+        collectionId: $collectionId
+        commands: $commands
+      }
+    ) {
+      commands {
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
+    }
+  }
+`);
+
 export const GET_COMMAND_HISTORY = gql(`
   query CommandHistory($collectionId: ID!) {
     commandHistory(collectionId: $collectionId) {

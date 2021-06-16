@@ -49,8 +49,10 @@ export class EventResolver {
   @Mutation(() => EventsResponse)
   public async createEvents(@Arg('data') data: CreateEventsInput): Promise<EventsResponse> {
     try {
+      const existingEvents = await this.events({ collectionId: data.collectionId });
+
       for (const event of data.events) {
-        this.validationService.isDuplicateIdentifier(await this.events({ collectionId: data.collectionId }), event.identifier);
+        this.validationService.isDuplicateIdentifier(existingEvents, event.identifier);
 
         event.collectionId = data.collectionId;
       }

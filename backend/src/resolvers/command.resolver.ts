@@ -4,10 +4,10 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CommandConstants } from '../constants';
-import { CreateCommandInput, UpdateCommandInput } from '../inputs';
+import { CreateCommandInput, CreateCommandsInput, UpdateCommandInput } from '../inputs';
 import { Command, CommandHistory, commandTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { CommandResponse } from '../responses';
+import { CommandResponse, CommandsResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver()
@@ -57,6 +57,38 @@ export class CommandResolver {
       return {
         command,
         message: 'Command Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => CommandsResponse)
+  public async createCommands(@Arg('data') data: CreateCommandsInput): Promise<CommandsResponse> {
+    try {
+      const existingCommands = await this.commands({ collectionId: data.collectionId });
+
+      for (const command of data.commands) {
+        this.validationService.isDuplicateIdentifier(existingCommands, command.identifier);
+      }
+
+      const commands = Command.create(data.commands);
+
+      this.validationService.hasValidType(commands, commandTypes);
+
+      for (const command of commands) {
+        await command.save();
+
+        this.createCommandHistory(command);
+      }
+
+      return {
+        commands,
+        message: 'Commands Created',
         success: true
       };
     } catch (error) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, informationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
+import { Command, Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, informationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,20 @@ export class ValidationService {
       event.hasOwnProperty('identifier')
       && event.hasOwnProperty('displayName')
     );
+  }
+
+  public isCommand(command: Command): command is Command {
+    if (!command.collectionId
+      && command.description
+      && command.displayName
+      && command.editable
+      && command.externalLink
+      && command.identifier
+      && command.type) {
+        return false;
+      }
+
+    return true;
   }
 
   public isGroupUpload(groupUpload: GroupUpload): groupUpload is GroupUpload {

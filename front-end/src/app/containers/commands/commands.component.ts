@@ -10,6 +10,7 @@ import { Command, IdentifierMap } from 'src/app/models';
 import { getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
 import { CommandActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { CommandSidenavModule, CommandTableModule } from 'src/app/components';
+import { UploadConstants } from 'src/app/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,12 +72,13 @@ export class CommandsComponent implements OnDestroy {
     }
   }
 
-  public onFileUpload(fileEvent: Event): void {
-    const file = (fileEvent.target as HTMLInputElement).files[0];
-
-    if (file) {
-      // TODO: Implement file upload for commands.
-    }
+  public onFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.selectedCollectionId,
+      csvFormat: [ UploadConstants.commandCsvUploadFormat ],
+      dialogType: 'Command',
+      jsonFormat: UploadConstants.commandJsonUploadFormat
+    }));
   }
 
   public onModifyCommand(command?: Command): void {

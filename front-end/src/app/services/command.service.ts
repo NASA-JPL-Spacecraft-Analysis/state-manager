@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Command, CommandHistory, CommandResponse } from './../models';
+import { Command, CommandHistory, CommandResponse, CommandsResponse } from './../models';
 
 import * as gql from './gql/commands';
 
@@ -36,6 +36,25 @@ export class CommandService {
         }
 
         return createCommand;
+      }));
+  }
+
+  public createCommands(collectionId: string, commands: Command[]): Observable<CommandsResponse> {
+    return this.apollo
+      .mutate<{ createCommands: CommandsResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_COMMANDS,
+        variables: {
+          collectionId,
+          commands
+        }
+      })
+      .pipe(map(({ data: { createCommands }}) => {
+        if (!createCommands.success) {
+          throw new Error(createCommands.message);
+        }
+
+        return createCommands;
       }));
   }
   

@@ -31,7 +31,7 @@ export const reducer = createReducer(
         ...constraint
       }
     },
-    selectedConstraintId: undefined
+    selectedConstraintId: constraint.id
   })),
   on(ConstraintActions.setConstraintHistory, (state, { constraintHistory }) => ({
     ...state,

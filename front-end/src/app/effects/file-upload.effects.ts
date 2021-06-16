@@ -5,12 +5,12 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { EventService, GroupService, InformationTypeService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
+import { CommandService, ConstraintService, EventService, GroupService, InformationTypeService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
-  InformationType,
   ParseTypes,
+  InformationType,
   StateEnumerationUpload,
   RelationshipUpload,
   State,
@@ -23,11 +23,76 @@ import {
   EnumerationsResponse,
   EventsResponse,
   CreateInformationTypesResponse,
-  RelationshipsResponse
+  RelationshipsResponse,
+  Command,
+  CommandsResponse
 } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
+  public uploadCommands = createEffect(() =>
+    this.actions.pipe(
+      ofType(FileUploadActions.uploadCommands),
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, parsedCommands ]) => ({
+        collectionId,
+        parsedCommands
+      })),
+      switchMap(({ collectionId, parsedCommands }) => {
+        const commands = parsedCommands as Command[];
+
+        if (Array.isArray(commands) && commands.length > 0) {
+          for (const command of commands) {
+            command.collectionId = collectionId;
+            // TODO: This will change at some point.
+            command.editable = true;
+
+            if (!this.validationService.isCommand(command)) {
+              return [
+                this.throwFileParseError(commands)
+              ];
+            }
+          }
+
+          return concat(
+            this.commandService.createCommands(
+              collectionId,
+              commands
+            ).pipe(
+              switchMap((createCommands: CommandsResponse) => [
+                FileUploadActions.uploadCommandsSuccess({
+                  commands: createCommands.commands
+                }),
+                ToastActions.showToast({
+                  message: createCommands.message,
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: Error) => [
+                FileUploadActions.uploadCommandsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
+        }
+
+        return [
+          this.throwFileParseError(commands)
+        ];
+      })
+    )
+  );
+
   public uploadInformationTypes = createEffect(() =>
     this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
@@ -193,17 +258,17 @@ export class FileUploadEffects {
                   message: createEvents.message,
                   toastType: 'success'
                 })
+              ]),
+              catchError((error: Error) => [
+                FileUploadActions.uploadEventsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
               ])
-            ),
-            catchError((error: Error) => [
-              FileUploadActions.uploadEventsFailure({
-                error
-              }),
-              ToastActions.showToast({
-                message: error.message,
-                toastType: 'error'
-              })
-            ])
+            )
           );
         }
 
@@ -423,6 +488,8 @@ export class FileUploadEffects {
 
   constructor(
     private actions: Actions,
+    private commandService: CommandService,
+    private constraintService: ConstraintService,
     private eventService: EventService,
     private groupService: GroupService,
     private informationTypeService: InformationTypeService,

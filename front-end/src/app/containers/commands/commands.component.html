@@ -10,10 +10,9 @@
       Create New Command 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="commandFileUpload.click()">
+    <button mat-raised-button class="gray-button" (click)="onFileUpload()">
       Upload Commands
     </button>
-    <input #commandFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
   </div>
 </mat-toolbar>
 
