@@ -14,6 +14,7 @@ import {
   EventHistoryComponent,
   ConstraintsComponent,
   ConstraintHistoryComponent,
+  CommandHistoryComponent,
   CommandsComponent
 } from './containers';
 
@@ -30,6 +31,10 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'states'
+      },
+      {
+        component: CommandHistoryComponent,
+        path: 'command-history'
       },
       {
         component: CommandsComponent,

@@ -1,4 +1,4 @@
-CREATE TABLE `command` (
+CREATE TABLE `command_history` (
   `id` varchar(36) NOT NULL,
   `commandId` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `command` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `command` (
+CREATE TABLE `commands` (
   `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `description` text,

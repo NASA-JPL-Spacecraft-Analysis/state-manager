@@ -25,6 +25,15 @@ export class CommandResolver {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
+  @Query(() => [ CommandHistory ])
+  public commandHistory(@Args() { collectionId }: CollectionIdArgs): Promise<CommandHistory[]> {
+    return CommandHistory.find({
+      where: {
+        collectionId
+      }
+    });
+  }
+
   @Query(() => [ Command ])
   public commands(@Args() { collectionId }: CollectionIdArgs): Promise<Command[]> {
     return Command.find({

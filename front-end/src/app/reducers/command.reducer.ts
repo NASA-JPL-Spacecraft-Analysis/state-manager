@@ -31,7 +31,7 @@ export const reducer = createReducer(
         ...command
       }
     },
-    selectedCommandId: undefined
+    selectedCommandId: command.id
   })),
   on(CommandActions.setCommandHistory, (state, { commandHistory }) => ({
     ...state,

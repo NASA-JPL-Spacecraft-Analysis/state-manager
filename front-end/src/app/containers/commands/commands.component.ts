@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
@@ -120,7 +121,8 @@ export class CommandsComponent implements OnDestroy {
     CommandSidenavModule,
     CommandTableModule,
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    RouterModule
   ]
 })
 export class CommandsModule {}
