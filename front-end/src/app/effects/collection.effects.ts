@@ -5,7 +5,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MatDialog } from '@angular/material/dialog';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
-import { CollectionActions, ToastActions } from '../actions';
+import { CollectionActions, LayoutActions, ToastActions } from '../actions';
 import { CollectionService } from '../services';
 import { CollectionResponse } from '../models';
 import { of, forkJoin, concat } from 'rxjs';
@@ -207,7 +207,11 @@ export class CollectionEffects {
           this.router.navigate([ 'collection/' + id ]);
         }
 
-        return [];
+        return [
+          LayoutActions.toggleSidenav({
+            showSidenav: false
+          })
+        ];
       })
     )
   );

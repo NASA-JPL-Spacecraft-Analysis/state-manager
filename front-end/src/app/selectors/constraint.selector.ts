@@ -14,6 +14,11 @@ export const getConstraintIdentifierMap = createSelector(
   (state: ConstraintState) => state.constraintIdentifierMap
 );
 
+export const getConstraintMap = createSelector(
+  getConstraintState,
+  (state: ConstraintState) => state.constraintMap
+);
+
 export const getConstraints = createSelector(
   getConstraintState,
   (state: ConstraintState) => 

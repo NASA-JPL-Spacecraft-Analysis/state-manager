@@ -14,6 +14,11 @@ export const getCommandIdentifierMap = createSelector(
   (state: CommandState) => state.commandIdentifierMap
 );
 
+export const getCommandMap = createSelector(
+  getCommandState,
+  (state: CommandState) => state.commandMap
+);
+
 export const getCommands = createSelector(
   getCommandState,
   (state: CommandState) => 

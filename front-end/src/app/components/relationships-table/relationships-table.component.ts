@@ -2,7 +2,7 @@ import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEm
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { RelationshipMap, Relationship, StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum } from 'src/app/models';
+import { RelationshipMap, Relationship, StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum, CommandMap, ConstraintMap } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -12,7 +12,8 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'relationships-table.component.html'
 })
 export class RelationshipsTableComponent implements OnInit, OnChanges {
-  // True if we're looking at the history page.
+  @Input() public commandMap: CommandMap;
+  @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public history: boolean;
   @Input() public informationTypeMap: InformationTypeMap;
@@ -69,8 +70,17 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
 
   public getType(id: string, type: string): string {
     switch (type) {
+      case IdentifierTypeEnum.command:
+        if (this.commandMap && this.commandMap[id]) {
+          return this.commandMap[id].identifier
+        }
+
+        break;
       case IdentifierTypeEnum.constraint:
-        // TODO: Add support for constraints here.
+        if (this.constraintMap && this.constraintMap[id]) {
+          return this.constraintMap[id].identifier;
+        }
+
         break;
       case IdentifierTypeEnum.event:
         if (this.eventMap && this.eventMap[id]) {

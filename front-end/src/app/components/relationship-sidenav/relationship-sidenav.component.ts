@@ -7,7 +7,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { Relationship } from '../../models/relationship';
 import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
 import { MaterialModule } from 'src/app/material';
-import { StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum } from 'src/app/models';
+import { StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum, CommandMap, ConstraintMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,6 +16,8 @@ import { StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum } from 'src/
   templateUrl: 'relationship-sidenav.component.html'
 })
 export class RelationshipSidenavComponent implements OnChanges {
+  @Input() public commandMap: CommandMap;
+  @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public informationTypeMap: InformationTypeMap;
   @Input() public relationship: Relationship;

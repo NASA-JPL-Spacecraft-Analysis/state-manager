@@ -20,6 +20,8 @@
 <div class="relationships-content-container">
   <div class="relationships-content">
     <app-relationships-table
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [eventMap]="eventMap"
       [informationTypeMap]="informationTypeMap"
       [relationshipMap]="relationshipMap"
@@ -30,6 +32,8 @@
 
   <div class="sidenav" *ngIf="showSidenav">
     <app-relationship-sidenav
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [eventMap]="eventMap"
       [informationTypeMap]="informationTypeMap"
       [relationship]="relationship"

@@ -8,7 +8,9 @@ import {
   StateMap,
   Relationship,
   InformationTypeMap,
-  EventMap
+  EventMap,
+  ConstraintMap,
+  CommandMap
 } from 'src/app/models';
 
 @Component({
@@ -18,6 +20,8 @@ import {
   templateUrl: 'relationship-type-picker.component.html'
 })
 export class RelationshipTypePickerComponent implements OnChanges {
+  @Input() public commandMap: CommandMap;
+  @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public informationTypeMap: InformationTypeMap;
   @Input() public isSubject: boolean;

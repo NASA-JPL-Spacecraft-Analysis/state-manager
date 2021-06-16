@@ -14,6 +14,7 @@ export interface IdentifierType extends Node {
 export type IdentifierMap = StringTMap<string>;
 
 export enum IdentifierTypeEnum {
+  'command' = 'command',
   'constraint' = 'constraint',
   'event' = 'event',
   'informationType' = 'informationType',

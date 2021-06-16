@@ -5,8 +5,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, EMPTY } from 'rxjs';
 
-import { EventService, InformationTypeService, StateService, RelationshipService } from '../services';
-import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions } from '../actions';
+import { EventService, InformationTypeService, StateService, RelationshipService, CommandService, ConstraintService } from '../services';
+import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions, CommandActions, ConstraintActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { RelationshipResponse } from '../models';
 
@@ -99,6 +99,8 @@ export class RelationshipEffects {
 
   constructor(
     private actions: Actions,
+    private commandService: CommandService,
+    private constraintService: ConstraintService,
     private eventService: EventService,
     private informationTypeService: InformationTypeService,
     private router: Router,
@@ -109,6 +111,34 @@ export class RelationshipEffects {
   private getRelationships(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
     const sharedActions = merge(
+      this.commandService.getCommands(
+        collectionId
+      ).pipe(
+        map(commands => CommandActions.setCommands({
+          commands
+        })),
+        catchError(
+          (error: Error) => [
+            CommandActions.fetchCommandsFailure({
+              error
+            })
+          ]
+        )
+      ),
+      this.constraintService.getConstraints(
+        collectionId
+      ).pipe(
+        map(constraints => ConstraintActions.setConstraints({
+          constraints
+        })),
+        catchError(
+          (error: Error) => [
+            ConstraintActions.fetchConstraintsFailure({
+              error
+            })
+          ]
+        )
+      ),
       this.eventService.getEvents(
         collectionId
       ).pipe(

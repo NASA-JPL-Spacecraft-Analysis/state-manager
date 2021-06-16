@@ -1,4 +1,26 @@
 <div class="form-input" *ngIf="type">
+  <div *ngIf="type === 'command'">
+    <mat-select
+      [(value)]="relationship[formProperty]"
+      (selectionChange)="onValueChange($event)">
+      <mat-option *ngFor="let value of commandMap | keyvalue"
+        [value]="commandMap[value.key].id">
+        {{commandMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
+  </div>
+
+  <div *ngIf="type === 'constraint'">
+    <mat-select
+      [(value)]="relationship[formProperty]"
+      (selectionChange)="onValueChange($event)">
+      <mat-option *ngFor="let value of constraintMap | keyvalue"
+        [value]="constraintMap[value.key].id">
+        {{constraintMap[value.key].identifier}}
+      </mat-option>
+    </mat-select>
+  </div>
+
   <div *ngIf="type === 'event'">
     <mat-select
       [(value)]="relationship[formProperty]"
