@@ -10,10 +10,9 @@
       Create New Constraint 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="constraintFileUpload.click()">
+    <button mat-raised-button class="gray-button" (click)="onFileUpload()">
       Upload Constraints
     </button>
-    <input #constraintFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
   </div>
 </mat-toolbar>
 

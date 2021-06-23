@@ -3,9 +3,9 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Constraint, ConstraintResponse } from './../models';
+import { Constraint, ConstraintResponse, ConstraintsResponse } from './../models';
 
-import * as gql from './gql';
+import * as gql from './gql/constraints';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +36,25 @@ export class ConstraintService {
         }
 
         return createConstraint;
+      }));
+  }
+
+  public createConstraints(collectionId: string, constraints: Constraint[]): Observable<ConstraintsResponse> {
+    return this.apollo
+      .mutate<{ createConstraints: ConstraintsResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_CONSTRAINTS,
+        variables: {
+          collectionId,
+          constraints 
+        }
+      })
+      .pipe(map(({ data: { createConstraints }}) => {
+        if (!createConstraints.success) {
+          throw new Error(createConstraints.message);
+        }
+
+        return createConstraints;
       }));
   }
   

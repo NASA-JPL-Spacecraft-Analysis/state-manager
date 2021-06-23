@@ -25,7 +25,9 @@ import {
   CreateInformationTypesResponse,
   RelationshipsResponse,
   Command,
-  CommandsResponse
+  CommandsResponse,
+  Constraint,
+  ConstraintsResponse
 } from '../models';
 
 @Injectable()
@@ -88,6 +90,69 @@ export class FileUploadEffects {
 
         return [
           this.throwFileParseError(commands)
+        ];
+      })
+    )
+  );
+
+  public uploadConstraints = createEffect(() =>
+    this.actions.pipe(
+      ofType(FileUploadActions.uploadConstraints),
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, parsedConstraints ]) => ({
+        collectionId,
+        parsedConstraints
+      })),
+      switchMap(({ collectionId, parsedConstraints }) => {
+        const constraints = parsedConstraints as Constraint[];
+
+        if (Array.isArray(constraints) && constraints.length > 0) {
+          for (const constraint of constraints) {
+            constraint.collectionId = collectionId;
+            // TODO: This will change at some point.
+            constraint.editable = true;
+
+            if (!this.validationService.isConstraint(constraint)) {
+              return [
+                this.throwFileParseError(constraints)
+              ];
+            }
+          }
+
+          return concat(
+            this.constraintService.createConstraints(
+              collectionId,
+              constraints 
+            ).pipe(
+              switchMap((createConstraints: ConstraintsResponse) => [
+                FileUploadActions.uploadConstraintsSuccess({
+                  constraints: createConstraints.constraints
+                }),
+                ToastActions.showToast({
+                  message: createConstraints.message,
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: Error) => [
+                FileUploadActions.uploadConstraintsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
+        }
+
+        return [
+          this.throwFileParseError(constraints)
         ];
       })
     )

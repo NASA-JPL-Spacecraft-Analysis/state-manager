@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { ConstraintActions } from '../actions';
+import { ConstraintActions, FileUploadActions } from '../actions';
 import { Constraint, ConstraintMap, IdentifierMap } from '../models';
 
 export interface ConstraintState {
@@ -79,6 +79,27 @@ export const reducer = createReducer(
         [constraint.id]: {
           ...constraint
         }
+      }
+    };
+  }),
+  on(FileUploadActions.uploadConstraintsSuccess, (state, { constraints }) => {
+    const constraintIdentifierMap = {};
+    const constraintMap = {};
+
+    for (const constraint of constraints) {
+      constraintIdentifierMap[constraint.identifier] = constraint.id;
+      constraintMap[constraint.id] = constraint;
+    }
+
+    return {
+      ...state,
+      constraintIdentifierMap: {
+        ...state.constraintIdentifierMap,
+        ...constraintIdentifierMap
+      },
+      constraintMap: {
+        ...state.constraintMap,
+        ...constraintMap
       }
     };
   })

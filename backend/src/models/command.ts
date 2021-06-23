@@ -11,13 +11,16 @@ export class Command extends IdentifierType {
   public arguments?: CommandArgument[];
 }
 
-// TODO: Do we need history for command arguments?
+/**
+ * TODO: Do we need history for command arguments?
+ * Is sort order required?
+ */
 @Entity('command_arguments')
 @ObjectType()
 export class CommandArgument extends Node {
   @Column()
   @Field(() => ID)
-  public commandId: string;
+  public commandId!: string;
 
   @Column()
   @Field()
@@ -25,7 +28,7 @@ export class CommandArgument extends Node {
 
   @Column()
   @Field()
-  public order!: number;
+  public sortOrder!: number;
 }
 
 @Entity('command_history')

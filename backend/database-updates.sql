@@ -1,3 +1,11 @@
+CREATE TABLE `command_arguments` (
+  `id` varchar(36) NOT NULL,
+  `commandId` varchar(36) NOT NULL,
+  `name` text NOT NULL,
+  `sortOrder` int,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `command_history` (
   `id` varchar(36) NOT NULL,
   `commandId` varchar(36) NOT NULL,

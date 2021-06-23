@@ -1,23 +1,32 @@
 import { UserInputError } from 'apollo-server';
-import { Arg, Args, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CommandConstants } from '../constants';
 import { CreateCommandInput, CreateCommandsInput, UpdateCommandInput } from '../inputs';
-import { Command, CommandHistory, commandTypes } from '../models';
+import { Command, CommandArgument, CommandHistory, commandTypes } from '../models';
 import { SharedRepository } from '../repositories';
 import { CommandResponse, CommandsResponse } from '../responses';
 import { ValidationService } from '../service';
 
-@Resolver()
-export class CommandResolver {
+@Resolver(() => Command)
+export class CommandResolver implements ResolverInterface<Command> {
   private sharedRepository: SharedRepository<Command>;
 
   constructor(
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<Command>(getConnection(), Command);
+  }
+
+  @FieldResolver(() => [ CommandArgument ])
+  public async arguments(@Root() command: Command): Promise<CommandArgument[]> {
+    return CommandArgument.find({
+      where: {
+        commandId: command.id
+      }
+    });
   }
 
   @Query(() => Command)

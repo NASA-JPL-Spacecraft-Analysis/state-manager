@@ -1,42 +1,5 @@
 import gql from 'graphql-tag';
 
-export const CREATE_CONSTRAINT = gql(`
-  mutation CreateConstraint(
-    $collectionId: ID!
-    $description: String
-    $displayName: String!
-    $editable: Boolean!
-    $externalLink: String
-    $identifier: String!
-    $type: String!
-  ) {
-    createConstraint(
-      data: {
-        collectionId: $collectionId
-        description: $description
-        displayName: $displayName
-        editable: $editable
-        externalLink: $externalLink
-        identifier: $identifier
-        type: $type
-      }
-    ) {
-      constraint {
-        collectionId
-        description
-        displayName
-        editable
-        externalLink
-        id
-        identifier
-        type
-      }
-      message
-      success
-    }
-  }
-`);
-
 export const CREATE_EVENT = gql(`
   mutation CreateEvent(
     $collectionId: ID!
@@ -199,38 +162,6 @@ export const DELETE_ENUMERATIONS = gql(`
   }
 `);
 
-export const GET_CONSTRAINT_HISTORY = gql(`
-  query constraintHistory($collectionId: ID!) {
-    constraintHistory(collectionId: $collectionId) {
-      constraintId
-      collectionId
-      description
-      displayName
-      editable
-      externalLink
-      id
-      identifier
-      type
-      updated
-    }
-  }
-`);
-
-export const GET_CONSTRAINTS = gql(`
-  query constraints($collectionId: ID!) {
-    constraints(collectionId: $collectionId) {
-      collectionId
-      description
-      displayName
-      editable
-      externalLink
-      id
-      identifier
-      type
-    }
-  }
-`);
-
 export const GET_EVENTS = gql(`
   query events($collectionId: ID!) {
     events(collectionId: $collectionId) {
@@ -322,43 +253,6 @@ export const SAVE_ENUMERATIONS = gql(`
         label
         value
         stateId
-      }
-      message
-      success
-    }
-  }
-`);
-
-export const UPDATE_CONSTRAINT = gql(`
-  mutation UpdateConstraint(
-    $description: String
-    $displayName: String
-    $editable: Boolean
-    $externalLink: String
-    $id: ID!
-    $identifier: String!
-    $type: String!
-  ) {
-    updateConstraint(
-      data: {
-        description: $description
-        displayName: $displayName
-        editable: $editable
-        externalLink: $externalLink
-        id: $id
-        identifier: $identifier
-        type: $type
-      }
-    ) {
-      constraint {
-        collectionId
-        description
-        displayName
-        editable
-        externalLink
-        id
-        identifier
-        type
       }
       message
       success

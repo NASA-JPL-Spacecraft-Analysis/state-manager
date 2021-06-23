@@ -19,6 +19,26 @@ export class UploadConstants {
     ]
   `;
 
+  public static constraintCsvUploadFormat: string = `
+    description,displayName,externalLink,identifier,type
+    Example description.,Example Constraint Upload,https://js.jpl.nasa.gov/,EXAMPLE_CONSTRAINT_UPLOAD,flight_rule_check,
+  `;
+
+  public static constraintJsonUploadFormat: string = `
+    [
+      {
+        "description": "Example description.",
+        "displayName": "Example Constraint Upload",
+        "externalLink": "https://js.jpl.nasa.gov/",
+        "identifier": "EXAMPLE_CONSTRAINT_UPLOAD",
+        "type": "flight_rule_check"
+      },
+      {
+        ...
+      }
+    ]
+  `;
+
   public static groupCsvUploadFormat: string = `
     name
     Test_Upload_Group

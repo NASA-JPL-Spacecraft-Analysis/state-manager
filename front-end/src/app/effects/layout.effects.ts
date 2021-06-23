@@ -51,6 +51,14 @@ export class LayoutEffects {
                 })
               ];
             }
+            case 'Constraint': {
+              return [
+                FileUploadActions.uploadConstraints({
+                  collectionId,
+                  file: result
+                })
+              ];
+            }
             case 'Event': {
               return [
                 FileUploadActions.uploadEvents({

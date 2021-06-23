@@ -10,6 +10,7 @@ import { MaterialModule } from 'src/app/material';
 import { Constraint, IdentifierMap } from 'src/app/models';
 import { getConstraintIdentifierMap, getConstraints, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
+import { UploadConstants } from 'src/app/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,12 +72,13 @@ export class ConstraintsComponent implements OnDestroy {
     }
   }
 
-  public onFileUpload(fileEvent: Event): void {
-    const file = (fileEvent.target as HTMLInputElement).files[0];
-
-    if (file) {
-      // TODO: Implement file upload for constraints.
-    }
+  public onFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.selectedCollectionId,
+      csvFormat: [ UploadConstants.constraintCsvUploadFormat ],
+      dialogType: 'Constraint',
+      jsonFormat: UploadConstants.constraintJsonUploadFormat
+    }));
   }
 
   public onModifyConstraint(constraint?: Constraint): void {
