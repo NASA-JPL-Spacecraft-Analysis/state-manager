@@ -27,8 +27,8 @@ export class CommandArgument extends Node {
   public name!: string;
 
   @Column()
-  @Field()
-  public sortOrder!: number;
+  @Field({ nullable: true })
+  public sortOrder?: number;
 }
 
 @Entity('command_history')

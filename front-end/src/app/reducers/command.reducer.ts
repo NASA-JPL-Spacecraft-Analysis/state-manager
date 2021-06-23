@@ -47,6 +47,8 @@ export const reducer = createReducer(
       commandMap[command.id] = command;
     }
 
+    console.log(commandMap);
+
     return {
       ...state,
       commandIdentifierMap,

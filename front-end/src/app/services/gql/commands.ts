@@ -67,6 +67,10 @@ export const CREATE_COMMANDS = gql(`
 export const GET_COMMAND_HISTORY = gql(`
   query CommandHistory($collectionId: ID!) {
     commandHistory(collectionId: $collectionId) {
+      arguments {
+        name
+        sortOrder
+      }
       commandId
       collectionId
       description
@@ -84,6 +88,10 @@ export const GET_COMMAND_HISTORY = gql(`
 export const GET_COMMANDS = gql(`
   query Commands($collectionId: ID!) {
     commands(collectionId: $collectionId) {
+      arguments {
+        name
+        sortOrder
+      }
       collectionId
       description
       displayName
