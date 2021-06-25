@@ -9,7 +9,7 @@ import { FileUploadEffects } from './file-upload.effects';
 import {
   CollectionService,
   EventService,
-  InformationTypesService,
+  InformationTypeService,
   MockCollectionService,
   MockEventService,
   MockInformationTypesService,
@@ -38,7 +38,7 @@ describe('FileUploadEffects', () => {
   let testScheduler: TestScheduler;
   let collectionService: CollectionService;
   let eventService: EventService;
-  let informationTypesService: InformationTypesService;
+  let informationTypeService: InformationTypeService;
   let parseService: ParseService;
   let relationshipService: RelationshipService;
   let stateService: StateService;
@@ -59,7 +59,7 @@ describe('FileUploadEffects', () => {
           useValue: new MockEventService()
         },
         {
-          provide: InformationTypesService,
+          provide: InformationTypeService,
           useValue: new MockInformationTypesService()
         },
         {
@@ -83,7 +83,7 @@ describe('FileUploadEffects', () => {
 
     collectionService = TestBed.inject(CollectionService);
     eventService = TestBed.inject(EventService);
-    informationTypesService = TestBed.inject(InformationTypesService);
+    informationTypeService = TestBed.inject(InformationTypeService);
     parseService = TestBed.inject(ParseService);
     relationshipService = TestBed.inject(RelationshipService);
     stateService = TestBed.inject(StateService);

@@ -10,7 +10,7 @@ export interface CommandArgument {
 
 export interface CommandHistory extends Command {
   commandId: string;
-  update: Date;
+  updated: Date;
 }
 
 export type CommandMap = StringTMap<Command>;

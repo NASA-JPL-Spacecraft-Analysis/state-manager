@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import { createReducer, on } from '@ngrx/store';
 
 import { CommandActions, FileUploadActions } from '../actions';
@@ -46,8 +45,6 @@ export const reducer = createReducer(
       commandIdentifierMap[command.identifier] = command.id;
       commandMap[command.id] = command;
     }
-
-    console.log(commandMap);
 
     return {
       ...state,

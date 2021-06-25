@@ -2,6 +2,7 @@ export * from './collection';
 export * from './event';
 export * from './group.mock';
 export * from './information-types';
+export * from './mock-command';
 export * from './mock-file';
 export * from './relationships';
 export * from './state';
