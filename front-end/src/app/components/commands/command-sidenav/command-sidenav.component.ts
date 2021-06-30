@@ -42,6 +42,7 @@ export class CommandSidenavComponent implements OnChanges {
   public ngOnChanges(): void {
     if (!this.command) {
       this.newCommand = {
+        arguments: undefined,
         collectionId: undefined,
         description: '',
         displayName: '',

@@ -10,6 +10,17 @@
     </mat-select>
   </div>
 
+  <div *ngIf="type === 'commandArgument'">
+    <mat-select
+      [(value)]="relationship[formProperty]"
+      (selectionChange)="onValueChange($event)">
+      <mat-option *ngFor="let value of commandArgumentMap | keyvalue"
+        [value]="commandArgumentMap[value.key].id">
+        {{commandArgumentMap[value.key].name}}
+      </mat-option>
+    </mat-select>
+  </div>
+
   <div *ngIf="type === 'constraint'">
     <mat-select
       [(value)]="relationship[formProperty]"

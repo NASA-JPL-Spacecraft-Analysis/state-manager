@@ -4,6 +4,11 @@ import { CommandState } from '../reducers/command.reducer';
 
 export const getCommandState = createFeatureSelector<CommandState>('commands');
 
+export const getCommandArgumentMap = createSelector(
+  getCommandState,
+  (state: CommandState) => state.commandArgumentMap
+);
+
 export const getCommandHistory = createSelector(
   getCommandState,
   (state: CommandState) => state.commandHistory

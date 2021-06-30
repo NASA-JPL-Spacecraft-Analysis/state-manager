@@ -10,7 +10,8 @@ import {
   InformationTypeMap,
   EventMap,
   ConstraintMap,
-  CommandMap
+  CommandMap,
+  CommandArgumentMap
 } from 'src/app/models';
 
 @Component({
@@ -21,6 +22,7 @@ import {
 })
 export class RelationshipTypePickerComponent implements OnChanges {
   @Input() public commandMap: CommandMap;
+  @Input() public commandArgumentMap: CommandArgumentMap;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public informationTypeMap: InformationTypeMap;

@@ -15,13 +15,14 @@ import {
   getSelectedCollectionId,
   getInformationTypeMap,
   getCommandMap,
-  getConstraintMap
+  getConstraintMap,
+  getCommandArgumentMap
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { LayoutActions, ToastActions, FileUploadActions, RelationshipActions } from 'src/app/actions';
 import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
-import { StateMap, InformationTypeMap, EventMap, ConstraintMap, CommandMap } from 'src/app/models';
+import { StateMap, InformationTypeMap, EventMap, ConstraintMap, CommandMap, CommandArgumentMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -32,6 +33,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
 })
 export class RelationshipsComponent implements OnDestroy {
   public commandMap: CommandMap;
+  public commandArgumentMap: CommandArgumentMap;
   public constraintMap: ConstraintMap;
   public eventMap: EventMap;
   public informationTypeMap: InformationTypeMap;
@@ -54,6 +56,10 @@ export class RelationshipsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getCommandMap)).subscribe(commandMap => {
         this.commandMap = commandMap;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getCommandArgumentMap)).subscribe(commandArgumentMap => {
+        this.commandArgumentMap = commandArgumentMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {

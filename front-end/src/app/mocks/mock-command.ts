@@ -1,6 +1,7 @@
 import { Command, CommandHistory, CommandMap, IdentifierMap } from '../models';
 
 export const mockCommand: Command = {
+  arguments: [],
   collectionId: '1',
   description: 'Mock command description',
   displayName: 'Mock Command',
@@ -27,10 +28,4 @@ export const mockCommands: Command[] = [
 
 export const mockCommandIdentifierMap: IdentifierMap = {
   [mockCommand.identifier]: mockCommand.id
-};
-
-export const mockCommandMap: CommandMap = {
-  [mockCommand.id]: {
-    ...mockCommand
-  }
 };

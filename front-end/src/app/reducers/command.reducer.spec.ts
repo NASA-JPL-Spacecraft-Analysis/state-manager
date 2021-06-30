@@ -1,5 +1,5 @@
 import { CommandActions, FileUploadActions } from '../actions';
-import { mockCommand, mockCommandHistory, mockCommandIdentifierMap, mockCommandMap, mockCommands } from '../mocks';
+import { mockCommand, mockCommandHistory, mockCommandIdentifierMap, mockCommands } from '../mocks';
 import { CommandState, reducer, initialState } from './command.reducer';
 
 describe('CommandReducer', () => {

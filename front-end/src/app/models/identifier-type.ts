@@ -15,6 +15,7 @@ export type IdentifierMap = StringTMap<string>;
 
 export enum IdentifierTypeEnum {
   'command' = 'command',
+  'commandArgument' = 'commandArgument',
   'constraint' = 'constraint',
   'event' = 'event',
   'informationType' = 'informationType',

@@ -1,9 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { CommandActions, FileUploadActions } from '../actions';
-import { CommandHistory, CommandMap, IdentifierMap } from '../models';
+import { CommandArgumentMap, CommandHistory, CommandMap, IdentifierMap } from '../models';
 
 export interface CommandState {
+  commandArgumentMap: CommandArgumentMap;
   commandHistory: CommandHistory[];
   commandIdentifierMap: IdentifierMap,
   commandMap: CommandMap,
@@ -11,6 +12,7 @@ export interface CommandState {
 }
 
 export const initialState: CommandState = {
+  commandArgumentMap: undefined,
   commandHistory: undefined,
   commandIdentifierMap: undefined,
   commandMap: undefined,
@@ -38,10 +40,15 @@ export const reducer = createReducer(
     commandHistory
   })),
   on(CommandActions.setCommands, (state, { commands }) => {
+    const commandArgumentMap = {};
     const commandIdentifierMap = {};
     const commandMap = {};
 
     for (const command of commands) {
+      for (const commandArgument of command.arguments) {
+        commandArgumentMap[commandArgument.id] = commandArgument;
+      }
+
       commandIdentifierMap[command.identifier] = command.id;
       commandMap[command.id] = command;
     }
