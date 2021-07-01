@@ -21,7 +21,4 @@ export class CreateCommandInput implements Partial<Command> {
 
   @Field()
   public identifier!: string;
-
-  @Field()
-  public type!: string;
 }

@@ -57,6 +57,9 @@ export class CommandResolver implements ResolverInterface<Command> {
     try {
       const command = Command.create(data);
 
+      // TODO: For now hardcore this value, there aren't any other options for commands.
+      command.type = 'command';
+
       this.validationService.hasValidType([ command ], commandTypes);
 
       await command.save();
@@ -116,6 +119,9 @@ export class CommandResolver implements ResolverInterface<Command> {
       if (!command) {
         throw new UserInputError(CommandConstants.commandNotFoundError(data.id));
       }
+
+      // TODO: For now hardcore this value, there aren't any other options for commands.
+      command.type = 'command';
 
       this.validationService.isDuplicateIdentifier(
         await this.commands({ collectionId: command.collectionId}), data.identifier, command.id);
