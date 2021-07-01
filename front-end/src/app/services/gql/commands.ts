@@ -8,7 +8,6 @@ export const CREATE_COMMAND = gql(`
     $editable: Boolean!
     $externalLink: String
     $identifier: String!
-    $type: String!
   ) {
     createCommand(
       data: {
@@ -18,10 +17,15 @@ export const CREATE_COMMAND = gql(`
         editable: $editable
         externalLink: $externalLink
         identifier: $identifier
-        type: $type
       }
     ) {
       command {
+        arguments {
+          commandId
+          name
+          id
+          sortOrder
+        }
         collectionId
         description
         displayName
@@ -49,6 +53,12 @@ export const CREATE_COMMANDS = gql(`
       }
     ) {
       commands {
+        arguments {
+          commandId
+          name
+          id
+          sortOrder
+        }
         collectionId
         description
         displayName
@@ -64,11 +74,28 @@ export const CREATE_COMMANDS = gql(`
   }
 `);
 
+export const DELETE_ARGUMENTS = gql(`
+  mutation DeleteArguments(
+    $deletedArgumentIds: [ID!]!
+  ) {
+    deleteArguments(
+      data: {
+        deletedArgumentIds: $deletedArgumentIds
+      }
+    ) {
+      message
+      success
+    }
+  }
+`);
+
 export const GET_COMMAND_HISTORY = gql(`
   query CommandHistory($collectionId: ID!) {
     commandHistory(collectionId: $collectionId) {
       arguments {
+        commandId
         name
+        id
         sortOrder
       }
       commandId
@@ -89,7 +116,9 @@ export const GET_COMMANDS = gql(`
   query Commands($collectionId: ID!) {
     commands(collectionId: $collectionId) {
       arguments {
+        commandId
         name
+        id
         sortOrder
       }
       collectionId
@@ -113,7 +142,6 @@ export const UPDATE_COMMAND = gql(`
     $externalLink: String
     $id: ID!
     $identifier: String!
-    $type: String!
   ) {
     updateCommand(
       data: {
@@ -123,10 +151,15 @@ export const UPDATE_COMMAND = gql(`
         externalLink: $externalLink
         id: $id
         identifier: $identifier
-        type: $type
       }
     ) {
       command {
+        arguments {
+          commandId
+          name
+          id
+          sortOrder
+        }
         collectionId
         description
         displayName

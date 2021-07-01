@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnDestroy, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { MaterialModule } from 'src/app/material';
-import { Command, commandTypes, IdentifierMap } from 'src/app/models';
+import { Command, IdentifierMap } from 'src/app/models';
+import { CommandArgumentFormModule } from '../../command-argument-form/command-argument-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
+import { CommandActions, LayoutActions } from 'src/app/actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,13 +17,14 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
   templateUrl: 'command-sidenav.component.html'
 })
 export class CommandSidenavComponent implements OnChanges {
+  @Input() public collectionId: string;
   @Input() public command: Command;
   @Input() public commandIdentifierMap: IdentifierMap;
 
-  @Output() public duplicateIdentifier: EventEmitter<boolean>;
-  @Output() public modifyCommand: EventEmitter<Command>;
+  @Output() public errorEmitter: EventEmitter<string>;
+  @Output() public modifyCommand: EventEmitter<{ command: Command, deletedArgumentIds: string[] }>;
 
-  public commandTypes = commandTypes;
+  public deletedArgumentIds: string[];
   public form: FormGroup;
   public newCommand: Command;
   public originalIdentifier: string;
@@ -35,31 +38,34 @@ export class CommandSidenavComponent implements OnChanges {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.duplicateIdentifier = new EventEmitter<boolean>();
-    this.modifyCommand = new EventEmitter<Command>();
+    this.errorEmitter = new EventEmitter<string>();
+    this.modifyCommand = new EventEmitter<{ command: Command, deletedArgumentIds: string[] }>();
   }
 
   public ngOnChanges(): void {
     if (!this.command) {
       this.newCommand = {
         arguments: undefined,
-        collectionId: undefined,
+        collectionId: this.collectionId,
         description: '',
         displayName: '',
         editable: true,
         externalLink: '',
         id: undefined,
         identifier: '',
-        type: ''
+        type: 'command'
       };
     } else {
-      this.newCommand= {
-        ...this.command
+      this.newCommand = {
+        ...this.command,
+        arguments: [
+          ...this.command.arguments.map(argument => { return { ...argument }})
+        ]
       };
     }
 
     this.originalIdentifier = this.newCommand.identifier;
-    this.selectedType = this.newCommand.type;
+    this.deletedArgumentIds = [];
 
     this.form = new FormGroup({
       collectionId: new FormControl(this.newCommand.collectionId),
@@ -87,13 +93,29 @@ export class CommandSidenavComponent implements OnChanges {
   }
 
   public onSubmit(): void {
-    if (!this.isDuplicateIdentifier) {
-      this.form.value.type = this.selectedType;
-
-      this.modifyCommand.emit(this.form.value);
+    if (this.processArguments()) {
+      if (!this.isDuplicateIdentifier) {
+        this.modifyCommand.emit({
+          command: this.form.value,
+          deletedArgumentIds: this.deletedArgumentIds
+        });
+      } else {
+        this.errorEmitter.emit('Please provide a unique identifier');
+      }
     } else {
-      this.duplicateIdentifier.emit(true);
+      this.errorEmitter.emit('Please provide a name for each argument');
     }
+  }
+
+  // Make sure that each argument has a required name.
+  private processArguments(): boolean {
+    for (const argument of this.newCommand.arguments) {
+      if (!argument.name) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 
@@ -105,6 +127,7 @@ export class CommandSidenavComponent implements OnChanges {
     CommandSidenavComponent 
   ],
   imports: [
+    CommandArgumentFormModule,
     CommonModule,
     FormsModule,
     IdentifierFormModule,

@@ -1,6 +1,6 @@
 export * from './collections/collections.component';
 export * from './command-history/command-history.component';
-export * from './commands/commands.component';
+export * from './commands';
 export * from './constraint-history/constraint-history.component';
 export * from './constraints/constraints.component';
 export * from './event-history/event-history.component';

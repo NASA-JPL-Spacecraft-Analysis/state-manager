@@ -1,4 +1,4 @@
-import { Component, NgModule, Input, OnChanges } from '@angular/core';
+import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { StateEnumeration } from '../../models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-enum-form',
   styleUrls: [ 'enum-form.component.css' ],
   templateUrl: 'enum-form.component.html'

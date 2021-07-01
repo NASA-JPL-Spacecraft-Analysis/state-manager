@@ -7,6 +7,7 @@ export interface Command extends IdentifierType {
 }
 
 export interface CommandArgument extends Node {
+  commandId: string;
   name: string;
   sortOrder: number;
 }
@@ -19,7 +20,3 @@ export interface CommandHistory extends Command {
 }
 
 export type CommandMap = StringTMap<Command>;
-
-export const commandTypes: string[] = [
-  'command'
-];

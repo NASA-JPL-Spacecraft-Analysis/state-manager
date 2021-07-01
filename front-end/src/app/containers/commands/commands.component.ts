@@ -9,8 +9,9 @@ import { MaterialModule } from 'src/app/material';
 import { Command, IdentifierMap } from 'src/app/models';
 import { getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
 import { CommandActions, LayoutActions, ToastActions } from 'src/app/actions';
-import { CommandSidenavModule, CommandTableModule } from 'src/app/components';
+import { CommandTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
+import { CommandSidenavModule } from '../../components/commands/command-sidenav/command-sidenav.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,21 +92,32 @@ export class CommandsComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(command: Command): void {
-    if (!command) {
+  public onSidenavError(error: string): void {
+    this.store.dispatch(ToastActions.showToast({
+      message: error,
+      toastType: 'error'
+    }));
+  }
+
+  public onSidenavOutput(result: { command: Command, deletedArgumentIds: string[] }): void {
+    if (!result.command) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
     } else {
-      if (!command.id) {
-        command.collectionId = this.selectedCollectionId;
-
+      if (!result.command.id) {
         this.store.dispatch(CommandActions.createCommand({
-          command
+          command: result.command
         }));
       } else {
         this.store.dispatch(CommandActions.updateCommand({
-          command
+          command: result.command
+        }));
+      }
+
+      if (result.deletedArgumentIds.length > 0) {
+        this.store.dispatch(CommandActions.deleteArguments({
+          deletedArgumentIds: result.deletedArgumentIds
         }));
       }
     }

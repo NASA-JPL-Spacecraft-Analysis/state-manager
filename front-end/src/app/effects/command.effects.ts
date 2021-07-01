@@ -9,7 +9,7 @@ import { CollectionActions, CommandActions, LayoutActions, ToastActions } from '
 import { CommandService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
-import { CommandResponse } from '../models';
+import { CommandResponse, DeleteArgumentResponse } from '../models';
 
 @Injectable()
 export class CommandEffects {
@@ -31,6 +31,32 @@ export class CommandEffects {
           ]),
           catchError((error: Error) => [
             CommandActions.createCommandFailure({
+              error
+            }),
+            ToastActions.showToast({
+              message: error.message,
+              toastType: 'error'
+            })
+          ])
+        )
+      )
+    )
+  );
+
+  public deleteArguments = createEffect(() =>
+    this.actions.pipe(
+      ofType(CommandActions.deleteArguments),
+      switchMap(({ deletedArgumentIds }) =>
+        this.commandService.deleteArguments(
+          deletedArgumentIds
+        ).pipe(
+          switchMap((deleteArguments: DeleteArgumentResponse) => [
+            CommandActions.deleteArgumentsSuccess({
+              deletedArgumentIds: deleteArguments.deletedArgumentIds
+            })
+          ]),
+          catchError((error: Error) => [
+            CommandActions.deleteArgumentsFailure({
               error
             }),
             ToastActions.showToast({

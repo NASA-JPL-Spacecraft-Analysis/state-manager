@@ -8,7 +8,7 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div *ngIf="commandIdentifierMap !== null">
+    <div *ngIf="commandIdentifierMap">
       <app-identifier-form
         [originalIdentifier]="originalIdentifier"
         [identifierMap]="commandIdentifierMap"
@@ -47,13 +47,10 @@
         />
       </mat-form-field>
 
-      <mat-form-field>
-        <mat-select placeholder="Command Type" [(value)]="selectedType">
-          <mat-option *ngFor="let commandType of commandTypes" [value]="commandType">
-            {{commandType}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <app-command-argument-form
+        [arguments]="newCommand.arguments"
+        [deletedArgumentIds]="deletedArgumentIds">
+      </app-command-argument-form>
     </div>
 
     <div class="sidenav-actions">

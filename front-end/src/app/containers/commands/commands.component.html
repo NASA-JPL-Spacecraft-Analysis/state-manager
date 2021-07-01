@@ -26,9 +26,10 @@
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
     <command-sidenav
+      [collectionId]="selectedCollectionId"
       [command]="command"
       [commandIdentifierMap]="commandIdentifierMap"
-      (duplicateIdentifier)="onDuplicateIdentifier($event)"
+      (errorEmitter)="onSidenavError($event)"
       (modifyCommand)="onSidenavOutput($event)">
     </command-sidenav>
   </div>

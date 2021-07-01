@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Command, CommandHistory, CommandResponse, CommandsResponse } from './../models';
+import { Command, CommandHistory, CommandResponse, CommandsResponse, DeleteArgumentResponse } from './../models';
 
 import * as gql from './gql/commands';
 
@@ -58,6 +58,23 @@ export class CommandService {
       }));
   }
   
+  public deleteArguments(deletedArgumentIds: string[]): Observable<DeleteArgumentResponse> {
+    return this.apollo
+      .mutate<{ deleteArguments: DeleteArgumentResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.DELETE_ARGUMENTS,
+        variables: {
+          deletedArgumentIds
+        }
+      })
+      .pipe(map(({ data: { deleteArguments }}) => {
+        if (!deleteArguments.success) {
+          throw new Error(deleteArguments.message);
+        }
+
+        return deleteArguments;
+      }));
+  }
   public getCommandHistory(collectionId: string): Observable<CommandHistory[]> {
     return this.apollo
       .query<{ commandHistory: CommandHistory[] }>({
