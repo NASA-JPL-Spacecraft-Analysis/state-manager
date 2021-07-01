@@ -1,8 +1,21 @@
 @import '~@angular/material/theming';
 @include mat-core();
 
-// Colors
+/**************
+Table of Contents
+1. Colors
+2. Themes
+3. Typography Mixins
+4. Inputs
+5. Buttons
+6. Toolbar
+7. Sidenav
+**************/
 
+
+/**************
+1. Colors
+**************/
 
 $light-accent-text: #D9E2F4;
 $body: #283346;
@@ -91,47 +104,30 @@ $mat-grey: (
   )
 );
 
+/**************
+2. Themes
+**************/
+
 $primary: mat-palette($mat-primary, 700);
 $accent: mat-palette($mat-accent, 700);
 $theme: mat-light-theme($primary, $accent);
 
-
 @include angular-material-theme($theme);
-
-//$dark-grey-theme: mat-dark-theme((
-//  color: (
-//    primary: mat-palette($mat-grey, 800),
-//    accent: mat-palette($mat-grey, 50),
-//  )
-//));
-//
-//.unicorn-dark-theme {
-//  @include angular-material-theme($dark-grey-theme);
-//}
 
 
 $primary: mat-palette($mat-grey, 100);
 $accent: mat-palette($mat-accent, 700);
-$unicorn-theme: mat-light-theme($primary, $accent);
+$toolbar-theme: mat-light-theme($primary, $accent);
 
-@include mat-toolbar-color($unicorn-theme);
+@include mat-toolbar-color($toolbar-theme);
 
 .mat-toolbar .mat-button.mat-primary{
   color: inherit;
 }
 
-//
-//$primary: mat-palette($mat-grey, 100);
-//$accent: mat-palette($mat-grey, 100);
-//$unicorn-light-theme: mat-light-theme($primary, $accent);
-//
-//
-//.unicorn-light-theme {
-//  @include mat-toolbar-color($unicorn-light-theme);
-//}
-
-
-// Mixins
+/**************
+3. Typography Mixins
+**************/
 
 @mixin body-2 {
   font-size: 14px;
@@ -153,9 +149,9 @@ $unicorn-theme: mat-light-theme($primary, $accent);
   letter-spacing: .15px;
 }
 
-// Typography
-
-// Component Overwrites
+/**************
+3. Table
+**************/
 
 table {
   td {
@@ -175,6 +171,10 @@ table {
   }
 }
 
+/**************
+4. Inputs
+**************/
+
 .filter-container > div {
   padding: 1em;
   border-bottom: 1px solid mat-color($mat-grey, 400);
@@ -182,17 +182,25 @@ table {
   background: #eff1f5;
 }
 
-.mat-button, .mat-raised-button {
-  @include button();
+.mat-form-field-appearance-fill .mat-form-field-flex{
+  background-color: white;
 }
 
 .mat-form-field-underline {
   display: none;
 }
 
-.mat-form-field-appearance-fill .mat-form-field-flex{
-  background-color: white;
+/**************
+5. Buttons
+**************/
+
+.mat-button, .mat-raised-button {
+  @include button();
 }
+
+/**************
+6. Toolbar
+**************/
 
 .mat-toolbar {
   display: flex;
@@ -218,6 +226,10 @@ table {
 .secondary-toolbar{
   border-bottom: 1px solid mat-color($mat-grey, 400);
 }
+
+/**************
+7. Sidenav
+**************/
 
 .sidenav-container {
   padding: 1em;

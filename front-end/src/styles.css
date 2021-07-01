@@ -1,20 +1,42 @@
+/**************
+Table of Contents
+1. Layout
+2. Typography
+3. Forms
+4. Tables
+5. Sidenav
+6. Toolbar
+**************/
+
+/**************
+1. Layout
+**************/
+
 html, body {
   height: 100%;
 }
 
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+.hidden {
+  display: none !important;
 }
 
-table {
-  width: 100%;
+/**************
+2. Typography
+**************/
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
 }
+
+/**************
+3. Forms
+**************/
 
 /* Angular Material Global Overwrites */
 .mat-form-field {
-  width: 100%;
   display: flex;
+  width: 100%;
 }
 
 /* Global Styles */
@@ -32,50 +54,61 @@ table {
   margin-bottom: .5em;
 }
 
-.sidenav {
-  width: 25%;
+/**************
+4. Tables
+**************/
+
+table {
+  width: 100%;
 }
 
 .table-row {
   cursor: pointer;
 }
 
-/* Sidenav Specific Styles */
+.history .table-row {
+  cursor: default;
+}
+
+td.mat-cell:first-of-type{
+  font-weight: bold;
+}
+
+/**************
+5. Sidenav
+**************/
+
+.sidenav {
+  width: 25%;
+}
+
 .sidenav-cancel-button {
   top: -8px;
 }
 
 .sidenav-header {
-  font-size: 1.5em;
-  padding-bottom: 1em;
   display: flex;
+  font-size: 1.5em;
   justify-content: space-between;
+  padding-bottom: 1em;
 }
 
 .sidenav-actions {
   margin-top: 1em;
 }
 
-.history .table-row {
-  cursor: default;
-}
+/**************
+5. Toolbar
+**************/
 
 .file-upload-input {
   display: none;
 }
 
-.hidden {
-  display: none !important;
-}
-
 /*Make collection container inline with navbar content*/
 .collection-container .mat-form-field-wrapper{
-  padding-bottom: 0;
   line-height: 36px;
-}
-
-td.mat-cell:first-of-type{
-  font-weight: bold;
+  padding-bottom: 0;
 }
 
 .mat-toolbar .mat-form-field-infix{
