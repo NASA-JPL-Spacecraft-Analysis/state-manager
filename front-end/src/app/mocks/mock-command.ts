@@ -1,4 +1,4 @@
-import { Command, CommandHistory, CommandMap, IdentifierMap } from '../models';
+import { Command, CommandHistory, IdentifierMap } from '../models';
 
 export const mockCommand: Command = {
   arguments: [],
