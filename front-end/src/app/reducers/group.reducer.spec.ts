@@ -1,5 +1,5 @@
-import { GroupActions } from '../actions';
-import { mockEvent1, mockGroup1, mockGroup2, mockGroups } from '../mocks';
+import { FileUploadActions, GroupActions } from '../actions';
+import { mockEvent1, mockGroup1, mockGroup2, mockGroupMapping1, mockGroupMappings, mockGroups } from '../mocks';
 import { Group } from './../models';
 import { GroupState, initialState, reducer } from './group.reducer';
 
@@ -20,6 +20,29 @@ describe('GroupReducer', () => {
         ],
         selectedGroup: mockGroup1
       });
+    });
+  });
+
+  describe('deleteGroupSuccess', () => {
+    it('should remove mockGroup1 from our group list and set undefined as the selected group when mockGroup1 is deleted', () => {
+      const groupState: GroupState = reducer(
+        {
+          ...initialState,
+          groups: mockGroups,
+          selectedGroup: mockGroup1
+        },
+        GroupActions.deleteGroupSuccess({
+          id: mockGroup1.id
+        })
+      );
+
+      expect(groupState).toEqual({
+        ...initialState,
+        groups: [
+          mockGroup2
+        ],
+        selectedGroup: undefined
+      })
     });
   });
 
@@ -117,6 +140,56 @@ describe('GroupReducer', () => {
         ],
         selectedGroup: updatedGroup
       });
+    });
+  });
+
+  describe('uploadGroupMappingsSuccess', () => {
+    it('should', () => {
+      const groupState: GroupState = reducer(
+        {
+          ...initialState,
+          groups: mockGroups,
+        },
+        FileUploadActions.uploadGroupMappingsSuccess({
+          groupMappings: mockGroupMappings
+        })
+      );
+
+      expect(groupState).toEqual({
+        ...initialState,
+        groups: [
+          {
+            ...mockGroup1,
+            groupMappings: [
+              {
+                ...mockGroupMapping1
+              }
+            ]
+          },
+          {
+            ...mockGroup2
+          }
+        ]
+      })
+    });
+  });
+
+  describe('uploadGroupsSuccess', () => {
+    it('should populate the groups list with the 2 uploaded groups', () => {
+      const groupState: GroupState = reducer(
+        { ...initialState },
+        FileUploadActions.uploadGroupsSuccess({
+          groups: mockGroups
+        })
+      );
+
+      expect(groupState).toEqual({
+        ...initialState,
+        groups: [
+          mockGroup1,
+          mockGroup2
+        ]
+      })
     });
   });
 })
