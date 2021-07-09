@@ -38,11 +38,26 @@ export const reducer = createReducer(
     ],
     selectedGroup: group
   })),
-  on(GroupActions.deleteGroupSuccess, (state, { id }) => ({
-    ...state,
-    groups: state.groups.filter((group) => group.id !== id),
-    selectedGroup: undefined
-  })),
+  on(GroupActions.deleteGroupSuccess, (state, { id }) => {
+    const groupIdentifierMap = state.groupIdentifierMap;
+    const groupMap = state.groupMap;
+
+    for (const identifier of Object.keys(groupIdentifierMap)) {
+      if (groupIdentifierMap[identifier] = id) {
+        delete groupIdentifierMap[identifier];
+      }
+    }
+
+    delete groupMap[id];
+
+    return {
+      ...state,
+      groupIdentifierMap,
+      groupMap,
+      groups: state.groups.filter((group) => group.id !== id),
+      selectedGroup: undefined
+    };
+  }),
   on(GroupActions.setGroups, (state, { groups }) => {
     const groupIdentifierMap = {};
     const groupMap = {};
