@@ -9,7 +9,7 @@ export class UploadGroupMappingInput {
   public itemType!: string;
 
   @Field({ nullable: true })
-  public name?: string;
+  public identifier?: string;
 
   @Field({ nullable: true })
   public sortOrder?: number;

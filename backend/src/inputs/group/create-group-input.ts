@@ -8,7 +8,7 @@ export class CreateGroupInput {
   public collectionId!: string;
 
   @Field()
-  public name!: string;
+  public identifier!: string;
 
   @Field(() => [ CreateGroupMappingInput ])
   public groupMappings!: CreateGroupMappingInput[];

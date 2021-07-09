@@ -17,7 +17,7 @@ export class Group extends Node {
 
   @Column()
   @Field()
-  public name!: string;
+  public identifier!: string;
 
   @Field(() => [ GroupMapping ])
   public groupMappings: GroupMapping[];
