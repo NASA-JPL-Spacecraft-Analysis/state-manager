@@ -42,7 +42,7 @@ export const reducer = createReducer(
 
     for (const event of events) {
       eventMap[event.id] = event;
-      eventIdentifierMap[event.identifier] = true;
+      eventIdentifierMap[event.identifier] = event.id;
     }
 
     return {
@@ -91,7 +91,7 @@ const modifyEvent = (state: EventState, event: Event) => {
     ...state,
     eventIdentifierMap: {
       ...eventIdentifierMap,
-      [event.id]: event.identifier
+      [event.identifier]: event.id
     },
     eventMap: {
       ...state.eventMap,

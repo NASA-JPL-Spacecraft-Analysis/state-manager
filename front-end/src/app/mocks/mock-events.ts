@@ -1,4 +1,4 @@
-import { Event, EventHistory } from '../models';
+import { Event, EventHistory, IdentifierMap } from '../models';
 
 export const mockEvent1: Event = {
   id: '1',
@@ -23,6 +23,10 @@ export const mockEvent1History: EventHistory = {
   type: 'predict_event',
   updated: new Date()
 };
+
+export const mockEventIdentifierMap: IdentifierMap = {
+  [mockEvent1.identifier]: mockEvent1.id
+}
 
 export const mockEvents: Event[] = [
   mockEvent1 
