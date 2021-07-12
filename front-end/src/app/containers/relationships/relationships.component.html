@@ -1,19 +1,20 @@
-<mat-toolbar class="relationships-toolbar">
-  RELATIONSHIPS
+<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
+  Relationships
 
   <div class="actions-container">
     <button mat-button routerLink="../relationship-history">
-      History 
+      History
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="onModifyRelationship()">
-      Create New Relationship
-    </button>
-
-    <button mat-raised-button class="gray-button" (click)="relationshipsFileUpload.click()">
+    <button mat-button (click)="relationshipsFileUpload.click()">
       Upload Relationships
     </button>
+
     <input #relationshipsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
+
+    <button mat-raised-button color="primary" (click)="onModifyRelationship()">
+      Create New Relationship
+    </button>
   </div>
 </mat-toolbar>
 

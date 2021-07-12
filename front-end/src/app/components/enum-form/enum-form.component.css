@@ -1,5 +1,5 @@
 table, th, td {
-  border: 1px solid #B9B9B9;
+  border: 1px solid #cfd4da;
 }
 
 th, td {
@@ -12,14 +12,13 @@ table {
 }
 
 th {
-  font-size: .9em;
+  background-color: #f1f3f5;
+  font-size: 12px;
   font-weight: 500;
-  text-align: left;
-  background-color: #e3e3e3;
 }
 
-table tr:last-child td{
-  background-color: #f5f4f4;
+table tr td:nth-child(odd) {
+  background-color: #f1f3f5;
 }
 
 table td {

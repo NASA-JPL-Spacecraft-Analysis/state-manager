@@ -8,7 +8,8 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Display Name</mat-label>
       <input matInput
         placeholder="Display Name"
         type="text"
@@ -17,13 +18,15 @@
       />
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
       <textarea matInput
         placeholder="Description"
         formControlName="description"></textarea>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Subject Type</mat-label>
       <mat-select placeholder="Subject Type" [(value)]="subjectType">
         <mat-option *ngFor="let informationType of informationTypes" [value]="informationType">
           {{informationType}}
@@ -41,7 +44,8 @@
       [type]="subjectType">
     </app-relationship-type-picker>
 
-    <mat-form-field class="target-type-picker">
+    <mat-form-field appearance="outline" class="target-type-picker">
+      <mat-label>Target Type</mat-label>
       <mat-select placeholder="Target Type" [(value)]="targetType">
         <mat-option *ngFor="let informationType of informationTypes" [value]="informationType">
           {{informationType}}

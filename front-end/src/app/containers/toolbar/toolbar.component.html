@@ -1,24 +1,30 @@
-<mat-toolbar>
+<mat-toolbar class="main-toolbar" color="accent" >
   <div class="toolbar-container">
-    <span>State Management</span>
+    <h6 id="logotype">State Manager</h6>
 
     <app-collections></app-collections>
   </div>
 
   <div class="navigation-container">
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/states" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/states"
+      [ngClass]="{ 'active': statePageActive }">
       States
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/relationships" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/relationships"
+      [ngClass]="{ 'active': relationshipPageActive }">
       Relationships
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/events" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/events"
+      [ngClass]="{ 'active': eventPageActive }">
       Events
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/information-types" routerLinkActive="active">
+    <button mat-button color="primary" routerLink="/collection/{{selectedCollectionId}}/information-types" routerLinkActive="active">
       Information Types 
     </button>
 
