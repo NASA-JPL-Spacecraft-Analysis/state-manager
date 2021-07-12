@@ -1,10 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { EventActions, FileUploadActions } from '../actions';
-import { EventMap, Event } from '../models';
+import { EventMap, Event, IdentifierMap } from '../models';
 
 export interface EventState {
-  eventIdentifierMap: Map<string, string>;
+  eventIdentifierMap: IdentifierMap;
   eventMap: EventMap;
   eventHistoryMap: EventMap;
   selectedEvent: Event;
@@ -38,11 +38,11 @@ export const reducer = createReducer(
   }),
   on(EventActions.setEvents, (state, { events }) => {
     const eventMap = {};
-    const eventIdentifierMap = new Map<string, string>();
+    const eventIdentifierMap = {};
 
     for (const event of events) {
       eventMap[event.id] = event;
-      eventIdentifierMap[event.identifier] = event.id;
+      eventIdentifierMap[event.identifier] = true;
     }
 
     return {

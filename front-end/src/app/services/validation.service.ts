@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { Event, InformationTypes, Relationship, State, StateEnumerationUpload } from '../models';
+import { Event, Group, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ValidationService {
-  public isDuplicateIdentifier(identifier: string, id: string, identifierMap: Map<string, string>) {
+  public isDuplicateIdentifier(identifier: string, id: string, identifierMap: IdentifierMap) {
     /**
      * If we come across a duplicate identifier
      * AND we have an id
@@ -29,11 +29,42 @@ export class ValidationService {
     );
   }
 
+  public isGroupUpload(groupUpload: GroupUpload): groupUpload is GroupUpload {
+    if (!groupUpload.name) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public isGroupUploadMappings(group: GroupUploadMappings): group is GroupUploadMappings {
+    if (!group.name || !group.groupMappings) {
+      return false;
+    }
+
+    for (const groupMapping of group.groupMappings) {
+      if (!this.isGroupMappingUpload(groupMapping)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public isGroupMappingUpload(groupMapping: GroupMappingUpload): groupMapping is GroupMappingUpload {
+    return groupMapping.itemIdentifier !== undefined && groupMapping.itemType !== undefined;
+  }
+
+  public isMappingsUpload(mappingsUpload: MappingsUpload): mappingsUpload is MappingsUpload {
+    return mappingsUpload.name !== undefined && mappingsUpload.itemIdentifier !== undefined
+      && mappingsUpload.itemType !== undefined;
+  }
+
   public validateInformationType(informationType: InformationTypes): boolean {
     return (
       informationType.hasOwnProperty('identifier')
       && informationType.hasOwnProperty('displayName')
-      && informationType.hasOwnProperty('type')
+      && informationType.hasOwnProperty('informationType')
     );
   }
 

@@ -1,4 +1,4 @@
-<mat-toolbar class="events-toolbar">
+<mat-toolbar class="toolbar">
   EVENTS
 
   <div>
@@ -17,8 +17,8 @@
   </div>
 </mat-toolbar>
 
-<div class="events-content-container">
-  <div class="events-content">
+<div class="content-container">
+  <div class="content">
     <app-event-table
       [eventMap]="eventMap"
       (eventSelected)="onModifyEvent($event)">

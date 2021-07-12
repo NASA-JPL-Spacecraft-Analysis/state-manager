@@ -32,21 +32,6 @@ export const deleteCollectionFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const updateCollection = createAction(
-  '[collection] updateCollection',
-  props<{ collectionId: string; name: string }>()
-);
-
-export const updateCollectionSuccess = createAction(
-  '[collection] updateCollectionSuccess',
-  props<{ collection: Collection }>()
-);
-
-export const updateCollectionFailure = createAction(
-  '[collection] updateCollectionFailure',
-  props<{ error: Error }>()
-);
-
 export const fetchCollectionsFailure = createAction(
   '[collection] fetchCollectionMapFailure',
   props<{ error: Error }>()
@@ -60,4 +45,19 @@ export const fetchCollectionsSuccess = createAction(
 export const setSelectedCollection = createAction(
   '[collection] setSelectedCollection',
   props<{ id: string }>()
+);
+
+export const updateCollection = createAction(
+  '[collection] updateCollection',
+  props<{ collectionId: string, name: string }>()
+);
+
+export const updateCollectionSuccess = createAction(
+  '[collection] updateCollectionSuccess',
+  props<{ collection: Collection }>()
+);
+
+export const updateCollectionFailure = createAction(
+  '[collection] updateCollectionFailure',
+  props<{ error: Error }>()
 );

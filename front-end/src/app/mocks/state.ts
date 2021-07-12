@@ -1,4 +1,4 @@
-import { State, StateMap } from '../models';
+import { IdentifierMap, State, StateMap } from '../models';
 
 export const mockStateOne: State = {
   id: '1',
@@ -24,10 +24,10 @@ export const mockStateTwo: State = {
   enumerations: []
 };
 
-export const mockStateIdentifierMap: Map<string, string> = new Map([
-  [mockStateOne.identifier, mockStateOne.id],
-  [mockStateTwo.identifier, mockStateTwo.id]
-]);
+export const mockStateIdentifierMap: IdentifierMap = {
+  [mockStateOne.identifier]: mockStateOne.id,
+  [mockStateTwo.identifier]: mockStateTwo.id
+};
 
 export const mockStates: State[] = [
   mockStateOne,

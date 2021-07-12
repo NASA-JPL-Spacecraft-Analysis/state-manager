@@ -2,6 +2,7 @@ import { Entity, Column } from 'typeorm';
 import { ObjectType, Field } from 'type-graphql';
 
 import { Node } from './node';
+import { Group } from './group';
 import { State } from './state';
 
 @Entity('collections')
@@ -14,6 +15,9 @@ export class Collection extends Node {
   @Column()
   @Field({ defaultValue: true })
   public name!: string;
+
+  @Field(() => [ Group ])
+  public groups: Group[];
 
   @Field(() => [ State ])
   public states: State[];

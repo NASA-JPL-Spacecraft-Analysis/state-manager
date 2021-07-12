@@ -1,7 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
 
-import { StateActions, FileUploadActions } from '../actions';
+import { StateActions } from '../actions';
 import {
+  IdentifierMap,
   State,
   StateEnumeration,
   StateEnumerationMap,
@@ -9,7 +10,7 @@ import {
 } from '../models';
 
 export interface StateState {
-  stateIdentifierMap: Map<string, string>;
+  stateIdentifierMap: IdentifierMap;
   selectedState: State;
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
@@ -41,12 +42,6 @@ export const reducer = createReducer(
       ...mapEnumerations(enumerations)
     }
   })),
-  on(StateActions.setStateEnumerations, (stateState, { stateEnumerations }) => ({
-    ...stateState,
-    stateEnumerationMap: {
-      ...mapEnumerations(stateEnumerations)
-    }
-  })),
   on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
     const stateHistoryMap = {};
 
@@ -61,7 +56,7 @@ export const reducer = createReducer(
   }),
   on(StateActions.setStates, (stateState, { states }) => {
     const stateMap = {};
-    const stateIdentifierMap = new Map<string, string>();
+    const stateIdentifierMap = {};
 
     for (const state of states) {
       stateMap[state.id] = state;

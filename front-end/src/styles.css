@@ -17,7 +17,21 @@ table {
   display: flex;
 }
 
+.mat-toolbar button:not(:last-child) {
+  margin-right: 1em;
+}
+
 /* Global Styles */
+.content {
+  flex-grow: 1;
+  margin: 1em;
+}
+
+.content-container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
 .form-input {
   background: #FAFAFA;
   border: 1px solid #BEBEBE;
@@ -47,6 +61,11 @@ table {
   cursor: pointer;
 }
 
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* Sidenav Specific Styles */
 .sidenav-cancel-button {
   top: -8px;
@@ -66,6 +85,8 @@ table {
 }
 
 .sidenav-actions {
+  display: flex;
+  justify-content: space-between;
   margin-top: 1em;
 }
 
