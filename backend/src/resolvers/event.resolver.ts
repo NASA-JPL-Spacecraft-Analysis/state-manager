@@ -10,6 +10,7 @@ import { SharedRepository } from '../repositories';
 import { EventResponse, EventsResponse } from '../responses';
 import { EventConstants } from '../constants';
 
+
 @Resolver()
 export class EventResolver {
   private sharedRepository: SharedRepository<Event>;
