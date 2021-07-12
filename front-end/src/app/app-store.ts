@@ -7,6 +7,7 @@ import {
   CollectionReducer,
   ConfigReducer,
   EventReducer,
+  GroupReducer,
   InformationTypesReducer,
   LayoutReducer,
   RelationshipReducer,
@@ -18,6 +19,7 @@ export interface AppState {
   collection: CollectionReducer.CollectionState;
   config: ConfigState;
   events: EventReducer.EventState;
+  groups: GroupReducer.GroupState;
   informationTypes: InformationTypesReducer.InformationTypesState;
   layout: LayoutReducer.LayoutState;
   relationships: RelationshipReducer.RelationshipState;
@@ -32,6 +34,7 @@ export const ROOT_REDUCERS = new InjectionToken<
     collection: CollectionReducer.reducer,
     config: ConfigReducer.reducer,
     events: EventReducer.reducer,
+    groups: GroupReducer.reducer,
     informationTypes: InformationTypesReducer.reducer,
     layout: LayoutReducer.reducer,
     relationships: RelationshipReducer.reducer,

@@ -39,7 +39,21 @@ body {
   width: 100%;
 }
 
+.mat-toolbar button:not(:last-child) {
+  margin-right: 1em;
+}
+
 /* Global Styles */
+.content {
+  flex-grow: 1;
+  margin: 1em;
+}
+
+.content-container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
 .form-input {
   background: #FAFAFA;
   border: 1px solid #BEBEBE;
@@ -94,6 +108,8 @@ td.mat-cell:first-of-type{
 }
 
 .sidenav-actions {
+  display: flex;
+  justify-content: space-between;
   margin-top: 1em;
 }
 

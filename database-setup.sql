@@ -54,6 +54,21 @@ CREATE TABLE `flight_rules` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `group_mapping` (
+  `id` varchar(36) NOT NULL,
+  `groupId` varchar(36) NOT NULL,
+  `itemId` varchar(36) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `groups` (
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `information_types` (
   `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) DEFAULT NULL,

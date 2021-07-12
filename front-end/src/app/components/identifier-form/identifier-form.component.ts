@@ -1,4 +1,4 @@
-import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -6,6 +6,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MaterialModule } from 'src/app/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IdentifierMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class IdentifierFormComponent {
   @Input() public originalIdentifier: string;
-  @Input() public identifierMap: Map<string, string>;
+  @Input() public identifierMap: IdentifierMap;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public identifierEmitter: EventEmitter<string>;

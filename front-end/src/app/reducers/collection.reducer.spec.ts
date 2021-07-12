@@ -1,12 +1,13 @@
 import { CollectionState, initialState, reducer } from './collection.reducer';
 import { CollectionActions } from '../actions';
 import { mockCollectionMap, mockCollections } from '../mocks';
+import { Collection } from '../models';
 
 describe('CollectionReducer', () => {
   describe('createCollectionSuccess', () => {
     it('should set collectionMap and selectedCollectionId after creating a collection', () => {
-      const collection = {
-        id: 2,
+      const collection: Collection = {
+        id: '2',
         name: 'Created Collection'
       };
 
@@ -31,7 +32,7 @@ describe('CollectionReducer', () => {
       const collectionState: CollectionState = reducer(
         { ...initialState, collectionMap: mockCollectionMap },
         CollectionActions.deleteCollectionSuccess({
-          id: 1
+          id: '1'
         })
       );
 
@@ -46,7 +47,7 @@ describe('CollectionReducer', () => {
   describe('editCollectionSuccess', () => {
     it('should edit the collection\'s name', () => {
       const collection = {
-        id: 1,
+        id: '1',
         name: 'Edited collection'
       };
 
@@ -82,14 +83,14 @@ describe('CollectionReducer', () => {
       expect(collectionState).toEqual({
         ...initialState,
         collectionMap: mockCollectionMap,
-        selectedCollectionId: 1
+        selectedCollectionId: '1'
       });
     });
   });
 
   describe('setSelectedCollection', () => {
     it('should set selctedCollectionId on collection selection', () => {
-      const id = 1;
+      const id = '1';
 
       const collectionState: CollectionState = reducer(
         { ...initialState },
@@ -100,7 +101,7 @@ describe('CollectionReducer', () => {
 
       expect(collectionState).toEqual({
         ...initialState,
-        selectedCollectionId: 1
+        selectedCollectionId: '1'
       });
     });
   });

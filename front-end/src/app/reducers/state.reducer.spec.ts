@@ -113,22 +113,6 @@ describe('StateReducer', () => {
     });
   });
 
-  describe('setStateEnumerations', () => {
-    it('should set stateEnumerations', () => {
-      const stateState: StateState = reducer(
-        { ...initialState },
-        StateActions.setStateEnumerations({
-          stateEnumerations: mockStateEnumerations
-        })
-      );
-
-      expect(stateState).toEqual({
-        ...initialState,
-        stateEnumerationMap: mockStateEnumerationMap
-      });
-    });
-  });
-
   describe('setSelectedState', () => {
     it('should set selectedState', () => {
       const state = {

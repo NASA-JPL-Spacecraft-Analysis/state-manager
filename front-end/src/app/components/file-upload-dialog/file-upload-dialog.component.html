@@ -1,0 +1,36 @@
+<h1 mat-dialog-title>
+  {{data.dialogType}} Upload
+</h1>
+
+<div mat-dialog-content *ngIf="data.csvFormat || data.jsonFormat">
+  <p>{{data.dialogType}} uploading supports the following upload type(s):</p>
+
+  <ng-container *ngIf="data.csvFormat && data.csvFormat.length > 0">
+    <div *ngFor="let example of data.csvFormat">
+      <span>CSV:</span>
+
+      <code>
+        {{example}}
+      </code>
+    </div>
+  </ng-container>
+
+  <div *ngIf="data.jsonFormat">
+    <span>JSON:</span>
+
+    <code>
+      {{data.jsonFormat}}
+    </code>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button class="cancel-button" (click)="onCancel()">
+    Cancel
+  </button>
+
+  <button mat-button class="gray-button" (click)="fileUpload.click()">
+    Upload {{data.dialogType}}
+  </button>
+  <input #fileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
+</div>

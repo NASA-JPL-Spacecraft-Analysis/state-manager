@@ -33,7 +33,7 @@ describe('CollectionsComponent', () => {
           initialState: {
             collection: {
               collectionMap: { ...mockCollectionMap },
-              selectedCollectionId: 1
+              selectedCollectionId: '1'
             }
           }
         }),
@@ -50,7 +50,7 @@ describe('CollectionsComponent', () => {
 
   describe('onCollectionChange()', () => {
     it('should navigate when a collection is selected', () => {
-      component.onCollectionChange(1);
+      component.onCollectionChange('1');
 
       expect(mockRouter.navigate).toHaveBeenCalledWith([ 'collection/1/states' ]);
     });

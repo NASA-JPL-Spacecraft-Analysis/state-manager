@@ -3,8 +3,8 @@ import { Field, ObjectType } from 'type-graphql';
 @ObjectType()
 export class Response {
   @Field(() => String)
-  public message?: string;
+  public message!: string | unknown;
 
-  @Field(() => Boolean)
-  public success?: boolean;
+  @Field()
+  public success!: boolean;
 }

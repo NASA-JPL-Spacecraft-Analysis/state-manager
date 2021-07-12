@@ -11,9 +11,9 @@ export class ValidationService {
    *
    * @param informationTypes The list of infomration types we're checking.
    */
-  public checkInformationType(informationTypes: CreateInformationTypeInput[]): boolean {
+  public checkInformationType(informationTypes: CreateInformationTypeInput[]): boolean | undefined {
     for (const informationType of informationTypes) {
-      if (!Object.values(InformationTypeEnum).includes(informationType.type)) {
+      if (!Object.values(InformationTypeEnum).includes(informationType.informationType)) {
         throw new UserInputError(
           `An invalid information type was passed for ${String(informationType.displayName)}, please fix this value and try again`);
       }

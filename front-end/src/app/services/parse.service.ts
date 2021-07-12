@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { csvParse } from 'd3-dsv';
-import { InformationTypes, Event, Relationship, State } from '../models';
 
+import { ParseTypes } from '../models';
 @Injectable({
   providedIn: 'root'
 })
 export class ParseService {
-  public async parseFile(file: File): Promise<string | any[]> {
+  public async parseFile(file: File): Promise<string | ParseTypes> {
     return await this.readFile(file);
   }
 
@@ -15,7 +15,7 @@ export class ParseService {
    *
    * @param file The file we are parsing.
    */
-  private readFile(file: File): Promise<string | any[]> {
+  private readFile(file: File): Promise<string | ParseTypes> {
     const fileReader = new FileReader();
 
     return new Promise((resolve, reject) => {
