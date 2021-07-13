@@ -60,8 +60,6 @@ export class CommandResolver implements ResolverInterface<Command> {
       // TODO: For now hardcore this value, there aren't any other options for commands.
       command.type = 'command';
 
-      this.validationService.hasValidType([ command ], commandTypes);
-
       await command.save();
 
       this.createCommandHistory(command);
@@ -90,9 +88,10 @@ export class CommandResolver implements ResolverInterface<Command> {
 
       const commands = Command.create(data.commands);
 
-      this.validationService.hasValidType(commands, commandTypes);
-
       for (const command of commands) {
+        // TODO: For now hardcore this value, there aren't any other options for commands.
+        command.type = 'command';
+
         await command.save();
 
         this.createCommandHistory(command);
