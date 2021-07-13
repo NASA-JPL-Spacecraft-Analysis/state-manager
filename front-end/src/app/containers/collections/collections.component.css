@@ -7,9 +7,14 @@
 }
 
 .collection-dropdown {
-  font-size: .6em;
+  font-size: 14px;
   width: 20em;
 }
+
+.collection-container .mat-form-field-wrapper{
+  padding-bottom: 0;
+}
+
 
 .icon-area {
   margin-right: 1em;

@@ -1,0 +1,12 @@
+.mat-toolbar button:not(:last-child) {
+  margin-right: 1em;
+}
+
+.events-content {
+  flex-grow: 1;
+}
+
+.events-content-container {
+  display: flex;
+  flex-flow: row nowrap;
+}

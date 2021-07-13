@@ -1,17 +1,17 @@
-<mat-toolbar class="toolbar">
-  CONSTRAINTS
+<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
+  Constraints
 
   <div>
     <button mat-button routerLink="../constraint-history">
       History 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="onModifyConstraint()">
-      Create New Constraint 
+    <button mat-button (click)="onFileUpload()">
+      Upload Constraints
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="onFileUpload()">
-      Upload Constraints
+    <button mat-raised-button color="primary" (click)="onModifyConstraint()">
+      Create New Constraint 
     </button>
   </div>
 </mat-toolbar>

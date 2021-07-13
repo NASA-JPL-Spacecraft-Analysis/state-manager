@@ -1,20 +1,42 @@
+/**************
+Table of Contents
+1. Layout
+2. Typography
+3. Forms
+4. Tables
+5. Sidenav
+6. Toolbar
+**************/
+
+/**************
+1. Layout
+**************/
+
 html, body {
   height: 100%;
 }
 
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+.hidden {
+  display: none !important;
 }
 
-table {
-  width: 100%;
+/**************
+2. Typography
+**************/
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
 }
+
+/**************
+3. Forms
+**************/
 
 /* Angular Material Global Overwrites */
 .mat-form-field {
-  width: 100%;
   display: flex;
+  width: 100%;
 }
 
 .mat-toolbar button:not(:last-child) {
@@ -24,7 +46,6 @@ table {
 /* Global Styles */
 .content {
   flex-grow: 1;
-  margin: 1em;
 }
 
 .content-container {
@@ -46,42 +67,43 @@ table {
   margin-bottom: .5em;
 }
 
-.gray-button {
-  background: #979797;
-  color: white;
-  border-radius: 3px;
-  box-shadow: none;
-}
+/**************
+4. Tables
+**************/
 
-.sidenav {
-  width: 25%;
+table {
+  width: 100%;
 }
 
 .table-row {
   cursor: pointer;
 }
 
-.toolbar {
-  display: flex;
-  justify-content: space-between;
+.history .table-row {
+  cursor: default;
 }
 
-/* Sidenav Specific Styles */
+td.mat-cell:first-of-type{
+  font-weight: bold;
+}
+
+/**************
+5. Sidenav
+**************/
+
+.sidenav {
+  width: 25%;
+}
+
 .sidenav-cancel-button {
   top: -8px;
 }
 
 .sidenav-header {
-  font-size: 1.5em;
-  padding-bottom: 1em;
   display: flex;
+  font-size: 1.5em;
   justify-content: space-between;
-}
-
-.sidenav-container {
-  padding: 1em;
-  height: 100%;
-  border-left: 1px solid #BEBEBE;
+  padding-bottom: 1em;
 }
 
 .sidenav-actions {
@@ -90,14 +112,20 @@ table {
   margin-top: 1em;
 }
 
-.history .table-row {
-  cursor: default;
-}
+/**************
+5. Toolbar
+**************/
 
 .file-upload-input {
   display: none;
 }
 
-.hidden {
-  display: none !important;
+/*Make collection container inline with navbar content*/
+.collection-container .mat-form-field-wrapper{
+  line-height: 36px;
+  padding-bottom: 0;
+}
+
+.mat-toolbar .mat-form-field-infix{
+  border-top-width: 0px;
 }
