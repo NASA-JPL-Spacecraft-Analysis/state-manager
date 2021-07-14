@@ -4,10 +4,10 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { ConstraintConstants } from '../constants';
-import { CreateConstraintInput, UpdateConstraintInput } from '../inputs';
+import { CreateConstraintInput, CreateConstraintsInput, UpdateConstraintInput } from '../inputs';
 import { Constraint, ConstraintHistory, constraintTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { ConstraintResponse } from '../responses';
+import { ConstraintResponse, ConstraintsResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver()
@@ -60,6 +60,40 @@ export class ConstraintResolver {
       return {
         constraint,
         message: 'Constraint Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => ConstraintsResponse)
+  public async createConstraints(@Arg('data') data: CreateConstraintsInput): Promise<ConstraintsResponse> {
+    try {
+      const existingConstraints = await this.constraints({ collectionId: data.collectionId });
+
+      // Check to make sure each constraint has a unique identifier.
+      for (const constraint of data.constraints) {
+        this.validationService.isDuplicateIdentifier(existingConstraints, constraint.identifier);
+      }
+
+      const constraints = Constraint.create(data.constraints);
+
+      // Check to make sure each constraint has a valid type.
+      this.validationService.hasValidType(constraints, constraintTypes);
+
+      for (const constraint of constraints) {
+        await constraint.save();
+
+        this.createConstraintHistory(constraint);
+      }
+
+      return {
+        constraints,
+        message: 'Constraints Created',
         success: true
       };
     } catch (error) {

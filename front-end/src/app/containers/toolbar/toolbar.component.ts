@@ -42,8 +42,6 @@ export class ToolbarComponent implements OnDestroy {
         if (event instanceof NavigationEnd) {
           const splitRoute = event.url.split('/');
           this.route = splitRoute[splitRoute.length - 1];
-
-          console.log(this.route);
         }
       })
     );
