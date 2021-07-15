@@ -8,37 +8,54 @@ import { Node } from './node';
 @Entity('relationships')
 @ObjectType()
 export class Relationship extends Node {
-  @Field(() => ID)
   @Column()
+  @Field(() => ID)
   public collectionId!: string;
 
-  @Field({ nullable: true })
   @Column({ default: null, nullable: true })
+  @Field({ nullable: true })
   public description?: string;
 
-  @Field({ nullable: true })
   @Column({ default: null, nullable: true })
+  @Field({ nullable: true })
   public displayName?: string;
 
   @Field(() => Models.IdentifierTypeUnion, { nullable: true })
   public subject?: typeof Models.IdentifierTypeUnion;
 
-  @Field(() => Models.InformationTypeEnum)
   @Column()
-  public subjectType!: Models.InformationTypeEnum;
+  @Field()
+  public subjectType!: string;
 
-  @Field(() => ID)
   @Column()
+  @Field(() => ID)
   public subjectTypeId!: string;
 
   @Field(() => Models.IdentifierTypeUnion, { nullable: true })
   public target?: typeof Models.IdentifierTypeUnion;
 
-  @Field(() => Models.InformationTypeEnum)
   @Column()
-  public targetType!: Models.InformationTypeEnum;
+  @Field()
+  public targetType!: string;
 
-  @Field(() => ID)
   @Column()
+  @Field(() => ID)
   public targetTypeId!: string;
+}
+
+@Entity({
+  name: 'relationship_history',
+  orderBy: {
+    updated: 'DESC'
+  }
+})
+@ObjectType()
+export class RelationshipHistory extends Relationship {
+  @Column()
+  @Field(() => ID)
+  public relationshipId!: string;
+
+  @Column()
+  @Field(() => Date)
+  public updated!: Date;
 }

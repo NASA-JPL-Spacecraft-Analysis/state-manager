@@ -3,9 +3,9 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Relationship, RelationshipHistory, RelationshipUpload } from '../models';
+import { Relationship, RelationshipHistory, RelationshipResponse, RelationshipsResponse, RelationshipUpload } from '../models';
 
-import * as gql from './gql';
+import * as gql from './gql/relationships';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +15,9 @@ export class RelationshipService {
     private apollo: Apollo
   ) {}
 
-  public createRelationship(collectionId: string, relationship: Relationship): Observable<Relationship> {
+  public createRelationship(collectionId: string, relationship: Relationship): Observable<RelationshipResponse> {
     return this.apollo
-      .query<{ createRelationship: Relationship }>({
+      .query<{ createRelationship: RelationshipResponse }>({
         fetchPolicy: 'no-cache',
         query: gql.CREATE_RELATIONSHIP,
         variables: {
@@ -30,12 +30,18 @@ export class RelationshipService {
           targetTypeId: relationship.targetTypeId
         }
       })
-    .pipe(map(({ data: { createRelationship } }) => createRelationship));
+    .pipe(map(({ data: { createRelationship } }) => {
+      if (!createRelationship.success) {
+        throw new Error(createRelationship.message);
+      }
+      
+      return createRelationship;
+    }));
   }
 
-  public createRelationships(collectionId: string, relationships: RelationshipUpload[]): Observable<Relationship[]> {
+  public createRelationships(collectionId: string, relationships: RelationshipUpload[]): Observable<RelationshipsResponse> {
     return this.apollo
-      .query<{ createRelationships: Relationship[] }>({
+      .query<{ createRelationships: RelationshipsResponse }>({
         fetchPolicy: 'no-cache',
         query: gql.CREATE_RELATIONSHIPS,
         variables: {
@@ -43,7 +49,13 @@ export class RelationshipService {
           relationships
         }
       })
-    .pipe(map(({ data: { createRelationships } }) => createRelationships));
+    .pipe(map(({ data: { createRelationships } }) => {
+      if (!createRelationships.success) {
+        throw new Error(createRelationships.message);
+      }
+
+      return createRelationships;
+    }));
   }
 
   public getRelationships(collectionId: string): Observable<Relationship[]> {
@@ -70,9 +82,9 @@ export class RelationshipService {
       .pipe(map(({ data: { relationshipHistory } }) => relationshipHistory));
   }
 
-  public updateRelationship(relationship: Relationship): Observable<Relationship> {
+  public updateRelationship(relationship: Relationship): Observable<RelationshipResponse> {
     return this.apollo
-      .query<{ updateRelationship: Relationship }>({
+      .query<{ updateRelationship: RelationshipResponse }>({
         fetchPolicy: 'no-cache',
         query: gql.UPDATE_RELATIONSHIP,
         variables: {
@@ -85,6 +97,12 @@ export class RelationshipService {
           targetTypeId: relationship.targetTypeId
         }
       })
-    .pipe(map(({ data: { updateRelationship } }) => updateRelationship));
+    .pipe(map(({ data: { updateRelationship } }) => {
+      if (!updateRelationship.success) {
+        throw new Error(updateRelationship.message);
+      }
+
+      return updateRelationship;
+    }));
   }
 }

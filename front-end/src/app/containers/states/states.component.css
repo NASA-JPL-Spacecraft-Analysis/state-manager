@@ -1,8 +1,0 @@
-.states-content {
-  flex-grow: 1;
-}
-
-.states-content-container {
-  display: flex;
-  flex-flow: row nowrap;
-}

@@ -1,14 +1,7 @@
+import { IdentifierType } from './identifier-type';
 import { StringTMap } from './string-t-map';
 
-export interface Event {
-  id: string;
-  collectionId: string;
-  identifier: string;
-  displayName: string;
-  description: string;
-  externalLink: string;
-  editable: boolean;
-}
+export interface Event extends IdentifierType {}
 
 export interface EventHistory extends Event {
   eventId: string;
@@ -16,3 +9,11 @@ export interface EventHistory extends Event {
 }
 
 export type EventMap = StringTMap<Event>;
+
+export const eventTypes: string[] = [
+  'evr',
+  'predict_event',
+  'command_instance',
+  'activity_instance',
+  'user'
+];

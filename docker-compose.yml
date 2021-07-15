@@ -12,7 +12,7 @@ services:
     environment:
       #DB_URL: host.docker.internal
       DB_URL: eurc-dev-fspa-proto-db.cluster-cn3jpdgibyif.us-gov-west-1.rds.amazonaws.com
-      DB_NAME: "state-manager"
+      DB_NAME: "state-management-db"
       DB_PORT: 3306
       DB_USER: "state-management-db-user"
       DB_PASS: "${DB_PASS}"

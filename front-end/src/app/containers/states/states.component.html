@@ -1,5 +1,5 @@
  <mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  <h6>States</h6>
+  States
 
   <div>
     <button mat-button routerLink="../state-history">
@@ -20,8 +20,8 @@
   </div>
 </mat-toolbar>
 
-<div class="states-content-container">
-  <div class="states-content">
+<div class="content-container">
+  <div class="content">
     <app-state-table
       [stateMap]="stateMap"
       (stateSelected)="onModifyState($event)">

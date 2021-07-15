@@ -1,4 +1,6 @@
 export * from './collection.selector';
+export * from './command.selector';
+export * from './constraint.selector';
 export * from './event.selector';
 export * from './group.selector';
 export * from './information-types.selector';

@@ -29,9 +29,9 @@
       <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
         <input matInput
-          placeholder="Type"
+          placeholder="Data Type"
           type="text"
-          formControlName="type"
+          formControlName="dataType"
           required
         />
       </mat-form-field>
@@ -67,10 +67,27 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
+        <mat-label>State Type</mat-label>
+        <mat-select placeholder="State Type" [(value)]="newState.type">
+          <mat-option *ngFor="let stateType of stateTypes" [value]="stateType">
+            {{stateType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
         <mat-label>Description</mat-label>
         <textarea matInput
           placeholder="Description"
           formControlName="description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput
+          placeholder="External Link"
+          type="text"
+          formControlName="externalLink"
+        />
       </mat-form-field>
 
       <app-enum-form

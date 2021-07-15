@@ -1,6 +1,8 @@
 import { Group, GroupMapping } from '../group';
 import { Response } from './response';
 
-export type CreateGroupMappingsResponse = Response & { groupMappings: GroupMapping[] };
+export type GroupMappingsResponse = Response & { groupMappings?: GroupMapping[] };
 
-export type CreateGroupsResponse = Response & { groups: Group[] };
+export type GroupResponse = Response & { group?: Group };
+
+export type GroupsResponse = Response & { groups?: Group[] };

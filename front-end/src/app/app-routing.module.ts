@@ -3,7 +3,7 @@ import { RouterModule, Routes, Params, RouterStateSnapshot } from '@angular/rout
 import { RouterStateSerializer } from '@ngrx/router-store';
 
 import {
-  StateComponent,
+  StatesComponent,
   StateHistoryComponent,
   RelationshipsComponent,
   RelationshipHistoryComponent,
@@ -11,7 +11,11 @@ import {
   GroupsComponent,
   InformationTypesComponent,
   EventsComponent,
-  EventHistoryComponent
+  EventHistoryComponent,
+  ConstraintsComponent,
+  ConstraintHistoryComponent,
+  CommandHistoryComponent,
+  CommandsComponent
 } from './containers';
 
 export const routes: Routes = [
@@ -27,6 +31,22 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'states'
+      },
+      {
+        component: CommandHistoryComponent,
+        path: 'command-history'
+      },
+      {
+        component: CommandsComponent,
+        path: 'commands'
+      },
+      {
+        component: ConstraintHistoryComponent,
+        path: 'constraint-history'
+      },
+      {
+        component: ConstraintsComponent,
+        path: 'constraints'
       },
       {
         component: EventsComponent,
@@ -53,7 +73,7 @@ export const routes: Routes = [
         path: 'relationship-history'
       },
       {
-        component: StateComponent,
+        component: StatesComponent,
         path: 'states'
       },
       {

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { InformationTypes, State, StateEnumerationUpload } from '../models';
+import { InformationType, State, StateEnumerationUpload } from '../models';
 
 @Injectable()
 export class MockValidationService {
-  public validateInformationType(informationType: InformationTypes): boolean {
+  public validateInformationType(informationType: InformationType): boolean {
     return true;
   }
 

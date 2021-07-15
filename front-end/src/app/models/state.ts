@@ -1,16 +1,13 @@
+import { IdentifierType } from './identifier-type';
 import { StateEnumeration } from './state-enumeration';
 import { StringTMap } from './string-t-map';
 
-export interface State {
-  description: string;
-  displayName: string;
+export interface State extends IdentifierType {
+  dataType: string;
   enumerations: StateEnumeration[];
-  id: string;
-  identifier: string;
-  source: string; // enum?
+  source: string;
   subsystem: string;
-  type: string; // enum?
-  units: string; // enum?
+  units: string;
 }
 
 export interface StateHistory extends State {
@@ -19,3 +16,12 @@ export interface StateHistory extends State {
 }
 
 export type StateMap = StringTMap<State>;
+
+export const stateTypes: string[] = [
+  'channel',
+  'fsw_parameter',
+  'model_input',
+  'predict',
+  'trend',
+  'user'
+];

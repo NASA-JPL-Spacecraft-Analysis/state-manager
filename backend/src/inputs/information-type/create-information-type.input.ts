@@ -1,6 +1,6 @@
 import { Field, ID, InputType } from 'type-graphql';
 
-import { InformationType, InformationTypeEnum } from '../../models';
+import { InformationType } from '../../models';
 
 @InputType()
 export class CreateInformationTypeInput implements Partial<InformationType> {
@@ -19,6 +19,6 @@ export class CreateInformationTypeInput implements Partial<InformationType> {
   @Field()
   public identifier!: string;
 
-  @Field(() => InformationTypeEnum)
-  public informationType!: InformationTypeEnum;
+  @Field()
+  public type!: string;
 }

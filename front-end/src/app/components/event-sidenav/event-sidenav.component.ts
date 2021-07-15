@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
 import { MaterialModule } from 'src/app/material';
-import { Event, IdentifierMap } from 'src/app/models';
+import { Event, eventTypes, IdentifierMap } from 'src/app/models';
 import { IdentifierFormModule } from '../identifier-form/identifier-form.component';
 
 @Component({
@@ -23,8 +23,10 @@ export class EventSidenavComponent implements OnChanges {
   @Output() public modifyEvent: EventEmitter<Event>;
 
   public form: FormGroup;
+  public eventTypes = eventTypes;
   public newEvent: Event;
   public originalIdentifier: string;
+  public selectedEventType: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -47,7 +49,8 @@ export class EventSidenavComponent implements OnChanges {
         displayName: '',
         description: '',
         externalLink: '',
-        editable: true
+        editable: true,
+        type: ''
       };
     } else {
       this.newEvent = {
@@ -56,6 +59,7 @@ export class EventSidenavComponent implements OnChanges {
     }
 
     this.originalIdentifier = this.newEvent.identifier;
+    this.selectedEventType = this.newEvent.type;
 
     this.form = new FormGroup({
       id: new FormControl(this.newEvent.id),
@@ -63,7 +67,8 @@ export class EventSidenavComponent implements OnChanges {
       identifier: new FormControl(this.newEvent.identifier),
       displayName: new FormControl(this.newEvent.displayName),
       description: new FormControl(this.newEvent.description),
-      externalLink: new FormControl(this.newEvent.externalLink)
+      externalLink: new FormControl(this.newEvent.externalLink),
+      type: new FormControl(this.selectedEventType)
     });
   }
 
@@ -82,6 +87,8 @@ export class EventSidenavComponent implements OnChanges {
 
   public onSubmit(): void {
     if (!this.isDuplicateIdentifier) {
+      this.form.value.type = this.selectedEventType;
+
       this.modifyEvent.emit(this.form.value);
     } else {
       this.duplicateIdentifier.emit(true);

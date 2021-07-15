@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Event, Group, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
+import { Command, Constraint, Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, informationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,34 @@ export class ValidationService {
     );
   }
 
+  public isCommand(command: Command): command is Command {
+    if (!command.collectionId
+      && command.description
+      && command.displayName
+      && command.editable
+      && command.externalLink
+      && command.identifier
+      && command.type) {
+        return false;
+      }
+
+    return true;
+  }
+
+  public isConstraint(constraint: Constraint): constraint is Constraint {
+    if (!constraint.collectionId
+      && constraint.description
+      && constraint.displayName
+      && constraint.editable
+      && constraint.externalLink
+      && constraint.identifier
+      && constraint.type) {
+        return false;
+      }
+
+    return true;
+  }
+
   public isGroupUpload(groupUpload: GroupUpload): groupUpload is GroupUpload {
     if (!groupUpload.name) {
       return false;
@@ -55,17 +83,15 @@ export class ValidationService {
     return groupMapping.itemIdentifier !== undefined && groupMapping.itemType !== undefined;
   }
 
+  public isInformationType(informationType: InformationType): informationType is InformationType {
+    return informationType.identifier !== undefined
+      && informationType.displayName !== undefined
+      && informationTypes.includes(informationType.type);
+  }
+
   public isMappingsUpload(mappingsUpload: MappingsUpload): mappingsUpload is MappingsUpload {
     return mappingsUpload.name !== undefined && mappingsUpload.itemIdentifier !== undefined
       && mappingsUpload.itemType !== undefined;
-  }
-
-  public validateInformationType(informationType: InformationTypes): boolean {
-    return (
-      informationType.hasOwnProperty('identifier')
-      && informationType.hasOwnProperty('displayName')
-      && informationType.hasOwnProperty('informationType')
-    );
   }
 
   public validateRelationship(relationship: Relationship): boolean {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { csvParse } from 'd3-dsv';
 
 import { ParseTypes } from '../models';
+
 @Injectable({
   providedIn: 'root'
 })

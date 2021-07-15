@@ -3,49 +3,83 @@ import { UserInputError } from 'apollo-server';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
-import { Relationship, InformationType, InformationTypeEnum, Event, State, RelationshipHistory, IdentifierTypeUnion } from '../models';
+import {
+  Relationship,
+  InformationType,
+  Event,
+  State,
+  RelationshipHistory,
+  IdentifierTypeUnion,
+  Constraint
+} from '../models';
+import { RelationshipResponse, RelationshipsResponse } from '../responses';
+import { RelationshipConstants } from '../constants';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
-  @Mutation(() => Relationship)
-  public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<Relationship> {
-    const relationship = Relationship.create(data);
-    await relationship.save();
-
-    this.createRelationshipHistory(relationship);
-
-    return relationship;
-  }
-
-  @Mutation(() => [ Relationship ])
-  public async createRelationships(@Arg('data') data: CreateRelationshipsInput): Promise<Relationship[]> {
-    for (const relationship of data.relationships) {
-      relationship.collectionId = data.collectionId;
-
-      const subject = await this.getSubjectOrTarget(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
-      const target = await this.getSubjectOrTarget(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
-
-      if (!subject) {
-        throw new UserInputError(`Subject with provided identifier: ${relationship.subjectIdentifier} does not exist.`);
-      }
-
-      if (!target) {
-        throw new UserInputError(`Target with provided identifier: ${relationship.targetIdentifier} does not exist.`);
-      }
-
-      relationship.subjectTypeId = subject.id;
-      relationship.targetTypeId = target.id;
-    }
-
-    const relationships = Relationship.create(data.relationships);
-
-    for (const relationship of relationships) {
+  @Mutation(() => RelationshipResponse)
+  public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<RelationshipResponse> {
+    try {
+      const relationship: Relationship = Relationship.create(data);
       await relationship.save();
 
       this.createRelationshipHistory(relationship);
-    }
 
-    return relationships;
+      return {
+        message: 'Relationship Created',
+        relationship,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => RelationshipsResponse)
+  public async createRelationships(@Arg('data') data: CreateRelationshipsInput): Promise<RelationshipsResponse> {
+    try {
+      for (const relationship of data.relationships) {
+        relationship.collectionId = data.collectionId;
+
+        const subject =
+          await this.getSubjectOrTarget(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
+        const target =
+          await this.getSubjectOrTarget(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
+
+        if (!subject) {
+          throw new UserInputError(RelationshipConstants.subjectNotFoundError(relationship.subjectIdentifier));
+        }
+
+        if (!target) {
+          throw new UserInputError(RelationshipConstants.targetNotFoundError(relationship.targetIdentifier));
+        }
+
+        relationship.subjectTypeId = subject.id;
+        relationship.targetTypeId = target.id;
+      }
+
+      const relationships = Relationship.create(data.relationships);
+
+      for (const relationship of relationships) {
+        await relationship.save();
+
+        this.createRelationshipHistory(relationship);
+      }
+
+      return {
+        message: 'Relationships Created',
+        relationships,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
   }
 
   @Query(() => Relationship)
@@ -53,6 +87,15 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     return Relationship.findOne({
       where: {
         id
+      }
+    });
+  }
+
+  @Query(() => [ RelationshipHistory ])
+  public relationshipHistory(@Args() { collectionId }: CollectionIdArgs): Promise<RelationshipHistory[]> {
+    return RelationshipHistory.find({
+      where: {
+        collectionId
       }
     });
   }
@@ -81,75 +124,105 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
       relationship.collectionId,
       relationship.targetType,
       relationship.targetTypeId
-      );
+    );
   }
 
-  @Mutation(() => Relationship)
-  public async updateRelationship(@Arg('data') data: UpdateRelationshipInput): Promise<Relationship> {
-    const relationship = await this.relationship({ id: data.id });
+  @Mutation(() => RelationshipResponse)
+  public async updateRelationship(@Arg('data') data: UpdateRelationshipInput): Promise<RelationshipResponse> {
+    try {
+      const relationship = await this.relationship({ id: data.id });
 
-    // If we can't find a relationship with the given ID, error.
-    if (!relationship) {
-      throw new UserInputError(`Relationship with provided id ${data.id} not found`);
+      // If we can't find a relationship with the given ID, error.
+      if (!relationship) {
+        throw new UserInputError(RelationshipConstants.relationshipNotFoundError(data.id));
+      }
+
+      Object.assign(relationship, data);
+      await relationship.save();
+
+      this.createRelationshipHistory(relationship);
+
+      return {
+        message: 'Relationship Updated',
+        relationship,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    Object.assign(relationship, data);
-    await relationship.save();
-
-    this.createRelationshipHistory(relationship);
-
-    return relationship;
   }
 
   private createRelationshipHistory(relationship: Relationship): void {
-    const relationshipHistory = RelationshipHistory.create(relationship);
-    relationshipHistory.relationshipId = relationship.id;
-    relationshipHistory.updated = new Date();
+    const relationshipHistory = RelationshipHistory.create({
+      collectionId: relationship.collectionId,
+      description: relationship.description,
+      displayName: relationship.displayName,
+      relationshipId: relationship.id,
+      subjectType: relationship.subjectType,
+      subjectTypeId: relationship.subjectTypeId,
+      targetType: relationship.targetType,
+      targetTypeId: relationship.targetTypeId,
+      updated: new Date()
+    });
 
     void relationshipHistory.save();
   }
 
   /**
    * Finds the subject or target of the relationship based on id or identifier.
+   *
    * @param id The optional id of the thing we're looking for.
    * @param identifier The optional identifier of the thing we're looking for.
    */
-  private async getSubjectOrTarget(collectionId: string, relationshipType: InformationTypeEnum, id?: string, identifier?: string)
-    : Promise<typeof IdentifierTypeUnion | undefined> {
+  private async getSubjectOrTarget(collectionId: string, relationshipType: string, id?: string, identifier?: string):
+    Promise<typeof IdentifierTypeUnion | undefined> {
     if (id || identifier) {
       let query;
 
       if (id) {
         query = {
-          id: id
+          id
         };
       } else {
         query = {
-          collectionId: collectionId,
-          identifier: identifier
+          collectionId,
+          identifier
         };
       }
 
-      if (relationshipType === InformationTypeEnum.Event) {
+      if (relationshipType === 'constraint') {
+        const constraint = await Constraint.findOne(query);
+
+        if (constraint) {
+          return constraint;
+        }
+      }
+
+      if (relationshipType === 'event') {
         const event = await Event.findOne(query);
 
         if (event) {
           return event;
         }
       }
-      
-      if (relationshipType === InformationTypeEnum.State) {
+
+      if (relationshipType === 'informationType') {
+        const informationType = await InformationType.findOne(query);
+
+        if (informationType) {
+          return informationType;
+        }
+      }
+
+      if (relationshipType === 'state') {
         const state = await State.findOne(query);
 
         if (state) {
           return state;
         }
-      }
-
-      const informationType = await InformationType.findOne(query);
-
-      if (informationType) {
-        return informationType;
       }
     }
 

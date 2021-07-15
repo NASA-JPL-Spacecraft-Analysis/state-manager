@@ -18,10 +18,8 @@ import { CollectionModule } from '../collections/collections.component';
   templateUrl: 'toolbar.component.html'
 })
 export class ToolbarComponent implements OnDestroy {
-  public eventPageActive: boolean;
-  public relationshipPageActive: boolean;
+  public route: string;
   public selectedCollectionId: string;
-  public statePageActive: boolean;
 
   private subscriptions = new SubSink();
 
@@ -43,11 +41,7 @@ export class ToolbarComponent implements OnDestroy {
       this.router.events.subscribe(event => {
         if (event instanceof NavigationEnd) {
           const splitRoute = event.url.split('/');
-          const route = splitRoute[splitRoute.length - 1];
-
-          this.eventPageActive = route === 'events' || route === 'event-history';
-          this.relationshipPageActive = route === 'relationships' || route === 'relationship-history';
-          this.statePageActive = route === 'states' || route === 'state-history';
+          this.route = splitRoute[splitRoute.length - 1];
         }
       })
     );

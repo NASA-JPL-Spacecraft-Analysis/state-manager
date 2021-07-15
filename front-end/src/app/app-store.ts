@@ -5,10 +5,12 @@ import * as fromRouter from '@ngrx/router-store';
 import { environment } from 'src/environments/environment';
 import {
   CollectionReducer,
+  CommandReducer,
   ConfigReducer,
+  ConstraintReducer,
   EventReducer,
   GroupReducer,
-  InformationTypesReducer,
+  InformationTypeReducer,
   LayoutReducer,
   RelationshipReducer,
   StateReducer,
@@ -17,10 +19,12 @@ import { ConfigState } from './config';
 
 export interface AppState {
   collection: CollectionReducer.CollectionState;
+  commands: CommandReducer.CommandState,
   config: ConfigState;
+  constraints: ConstraintReducer.ConstraintState;
   events: EventReducer.EventState;
   groups: GroupReducer.GroupState;
-  informationTypes: InformationTypesReducer.InformationTypesState;
+  informationTypes: InformationTypeReducer.InformationTypeState;
   layout: LayoutReducer.LayoutState;
   relationships: RelationshipReducer.RelationshipState;
   router: fromRouter.RouterReducerState;
@@ -32,10 +36,12 @@ export const ROOT_REDUCERS = new InjectionToken<
 >('Root reducers token', {
   factory: () => ({
     collection: CollectionReducer.reducer,
+    commands: CommandReducer.reducer,
     config: ConfigReducer.reducer,
+    constraints: ConstraintReducer.reducer,
     events: EventReducer.reducer,
     groups: GroupReducer.reducer,
-    informationTypes: InformationTypesReducer.reducer,
+    informationTypes: InformationTypeReducer.reducer,
     layout: LayoutReducer.reducer,
     relationships: RelationshipReducer.reducer,
     router: fromRouter.routerReducer,

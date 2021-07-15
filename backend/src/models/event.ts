@@ -1,20 +1,33 @@
-import { Entity, Column } from 'typeorm';
-import { ObjectType, Field } from 'type-graphql';
+import { Column, Entity } from 'typeorm';
+import { Field, ID, ObjectType } from 'type-graphql';
 
 import { IdentifierType } from './identifier-type';
 
 @Entity('events')
 @ObjectType()
-export class Event extends IdentifierType {
-  @Field(() => String, { nullable: true })
-  @Column({ default: null, nullable: true })
-  public description?: string;
+export class Event extends IdentifierType {}
 
-  @Field(() => Boolean, { nullable: true })
-  @Column({ default: true, nullable: true })
-  public editable?: boolean;
+@Entity({
+  name: 'event-history',
+  orderBy: {
+    updated: 'DESC'
+  }
+})
+@ObjectType()
+export class EventHistory extends Event {
+  @Column()
+  @Field(() => ID)
+  public eventId!: string;
 
-  @Field(() => String, { nullable: true })
-  @Column({ default: null, nullable: true })
-  public externalLink?: string;
+  @Column()
+  @Field(() => Date)
+  public updated!: Date;
 }
+
+export const eventTypes: Set<string> = new Set([
+  'activity_instance',
+  'command_instance',
+  'evr',
+  'predict_event',
+  'user'
+]);

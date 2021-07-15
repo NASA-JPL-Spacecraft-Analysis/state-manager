@@ -19,7 +19,6 @@ export class EventTableComponent implements OnChanges, OnInit {
 
   public dataSource: MatTableDataSource<Event>;
   public displayedColumns: string[];
-  public eventList: Event[];
 
   constructor() {
     this.displayedColumns = [];
@@ -27,14 +26,8 @@ export class EventTableComponent implements OnChanges, OnInit {
   }
 
   public ngOnChanges(): void {
-    this.eventList = [];
-
     if (this.eventMap && this.displayedColumns) {
-      for (const key of Object.keys(this.eventMap)) {
-        this.eventList.push(this.eventMap[key]);
-      }
-
-      this.dataSource = new MatTableDataSource(this.eventList);
+      this.dataSource = new MatTableDataSource([ ...Object.values(this.eventMap) ]);
 
       this.dataSource.filterPredicate = this.filter;
     }
@@ -45,7 +38,8 @@ export class EventTableComponent implements OnChanges, OnInit {
       'identifier',
       'displayName',
       'description',
-      'externalLink'
+      'externalLink',
+      'type'
     );
 
     if (this.history) {

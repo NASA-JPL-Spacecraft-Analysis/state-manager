@@ -6,15 +6,14 @@ import { Container } from 'typedi';
 
 import {
   CollectionResolver,
-  EventHistoryResolver,
+  CommandResolver,
+  ConstraintResolver,
   EventResolver,
   GroupMappingResolver,
   GroupResolver,
   IdentifierTypeResolver,
   InformationTypeResolver,
-  RelationshipHistoryResolver,
   RelationshipResolver,
-  StateHistoryResolver,
   StateResolver
 } from './resolvers/';
 
@@ -25,15 +24,14 @@ const main = async () => {
     container: Container,
     resolvers: [
       CollectionResolver,
-      EventHistoryResolver,
+      CommandResolver,
+      ConstraintResolver,
       EventResolver,
       GroupMappingResolver,
       GroupResolver,
       IdentifierTypeResolver,
       InformationTypeResolver,
-      RelationshipHistoryResolver,
       RelationshipResolver,
-      StateHistoryResolver,
       StateResolver
     ],
     validate: false

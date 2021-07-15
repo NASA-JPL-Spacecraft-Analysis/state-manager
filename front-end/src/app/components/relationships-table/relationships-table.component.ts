@@ -2,7 +2,7 @@ import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEm
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { RelationshipMap, Relationship, StateMap, InformationTypesMap, InformationTypeEnum, EventMap } from 'src/app/models';
+import { RelationshipMap, Relationship, StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum, CommandMap, ConstraintMap } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -12,10 +12,11 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'relationships-table.component.html'
 })
 export class RelationshipsTableComponent implements OnInit, OnChanges {
-  // True if we're looking at the history page.
+  @Input() public commandMap: CommandMap;
+  @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public history: boolean;
-  @Input() public informationTypesMap: InformationTypesMap;
+  @Input() public informationTypeMap: InformationTypeMap;
   @Input() public relationshipMap: RelationshipMap;
   @Input() public stateMap: StateMap;
 
@@ -67,24 +68,38 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
     this.dataSource.filter = filterValue;
   }
 
-  public getTypeIdentifier(id: number, type: string): string {
+  public getType(id: string, type: string): string {
     switch (type) {
-      case InformationTypeEnum[InformationTypeEnum.Event]:
+      case IdentifierTypeEnum.command:
+        if (this.commandMap && this.commandMap[id]) {
+          return this.commandMap[id].identifier
+        }
+
+        break;
+      case IdentifierTypeEnum.constraint:
+        if (this.constraintMap && this.constraintMap[id]) {
+          return this.constraintMap[id].identifier;
+        }
+
+        break;
+      case IdentifierTypeEnum.event:
         if (this.eventMap && this.eventMap[id]) {
           return this.eventMap[id].identifier;
         }
 
         break;
-      case InformationTypeEnum[InformationTypeEnum.State]:
-        if (this.stateMap && this.stateMap[id]) {
-          return this.stateMap[id].identifier;
+      case IdentifierTypeEnum.informationType:
+        if (this.informationTypeMap && this.informationTypeMap[id]) {
+          return this.informationTypeMap[id].identifier;
         }
 
         break;
-      default:
-        if (type && id && this.informationTypesMap && this.informationTypesMap[type][id]) {
-          return this.informationTypesMap[type][id].identifier;
+      case IdentifierTypeEnum.state:
+        if (this.stateMap && this.stateMap[id]) {
+          return this.stateMap[id].identifier;
         }
+      default:
+        return '';
     }
 
     return '';

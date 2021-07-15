@@ -1,4 +1,6 @@
 export * from './collection.service';
+export * from './command.service';
+export * from './constraint.service';
 export * from './event.service';
 export * from './group.service';
 export * from './http-request-interceptor';
@@ -8,7 +10,7 @@ export * from './mock.information-types.service';
 export * from './mock.parse.service';
 export * from './mock.relationship.service';
 export * from './mock.state.service';
-export * from './information-types.service';
+export * from './information-type.service';
 export * from './mock.validation.service';
 export * from './relationship.service';
 export * from './parse.service';

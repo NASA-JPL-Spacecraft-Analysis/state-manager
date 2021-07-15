@@ -1,7 +1,67 @@
 CREATE TABLE `collections` (
   `id` varchar(36) NOT NULL,
-  `name` varchar(45) DEFAULT NULL,
+  `name` varchar(45) NOT NULL,
   `enabled` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `command_arguments` (
+  `id` varchar(36) NOT NULL,
+  `commandId` varchar(36) NOT NULL,
+  `name` text NOT NULL,
+  `sortOrder` int,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `command_history` (
+  `id` varchar(36) NOT NULL,
+  `commandId` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `description` text,
+  `displayName` text,
+  `externalLink` text,
+  `editable` boolean NOT NULL,
+  `identifier` text NOT NULL,
+  `type` text NOT NULL,
+  `updated` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `commands` (
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `description` text,
+  `displayName` text,
+  `externalLink` text,
+  `editable` boolean NOT NULL,
+  `identifier` text NOT NULL,
+  `type` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `constraint_history` (
+  `id` varchar(36) NOT NULL,
+  `constraintId` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `description` text,
+  `displayName` text,
+  `externalLink` text,
+  `editable` boolean NOT NULL,
+  `identifier` text NOT NULL,
+  `type` text NOT NULL,
+  `updated` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `constraints` (
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `description` text,
+  `displayName` text,
+  `externalLink` text,
+  `editable` boolean NOT NULL,
+  `identifier` text NOT NULL,
+  `type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -29,24 +89,48 @@ CREATE TABLE `events` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `flight_rule_history` (
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) DEFAULT NULL,
+  `identifier` varchar(255) NOT NULL,
+  `displayName` text,
+  `description` text,
+  `externalLink` text,
+  `stage` int(11) NOT NULL,
+  `flightRuleId` varchar(36) NOT NULL,
+  `updated` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `flight_rules` (
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) DEFAULT NULL,
+  `identifier` varchar(255) NOT NULL,
+  `displayName` text,
+  `description` text,
+  `externalLink` text,
+  `stage` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `group_mapping` (
-  `id` VARCHAR(36) NOT NULL,
-  `groupId` VARCHAR(36) NOT NULL,
-  `itemId` VARCHAR(36) NOT NULL,
+  `id` varchar(36) NOT NULL,
+  `groupId` varchar(36) NOT NULL,
+  `itemId` varchar(36) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `groups` (
-  `id` VARCHAR(36) NOT NULL,
-  `collectionId` VARCHAR(36) NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
+  `id` varchar(36) NOT NULL,
+  `collectionId` varchar(36) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `information_types` (
   `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) DEFAULT NULL,
-  `informationType` int(11) NOT NULL,
   `identifier` varchar(45) NOT NULL,
   `displayName` text,
   `description` text,
@@ -95,7 +179,7 @@ CREATE TABLE `state_history` (
   `stateId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
   `displayName` text,
-  `type` text,
+  `dataType` text,
   `units` text,
   `source` text,
   `subsystem` text,
@@ -109,109 +193,10 @@ CREATE TABLE `states` (
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
   `displayName` text,
-  `type` text,
+  `dataType` text,
   `units` text,
   `source` text,
   `subsystem` text,
   `description` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TRIGGER IF EXISTS `state-manager`.`collections_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`collections_BEFORE_INSERT` BEFORE INSERT ON `collections` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`event_history_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`event_history_BEFORE_INSERT` BEFORE INSERT ON `event_history` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`events_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`events_BEFORE_INSERT` BEFORE INSERT ON `events` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`group_mapping_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`group_mapping_BEFORE_INSERT` BEFORE INSERT ON `states` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`groups_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`collections_BEFORE_INSERT` BEFORE INSERT ON `collections` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`information_types_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`information_types_BEFORE_INSERT` BEFORE INSERT ON `information_types` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`relationship_history_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`relationship_history_BEFORE_INSERT` BEFORE INSERT ON `relationship_history` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`relationships_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`relationships_BEFORE_INSERT` BEFORE INSERT ON `relationships` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`state_enumerations_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`state_enumerations_BEFORE_INSERT` BEFORE INSERT ON `state_enumerations` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`state_history_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`state_history_BEFORE_INSERT` BEFORE INSERT ON `state_history` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS `state-manager`.`states_BEFORE_INSERT`;
-DELIMITER $$
-USE `state-manager`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `state-manager`.`states_BEFORE_INSERT` BEFORE INSERT ON `states` FOR EACH ROW
-BEGIN
-	set new.id = uuid();
-END$$
-DELIMITER ;

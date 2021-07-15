@@ -1,4 +1,6 @@
 export * from './collection.effects';
+export * from './command.effects';
+export * from './constraint.effects';
 export * from './event.effects';
 export * from './file-upload.effects';
 export * from './group.effects';

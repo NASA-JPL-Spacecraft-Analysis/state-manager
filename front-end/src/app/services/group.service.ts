@@ -3,9 +3,9 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { CreateGroupMappingsResponse, CreateGroupsResponse, Group, GroupUpload, MappingsUpload, Response } from './../models';
+import { GroupMappingsResponse, GroupResponse, GroupsResponse, Group, GroupUpload, MappingsUpload, Response } from './../models';
 
-import * as gql from './gql';
+import * as gql from './gql/groups';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +15,9 @@ export class GroupService {
     private apollo: Apollo
   ) {}
 
-  public createGroup(collectionId: string, group: Group): Observable<Group> {
+  public createGroup(collectionId: string, group: Group): Observable<GroupResponse> {
     return this.apollo
-      .mutate<{ createGroup: Group }>({
+      .mutate<{ createGroup: GroupResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_GROUP,
         variables: {
@@ -26,12 +26,18 @@ export class GroupService {
           groupMappings: group.groupMappings
         }
       })
-      .pipe(map(({ data: { createGroup } }) => createGroup));
+      .pipe(map(({ data: { createGroup } }) => {
+        if (!createGroup.success) {
+          throw new Error(createGroup.message);
+        }
+
+        return createGroup;
+      }));
   }
 
-  public createGroupMappings(collectionId: string, mappingsUpload: MappingsUpload[]): Observable<CreateGroupMappingsResponse> {
+  public createGroupMappings(collectionId: string, mappingsUpload: MappingsUpload[]): Observable<GroupMappingsResponse> {
     return this.apollo
-      .mutate<{ createGroupMappings: CreateGroupMappingsResponse }>({
+      .mutate<{ createGroupMappings: GroupMappingsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_GROUP_MAPPINGS,
         variables: {
@@ -48,9 +54,9 @@ export class GroupService {
       }))
   }
 
-  public createGroups(collectionId: string, groups: GroupUpload[]): Observable<CreateGroupsResponse> {
+  public createGroups(collectionId: string, groups: GroupUpload[]): Observable<GroupsResponse> {
     return this.apollo
-      .mutate<{ createGroups: CreateGroupsResponse }>({
+      .mutate<{ createGroups: GroupsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_GROUPS,
         variables: {
@@ -97,9 +103,9 @@ export class GroupService {
       .pipe(map(({ data: { groups } }) => groups));
   }
 
-  public updateGroup(group: Group, collectionId: string): Observable<Group> {
+  public updateGroup(group: Group, collectionId: string): Observable<GroupResponse> {
     return this.apollo
-      .mutate<{ updateGroup: Group }>({
+      .mutate<{ updateGroup: GroupResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.UPDATE_GROUP,
         variables: {
@@ -109,6 +115,12 @@ export class GroupService {
           groupMappings: group.groupMappings
         }
       })
-      .pipe(map(({ data: { updateGroup } }) => updateGroup));
+      .pipe(map(({ data: { updateGroup } }) => {
+        if (!updateGroup.success) {
+          throw new Error(updateGroup.message);
+        }
+
+        return updateGroup;
+      }));
   }
 }

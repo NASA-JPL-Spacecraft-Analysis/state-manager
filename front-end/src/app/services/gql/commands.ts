@@ -1,0 +1,183 @@
+import gql from 'graphql-tag';
+
+export const CREATE_COMMAND = gql(`
+  mutation CreateCommand(
+    $arguments: [ModifyCommandArgument!]
+    $collectionId: ID!
+    $description: String
+    $displayName: String!
+    $editable: Boolean!
+    $externalLink: String
+    $identifier: String!
+  ) {
+    createCommand(
+      data: {
+        arguments: $arguments
+        collectionId: $collectionId
+        description: $description
+        displayName: $displayName
+        editable: $editable
+        externalLink: $externalLink
+        identifier: $identifier
+      }
+    ) {
+      command {
+        arguments {
+          commandId
+          name
+          id
+          sortOrder
+        }
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
+    }
+  }
+`);
+
+export const CREATE_COMMANDS = gql(`
+  mutation CreateCommands(
+    $collectionId: ID!
+    $commands: [CreateCommandInput!]!
+  ) {
+    createCommands(
+      data: {
+        collectionId: $collectionId
+        commands: $commands
+      }
+    ) {
+      commands {
+        arguments {
+          commandId
+          name
+          id
+          sortOrder
+        }
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
+    }
+  }
+`);
+
+export const DELETE_ARGUMENTS = gql(`
+  mutation DeleteArguments(
+    $commandId: ID!
+    $deletedArgumentIds: [ID!]!
+  ) {
+    deleteArguments(
+      data: {
+        commandId: $commandId
+        deletedArgumentIds: $deletedArgumentIds
+      }
+    ) {
+      deletedArgumentIds
+      message
+      success
+    }
+  }
+`);
+
+export const GET_COMMAND_HISTORY = gql(`
+  query CommandHistory($collectionId: ID!) {
+    commandHistory(collectionId: $collectionId) {
+      arguments {
+        commandId
+        name
+        id
+        sortOrder
+      }
+      commandId
+      collectionId
+      description
+      displayName
+      editable
+      externalLink
+      id
+      identifier
+      type
+      updated
+    }
+  }
+`);
+
+export const GET_COMMANDS = gql(`
+  query Commands($collectionId: ID!) {
+    commands(collectionId: $collectionId) {
+      arguments {
+        commandId
+        name
+        id
+        sortOrder
+      }
+      collectionId
+      description
+      displayName
+      editable
+      externalLink
+      id
+      identifier
+      type
+    }
+  }
+`);
+
+
+export const UPDATE_COMMAND = gql(`
+  mutation UpdateCommand(
+    $arguments: [ModifyCommandArgument!]
+    $description: String
+    $displayName: String
+    $editable: Boolean
+    $externalLink: String
+    $id: ID!
+    $identifier: String!
+  ) {
+    updateCommand(
+      data: {
+        arguments: $arguments
+        description: $description
+        displayName: $displayName
+        editable: $editable
+        externalLink: $externalLink
+        id: $id
+        identifier: $identifier
+      }
+    ) {
+      command {
+        arguments {
+          commandId
+          name
+          id
+          sortOrder
+        }
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
+    }
+  }
+`);

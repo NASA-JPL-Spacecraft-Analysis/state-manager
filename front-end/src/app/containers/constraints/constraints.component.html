@@ -1,0 +1,35 @@
+<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
+  Constraints
+
+  <div>
+    <button mat-button routerLink="../constraint-history">
+      History 
+    </button>
+
+    <button mat-button (click)="onFileUpload()">
+      Upload Constraints
+    </button>
+
+    <button mat-raised-button color="primary" (click)="onModifyConstraint()">
+      Create New Constraint 
+    </button>
+  </div>
+</mat-toolbar>
+
+<div class="content-container">
+  <div class="content">
+    <constraint-table
+      [constraints]="constraints"
+      (constraintSelected)="onModifyConstraint($event)">
+    </constraint-table>
+  </div>
+
+  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
+    <constraint-sidenav
+      [constraint]="constraint"
+      [constraintIdentifierMap]="constraintIdentifierMap"
+      (duplicateIdentifier)="onDuplicateIdentifier($event)"
+      (modifyConstraint)="onSidenavOutput($event)">
+    </constraint-sidenav>
+  </div>
+</div>

@@ -28,15 +28,18 @@
     <mat-form-field appearance="outline">
       <mat-label>Subject Type</mat-label>
       <mat-select placeholder="Subject Type" [(value)]="subjectType">
-        <mat-option *ngFor="let informationType of informationTypes" [value]="informationType">
-          {{informationType}}
+        <mat-option *ngFor="let type of types" [value]="type">
+          {{type}}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
     <app-relationship-type-picker
+      [commandArgumentMap]="commandArgumentMap"
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [eventMap]="eventMap"
-      [informationTypesMap]="informationTypesMap"
+      [informationTypeMap]="informationTypeMap"
       [isSubject]="true"
       [parentFormGroup]="form"
       [relationship]="newRelationship"
@@ -47,15 +50,18 @@
     <mat-form-field appearance="outline" class="target-type-picker">
       <mat-label>Target Type</mat-label>
       <mat-select placeholder="Target Type" [(value)]="targetType">
-        <mat-option *ngFor="let informationType of informationTypes" [value]="informationType">
-          {{informationType}}
+        <mat-option *ngFor="let type of types" [value]="type">
+          {{type}}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
     <app-relationship-type-picker
+      [commandArgumentMap]="commandArgumentMap"
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [eventMap]="eventMap"
-      [informationTypesMap]="informationTypesMap"
+      [informationTypeMap]="informationTypeMap"
       [parentFormGroup]="form"
       [relationship]="newRelationship"
       [stateMap]="stateMap"

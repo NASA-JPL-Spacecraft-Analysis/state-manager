@@ -43,6 +43,22 @@ export class LayoutEffects {
       switchMap(({ collectionId, dialogType, result }) => {
         if (result) {
           switch (dialogType) {
+            case 'Command': {
+              return [
+                FileUploadActions.uploadCommands({
+                  collectionId,
+                  file: result
+                })
+              ];
+            }
+            case 'Constraint': {
+              return [
+                FileUploadActions.uploadConstraints({
+                  collectionId,
+                  file: result
+                })
+              ];
+            }
             case 'Event': {
               return [
                 FileUploadActions.uploadEvents({

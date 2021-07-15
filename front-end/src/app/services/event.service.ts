@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Event } from './../models';
+import { Event, EventResponse, EventsResponse } from './../models';
 
 import * as gql from './gql';
 
@@ -15,9 +15,9 @@ export class EventService {
     private apollo: Apollo
   ) {}
 
-  public createEvent(collectionId: string, event: Event): Observable<Event> {
+  public createEvent(collectionId: string, event: Event): Observable<EventResponse> {
     return this.apollo
-      .mutate<{ createEvent: Event }>({
+      .mutate<{ createEvent: EventResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_EVENT,
         variables: {
@@ -26,15 +26,22 @@ export class EventService {
           displayName: event.displayName,
           editable: event.editable,
           externalLink: event.externalLink,
-          identifier: event.identifier
+          identifier: event.identifier,
+          type: event.type
         }
       })
-      .pipe(map(({ data: { createEvent }}) => createEvent));
+      .pipe(map(({ data: { createEvent }}) => {
+        if (!createEvent.success) {
+          throw new Error(createEvent.message);
+        }
+
+        return createEvent;
+      }));
   }
 
-  public createEvents(collectionId: string, events: Event[]): Observable<Event[]> {
+  public createEvents(collectionId: string, events: Event[]): Observable<EventsResponse> {
     return this.apollo
-      .mutate<{ createEvents: Event[] }>({
+      .mutate<{ createEvents: EventsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_EVENTS,
         variables: {
@@ -42,7 +49,13 @@ export class EventService {
           events
         }
       })
-      .pipe(map(({ data: { createEvents } }) => createEvents));
+      .pipe(map(({ data: { createEvents } }) => {
+        if (!createEvents.success) {
+          throw new Error(createEvents.message);
+        }
+
+        return createEvents;
+      }));
   }
 
   public getEvents(collectionId: string): Observable<Event[]> {
@@ -69,9 +82,9 @@ export class EventService {
       .pipe(map(({ data: { eventHistory } }) => eventHistory));
   }
 
-  public updateEvent(event: Event): Observable<Event> {
+  public updateEvent(event: Event): Observable<EventResponse> {
     return this.apollo
-      .mutate<{ updateEvent: Event }>({
+      .mutate<{ updateEvent: EventResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.UPDATE_EVENT,
         variables: {
@@ -80,11 +93,16 @@ export class EventService {
           editable: event.editable,
           externalLink: event.externalLink,
           id: event.id,
-          identifier: event.identifier
+          identifier: event.identifier,
+          type: event.type
         }
       })
-      .pipe(
-        map(({ data: { updateEvent }}) => updateEvent)
-      );
+      .pipe(map(({ data: { updateEvent }}) => {
+        if (!updateEvent.success) {
+          throw new Error(updateEvent.message);
+        }
+
+        return updateEvent;
+      }));
   }
 }

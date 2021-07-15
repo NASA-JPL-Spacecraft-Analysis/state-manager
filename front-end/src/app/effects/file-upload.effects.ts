@@ -5,26 +5,159 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { EventService, GroupService, InformationTypesService, ParseService, RelationshipService, StateService, ValidationService} from '../services';
+import { CommandService, ConstraintService, EventService, GroupService, InformationTypeService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
 import { FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
-  StateEnumeration,
-  InformationTypes,
-  Relationship,
   ParseTypes,
+  InformationType,
   StateEnumerationUpload,
   RelationshipUpload,
   State,
   GroupUpload,
-  CreateGroupsResponse,
+  GroupsResponse,
   GroupUploadMappings,
   MappingsUpload,
-  CreateGroupMappingsResponse
+  GroupMappingsResponse,
+  StatesResponse,
+  EnumerationsResponse,
+  EventsResponse,
+  CreateInformationTypesResponse,
+  RelationshipsResponse,
+  Command,
+  CommandsResponse,
+  Constraint,
+  ConstraintsResponse
 } from '../models';
 
 @Injectable()
 export class FileUploadEffects {
+  public uploadCommands = createEffect(() =>
+    this.actions.pipe(
+      ofType(FileUploadActions.uploadCommands),
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, parsedCommands ]) => ({
+        collectionId,
+        parsedCommands
+      })),
+      switchMap(({ collectionId, parsedCommands }) => {
+        const commands = parsedCommands as Command[];
+
+        if (Array.isArray(commands) && commands.length > 0) {
+          for (const command of commands) {
+            command.collectionId = collectionId;
+            // TODO: This will change at some point.
+            command.editable = true;
+
+            if (!this.validationService.isCommand(command)) {
+              return [
+                this.throwFileParseError(commands)
+              ];
+            }
+          }
+
+          return concat(
+            this.commandService.createCommands(
+              collectionId,
+              commands
+            ).pipe(
+              switchMap((createCommands: CommandsResponse) => [
+                FileUploadActions.uploadCommandsSuccess({
+                  commands: createCommands.commands
+                }),
+                ToastActions.showToast({
+                  message: createCommands.message,
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: Error) => [
+                FileUploadActions.uploadCommandsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
+        }
+
+        return [
+          this.throwFileParseError(commands)
+        ];
+      })
+    )
+  );
+
+  public uploadConstraints = createEffect(() =>
+    this.actions.pipe(
+      ofType(FileUploadActions.uploadConstraints),
+      switchMap(({ collectionId, file }) =>
+        forkJoin([
+          of(collectionId),
+          this.parseService.parseFile(file)
+        ])
+      ),
+      map(([ collectionId, parsedConstraints ]) => ({
+        collectionId,
+        parsedConstraints
+      })),
+      switchMap(({ collectionId, parsedConstraints }) => {
+        const constraints = parsedConstraints as Constraint[];
+
+        if (Array.isArray(constraints) && constraints.length > 0) {
+          for (const constraint of constraints) {
+            constraint.collectionId = collectionId;
+            // TODO: This will change at some point.
+            constraint.editable = true;
+
+            if (!this.validationService.isConstraint(constraint)) {
+              return [
+                this.throwFileParseError(constraints)
+              ];
+            }
+          }
+
+          return concat(
+            this.constraintService.createConstraints(
+              collectionId,
+              constraints 
+            ).pipe(
+              switchMap((createConstraints: ConstraintsResponse) => [
+                FileUploadActions.uploadConstraintsSuccess({
+                  constraints: createConstraints.constraints
+                }),
+                ToastActions.showToast({
+                  message: createConstraints.message,
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: Error) => [
+                FileUploadActions.uploadConstraintsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
+        }
+
+        return [
+          this.throwFileParseError(constraints)
+        ];
+      })
+    )
+  );
+
   public uploadInformationTypes = createEffect(() =>
     this.actions.pipe(
       ofType(FileUploadActions.uploadInformationTypes),
@@ -39,40 +172,37 @@ export class FileUploadEffects {
         parsedInformationTypes
       })),
       switchMap(({ collectionId, parsedInformationTypes }) => {
-        const informationTypes = parsedInformationTypes as InformationTypes[];
+        const informationTypes = parsedInformationTypes as InformationType[];
 
         if (Array.isArray(informationTypes) && informationTypes.length > 0) {
           for (const informationType of informationTypes) {
-            if (!this.validationService.validateInformationType(informationType)) {
+            if (!this.validationService.isInformationType(informationType)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(informationTypes)
               ];
             }
           }
 
           return concat(
-            this.informationTypesService.createInformationTypes(
+            this.informationTypeService.createInformationTypes(
               collectionId,
               informationTypes
             ).pipe(
-              switchMap((createdInformationTypes: InformationTypes[]) => [
+              switchMap((createInformationTypes: CreateInformationTypesResponse) => [
                 FileUploadActions.uploadInformationTypesSuccess({
-                  informationTypes: createdInformationTypes
+                  informationTypes: createInformationTypes.informationTypes
                 }),
                 ToastActions.showToast({
-                  message: 'Information types uploaded',
+                  message: createInformationTypes.message,
                   toastType: 'success'
                 })
               ]),
-              catchError((error: HttpErrorResponse) => [
+              catchError((error: Error) => [
                 FileUploadActions.uploadInformationTypesFailure({
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.error,
+                  message: error.message,
                   toastType: 'error'
                 })
               ])
@@ -107,10 +237,7 @@ export class FileUploadEffects {
           for (const stateEnumeration of stateEnumerations) {
             if (!this.validationService.validateStateEnumerationUpload(stateEnumeration)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(stateEnumerations)
               ];
             }
           }
@@ -120,20 +247,20 @@ export class FileUploadEffects {
               collectionId,
               stateEnumerations
             ).pipe(
-              switchMap((createStateEnumerations: StateEnumeration[]) => {
-                let stateId;
+              switchMap((saveEnumerations: EnumerationsResponse) => {
+                let stateId: string;
 
-                if (createStateEnumerations.length > 0) {
-                  stateId = createStateEnumerations[0].stateId;
+                if (saveEnumerations.enumerations.length > 0) {
+                  stateId = saveEnumerations.enumerations[0].stateId;
                 }
 
                 return [
                   StateActions.saveEnumerationsSuccess({
-                    enumerations: createStateEnumerations,
+                    enumerations: saveEnumerations.enumerations,
                     stateId
                   }),
                   ToastActions.showToast({
-                    message: 'Enumerations uploaded',
+                    message: saveEnumerations.message,
                     toastType: 'success'
                   })
                 ];
@@ -143,7 +270,7 @@ export class FileUploadEffects {
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.toString(),
+                  message: error.message,
                   toastType: 'error'
                 })
               ])
@@ -178,10 +305,7 @@ export class FileUploadEffects {
           for (const event of events) {
             if (!this.validationService.validateEvent(event)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(events)
               ];
             }
           }
@@ -191,25 +315,25 @@ export class FileUploadEffects {
               collectionId,
               events
             ).pipe(
-              switchMap((createEvents: Event[]) => [
+              switchMap((createEvents: EventsResponse) => [
                 FileUploadActions.uploadEventsSuccess({
-                  events: createEvents
+                  events: createEvents.events
                 }),
                 ToastActions.showToast({
-                  message: 'Events uploaded',
+                  message: createEvents.message,
                   toastType: 'success'
                 })
+              ]),
+              catchError((error: Error) => [
+                FileUploadActions.uploadEventsFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
               ])
-            ),
-            catchError((error: HttpErrorResponse) => [
-              FileUploadActions.uploadEventsFailure({
-                error
-              }),
-              ToastActions.showToast({
-                message: error.error,
-                toastType: 'error'
-              })
-            ])
+            )
           );
         }
 
@@ -276,7 +400,7 @@ export class FileUploadEffects {
               collectionId,
               groups
             ).pipe(
-              switchMap((createGroups: CreateGroupsResponse) => [
+              switchMap((createGroups: GroupsResponse) => [
                 FileUploadActions.uploadGroupsSuccess({
                   groups: createGroups.groups
                 }),
@@ -325,10 +449,7 @@ export class FileUploadEffects {
           for (const relationship of relationships) {
             if (!this.validationService.validateRelationship(relationship)) {
               return [
-                ToastActions.showToast({
-                  message: 'File parsing failed',
-                  toastType: 'error'
-                })
+                this.throwFileParseError(relationships)
               ];
             }
           }
@@ -338,21 +459,21 @@ export class FileUploadEffects {
               collectionId,
               relationships
             ).pipe(
-              switchMap((createdRelationships: Relationship[]) => [
+              switchMap((createRelationships: RelationshipsResponse) => [
                 FileUploadActions.uploadRelationshipsSuccess({
-                  relationships: createdRelationships
+                  relationships: createRelationships.relationships
                 }),
                 ToastActions.showToast({
-                  message: 'Relationship(s) uploaded',
+                  message: createRelationships.message,
                   toastType: 'success'
                 })
               ]),
-              catchError((error: HttpErrorResponse) => [
+              catchError((error: Error) => [
                 FileUploadActions.uploadRelationshipsFailure({
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.error,
+                  message: error.message,
                   toastType: 'error'
                 })
               ])
@@ -401,21 +522,21 @@ export class FileUploadEffects {
               collectionId,
               states
             ).pipe(
-              switchMap((createStates) => [
+              switchMap((createStates: StatesResponse) => [
                 StateActions.createStatesSuccess({
-                  states: createStates
+                  states: createStates.states
                 }),
                 ToastActions.showToast({
-                  message: 'State(s) uploaded',
+                  message: createStates.message,
                   toastType: 'success'
                 })
               ]),
-              catchError((error: HttpErrorResponse) => [
+              catchError((error: Error) => [
                 FileUploadActions.uploadStatesFailure({
                   error
                 }),
                 ToastActions.showToast({
-                  message: error.toString(),
+                  message: error.message,
                   toastType: 'error'
                 })
               ])
@@ -432,9 +553,11 @@ export class FileUploadEffects {
 
   constructor(
     private actions: Actions,
+    private commandService: CommandService,
+    private constraintService: ConstraintService,
     private eventService: EventService,
     private groupService: GroupService,
-    private informationTypesService: InformationTypesService,
+    private informationTypeService: InformationTypeService,
     private parseService: ParseService,
     private stateService: StateService,
     private relationshipService: RelationshipService,
@@ -451,7 +574,7 @@ export class FileUploadEffects {
         collectionId,
         mappingsUpload
       ).pipe(
-        switchMap((createGroupMappings: CreateGroupMappingsResponse) => [
+        switchMap((createGroupMappings: GroupMappingsResponse) => [
           FileUploadActions.uploadGroupMappingsSuccess({
             groupMappings: createGroupMappings.groupMappings
           }),

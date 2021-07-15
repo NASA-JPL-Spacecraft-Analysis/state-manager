@@ -33,10 +33,12 @@ export class StateTableComponent implements OnChanges, OnInit {
       'identifier',
       'displayName',
       'type',
+      'dataType',
       'units',
       'source',
       'subsystem',
-      'description'
+      'description',
+      'externalLink'
     );
 
     if (this.history) {

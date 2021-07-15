@@ -5,8 +5,8 @@ import { SubSink } from 'subsink';
 
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { AppState } from 'src/app/app-store';
-import { StateMap, RelationshipMap, InformationTypesMap, EventMap } from 'src/app/models';
-import { getStates, getRelationshipHistory, getInformationTypes, getEventMap } from 'src/app/selectors';
+import { StateMap, RelationshipMap, InformationTypeMap, EventMap } from 'src/app/models';
+import { getStates, getRelationshipHistory, getEventMap, getInformationTypeMap } from 'src/app/selectors';
 import { MaterialModule } from 'src/app/material';
 
 @Component({
@@ -17,7 +17,7 @@ import { MaterialModule } from 'src/app/material';
 })
 export class RelationshipHistoryComponent implements OnDestroy {
   public eventMap: EventMap;
-  public informationTypesMap: InformationTypesMap;
+  public informationTypeMap: InformationTypeMap;
   public relationshipHistoryMap: RelationshipMap;
   public stateMap: StateMap;
 
@@ -32,8 +32,8 @@ export class RelationshipHistoryComponent implements OnDestroy {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getInformationTypes)).subscribe(informationTypesMap => {
-        this.informationTypesMap = informationTypesMap;
+      this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {
+        this.informationTypeMap = informationTypeMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getRelationshipHistory)).subscribe(relationshipHistoryMap => {

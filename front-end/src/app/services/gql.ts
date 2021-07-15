@@ -1,20 +1,5 @@
 import gql from 'graphql-tag';
 
-export const CREATE_COLLECTION = gql(`
-  mutation CreateCollection(
-    $name: String!
-  ) {
-    createCollection(
-      data: {
-        name: $name
-      }
-    ) {
-      id
-      name
-    }
-  }
-`);
-
 export const CREATE_EVENT = gql(`
   mutation CreateEvent(
     $collectionId: ID!
@@ -23,6 +8,7 @@ export const CREATE_EVENT = gql(`
     $editable: Boolean
     $externalLink: String
     $identifier: String!
+    $type: String!
   ) {
     createEvent(
       data: {
@@ -32,9 +18,21 @@ export const CREATE_EVENT = gql(`
         editable: $editable
         externalLink: $externalLink
         identifier: $identifier
+        type: $type
       }
     ) {
-      id
+      event {
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
     }
   }
 `);
@@ -59,247 +57,13 @@ export const CREATE_EVENTS = gql(`
   }
 `);
 
-export const CREATE_GROUP = gql(`
-  mutation CreateGroup(
-    $collectionId: ID!
-    $groupMappings: [CreateGroupMappingInput!]!
-    $name: String!
-  ) {
-    createGroup(
-      data: {
-        collectionId: $collectionId
-        groupMappings: $groupMappings
-        name: $name
-      }
-    ) {
-      groupMappings {
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-      id
-      name
-    }
-  }
-`);
-
-export const CREATE_GROUP_MAPPINGS = gql(`
-  mutation CreateGroupMappings(
-    $collectionId: ID!
-    $groupMappings: [UploadGroupMappingInput!]!
-  ) {
-    createGroupMappings(
-      data: {
-        collectionId: $collectionId
-        groupMappings: $groupMappings
-      }
-    ) {
-      groupMappings {
-        groupId
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-      message
-      success
-    }
-  }
-`);
-
-export const CREATE_GROUPS = gql(`
-  mutation CreateGroups(
-    $collectionId: ID!
-    $groups: [UploadGroupInput!]!
-  ) {
-    createGroups(
-      data: {
-        collectionId: $collectionId
-        groups: $groups
-      }
-    ) {
-      groups {
-        groupMappings {
-          item {
-            ... on Event {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on InformationType {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-              informationType: type 
-            }
-            ... on State {
-              description
-              displayName
-              enumerations {
-                id
-                label
-                value
-              }
-              id
-              identifier
-              source
-              subsystem
-              type
-              units
-            }
-          }
-        }
-        id
-        name
-      }
-      message
-      success
-    }
-  }
-`);
-
-
-export const CREATE_INFORMATION_TYPES = gql(`
-  mutation CreateInformationTypes(
-    $collectionId: ID!
-    $informationTypes: [CreateInformationTypeInput!]!
-  ) {
-    createInformationTypes(
-      data: {
-        collectionId: $collectionId
-        informationTypes: $informationTypes
-      }
-    ) {
-      id
-      identifier
-      description
-      displayName
-      externalLink
-      type
-    }
-  }
-`);
-
-export const CREATE_RELATIONSHIP = gql(`
-  mutation CreateRelationship(
-    $collectionId: ID!
-    $description: String
-    $displayName: String!
-    $subjectType: InformationTypeEnum!
-    $subjectTypeId: ID!
-    $targetType: InformationTypeEnum!
-    $targetTypeId: ID!
-  ) {
-    createRelationship(
-      data: {
-        collectionId: $collectionId
-        description: $description
-        displayName: $displayName
-        subjectType: $subjectType
-        subjectTypeId: $subjectTypeId
-        targetType: $targetType
-        targetTypeId: $targetTypeId
-      }
-    ) {
-      description
-      displayName
-      id
-      subjectType
-      subjectTypeId
-      targetType
-      targetTypeId
-    }
-  }
-`);
-
-export const CREATE_RELATIONSHIPS = gql(`
-  mutation CreateRelationships(
-    $collectionId: ID!
-    $relationships: [UploadRelationshipInput!]!
-  ) {
-    createRelationships(
-      data: {
-        collectionId: $collectionId
-        relationships: $relationships
-      }
-    ) {
-      description
-      displayName
-      id
-      subjectType
-      subjectTypeId
-      targetType
-      targetTypeId
-    }
-  }
-`);
-
 export const CREATE_STATE = gql(`
   mutation CreateState(
     $collectionId: ID!
+    $dataType: String!
     $description: String
     $displayName: String!
+    $externalLink: String
     $identifier: String!
     $source: String!
     $subsystem: String!
@@ -309,8 +73,10 @@ export const CREATE_STATE = gql(`
     createState(
       data: {
         collectionId: $collectionId
+        dataType: $dataType
         description: $description
         displayName: $displayName
+        externalLink: $externalLink
         identifier: $identifier
         source: $source
         subsystem: $subsystem
@@ -318,7 +84,21 @@ export const CREATE_STATE = gql(`
         units: $units
       }
     ) {
-      id
+      message
+      state {
+        collectionId
+        dataType
+        description
+        displayName
+        externalLink
+        id
+        identifier
+        source
+        subsystem
+        type
+        units
+      }
+      success
     }
   }
 `);
@@ -334,25 +114,20 @@ export const CREATE_STATES = gql(`
         states: $states
       }
     ) {
-      description
-      displayName
-      id
-      identifier
-      source
-      subsystem
-      type
-      units
-    }
-  }
-`);
-
-export const DELETE_COLLECTION = gql(`
-  mutation DeleteCollection(
-    $id: ID!
-  ) {
-    deleteCollection(
-      id: $id
-    ) {
+      message
+      states {
+        collectionId
+        dataType
+        description
+        displayName
+        externalLink
+        id
+        identifier
+        source
+        subsystem
+        type
+        units
+      }
       success
     }
   }
@@ -387,23 +162,17 @@ export const DELETE_ENUMERATIONS = gql(`
   }
 `);
 
-export const GET_COLLECTIONS = gql(`
-  query collections{
-    collections {
-      id
-      name
-    }
-  }
-`);
-
 export const GET_EVENTS = gql(`
   query events($collectionId: ID!) {
     events(collectionId: $collectionId) {
+      collectionId
       description
       displayName
+      editable
       externalLink
       id
       identifier
+      type
     }
   }
 `);
@@ -411,98 +180,15 @@ export const GET_EVENTS = gql(`
 export const GET_EVENT_HISTORY = gql(`
   query eventHistory($collectionId: ID!) {
     eventHistory(collectionId: $collectionId) {
+      collectionId
       description
       displayName
+      editable
       eventId
       externalLink
       id
       identifier
-      updated
-    }
-  }
-`);
-
-export const GET_GROUPS_AND_MAPPINGS = gql(`
-  query groups($collectionId: ID!) {
-    groups(collectionId: $collectionId) {
-      name
-      id
-      groupMappings {
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-    }
-  }
-`);
-
-export const GET_INFORMATION_TYPES = gql(`
-  query informationTypes($collectionId: ID!) {
-    informationTypes(collectionId: $collectionId) {
-      description
-      displayName
-      externalLink
-      id
-      identifier
-      type 
-    }
-  }
-`);
-
-export const GET_RELATIONSHIPS = gql(`
-  query relationships($collectionId: ID!) {
-    relationships(collectionId: $collectionId) {
-      description
-      displayName
-      id
-      subjectType
-      subjectTypeId
-      targetType
-      targetTypeId
-    }
-  }
-`);
-
-export const GET_RELATIONSHIP_HISTORY = gql(`
-  query relationshipHistory($collectionId: ID!) {
-    relationshipHistory(collectionId: $collectionId) {
-      description
-      displayName
-      id
-      relationshipId
-      subjectType
-      subjectTypeId
-      targetType
-      targetTypeId
+      type
       updated
     }
   }
@@ -511,13 +197,16 @@ export const GET_RELATIONSHIP_HISTORY = gql(`
 export const GET_STATES = gql(`
   query states($collectionId: ID!) {
     states(collectionId: $collectionId) {
+      dataType
       description
       displayName
+      editable
       enumerations {
         id
         label
         value
       }
+      externalLink
       id
       identifier
       source
@@ -531,8 +220,11 @@ export const GET_STATES = gql(`
 export const GET_STATE_HISTORY = gql(`
   query stateHistory($collectionId: ID!) {
     stateHistory(collectionId: $collectionId) {
+      dataType
       description
       displayName
+      editable
+      externalLink
       id
       identifier
       source
@@ -556,27 +248,14 @@ export const SAVE_ENUMERATIONS = gql(`
         enumerations: $enumerations
       }
     ) {
-      id
-      label
-      value
-      stateId
-    }
-  }
-`);
-
-export const UPDATE_COLLECTION = gql(`
-  mutation UpdateCollection(
-    $id: ID!
-    $name: String!
-  ) {
-    updateCollection(
-      data: {
-        id: $id
-        name: $name
+      enumerations {
+        id
+        label
+        value
+        stateId
       }
-    ) {
-      id
-      name
+      message
+      success
     }
   }
 `);
@@ -589,6 +268,7 @@ export const UPDATE_EVENT = gql(`
     $externalLink: String
     $id: ID!
     $identifier: String!
+    $type: String!
   ) {
     updateEvent(
       data: {
@@ -598,104 +278,31 @@ export const UPDATE_EVENT = gql(`
         externalLink: $externalLink
         id: $id
         identifier: $identifier
+        type: $type
       }
     ) {
-      id
-    }
-  }
-`);
-
-export const UPDATE_GROUP = gql(`
-  mutation UpdateGroup(
-    $collectionId: ID!
-    $groupMappings: [CreateGroupMappingInput!]!
-    $id: ID!
-    $name: String!
-  ) {
-    updateGroup(
-      data: {
-        collectionId: $collectionId
-        groupMappings: $groupMappings
-        id: $id
-        name: $name
+      event {
+        collectionId
+        description
+        displayName
+        editable
+        externalLink
+        id
+        identifier
+        type
       }
-    ) {
-      groupMappings {
-        item {
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
-      }
-      id
-      name
-    }
-  }
-`);
-
-export const UPDATE_RELATIONSHIP = gql(`
-  mutation UpdateRelationship(
-    $description: String
-    $displayName: String!
-    $id: ID!
-    $subjectType: InformationTypeEnum!
-    $subjectTypeId: ID!
-    $targetType: InformationTypeEnum!
-    $targetTypeId: ID!
-  ) {
-    updateRelationship(
-      data: {
-        description: $description
-        displayName: $displayName
-        id: $id
-        subjectType: $subjectType
-        subjectTypeId: $subjectTypeId
-        targetType: $targetType
-        targetTypeId: $targetTypeId
-      }
-    ) {
-      description
-      displayName
-      id
-      subjectType
-      subjectTypeId
-      targetType
-      targetTypeId
+      message
+      success
     }
   }
 `);
 
 export const UPDATE_STATE = gql(`
   mutation UpdateState(
+    $dataType: String!
     $description: String
     $displayName: String!
+    $externalLink: String
     $id: ID!
     $identifier: String!
     $source: String!
@@ -705,8 +312,10 @@ export const UPDATE_STATE = gql(`
   ) {
     updateState(
       data: {
+        dataType: $dataType
         description: $description
         displayName: $displayName
+        externalLink: $externalLink
         id: $id
         identifier: $identifier
         source: $source
@@ -715,7 +324,21 @@ export const UPDATE_STATE = gql(`
         units: $units
       }
     ) {
-      id
+      message
+      state {
+        collectionId
+        dataType
+        description
+        displayName
+        externalLink
+        id
+        identifier
+        source
+        subsystem
+        type
+        units
+      }
+      success
     }
   }
 `);

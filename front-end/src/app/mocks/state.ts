@@ -1,27 +1,35 @@
 import { IdentifierMap, State, StateMap } from '../models';
 
 export const mockStateOne: State = {
+  collectionId: '1',
+  dataType: 'data type',
+  description: 'This is a test string.',
+  displayName: 'Test',
+  editable: true,
+  enumerations: [],
+  externalLink: '',
   id: '1',
   identifier: 'TEST',
-  displayName: 'Test',
-  type: 'test string',
-  units: 'na',
   source: 'na',
   subsystem: 'na',
-  description: 'This is a test string.',
-  enumerations: []
+  type: 'test string',
+  units: 'na'
 };
 
 export const mockStateTwo: State = {
+  collectionId: '1',
+  dataType: 'data type',
+  description: 'This is test string 1.',
+  displayName: 'Test 1',
+  editable: true,
+  enumerations: [],
+  externalLink: '',
   id: '2',
   identifier: 'TEST_1',
-  displayName: 'Test 1',
-  type: 'test string 1',
-  units: 'na',
   source: 'na',
   subsystem: 'na',
-  description: 'This is test string 1.',
-  enumerations: []
+  type: 'test string 1',
+  units: 'na'
 };
 
 export const mockStateIdentifierMap: IdentifierMap = {

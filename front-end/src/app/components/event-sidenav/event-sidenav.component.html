@@ -49,6 +49,14 @@
           formControlName="externalLink"
         />
       </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Event Type" [(value)]="selectedEventType">
+          <mat-option *ngFor="let eventType of eventTypes" [value]="eventType">
+            {{eventType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
     <div class="sidenav-actions">

@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
+import { Observable, merge, of, EMPTY } from 'rxjs';
 
 import { StateService } from '../services';
 import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
-import { Observable, merge, of, EMPTY } from 'rxjs';
 import { ofRoute, mapToParam } from '../functions/router';
+import { StateResponse } from '../models';
 
 @Injectable()
 export class StateEffects {
@@ -19,23 +20,20 @@ export class StateEffects {
           collectionId,
           newState
         ).pipe(
-          switchMap((state) => [
+          switchMap((createState: StateResponse) => [
             LayoutActions.toggleSidenav({
               showSidenav: false
             }),
             StateActions.createStateSuccess({
-              state: {
-                ...newState,
-                id: state.id
-              }
+              state: createState.state
             }),
             StateActions.saveEnumerations({
               collectionId,
-              stateId: newState.id,
+              stateId: createState.state.id,
               enumerations: newState.enumerations
             }),
             ToastActions.showToast({
-              message: 'State created',
+              message: createState.message,
               toastType: 'success'
             })
           ]),
@@ -44,7 +42,7 @@ export class StateEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'State creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -64,11 +62,19 @@ export class StateEffects {
           switchMap((deleteEnumerations) => [
             StateActions.deleteEnumerationsSuccess({
               deletedEnumerationIds
+            }),
+            ToastActions.showToast({
+              message: deleteEnumerations.message,
+              toastType: 'success'
             })
           ]),
           catchError((error: Error) => [
             StateActions.deleteEnumerationsFailure({
               error
+            }),
+            ToastActions.showToast({
+              message: error.message,
+              toastType: 'error'
             })
           ])
         )
@@ -126,10 +132,14 @@ export class StateEffects {
           collectionId,
           saveEnumerations
         ).pipe(
-          switchMap((savedEnumerations) => [
+          switchMap((saveEnumerations) => [
             StateActions.saveEnumerationsSuccess({
-              enumerations: savedEnumerations,
+              enumerations: saveEnumerations.enumerations,
               stateId
+            }),
+            ToastActions.showToast({
+              message: saveEnumerations.message,
+              toastType: 'success'
             })
           ]),
           catchError((error: Error) => [
@@ -137,7 +147,7 @@ export class StateEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'State enumeration save failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -153,22 +163,21 @@ export class StateEffects {
         this.stateService.updateState(
           updatedState
         ).pipe(
-          switchMap((state) => [
+          switchMap((updateState: StateResponse) => [
             StateActions.updateStateSuccess({
-              state: {
-                ...updatedState,
-                id: state.id
-              }
+              state: updateState.state
             }),
             ToastActions.showToast({
-              message: 'State updated',
+              message: updateState.message,
               toastType: 'success'
             })
           ]),
           catchError((error: Error) => [
-            StateActions.updateStateFailure({ error }),
+            StateActions.updateStateFailure({
+              error
+            }),
             ToastActions.showToast({
-              message: 'State updating failed',
+              message: error.message,
               toastType: 'error'
             })
           ])

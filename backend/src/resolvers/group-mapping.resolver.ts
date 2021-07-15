@@ -38,7 +38,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
         }
 
         if (!group) {
-          throw new UserInputError(GroupConstants.groupNotFoundError(groupMapping.name ? groupMapping.name : 'undefined'));
+          throw new UserInputError(GroupConstants.groupNotFoundNameError(groupMapping.name ? groupMapping.name : 'undefined'));
         }
 
         // Find the item the mapping is trying to bind to.

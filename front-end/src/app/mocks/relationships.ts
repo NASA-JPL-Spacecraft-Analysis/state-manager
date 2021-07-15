@@ -1,11 +1,11 @@
-import { InformationTypeEnum, Relationship, RelationshipHistory, RelationshipMap } from '../models';
+import { Relationship, RelationshipHistory, RelationshipMap } from '../models';
 
 export const mockRelationship: Relationship = {
   id: '1',
   displayName: 'Test relationship name',
   description: 'Test relationship description',
-  subjectType: InformationTypeEnum.Activity,
-  targetType: InformationTypeEnum.Activity,
+  subjectType: 'informationType',
+  targetType: 'informationType',
   subjectTypeId: '1',
   targetTypeId: '2'
 };

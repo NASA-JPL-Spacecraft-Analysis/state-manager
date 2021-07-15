@@ -18,11 +18,13 @@
   </div>
 </mat-toolbar>
 
-<div class="relationships-content-container">
-  <div class="relationships-content">
+<div class="content-container">
+  <div class="content">
     <app-relationships-table
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [eventMap]="eventMap"
-      [informationTypesMap]="informationTypesMap"
+      [informationTypeMap]="informationTypeMap"
       [relationshipMap]="relationshipMap"
       [stateMap]="stateMap"
       (relationshipSelected)="onModifyRelationship($event)">
@@ -31,8 +33,10 @@
 
   <div class="sidenav" *ngIf="showSidenav">
     <app-relationship-sidenav
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [eventMap]="eventMap"
-      [informationTypesMap]="informationTypesMap"
+      [informationTypeMap]="informationTypeMap"
       [relationship]="relationship"
       [stateMap]="stateMap"
       (formError)="onFormErrorOutput($event)"

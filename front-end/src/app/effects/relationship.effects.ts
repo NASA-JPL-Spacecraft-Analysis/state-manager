@@ -5,10 +5,10 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, EMPTY } from 'rxjs';
 
-import { EventService, InformationTypesService, StateService, RelationshipService } from '../services';
-import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypesActions, StateActions } from '../actions';
+import { EventService, InformationTypeService, StateService, RelationshipService, CommandService, ConstraintService } from '../services';
+import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions, CommandActions, ConstraintActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { Relationship } from '../models';
+import { RelationshipResponse } from '../models';
 
 @Injectable()
 export class RelationshipEffects {
@@ -21,12 +21,12 @@ export class RelationshipEffects {
           collectionId,
           relationship
         ).pipe(
-          switchMap((createdRelationship: Relationship) => [
+          switchMap((createRelationship: RelationshipResponse) => [
             RelationshipActions.createRelationshipSuccess({
-              relationship: createdRelationship
+              relationship: createRelationship.relationship
             }),
             ToastActions.showToast({
-              message: 'Relationship created',
+              message: createRelationship.message,
               toastType: 'success'
             })
           ]),
@@ -35,7 +35,7 @@ export class RelationshipEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Relationship creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -74,12 +74,12 @@ export class RelationshipEffects {
         this.relationshipService.updateRelationship(
           relationship
         ).pipe(
-          switchMap((updatedRelationship: Relationship) => [
+          switchMap((updateRelationship: RelationshipResponse) => [
             RelationshipActions.updateRelationshipSuccess({
-              relationship: updatedRelationship
+              relationship: updateRelationship.relationship
             }),
             ToastActions.showToast({
-              message: 'Relationship edited',
+              message: updateRelationship.message,
               toastType: 'success'
             })
           ]),
@@ -88,7 +88,7 @@ export class RelationshipEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Updating relationship failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -99,8 +99,10 @@ export class RelationshipEffects {
 
   constructor(
     private actions: Actions,
+    private commandService: CommandService,
+    private constraintService: ConstraintService,
     private eventService: EventService,
-    private informationTypesService: InformationTypesService,
+    private informationTypeService: InformationTypeService,
     private router: Router,
     private relationshipService: RelationshipService,
     private stateService: StateService
@@ -109,6 +111,34 @@ export class RelationshipEffects {
   private getRelationships(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
     const sharedActions = merge(
+      this.commandService.getCommands(
+        collectionId
+      ).pipe(
+        map(commands => CommandActions.setCommands({
+          commands
+        })),
+        catchError(
+          (error: Error) => [
+            CommandActions.fetchCommandsFailure({
+              error
+            })
+          ]
+        )
+      ),
+      this.constraintService.getConstraints(
+        collectionId
+      ).pipe(
+        map(constraints => ConstraintActions.setConstraints({
+          constraints
+        })),
+        catchError(
+          (error: Error) => [
+            ConstraintActions.fetchConstraintsFailure({
+              error
+            })
+          ]
+        )
+      ),
       this.eventService.getEvents(
         collectionId
       ).pipe(
@@ -123,15 +153,15 @@ export class RelationshipEffects {
           ]
         )
       ),
-      this.informationTypesService.getInformationTypes(
+      this.informationTypeService.getInformationTypes(
         collectionId
       ).pipe(
-        map(informationTypes => InformationTypesActions.setInformationTypes({
+        map(informationTypes => InformationTypeActions.setInformationTypes({
           informationTypes
         })),
         catchError(
           (error: Error) => [
-            InformationTypesActions.fetchInformationTypesFailure({
+            InformationTypeActions.fetchInformationTypesFailure({
               error
             })
           ]

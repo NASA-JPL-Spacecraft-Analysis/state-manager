@@ -7,11 +7,17 @@ export class CreateStateInput implements Partial<State> {
   @Field(() => ID, { nullable: true })
   public collectionId: string;
 
+  @Field()
+  public dataType!: string;
+
   @Field({ nullable: true })
   public description?: string;
 
   @Field({ nullable: true })
   public displayName?: string;
+
+  @Field({ nullable: true })
+  public externalLink?: string;
 
   @Field()
   public identifier!: string;
@@ -22,8 +28,8 @@ export class CreateStateInput implements Partial<State> {
   @Field({ nullable: true })
   public subsystem?: string;
 
-  @Field({ nullable: true })
-  public type?: string;
+  @Field()
+  public type!: string;
 
   @Field({ nullable: true })
   public units?: string;

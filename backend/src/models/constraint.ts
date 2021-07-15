@@ -1,0 +1,26 @@
+import { Field, ID, ObjectType } from 'type-graphql';
+import { Column, Entity } from 'typeorm';
+
+import { IdentifierType } from './identifier-type';
+
+@Entity('constraints')
+@ObjectType()
+export class Constraint extends IdentifierType {}
+
+@Entity('constraint_history')
+@ObjectType()
+export class ConstraintHistory extends Constraint {
+  @Column()
+  @Field(() => ID)
+  public constraintId!: string;
+
+  @Column()
+  @Field(() => Date)
+  public updated!: Date;
+}
+
+export const constraintTypes: Set<string> = new Set([
+  'channel_alarm',
+  'downlink_rule_check',
+  'flight_rule_check'
+]);

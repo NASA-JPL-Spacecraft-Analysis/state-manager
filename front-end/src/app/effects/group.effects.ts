@@ -9,7 +9,7 @@ import { CollectionActions, EventActions, GroupActions, LayoutActions, StateActi
 import { AppState } from '../app-store';
 import { mapToParam, ofRoute } from '../functions/router';
 import { EventService, GroupService, StateService } from '../services';
-import { Group, Response } from '../models';
+import { GroupResponse, Response } from '../models';
 
 @Injectable()
 export class GroupEffects {
@@ -30,15 +30,12 @@ export class GroupEffects {
           collectionId,
           group
         ).pipe(
-          switchMap((createdGroup: Group) => [
+          switchMap((createGroup: GroupResponse) => [
             GroupActions.createGroupSuccess({
-              group: {
-                ...createdGroup,
-                id: createdGroup.id
-              }
+              group: createGroup.group
             }),
             ToastActions.showToast({
-              message: 'Group Created',
+              message: createGroup.message,
               toastType: 'success'
             })
           ]),
@@ -47,7 +44,7 @@ export class GroupEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Group creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -135,14 +132,12 @@ export class GroupEffects {
           group,
           collectionId
         ).pipe(
-          switchMap((updateGroup: Group) => [
+          switchMap((updateGroup: GroupResponse) => [
             GroupActions.updateGroupSuccess({
-              group: {
-                ...updateGroup
-              }
+              group: updateGroup.group
             }),
             ToastActions.showToast({
-              message: 'Group Updated',
+              message: updateGroup.message,
               toastType: 'success'
             })
           ]),
@@ -151,7 +146,7 @@ export class GroupEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Group update failed',
+              message: error.message,
               toastType: 'error'
             })
           ])

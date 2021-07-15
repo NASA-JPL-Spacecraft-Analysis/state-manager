@@ -1,0 +1,45 @@
+<div *ngIf="showTable; else noInformationTypes">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>Id</th>
+      <td mat-cell *matCellDef="let informationType">{{informationType.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let informationType">{{informationType.type}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="identifier">
+      <th mat-header-cell *matHeaderCellDef>Identifier</th>
+      <td mat-cell *matCellDef="let informationType">{{informationType.identifier}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="displayName">
+      <th mat-header-cell *matHeaderCellDef>Display Name</th>
+      <td mat-cell *matCellDef="let informationType">{{informationType.displayName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>Description</th>
+      <td mat-cell *matCellDef="let informationType">{{informationType.description}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="externalLink">
+      <th mat-header-cell *matHeaderCellDef>External Link</th>
+      <td mat-cell *matCellDef="let informationType">
+        <a [href]="informationType.externalLink" target="_blank">
+          {{informationType.externalLink}}
+        </a>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row">
+    </tr>
+  </table>
+</div>
+
+<ng-template #noInformationTypes>
+  <span>There are no defined information types.</span>
+</ng-template>

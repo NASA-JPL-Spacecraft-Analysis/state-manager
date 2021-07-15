@@ -9,46 +9,27 @@ import { CollectionActions, EventActions, LayoutActions, ToastActions } from '..
 import { EventService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
-import { ValidationService } from '../services/validation.service';
-import { Event } from '../models';
+import { EventResponse } from '../models';
 
 @Injectable()
 export class EventEffects {
   public createEvent = createEffect(() =>
     this.actions.pipe(
       ofType(EventActions.createEvent),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        if (this.validationService.isDuplicateIdentifier(
-          action.event.identifier,
-          action.event.id,
-          state.events.eventIdentifierMap
-        )) {
-          return [
-            ToastActions.showToast({
-              message: '',
-              toastType: 'error'
-            })
-          ];
-        }
-
-        return this.eventService.createEvent(
-          action.collectionId,
-          action.event
+      switchMap(({ collectionId, event }) =>
+        this.eventService.createEvent(
+          collectionId,
+          event
         ).pipe(
-          switchMap((event: Event) => [
+          switchMap((createEvent: EventResponse) => [
             EventActions.createEventSuccess({
-              event: {
-                ...action.event,
-                id: event.id
-              }
+              event: createEvent.event
             }),
             LayoutActions.toggleSidenav({
               showSidenav: false
             }),
             ToastActions.showToast({
-              message: 'Event created',
+              message: createEvent.message,
               toastType: 'success'
             })
           ]),
@@ -57,12 +38,12 @@ export class EventEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Event creation failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
-        );
-      })
+        )
+      )
     )
   );
 
@@ -97,34 +78,16 @@ export class EventEffects {
   public updateEvent = createEffect(() =>
     this.actions.pipe(
       ofType(EventActions.updateEvent),
-      withLatestFrom(this.store),
-      map(([action, state]) => ({ action, state })),
-      switchMap(({ action, state }) => {
-        if (this.validationService.isDuplicateIdentifier(
-          action.event.identifier,
-          action.event.id,
-          state.events.eventIdentifierMap
-        )) {
-          return [
-            ToastActions.showToast({
-              message: 'Duplicate identifier provided',
-              toastType: 'error'
-            })
-          ];
-        }
-
+      switchMap(({ event }) => {
         return this.eventService.updateEvent(
-          action.event
+          event
         ).pipe(
-          switchMap((event: Event) => [
+          switchMap((updateEvent: EventResponse) => [
             EventActions.updateEventSuccess({
-              event: {
-                ...action.event,
-                id: event.id
-              }
+              event: updateEvent.event
             }),
             ToastActions.showToast({
-              message: 'Event edited',
+              message: updateEvent.message,
               toastType: 'success'
             })
           ]),
@@ -133,7 +96,7 @@ export class EventEffects {
               error
             }),
             ToastActions.showToast({
-              message: 'Event editing failed',
+              message: error.message,
               toastType: 'error'
             })
           ])
@@ -146,8 +109,7 @@ export class EventEffects {
     private actions: Actions,
     private router: Router,
     private store: Store<AppState>,
-    private eventService: EventService,
-    private validationService: ValidationService
+    private eventService: EventService
   ) {}
 
   private getEventInformation(collectionId: string): Observable<Action> {

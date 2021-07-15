@@ -46,7 +46,6 @@ body {
 /* Global Styles */
 .content {
   flex-grow: 1;
-  margin: 1em;
 }
 
 .content-container {

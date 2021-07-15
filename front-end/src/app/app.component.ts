@@ -16,11 +16,13 @@ import {
   FileUploadEffects,
   EventEffects,
   CollectionEffects,
-  InformationTypesEffects,
+  InformationTypeEffects,
   StateEffects,
   RelationshipEffects,
   GroupEffects,
-  LayoutEffects
+  LayoutEffects,
+  ConstraintEffects,
+  CommandEffects
 } from './effects';
 import { AppRoutingModule, RouterSerializer } from './app-routing.module';
 import { metaReducers, ROOT_REDUCERS } from './app-store';
@@ -50,10 +52,12 @@ export class AppComponent {}
     MaterialModule,
     EffectsModule.forRoot([
       CollectionEffects,
+      CommandEffects,
+      ConstraintEffects,
       EventEffects,
       FileUploadEffects,
       GroupEffects,
-      InformationTypesEffects,
+      InformationTypeEffects,
       LayoutEffects,
       NavEffects,
       RelationshipEffects,

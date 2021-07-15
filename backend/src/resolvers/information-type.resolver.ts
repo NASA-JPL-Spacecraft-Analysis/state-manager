@@ -3,8 +3,9 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CreateInformationTypesInput } from '../inputs';
-import { InformationType } from '../models';
+import { InformationType, informationTypes } from '../models';
 import { SharedRepository } from '../repositories';
+import { InformationTypeResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver()
@@ -17,21 +18,32 @@ export class InformationTypeResolver {
     this.sharedRepository = new SharedRepository<InformationType>(getConnection(), InformationType);
   }
 
-  @Mutation(() => [ InformationType ])
-  public async createInformationTypes(@Arg('data') data: CreateInformationTypesInput): Promise<InformationType[]> {
-    for (const informationType of data.informationTypes) {
-      this.validationService.checkInformationType(data.informationTypes);
+  @Mutation(() => InformationTypeResponse)
+  public async createInformationTypes(@Arg('data') data: CreateInformationTypesInput): Promise<InformationTypeResponse> {
+    try {
+      for (const informationType of data.informationTypes) {
+        informationType.collectionId = data.collectionId;
+      }
 
-      informationType.collectionId = data.collectionId;
+      const informationTypeList = InformationType.create(data.informationTypes);
+
+      this.validationService.hasValidType(informationTypeList, informationTypes);
+
+      for (const informationType of informationTypeList) {
+        await informationType.save();
+      }
+
+      return {
+        informationTypes: informationTypeList,
+        message: 'Information Types Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
     }
-
-    const informationTypes = InformationType.create(data.informationTypes);
-
-    for (const informationType of informationTypes) {
-      await informationType.save();
-    }
-
-    return informationTypes;
   }
 
   @Query(() => InformationType)

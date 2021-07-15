@@ -1,20 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 
-import { InformationTypesService } from '../services';
-import { ofRoute, mapToParam } from '../functions/router';
-import { InformationTypesActions, CollectionActions } from '../actions';
+import { InformationTypeService } from '../services';
+import { ofRoute } from '../functions/router';
+import { InformationTypeActions, CollectionActions } from '../actions';
+import { AppState } from '../app-store';
 
 @Injectable()
-export class InformationTypesEffects {
+export class InformationTypeEffects {
   public navInformationTypes = createEffect(() =>
     this.actions.pipe(
       ofRoute('collection/:collectionId/information-types'),
-      mapToParam<string>('collectionId'),
-      switchMap(collectionId => this.getInformationTypes(collectionId))
+      withLatestFrom(this.store),
+      map(([_, state]) => state),
+      switchMap(state => {
+        if (state.collection.selectedCollectionId) {
+          return this.getInformationTypes(state.collection.selectedCollectionId);
+        }
+
+        return [];
+      })
     )
   );
 
@@ -33,19 +41,20 @@ export class InformationTypesEffects {
 
   constructor(
     private actions: Actions,
-    private informationTypesService: InformationTypesService
+    private informationTypeService: InformationTypeService,
+    private store: Store<AppState>
   ) {}
 
   private getInformationTypes(id: string): Observable<Action> {
-    return this.informationTypesService.getInformationTypes(
+    return this.informationTypeService.getInformationTypes(
       id
     ).pipe(
-      map(informationTypes => InformationTypesActions.setInformationTypes({
+      map(informationTypes => InformationTypeActions.setInformationTypes({
         informationTypes
       })),
       catchError(
         (error: Error) => [
-          InformationTypesActions.fetchInformationTypesFailure({
+          InformationTypeActions.fetchInformationTypesFailure({
             error
           })
         ]

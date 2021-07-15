@@ -1,13 +1,12 @@
 import { StringTMap } from './string-t-map';
-import { InformationTypeEnum } from './information-types';
 
 export interface Relationship {
   displayName: string;
   description: string;
   id: string;
-  subjectType: InformationTypeEnum;
+  subjectType: string;
   subjectTypeId: string;
-  targetType: InformationTypeEnum;
+  targetType: string;
   targetTypeId: string;
 }
 

@@ -4,11 +4,17 @@ import { State } from '../../models';
 
 @InputType()
 export class UpdateStateInput implements Partial<State> {
+  @Field()
+  public dataType!: string;
+
   @Field({ nullable: true })
   public description?: string;
 
   @Field({ nullable: true })
   public displayName?: string;
+
+  @Field({ nullable: true })
+  public externalLink?: string;
 
   @Field(() => ID)
   public id!: string;
@@ -22,8 +28,8 @@ export class UpdateStateInput implements Partial<State> {
   @Field({ nullable: true })
   public subsystem?: string;
 
-  @Field({ nullable: true })
-  public type?: string;
+  @Field()
+  public type!: string;
 
   @Field({ nullable: true })
   public units?: string;

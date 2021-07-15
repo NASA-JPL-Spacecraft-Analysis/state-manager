@@ -1,5 +1,6 @@
 export * from './collection';
-export * from './event-history';
+export * from './command';
+export * from './constraint';
 export * from './event';
 export * from './group-mapping';
 export * from './group';
@@ -7,8 +8,6 @@ export * from './identifier-type-union';
 export * from './identifier-type';
 export * from './information-type';
 export * from './information-type.enum';
-export * from './relationship-history';
 export * from './relationship';
 export * from './state-enumeration';
 export * from './state';
-export * from './state-history';
