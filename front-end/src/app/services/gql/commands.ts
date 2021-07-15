@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 export const CREATE_COMMAND = gql(`
   mutation CreateCommand(
+    $arguments: [ModifyCommandArgument!]
     $collectionId: ID!
     $description: String
     $displayName: String!
@@ -11,6 +12,7 @@ export const CREATE_COMMAND = gql(`
   ) {
     createCommand(
       data: {
+        arguments: $arguments
         collectionId: $collectionId
         description: $description
         displayName: $displayName
@@ -76,13 +78,16 @@ export const CREATE_COMMANDS = gql(`
 
 export const DELETE_ARGUMENTS = gql(`
   mutation DeleteArguments(
+    $commandId: ID!
     $deletedArgumentIds: [ID!]!
   ) {
     deleteArguments(
       data: {
+        commandId: $commandId
         deletedArgumentIds: $deletedArgumentIds
       }
     ) {
+      deletedArgumentIds
       message
       success
     }
@@ -136,6 +141,7 @@ export const GET_COMMANDS = gql(`
 
 export const UPDATE_COMMAND = gql(`
   mutation UpdateCommand(
+    $arguments: [ModifyCommandArgument!]
     $description: String
     $displayName: String
     $editable: Boolean
@@ -145,6 +151,7 @@ export const UPDATE_COMMAND = gql(`
   ) {
     updateCommand(
       data: {
+        arguments: $arguments
         description: $description
         displayName: $displayName
         editable: $editable

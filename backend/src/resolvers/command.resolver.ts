@@ -4,10 +4,10 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CommandConstants } from '../constants';
-import { CreateCommandInput, CreateCommandsInput, UpdateCommandInput } from '../inputs';
+import { CreateCommandInput, CreateCommandsInput, DeleteArgumentsInput, ModifyCommandArgument, UpdateCommandInput } from '../inputs';
 import { Command, CommandArgument, CommandHistory, commandTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { CommandResponse, CommandsResponse } from '../responses';
+import { CommandResponse, CommandsResponse, DeleteArgumentResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver(() => Command)
@@ -32,6 +32,15 @@ export class CommandResolver implements ResolverInterface<Command> {
   @Query(() => Command)
   public command(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<Command | undefined> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
+  }
+
+  @Query(() => [ CommandArgument ])
+  public commandArguments(@Arg('commandId') commandId: string): Promise<CommandArgument[]> {
+    return CommandArgument.find({
+      where: {
+        commandId
+      }
+    });
   }
 
   @Query(() => [ CommandHistory ])
@@ -63,6 +72,8 @@ export class CommandResolver implements ResolverInterface<Command> {
       await command.save();
 
       this.createCommandHistory(command);
+
+      command.arguments = await this.saveCommandArguments(data.arguments, command.id);
 
       return {
         command,
@@ -110,6 +121,46 @@ export class CommandResolver implements ResolverInterface<Command> {
     }
   }
 
+  @Mutation(() => DeleteArgumentResponse)
+  public async deleteArguments(@Arg('data') data: DeleteArgumentsInput): Promise<DeleteArgumentResponse> {
+    try {
+      const commandArguments = await CommandArgument.find({
+        where: {
+          commandId: data.commandId
+        }
+      });
+
+      if (!commandArguments || commandArguments.length === 0) {
+        throw new UserInputError(CommandConstants.commandArgumentsNotFound(data.commandId));
+      }
+
+      const deletedIds: string[] = [];
+
+      for (const id of data.deletedArgumentIds) {
+        const argument = commandArguments.find((e) => e.id === id);
+
+        if (!argument) {
+          throw new UserInputError(CommandConstants.argumentNotFoundError(id));
+        }
+
+        deletedIds.push(argument.id);
+
+        await argument.remove();
+      }
+
+      return {
+        deletedArgumentIds: deletedIds,
+        message: 'Arguments deleted successfully',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
   @Mutation(() => CommandResponse)
   public async updateCommand(@Arg('data') data: UpdateCommandInput): Promise<CommandResponse> {
     try {
@@ -132,6 +183,8 @@ export class CommandResolver implements ResolverInterface<Command> {
       await command.save();
 
       this.createCommandHistory(command);
+
+      command.arguments = await this.saveCommandArguments(data.arguments, command.id);
 
       return {
         command,
@@ -160,5 +213,18 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
 
     void commandHistory.save();
+  }
+
+  private async saveCommandArguments(commandArguments: ModifyCommandArgument[] | undefined, commandId: string): Promise<CommandArgument[]> {
+    if (commandArguments) {
+      for (const argument of commandArguments) {
+        const commandArgument = CommandArgument.create(argument);
+        commandArgument.commandId = commandId;
+
+        await commandArgument.save();
+      }
+    }
+
+    return this.commandArguments(commandId);
   }
 }

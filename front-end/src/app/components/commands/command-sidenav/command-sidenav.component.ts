@@ -95,7 +95,10 @@ export class CommandSidenavComponent implements OnChanges {
     if (this.processArguments()) {
       if (!this.isDuplicateIdentifier) {
         this.modifyCommand.emit({
-          command: this.form.value,
+          command: {
+            ...this.form.value,
+            arguments: this.newCommand.arguments
+          },
           deletedArgumentIds: this.deletedArgumentIds
         });
       } else {

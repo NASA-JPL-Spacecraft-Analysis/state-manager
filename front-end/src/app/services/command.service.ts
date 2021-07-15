@@ -21,6 +21,7 @@ export class CommandService {
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_COMMAND,
         variables: {
+          arguments: command.arguments,
           collectionId: command.collectionId,
           description: command.description,
           displayName: command.displayName,
@@ -58,12 +59,13 @@ export class CommandService {
       }));
   }
   
-  public deleteArguments(deletedArgumentIds: string[]): Observable<DeleteArgumentResponse> {
+  public deleteArguments(commandId: string, deletedArgumentIds: string[]): Observable<DeleteArgumentResponse> {
     return this.apollo
       .mutate<{ deleteArguments: DeleteArgumentResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.DELETE_ARGUMENTS,
         variables: {
+          commandId,
           deletedArgumentIds
         }
       })
@@ -105,6 +107,7 @@ export class CommandService {
         fetchPolicy: 'no-cache',
         mutation: gql.UPDATE_COMMAND,
         variables: {
+          arguments: command.arguments,
           collectionId: command.collectionId,
           description: command.description,
           displayName: command.displayName,

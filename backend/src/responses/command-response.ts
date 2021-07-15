@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 
 import { Command } from '../models';
 import { Response } from './response';
@@ -13,4 +13,10 @@ export class CommandResponse extends Response {
 export class CommandsResponse extends Response {
   @Field(() => [ Command ], { nullable: true })
   public commands?: Command[];
+}
+
+@ObjectType()
+export class DeleteArgumentResponse extends Response {
+  @Field(() => [ ID ], { nullable: true })
+  public deletedArgumentIds?: string[];
 }

@@ -21,20 +21,55 @@ export const initialState: CommandState = {
 
 export const reducer = createReducer(
   initialState,
-  on(CommandActions.createCommandSuccess, (state, { command }) => ({
-    ...state,
-    commandIdentifierMap: {
-      ...state.commandIdentifierMap,
-      [command.identifier]: command.id
-    },
-    commandMap: {
-      ...state.commandMap,
-      [command.id]: {
-        ...command
+  on(CommandActions.createCommandSuccess, (state, { command }) => {
+    const commandArgumentMap = {};
+
+    if (command.arguments) {
+      for (const argument of command.arguments) {
+        commandArgumentMap[argument.id] = argument;
       }
-    },
-    selectedCommandId: command.id
-  })),
+    }
+
+    return {
+      ...state,
+      commandArgumentMap: {
+        ...state.commandArgumentMap,
+        ...commandArgumentMap
+      },
+      commandIdentifierMap: {
+        ...state.commandIdentifierMap,
+        [command.identifier]: command.id
+      },
+      commandMap: {
+        ...state.commandMap,
+        [command.id]: {
+          ...command
+        }
+      },
+      selectedCommandId: command.id
+    };
+  }),
+  on(CommandActions.deleteArgumentsSuccess, (state, { deletedArgumentIds }) => {
+    const commandArgumentMap = {
+      ...state.commandArgumentMap
+    };
+    const commandMap = state.commandMap;
+
+    for (const deletedArgumentId of deletedArgumentIds) {
+      delete commandArgumentMap[deletedArgumentId];
+    }
+
+    // Remove any deleted arguments from the commandMap.
+    for (const id of Object.keys(commandMap)) {
+      commandMap[id].arguments.filter((argument) => deletedArgumentIds.indexOf(argument.id) === -1);
+    }
+
+    return {
+      ...state,
+      commandArgumentMap,
+      commandMap
+    };
+  }),
   on(CommandActions.setCommandHistory, (state, { commandHistory }) => ({
     ...state,
     commandHistory
@@ -75,8 +110,20 @@ export const reducer = createReducer(
       }
     }
 
+    const commandArgumentMap = {};
+
+    if (command.arguments) {
+      for (const argument of command.arguments) {
+        commandArgumentMap[argument.id] = argument;
+      }
+    }
+
     return {
       ...state,
+      commandArgumentMap: {
+        ...state.commandArgumentMap,
+        ...commandArgumentMap
+      },
       commandIdentifierMap: {
         ...commandIdentifierMap,
         [command.identifier]: command.id

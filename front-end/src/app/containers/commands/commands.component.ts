@@ -115,8 +115,9 @@ export class CommandsComponent implements OnDestroy {
         }));
       }
 
-      if (result.deletedArgumentIds.length > 0) {
+      if (result.deletedArgumentIds.length > 0 && result.command.id) {
         this.store.dispatch(CommandActions.deleteArguments({
+          commandId: result.command.id,
           deletedArgumentIds: result.deletedArgumentIds
         }));
       }
