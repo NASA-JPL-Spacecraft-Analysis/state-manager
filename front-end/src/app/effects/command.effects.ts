@@ -46,13 +46,18 @@ export class CommandEffects {
   public deleteArguments = createEffect(() =>
     this.actions.pipe(
       ofType(CommandActions.deleteArguments),
-      switchMap(({ deletedArgumentIds }) =>
+      switchMap(({ commandId, deletedArgumentIds }) =>
         this.commandService.deleteArguments(
+          commandId,
           deletedArgumentIds
         ).pipe(
           switchMap((deleteArguments: DeleteArgumentResponse) => [
             CommandActions.deleteArgumentsSuccess({
               deletedArgumentIds: deleteArguments.deletedArgumentIds
+            }),
+            ToastActions.showToast({
+              message: deleteArguments.message,
+              toastType: 'success'
             })
           ]),
           catchError((error: Error) => [

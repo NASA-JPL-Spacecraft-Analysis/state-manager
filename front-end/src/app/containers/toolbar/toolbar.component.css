@@ -1,17 +1,17 @@
 button {
   margin-right: .5em;
-  color: white;
 }
 
 .help-icon {
-  color: white;
   vertical-align: middle;
 }
 
-.mat-toolbar {
-  display: flex;
-  justify-content: space-between;
-  background-color: #B9B9B9;
+#logotype{
+  font-family: 'Montserrat', sans-serif;
+  font-size: .9em;
+  font-weight: 00;
+  letter-spacing: .22em;
+  text-transform: uppercase;
 }
 
 .menu-button {

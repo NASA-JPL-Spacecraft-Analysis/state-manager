@@ -1,32 +1,44 @@
-<mat-toolbar>
+<mat-toolbar class="main-toolbar" color="accent" >
   <div class="toolbar-container">
-    <span>State Management</span>
+    <h6 id="logotype">State Manager</h6>
 
     <app-collections></app-collections>
   </div>
 
   <div class="navigation-container">
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/states" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/states"
+      [ngClass]="{ 'active': route === 'states' || route === 'state-history' }">
       States
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/relationships" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/relationships"
+      [ngClass]="{ 'active': route === 'relationships' || route === 'relationship-history' }">
       Relationships
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/events" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/events"
+      [ngClass]="{ 'active': route === 'events' || route === 'event-history' }">
       Events
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/constraints" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/constraints"
+      [ngClass]="{ 'active': route === 'constraints' || route === 'constraint-history' }">
       Constraints
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/commands" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/commands"
+      [ngClass]="{ 'active': route === 'commands' || route === 'command-history' }">
       Commands
     </button>
 
-    <button mat-button routerLink="/collection/{{selectedCollectionId}}/information-types" routerLinkActive="active">
+    <button mat-button color="primary"
+      routerLink="/collection/{{selectedCollectionId}}/information-types"
+      [ngClass]="{ 'active': route === 'information-types' }">
       Information Types 
     </button>
 

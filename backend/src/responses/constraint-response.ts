@@ -8,3 +8,9 @@ export class ConstraintResponse extends Response {
   @Field(() => Constraint, { nullable: true })
   public constraint?: Constraint;
 }
+
+@ObjectType()
+export class ConstraintsResponse extends Response {
+  @Field(() => [ Constraint ], { nullable: true })
+  public constraints?: Constraint[];
+}

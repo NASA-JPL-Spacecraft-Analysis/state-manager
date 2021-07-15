@@ -1,5 +1,6 @@
-<div class="form-input" *ngIf="type">
-  <div *ngIf="type === 'command'">
+<ng-container *ngIf="type">
+  <mat-form-field *ngIf="type === 'command'" appearance="outline">
+    <mat-label>{{type}}</mat-label>
     <mat-select
       [(value)]="relationship[formProperty]"
       (selectionChange)="onValueChange($event)">
@@ -8,9 +9,10 @@
         {{commandMap[value.key].identifier}}
       </mat-option>
     </mat-select>
-  </div>
+  </mat-form-field>
 
-  <div *ngIf="type === 'commandArgument'">
+  <mat-form-field *ngIf="type === 'commandArgument'" appearance="outline">
+    <mat-label>{{type}}</mat-label>
     <mat-select
       [(value)]="relationship[formProperty]"
       (selectionChange)="onValueChange($event)">
@@ -19,9 +21,10 @@
         {{commandArgumentMap[value.key].name}}
       </mat-option>
     </mat-select>
-  </div>
+  </mat-form-field>
 
-  <div *ngIf="type === 'constraint'">
+  <mat-form-field *ngIf="type === 'constraint'" appearance="outline">
+    <mat-label>{{type}}</mat-label>
     <mat-select
       [(value)]="relationship[formProperty]"
       (selectionChange)="onValueChange($event)">
@@ -30,9 +33,10 @@
         {{constraintMap[value.key].identifier}}
       </mat-option>
     </mat-select>
-  </div>
+  </mat-form-field>
 
-  <div *ngIf="type === 'event'">
+  <mat-form-field *ngIf="type === 'event'" appearance="outline">
+    <mat-label>{{type}}</mat-label>
     <mat-select
       [(value)]="relationship[formProperty]"
       (selectionChange)="onValueChange($event)">
@@ -41,9 +45,10 @@
         {{eventMap[value.key].identifier}}
       </mat-option>
     </mat-select>
-  </div>
+  </mat-form-field>
 
-  <div *ngIf="type === 'informationType'">
+  <mat-form-field *ngIf="type === 'informationType'" appearance="outline">
+    <mat-label>{{type}}</mat-label>
     <mat-select
       [(value)]="relationship[formProperty]"
       (selectionChange)="onValueChange($event)">
@@ -52,9 +57,10 @@
         {{informationTypeMap[value.key].identifier}}
       </mat-option>
     </mat-select>
-  </div>
+  </mat-form-field>
 
-  <div *ngIf="type === 'state'">
+  <mat-form-field *ngIf="type === 'state'" appearance="outline">
+    <mat-label>{{type}}</mat-label>
     <mat-select
       [(value)]="relationship[formProperty]"
       (selectionChange)="onValueChange($event)">
@@ -63,5 +69,5 @@
         {{stateMap[value.key].identifier}}
       </mat-option>
     </mat-select>
-  </div>
-</div>
+  </mat-form-field>
+</ng-container>

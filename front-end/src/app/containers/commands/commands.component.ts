@@ -100,7 +100,7 @@ export class CommandsComponent implements OnDestroy {
   }
 
   public onSidenavOutput(result: { command: Command, deletedArgumentIds: string[] }): void {
-    if (!result.command) {
+    if (!result) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
@@ -115,8 +115,9 @@ export class CommandsComponent implements OnDestroy {
         }));
       }
 
-      if (result.deletedArgumentIds.length > 0) {
+      if (result.deletedArgumentIds.length > 0 && result.command.id) {
         this.store.dispatch(CommandActions.deleteArguments({
+          commandId: result.command.id,
           deletedArgumentIds: result.deletedArgumentIds
         }));
       }

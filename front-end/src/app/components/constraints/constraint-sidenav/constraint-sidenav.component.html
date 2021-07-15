@@ -24,7 +24,8 @@
         />
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Display Name</mat-label>
         <input matInput
           placeholder="Display Name"
           type="text"
@@ -33,13 +34,15 @@
         />
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
         <textarea matInput
           placeholder="Description"
           formControlName="description"></textarea>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>External Link</mat-label>
         <input matInput
           placeholder="External Link"
           type="text"
@@ -47,7 +50,8 @@
         />
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Constraint Type</mat-label>
         <mat-select placeholder="Constraint Type" [(value)]="selectedType">
           <mat-option *ngFor="let constraintType of constraintTypes" [value]="constraintType">
             {{constraintType}}

@@ -1,0 +1,239 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+/**************
+Table of Contents
+1. Colors
+2. Themes
+3. Typography Mixins
+4. Inputs
+5. Buttons
+6. Toolbar
+7. Sidenav
+**************/
+
+
+/**************
+1. Colors
+**************/
+
+$light-accent-text: #D9E2F4;
+$body: #283346;
+
+$mat-primary: (
+  50: #DEF5FB,
+  100: #ACE7F4,
+  200: #73D8EC,
+  300: #30C7E2,
+  400: #00BCDA,
+  500: #00B1D3,
+  600: #00A1C0,
+  700: #008DA6,
+  800: #00798D,
+  900: #005761,
+  contrast: (
+    50: $body,
+    100: $body,
+    200: $body,
+    300: $body,
+    400: $body,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white
+  )
+);
+
+$mat-accent: (
+  50: #eaeeff,
+  100: #cbd7ee,
+  200: #b0bcd7,
+  300: #93a1c0,
+  400: #7d8cae,
+  500: #67799d,
+  600: #596a8c,
+  700: #485774,
+  800: #38445e,
+  850: #303850,
+  900: #253046,
+
+  contrast: (
+    50: $body,
+    100: $body,
+    200: $body,
+    300: $light-accent-text,
+    400: $light-accent-text,
+    500: $light-accent-text,
+    600: $light-accent-text,
+    700: $light-accent-text,
+    800: $light-accent-text,
+    900: $light-accent-text
+  )
+);
+
+$mat-grey: (
+  50: #F7F8FA,
+  75: #F3F5F7,
+  100: #EFF1F5,
+  200: #E8ECF0,
+  250: #E2E6EA,
+  300: #DDE1E7,
+  400: #CBD1DB,
+  500: #A9B1BF,
+  550: #828B9A,
+  600: #868E96,
+  700: #464E60,
+  800: #32394A,
+  900: #202535,
+
+  contrast: (
+    50: $body,
+    75: $body,
+    100: $body,
+    200: $body,
+    250: $body,
+    300: $light-accent-text,
+    400: $light-accent-text,
+    500: $light-accent-text,
+    550: $light-accent-text,
+    600: $light-accent-text,
+    700: $light-accent-text,
+    800: $light-accent-text,
+    900: $light-accent-text
+  )
+);
+
+/**************
+2. Themes
+**************/
+
+$primary: mat-palette($mat-primary, 700);
+$accent: mat-palette($mat-accent, 700);
+$theme: mat-light-theme($primary, $accent);
+
+@include angular-material-theme($theme);
+
+
+$primary: mat-palette($mat-grey, 100);
+$accent: mat-palette($mat-accent, 700);
+$toolbar-theme: mat-light-theme($primary, $accent);
+
+@include mat-toolbar-color($toolbar-theme);
+
+.mat-toolbar .mat-button.mat-primary{
+  color: inherit;
+}
+
+/**************
+3. Typography Mixins
+**************/
+
+@mixin body-2 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height:  20px;
+}
+
+@mixin button {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .02em;
+  line-height: 16px;
+}
+
+@mixin headline-6 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: .15px;
+}
+
+/**************
+3. Table
+**************/
+
+table {
+  td {
+    @include body-2();
+  }
+
+  .mat-header-cell, th{
+    background-color: mat-color($mat-grey, 100);
+    color: mat-color($mat-grey, 700);
+    letter-spacing: .15px;
+  }
+
+  tr {
+    th.mat-header-cell, td.mat-cell {
+      border-bottom: 1px solid mat-color($mat-grey, 300);
+    }
+  }
+}
+
+/**************
+4. Inputs
+**************/
+
+.filter-container > div {
+  padding: 1em;
+  border-bottom: 1px solid mat-color($mat-grey, 400);
+  box-shadow: 0px 4px 5px mat-color($mat-grey, 250);
+  background: #eff1f5;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex{
+  background-color: white;
+}
+
+.mat-form-field-underline {
+  display: none;
+}
+
+/**************
+5. Buttons
+**************/
+
+.mat-button, .mat-raised-button {
+  @include button();
+}
+
+/**************
+6. Toolbar
+**************/
+
+.mat-toolbar {
+  display: flex;
+  height: 2.8em;
+  justify-content: space-between;
+
+  button {
+    margin-right: 1em;
+  }
+
+  h6 {
+    @include headline-6();
+  }
+  .mat-button.mat-button-base.active{
+    color: mat-color($mat-primary, 100)
+  }
+}
+
+.mat-toolbar.mat-primary .mat-button.mat-button-base {
+  font-weight: 400;
+}
+
+.secondary-toolbar{
+  border-bottom: 1px solid mat-color($mat-grey, 400);
+}
+
+/**************
+7. Sidenav
+**************/
+
+.sidenav-container {
+  padding: 1em;
+  height: 100%;
+  border-left: 1px solid mat-color($mat-grey, 400);
+}
+

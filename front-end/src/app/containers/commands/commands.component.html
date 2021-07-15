@@ -1,17 +1,17 @@
-<mat-toolbar class="toolbar">
-  COMMANDS 
+<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
+  Commands
 
   <div>
     <button mat-button routerLink="../command-history">
       History 
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="onModifyCommand()">
-      Create New Command 
+    <button mat-button class="gray-button" (click)="onFileUpload()">
+      Upload Commands
     </button>
 
-    <button mat-raised-button class="gray-button" (click)="onFileUpload()">
-      Upload Commands
+    <button mat-raised-button color="primary" (click)="onModifyCommand()">
+      Create New Command 
     </button>
   </div>
 </mat-toolbar>

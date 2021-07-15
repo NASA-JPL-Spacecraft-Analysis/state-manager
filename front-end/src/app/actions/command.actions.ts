@@ -19,7 +19,7 @@ export const createCommandSuccess = createAction(
 
 export const deleteArguments = createAction(
   '[command] deleteArguments',
-  props<{ deletedArgumentIds: string[] }>()
+  props<{ commandId: string, deletedArgumentIds: string[] }>()
 );
 
 export const deleteArgumentsFailure = createAction(

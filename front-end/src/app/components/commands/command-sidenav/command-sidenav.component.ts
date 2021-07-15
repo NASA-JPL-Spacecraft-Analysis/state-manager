@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -8,7 +8,6 @@ import { MaterialModule } from 'src/app/material';
 import { Command, IdentifierMap } from 'src/app/models';
 import { CommandArgumentFormModule } from '../../command-argument-form/command-argument-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
-import { CommandActions, LayoutActions } from 'src/app/actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,7 +44,7 @@ export class CommandSidenavComponent implements OnChanges {
   public ngOnChanges(): void {
     if (!this.command) {
       this.newCommand = {
-        arguments: undefined,
+        arguments: [],
         collectionId: this.collectionId,
         description: '',
         displayName: '',
@@ -96,7 +95,10 @@ export class CommandSidenavComponent implements OnChanges {
     if (this.processArguments()) {
       if (!this.isDuplicateIdentifier) {
         this.modifyCommand.emit({
-          command: this.form.value,
+          command: {
+            ...this.form.value,
+            arguments: this.newCommand.arguments
+          },
           deletedArgumentIds: this.deletedArgumentIds
         });
       } else {

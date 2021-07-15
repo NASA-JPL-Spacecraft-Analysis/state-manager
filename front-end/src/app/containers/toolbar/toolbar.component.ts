@@ -1,5 +1,5 @@
 import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
@@ -18,15 +18,17 @@ import { CollectionModule } from '../collections/collections.component';
   templateUrl: 'toolbar.component.html'
 })
 export class ToolbarComponent implements OnDestroy {
+  public route: string;
   public selectedCollectionId: string;
 
   private subscriptions = new SubSink();
 
   constructor(
-    private store: Store<AppState>,
     private changeDetectorRef: ChangeDetectorRef,
     private domSanitizer: DomSanitizer,
-    private matIconRegistry: MatIconRegistry
+    private matIconRegistry: MatIconRegistry,
+    private router: Router,
+    private store: Store<AppState>
   ) {
     this.matIconRegistry.addSvgIcon('help', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/help.svg'));
     this.matIconRegistry.addSvgIcon('more_vert', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/more_vert.svg'));
@@ -35,6 +37,12 @@ export class ToolbarComponent implements OnDestroy {
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
         this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
+      }),
+      this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          const splitRoute = event.url.split('/');
+          this.route = splitRoute[splitRoute.length - 1];
+        }
       })
     );
   }

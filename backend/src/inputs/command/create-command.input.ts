@@ -1,9 +1,12 @@
 import { Field, ID, InputType } from 'type-graphql';
 
-import { Command } from '../../models';
+import { ModifyCommandArgument } from './modify-command-argument.input';
 
 @InputType()
-export class CreateCommandInput implements Partial<Command> {
+export class CreateCommandInput {
+  @Field(() => [ ModifyCommandArgument ], { nullable: true })
+  public arguments?: ModifyCommandArgument[];
+
   @Field(() => ID)
   public collectionId!: string;
 
