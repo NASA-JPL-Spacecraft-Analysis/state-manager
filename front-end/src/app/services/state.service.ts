@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { StateResponse, StatesResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload, Response, EnumerationsResponse } from '../models';
 
-import * as gql from './gql';
+import * as gql from './gql/states';
 
 @Injectable({
   providedIn: 'root'
