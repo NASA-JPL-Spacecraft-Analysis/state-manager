@@ -10,4 +10,4 @@ export * from './identifier-form/identifier-form.component';
 export * from './information-type-table/information-type-table.component';
 export * from './relationship-sidenav/relationship-sidenav.component';
 export * from './relationship-type-picker/relationship-type-picker.component';
-export * from './state-table/state-table.component';
+export * from './states';

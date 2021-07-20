@@ -64,6 +64,8 @@ export class CommandResolver implements ResolverInterface<Command> {
   @Mutation(() => CommandResponse)
   public async createCommand(@Arg('data') data: CreateCommandInput): Promise<CommandResponse> {
     try {
+      this.validationService.isDuplicateIdentifier(await this.commands({ collectionId: data.collectionId }), data.identifier);
+
       const command = Command.create(data);
 
       // TODO: For now hardcore this value, there aren't any other options for commands.

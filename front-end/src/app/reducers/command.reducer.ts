@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 
 import { CommandActions, FileUploadActions } from '../actions';
-import { CommandArgumentMap, CommandHistory, CommandMap, IdentifierMap } from '../models';
+import { Command, CommandArgumentMap, CommandHistory, CommandMap, IdentifierMap } from '../models';
 
 export interface CommandState {
   commandArgumentMap: CommandArgumentMap;
@@ -21,34 +21,7 @@ export const initialState: CommandState = {
 
 export const reducer = createReducer(
   initialState,
-  on(CommandActions.createCommandSuccess, (state, { command }) => {
-    const commandArgumentMap = {};
-
-    if (command.arguments) {
-      for (const argument of command.arguments) {
-        commandArgumentMap[argument.id] = argument;
-      }
-    }
-
-    return {
-      ...state,
-      commandArgumentMap: {
-        ...state.commandArgumentMap,
-        ...commandArgumentMap
-      },
-      commandIdentifierMap: {
-        ...state.commandIdentifierMap,
-        [command.identifier]: command.id
-      },
-      commandMap: {
-        ...state.commandMap,
-        [command.id]: {
-          ...command
-        }
-      },
-      selectedCommandId: command.id
-    };
-  }),
+  on(CommandActions.createCommandSuccess, (state, { command }) => createOrUpdateCommandSuccess(state, command)),
   on(CommandActions.deleteArgumentsSuccess, (state, { deletedArgumentIds }) => {
     const commandArgumentMap = {
       ...state.commandArgumentMap
@@ -98,44 +71,7 @@ export const reducer = createReducer(
     ...state,
     selectedCommandId: id
   })),
-  on(CommandActions.updateCommandSuccess, (state, { command }) => {
-    const commandIdentifierMap = {
-      ...state.commandIdentifierMap
-    };
-
-    for (const identifier of Object.keys(commandIdentifierMap)) {
-      // Remove the old identifier from our map
-      if (commandIdentifierMap[identifier] === command.id) {
-        delete commandIdentifierMap[identifier];
-      }
-    }
-
-    const commandArgumentMap = {};
-
-    if (command.arguments) {
-      for (const argument of command.arguments) {
-        commandArgumentMap[argument.id] = argument;
-      }
-    }
-
-    return {
-      ...state,
-      commandArgumentMap: {
-        ...state.commandArgumentMap,
-        ...commandArgumentMap
-      },
-      commandIdentifierMap: {
-        ...commandIdentifierMap,
-        [command.identifier]: command.id
-      },
-      commandMap: {
-        ...state.commandMap,
-        [command.id]: {
-          ...command
-        }
-      }
-    };
-  }),
+  on(CommandActions.updateCommandSuccess, (state, { command }) => createOrUpdateCommandSuccess(state, command)),
   on(FileUploadActions.uploadCommandsSuccess, (state, { commands }) => {
     const commandIdentifierMap = {};
     const commandMap = {};
@@ -158,3 +94,42 @@ export const reducer = createReducer(
     };
   })
 );
+
+const createOrUpdateCommandSuccess = (state: CommandState, command: Command): CommandState => {
+  const commandIdentifierMap = {
+    ...state.commandIdentifierMap
+  };
+
+  for (const identifier of Object.keys(commandIdentifierMap)) {
+    // Remove the old identifier from our map
+    if (commandIdentifierMap[identifier] === command.id) {
+      delete commandIdentifierMap[identifier];
+    }
+  }
+
+  const commandArgumentMap = {};
+
+  if (command.arguments) {
+    for (const argument of command.arguments) {
+      commandArgumentMap[argument.id] = argument;
+    }
+  }
+
+  return {
+    ...state,
+    commandArgumentMap: {
+      ...state.commandArgumentMap,
+      ...commandArgumentMap
+    },
+    commandIdentifierMap: {
+      ...commandIdentifierMap,
+      [command.identifier]: command.id
+    },
+    commandMap: {
+      ...state.commandMap,
+      [command.id]: {
+        ...command
+      }
+    }
+  };
+};

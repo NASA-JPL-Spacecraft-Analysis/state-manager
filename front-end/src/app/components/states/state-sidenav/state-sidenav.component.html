@@ -8,7 +8,7 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div *ngIf="stateIdentifierMap !== null">
+    <div *ngIf="stateIdentifierMap">
       <app-identifier-form
         [originalIdentifier]="originalIdentifier"
         [identifierMap]="stateIdentifierMap"
@@ -68,7 +68,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>State Type</mat-label>
-        <mat-select placeholder="State Type" [(value)]="newState.type">
+        <mat-select placeholder="State Type" [(value)]="form.value.type">
           <mat-option *ngFor="let stateType of stateTypes" [value]="stateType">
             {{stateType}}
           </mat-option>

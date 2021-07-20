@@ -217,6 +217,7 @@ export class FileUploadEffects {
     )
   );
 
+  /*
   public uploadEnumerations = createEffect(() =>
     this.actions.pipe(
       ofType(FileUploadActions.uploadStateEnumerations),
@@ -284,6 +285,7 @@ export class FileUploadEffects {
       })
     )
   );
+  */
 
   public uploadEvents = createEffect(() =>
     this.actions.pipe(

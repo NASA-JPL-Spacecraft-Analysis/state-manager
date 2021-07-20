@@ -1,12 +1,12 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 
 import { Response } from './response';
-import { State, StateEnumeration } from '../models';
+import { State } from '../models';
 
 @ObjectType()
-export class EnumerationsResponse extends Response {
-  @Field(() => [ StateEnumeration ], { nullable: true })
-  public enumerations?: StateEnumeration[];
+export class DeleteEnumerationsResponse extends Response {
+  @Field(() => [ ID ], { nullable: true })
+  public deletedEnumerationIds?: string[];
 }
 
 @ObjectType()

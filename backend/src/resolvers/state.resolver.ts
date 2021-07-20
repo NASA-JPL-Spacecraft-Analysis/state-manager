@@ -3,10 +3,10 @@ import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
 import { State, StateEnumeration, StateHistory, stateTypes } from './../models';
-import { CreateStateInput, DeleteEnumerationsInput, SaveEnumerationsInput, UpdateStateInput } from '../inputs';
+import { CreateStateInput, DeleteEnumerationsInput, ModifyStateEnumeration, UpdateStateInput } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { EnumerationsResponse, Response, StateResponse, StatesResponse } from '../responses';
+import { DeleteEnumerationsResponse, Response, StateResponse, StatesResponse } from '../responses';
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
@@ -25,6 +25,7 @@ export class StateResolver implements ResolverInterface<State> {
   public async createState(@Arg('data') data: CreateStateInput): Promise<StateResponse> {
     try {
       this.validationService.isDuplicateIdentifier(await this.states({ collectionId: data.collectionId }), data.identifier);
+
       const state = State.create(data);
 
       this.validationService.hasValidType([ state ], stateTypes);
@@ -32,6 +33,8 @@ export class StateResolver implements ResolverInterface<State> {
       await state.save();
 
       this.createStateHistory(state);
+
+      state.enumerations = await this.saveStateEnumerations(data.enumerations, state.id);
 
       return {
         message: 'State Created',
@@ -49,8 +52,13 @@ export class StateResolver implements ResolverInterface<State> {
   @Mutation(() => StatesResponse)
   public async createStates(@Arg('data') data: CreateStatesInput): Promise<StatesResponse> {
     try {
+      const existingStates = await this.states({ collectionId: data.collectionId });
+      const stateEnumerationMap = new Map<string, ModifyStateEnumeration[] | undefined>();
+
       for (const state of data.states) {
-        this.validationService.isDuplicateIdentifier(await this.states({ collectionId: data.collectionId }), state.identifier);
+        this.validationService.isDuplicateIdentifier(existingStates, state.identifier);
+
+        stateEnumerationMap.set(state.identifier, state.enumerations);
 
         state.collectionId = data.collectionId;
       }
@@ -61,6 +69,8 @@ export class StateResolver implements ResolverInterface<State> {
 
       for (const state of states) {
         await state.save();
+
+        state.enumerations = await this.saveStateEnumerations(stateEnumerationMap.get(state.identifier), state.id);
 
         this.createStateHistory(state);
       }
@@ -78,8 +88,8 @@ export class StateResolver implements ResolverInterface<State> {
     }
   }
 
-  @Mutation(() => Response)
-  public async deleteEnumerations(@Arg('data') data: DeleteEnumerationsInput): Promise<Response> {
+  @Mutation(() => DeleteEnumerationsResponse)
+  public async deleteEnumerations(@Arg('data') data: DeleteEnumerationsInput): Promise<DeleteEnumerationsResponse> {
     try {
       const enumerations = await StateEnumeration.find({
         where: {
@@ -91,6 +101,8 @@ export class StateResolver implements ResolverInterface<State> {
         throw new UserInputError(StateConstants.enumerationsNotFoundError(data.stateId));
       }
 
+      const deletedIds: string[] = [];
+
       // Loop over the ids that we're trying to delete, find and delete the associated enumeration.
       for (const id of data.enumerationIds) {
         const enumeration = enumerations.find((e) => e.id === id);
@@ -99,10 +111,13 @@ export class StateResolver implements ResolverInterface<State> {
           throw new UserInputError(StateConstants.enumerationNotFoundError(id));
         }
 
+        deletedIds.push(enumeration.id);
+
         await enumeration.remove();
       }
 
       return {
+        deletedEnumerationIds: deletedIds,
         message: 'State Enumeration Deleted',
         success: true
       };
@@ -114,7 +129,7 @@ export class StateResolver implements ResolverInterface<State> {
     }
   }
 
-  @FieldResolver()
+  @FieldResolver(() => [ StateEnumeration ])
   public async enumerations(@Root() state: State): Promise<StateEnumeration[]> {
     return StateEnumeration.find({
       where: {
@@ -123,63 +138,18 @@ export class StateResolver implements ResolverInterface<State> {
     });
   }
 
-  @Mutation(() => EnumerationsResponse)
-  public async saveEnumerations(@Arg('data') data: SaveEnumerationsInput): Promise<EnumerationsResponse> {
-    try {
-      const savedEnumerations: StateEnumeration[] = [];
-      let currentEnumeration: StateEnumeration | undefined;
-
-      for (const enumeration of data.enumerations) {
-        enumeration.collectionId = data.collectionId;
-
-        if (enumeration.id) {
-          // If we have already saved this enumeration, update it.
-          currentEnumeration = await StateEnumeration.findOne({
-            where: {
-              id: enumeration.id
-            }
-          });
-
-          if (currentEnumeration) {
-            Object.assign(currentEnumeration, enumeration);
-
-            savedEnumerations.push(await currentEnumeration.save());
-          }
-        } else {
-          if (!enumeration.stateId) {
-            const state = await State.findOne({
-              where: {
-                collectionId: enumeration.collectionId,
-                identifier: enumeration.stateIdentifier
-              }
-            });
-
-            if (state) {
-              enumeration.stateId = state.id;
-            }
-          }
-
-          // Otherwise create a new enumeration.
-          savedEnumerations.push(await StateEnumeration.create(enumeration).save());
-        }
-      }
-
-      return {
-        enumerations: savedEnumerations,
-        message: 'Enumerations Saved',
-        success: true
-      };
-    } catch (error) {
-      return {
-        message: error,
-        success: false
-      };
-    }
-  }
-
   @Query(() => State)
   public async state(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<State | undefined> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
+  }
+
+  @Query(() => [ StateEnumeration ])
+  public stateEnumerations(@Arg('stateId') stateId: string): Promise<StateEnumeration[]> {
+    return StateEnumeration.find({
+      where: {
+        stateId
+      }
+    });
   }
 
   @Query(() => [ StateHistory ])
@@ -219,6 +189,8 @@ export class StateResolver implements ResolverInterface<State> {
 
       this.createStateHistory(state);
 
+      state.enumerations = await this.saveStateEnumerations(data.enumerations, state.id);
+
       return {
         message: 'State Updated',
         state,
@@ -250,5 +222,19 @@ export class StateResolver implements ResolverInterface<State> {
     });
 
     void stateHistory.save();
+  }
+
+  private async saveStateEnumerations(
+    stateEnumerations: ModifyStateEnumeration[] | undefined, stateId: string): Promise<StateEnumeration[]> {
+    if (stateEnumerations) {
+      for (const enumeration of stateEnumerations) {
+        const stateEnumeration = StateEnumeration.create(enumeration);
+        stateEnumeration.stateId = stateId;
+
+        await stateEnumeration.save();
+      }
+    }
+
+    return this.stateEnumerations(stateId);
   }
 }

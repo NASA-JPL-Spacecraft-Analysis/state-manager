@@ -6,6 +6,7 @@ export const CREATE_STATE = gql(`
     $dataType: String!
     $description: String
     $displayName: String!
+    $enumerations: [ModifyStateEnumeration!]
     $externalLink: String
     $identifier: String!
     $source: String!
@@ -19,6 +20,7 @@ export const CREATE_STATE = gql(`
         dataType: $dataType
         description: $description
         displayName: $displayName
+        enumerations: $enumerations
         externalLink: $externalLink
         identifier: $identifier
         source: $source
@@ -33,6 +35,11 @@ export const CREATE_STATE = gql(`
         dataType
         description
         displayName
+        enumerations {
+          stateId
+          label
+          value
+        }
         externalLink
         id
         identifier
@@ -110,6 +117,8 @@ export const DELETE_ENUMERATIONS = gql(`
         stateId: $stateId
       }
     ) {
+      deletedEnumerationIds
+      message
       success
     }
   }
@@ -163,6 +172,7 @@ export const UPDATE_STATE = gql(`
     $dataType: String!
     $description: String
     $displayName: String!
+    $enumerations: [ModifyStateEnumeration!]
     $externalLink: String
     $id: ID!
     $identifier: String!
@@ -177,6 +187,7 @@ export const UPDATE_STATE = gql(`
         description: $description
         displayName: $displayName
         externalLink: $externalLink
+        enumerations: $enumerations
         id: $id
         identifier: $identifier
         source: $source
@@ -191,6 +202,12 @@ export const UPDATE_STATE = gql(`
         dataType
         description
         displayName
+        enumerations {
+          label
+          id
+          stateId
+          value
+        }
         externalLink
         id
         identifier

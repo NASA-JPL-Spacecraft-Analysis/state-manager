@@ -4,14 +4,13 @@ import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { State, StateMap, StateEnumeration } from '../../models';
-import { getStates, getSelectedState, getShowSidenav, getSelectedCollectionId } from '../../selectors';
+import { State, StateMap, StateEnumeration, IdentifierMap } from '../../models';
+import { getStates, getSelectedState, getShowSidenav, getSelectedCollectionId, getStateIdentifierMap } from '../../selectors';
 import { StateActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
-import { StateTableModule } from '../../components';
+import { StateSidenavModule, StateTableModule } from 'src/app/components';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
-import { StateSidenavModule } from '../state-sidenav/state-sidenav.component';
 
 enum UploadableTypes {
   Enumerations,
@@ -29,6 +28,7 @@ export class StatesComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateMap: StateMap;
   public state: State;
+  public stateIdentifierMap: IdentifierMap;
   public enumerationsUploadableType = UploadableTypes.Enumerations;
   public statesUploadableType = UploadableTypes.States;
 
@@ -47,14 +47,18 @@ export class StatesComponent implements OnDestroy {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getSelectedState)).subscribe(selectedState => {
+        this.state = selectedState;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateIdentifierMap)).subscribe(stateIdentifierMap => {
+        this.stateIdentifierMap = stateIdentifierMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getStates)).subscribe(stateMap => {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getSelectedState)).subscribe(selectedState => {
-        this.state = selectedState;
-        this.changeDetectorRef.markForCheck();
-      })
     );
   }
 
@@ -77,7 +81,7 @@ export class StatesComponent implements OnDestroy {
    */
   public onModifyState(state?: State): void {
     this.store.dispatch(StateActions.setSelectedState({
-      id: state.id
+      id: state?.id
     }));
 
     this.store.dispatch(LayoutActions.toggleSidenav({
@@ -85,41 +89,34 @@ export class StatesComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { state?: State; stateEnumerations: StateEnumeration[]; deletedEnumerationIds?: string[] }): void {
-    if (result === undefined) {
+  public onSidenavError(error: string): void {
+    this.store.dispatch(ToastActions.showToast({
+      message: error,
+      toastType: 'error'
+    }));
+  }
+
+  public onSidenavOutput(result: { state: State; deletedEnumerationIds: string[] }): void {
+    if (!result) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
     } else {
-      const { state } = result;
+      if (!result.state.id) {
+        this.store.dispatch(StateActions.createState({
+          state: result.state
+        }));
+      } else {
+        this.store.dispatch(StateActions.updateState({
+          state: result.state
+        }));
+      }
 
-      state.enumerations = [
-        ...result.stateEnumerations
-      ];
-
-      if (state !== undefined) {
-        // Try and set the state id so we don't get duplicate identifier errors.
-        if (state.id === null && this.state) {
-          state.id = this.state.id;
-        }
-
-        if (state.id === null) {
-          this.store.dispatch(StateActions.createState({
-            collectionId: this.collectionId,
-            state
-          }));
-        } else {
-          this.store.dispatch(StateActions.updateState({
-            updatedState: state
-          }));
-
-          if (result.deletedEnumerationIds && result.deletedEnumerationIds.length > 0) {
-            this.store.dispatch(StateActions.deleteEnumerations({
-              deletedEnumerationIds: result.deletedEnumerationIds,
-              stateId: state.id
-            }));
-          }
-        }
+      if (result.deletedEnumerationIds.length > 0 && result.state.id) {
+        this.store.dispatch(StateActions.deleteEnumerations({
+          deletedEnumerationIds: result.deletedEnumerationIds,
+          stateId: result.state.id
+        }));
       }
     }
   }
@@ -170,11 +167,11 @@ export class StatesComponent implements OnDestroy {
     StatesComponent
   ],
   imports: [
-    StateSidenavModule,
-    StateTableModule,
     CommonModule,
     MaterialModule,
-    RouterModule
+    RouterModule,
+    StateSidenavModule,
+    StateTableModule
   ]
 })
 export class StatesModule {}

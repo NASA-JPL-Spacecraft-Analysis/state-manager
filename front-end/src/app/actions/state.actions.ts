@@ -8,7 +8,7 @@ import {
 
 export const createState = createAction(
   '[state] createState',
-  props<{ collectionId: string; state: State }>()
+  props<{ state: State }>()
 );
 
 export const createStateFailure = createAction(
@@ -83,7 +83,7 @@ export const setSelectedState = createAction(
 
 export const updateState = createAction(
   '[state] updateState',
-  props<{ updatedState: State }>()
+  props<{ state: State }>()
 );
 
 export const updateStateFailure = createAction(
