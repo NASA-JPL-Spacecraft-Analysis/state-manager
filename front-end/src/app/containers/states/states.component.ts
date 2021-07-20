@@ -77,7 +77,7 @@ export class StatesComponent implements OnDestroy {
    */
   public onModifyState(state?: State): void {
     this.store.dispatch(StateActions.setSelectedState({
-      state
+      id: state.id
     }));
 
     this.store.dispatch(LayoutActions.toggleSidenav({

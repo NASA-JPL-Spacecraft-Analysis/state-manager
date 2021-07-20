@@ -10,19 +10,19 @@ import {
 } from '../models';
 
 export interface StateState {
-  stateIdentifierMap: IdentifierMap;
-  selectedState: State;
+  selectedStateId: string;
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
+  stateIdentifierMap: IdentifierMap;
   stateMap: StateMap;
 }
 
 export const initialState: StateState = {
-  stateIdentifierMap: null,
-  selectedState: null,
-  stateEnumerationMap: null,
-  stateHistoryMap: null,
-  stateMap: null
+  selectedStateId: undefined,
+  stateEnumerationMap: undefined,
+  stateHistoryMap: undefined,
+  stateIdentifierMap: undefined,
+  stateMap: undefined
 };
 
 export const reducer = createReducer(
@@ -73,9 +73,9 @@ export const reducer = createReducer(
       }
     };
   }),
-  on(StateActions.setSelectedState, (stateState, { state }) => ({
+  on(StateActions.setSelectedState, (stateState, { id }) => ({
     ...stateState,
-    selectedState: state
+    selectedStateId: id
   }))
 );
 
@@ -93,7 +93,6 @@ const modifyState = (stateState: StateState, state: State): StateState => {
 
   return {
     ...stateState,
-    selectedState: state,
     stateIdentifierMap: {
       ...stateIdentifierMap,
       [state.identifier]: state.id

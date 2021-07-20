@@ -114,21 +114,17 @@ describe('StateReducer', () => {
   });
 
   describe('setSelectedState', () => {
-    it('should set selectedState', () => {
-      const state = {
-        ...mockStateMap[1]
-      };
-
+    it('should set selectedStateId', () => {
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.setSelectedState({
-          state
+          id: mockStateMap[1].id
         })
       );
 
       expect(stateState).toEqual({
         ...initialState,
-        selectedState: state
+        selectedStateId: mockStateMap[1].id
       });
     });
   });

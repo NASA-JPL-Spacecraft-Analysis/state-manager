@@ -78,7 +78,7 @@ export const setStates = createAction(
 
 export const setSelectedState = createAction(
   '[state] setSelectedState',
-  props<{ state: State }>()
+  props<{ id: string }>()
 );
 
 export const updateState = createAction(
