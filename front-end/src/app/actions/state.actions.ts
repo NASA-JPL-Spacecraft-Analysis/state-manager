@@ -51,11 +51,6 @@ export const fetchStatesFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const saveEnumerations = createAction(
-  '[state] saveEnumerations',
-  props<{ collectionId: string; stateId: string; enumerations: StateEnumeration[] }>()
-);
-
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
   props<{ stateEnumerations: StateEnumeration[] }>()

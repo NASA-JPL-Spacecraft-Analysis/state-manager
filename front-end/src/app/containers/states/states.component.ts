@@ -12,11 +12,6 @@ import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { UploadConstants } from 'src/app/constants';
 
-enum UploadableTypes {
-  Enumerations,
-  States
-}
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-states',
@@ -30,8 +25,6 @@ export class StatesComponent implements OnDestroy {
   public state: State;
   public stateEnumerations: StateEnumeration[];
   public stateIdentifierMap: IdentifierMap;
-  public enumerationsUploadableType = UploadableTypes.Enumerations;
-  public statesUploadableType = UploadableTypes.States;
 
   private subscriptions = new SubSink();
 
@@ -69,14 +62,6 @@ export class StatesComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  public onEnumerationsOutput(enumerations: StateEnumeration[]): void {
-    this.store.dispatch(StateActions.saveEnumerations({
-      collectionId: this.collectionId,
-      stateId: this.state.id,
-      enumerations
-    }));
   }
 
   /**

@@ -5,8 +5,9 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } 
 import { MatIconRegistry } from '@angular/material/icon';
 
 import { stateTypes, IdentifierMap, State, StateEnumeration } from '../../../models';
-import { EnumFormModule, IdentifierFormModule } from '../..';
 import { MaterialModule } from 'src/app/material';
+import { EnumFormModule } from '../../enum-form/enum-form.component';
+import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
