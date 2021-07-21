@@ -53,6 +53,29 @@ export const CREATE_STATE = gql(`
   }
 `);
 
+export const CREATE_STATE_ENUMERATIONS = gql(`
+  mutation CreateStateEnumerations(
+    $collectionId: ID!
+    $stateEnumerations: [CreateStateEnumerationInput!]!
+  ) {
+    createStateEnumerations(
+      data: {
+        collectionId: $collectionId
+        stateEnumerations: $stateEnumerations
+      }
+    ) {
+      message
+      stateEnumerations {
+        label
+        id
+        stateId
+        value
+      }
+      success
+    }
+  }
+`);
+
 export const CREATE_STATES = gql(`
   mutation CreateStates(
     $collectionId: ID!

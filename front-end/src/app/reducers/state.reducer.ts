@@ -4,7 +4,6 @@ import { StateActions } from '../actions';
 import {
   IdentifierMap,
   State,
-  StateEnumeration,
   StateEnumerationMap,
   StateMap
 } from '../models';
@@ -56,12 +55,25 @@ export const reducer = createReducer(
       stateMap
     };
   }),
-  on(StateActions.saveEnumerationsSuccess, (stateState, { enumerations }) => ({
-    ...stateState,
-    stateEnumerationMap: {
-      ...mapEnumerations(enumerations)
+  on(StateActions.saveEnumerationsSuccess, (stateState, { stateEnumerations }) => {
+    const stateEnumerationMap = {};
+
+    for (const enumeration of stateEnumerations) {
+      if (!stateEnumerationMap[enumeration.stateId]) {
+        stateEnumerationMap[enumeration.stateId] = [];
+      }
+
+      stateEnumerationMap[enumeration.stateId].push(enumeration);
     }
-  })),
+
+    return {
+      ...stateState,
+      stateEnumerationMap: {
+        ...stateState.stateEnumerationMap,
+        ...stateEnumerationMap
+      }
+    };
+  }),
   on(StateActions.setSelectedState, (stateState, { id }) => ({
     ...stateState,
     selectedStateId: id
@@ -79,16 +91,21 @@ export const reducer = createReducer(
     };
   }),
   on(StateActions.setStates, (stateState, { states }) => {
+    const stateEnumerationMap = {};
     const stateMap = {};
     const stateIdentifierMap = {};
 
     for (const state of states) {
       stateMap[state.id] = state;
       stateIdentifierMap[state.identifier] = state.id;
+      stateEnumerationMap[state.id] = state.enumerations;
     }
 
     return {
       ...stateState,
+      stateEnumerationMap: {
+        ...stateEnumerationMap
+      },
       stateIdentifierMap: {
         ...stateIdentifierMap
       },
@@ -101,13 +118,12 @@ export const reducer = createReducer(
 );
 
 const createOrUpdateStateSuccess = (stateState: StateState, state: State): StateState => {
-  const stateEnumerationMap = {};
+  const stateEnumerationMap = {
+    ...stateState.stateEnumerationMap
+  };
 
-  if (state.enumerations) {
-    for (const enumeration of state.enumerations) {
-      stateEnumerationMap[enumeration.id] = enumeration;
-    }
-  }
+  // Overwrite the current list of enumerations for the created or updated state.
+  stateEnumerationMap[state.id] = state.enumerations;
 
   const stateIdentifierMap = {
     ...stateState.stateIdentifierMap
@@ -123,38 +139,10 @@ const createOrUpdateStateSuccess = (stateState: StateState, state: State): State
     ...stateState,
     selectedStateId: state.id,
     stateEnumerationMap: {
-      ...stateState.stateEnumerationMap,
       ...stateEnumerationMap
     },
     stateIdentifierMap: {
       ...stateState.stateIdentifierMap,
-      [state.identifier]: state.id
-    },
-    stateMap: {
-      ...stateState.stateMap,
-      [state.id]: {
-        ...state
-      }
-    }
-  };
-};
-
-const modifyState = (stateState: StateState, state: State): StateState => {
-  const stateIdentifierMap = {
-    ...stateState.stateIdentifierMap
-  };
-
-  for (const identifier of Object.keys(stateIdentifierMap)) {
-    // Remove the old identifier from our map
-    if (stateIdentifierMap[identifier] === state.id) {
-      delete stateIdentifierMap[identifier];
-    }
-  }
-
-  return {
-    ...stateState,
-    stateIdentifierMap: {
-      ...stateIdentifierMap,
       [state.identifier]: state.id
     },
     stateMap: {
@@ -174,18 +162,4 @@ const mapStates = (states: State[]): StateMap => {
   }
 
   return stateMap;
-};
-
-const mapEnumerations = (stateEnumerations: StateEnumeration[]): StateEnumerationMap => {
-  const stateEnumerationMap = {};
-
-  for (const stateEnumeration of stateEnumerations) {
-    if (!stateEnumerationMap[stateEnumeration.id]) {
-      stateEnumerationMap[stateEnumeration.id] = [];
-    }
-
-    stateEnumerationMap[stateEnumeration.id].push(stateEnumeration);
-  }
-
-  return stateEnumerationMap;
 };

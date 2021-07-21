@@ -5,12 +5,12 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { State, StateMap, StateEnumeration, IdentifierMap } from '../../models';
-import { getStates, getSelectedState, getShowSidenav, getSelectedCollectionId, getStateIdentifierMap } from '../../selectors';
-import { StateActions, LayoutActions, ToastActions, FileUploadActions } from '../../actions';
+import { getStates, getSelectedState, getShowSidenav, getSelectedCollectionId, getStateIdentifierMap, getStateEnumerations } from '../../selectors';
+import { StateActions, LayoutActions, ToastActions } from '../../actions';
 import { StateSidenavModule, StateTableModule } from 'src/app/components';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
+import { UploadConstants } from 'src/app/constants';
 
 enum UploadableTypes {
   Enumerations,
@@ -28,6 +28,7 @@ export class StatesComponent implements OnDestroy {
   public showSidenav: boolean;
   public stateMap: StateMap;
   public state: State;
+  public stateEnumerations: StateEnumeration[];
   public stateIdentifierMap: IdentifierMap;
   public enumerationsUploadableType = UploadableTypes.Enumerations;
   public statesUploadableType = UploadableTypes.States;
@@ -49,6 +50,10 @@ export class StatesComponent implements OnDestroy {
       }),
       this.store.pipe(select(getSelectedState)).subscribe(selectedState => {
         this.state = selectedState;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateEnumerations)).subscribe(stateEnumerations => {
+        this.stateEnumerations = stateEnumerations;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getStateIdentifierMap)).subscribe(stateIdentifierMap => {
@@ -121,41 +126,22 @@ export class StatesComponent implements OnDestroy {
     }
   }
 
-  /**
-   * Only dispatch a valid file, if file is null then we couldn't parse the file
-   * due to a filetype issue.
-   *
-   * @param fileEvent The Event for the current file.
-   * @param type The type of items that are being uploaded, either 'states', or 'enumerations'.
-   */
-  public onFileUpload(fileEvent: Event, type: UploadableTypes): void {
-    const file = (fileEvent.target as HTMLInputElement).files[0];
+  public onStateEnumerationFileUpload():  void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.collectionId,
+      csvFormat: [ UploadConstants.stateEnumerationCsvUploadFormat ],
+      dialogType: 'State Enumeration',
+      jsonFormat: UploadConstants.stateEnumerationJsonUploadFormat
+    }));
+  }
 
-    if (file) {
-      switch (type) {
-        case UploadableTypes.Enumerations:
-          this.store.dispatch(FileUploadActions.uploadStateEnumerations({
-            collectionId: this.collectionId,
-            file
-          }));
-
-          break;
-        case UploadableTypes.States:
-          this.store.dispatch(FileUploadActions.uploadStates({
-            collectionId: this.collectionId,
-            file
-          }));
-
-          break;
-        default:
-          break;
-      }
-    } else {
-      this.store.dispatch(ToastActions.showToast({
-        message: StateManagementConstants.wrongFiletypeUploadMessage,
-        toastType: 'error'
-      }));
-    }
+  public onStateFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.collectionId,
+      csvFormat: [ UploadConstants.stateCsvUploadFormat ],
+      dialogType: 'State',
+      jsonFormat: UploadConstants.stateJsonUploadFormat
+    }));
   }
 }
 

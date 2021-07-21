@@ -34,7 +34,7 @@ export const uploadConstraintsSuccess = createAction(
 
 export const uploadStateEnumerations = createAction(
   '[file upload] uploadStateEnumerations',
-  props<{ collectionId: string; file: File }>()
+  props<{ collectionId: string, file: File }>()
 );
 
 export const uploadStateEnumerationsFailure = createAction(

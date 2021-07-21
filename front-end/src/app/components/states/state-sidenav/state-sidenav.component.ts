@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 
-import { stateTypes, IdentifierMap, State } from '../../../models';
+import { stateTypes, IdentifierMap, State, StateEnumeration } from '../../../models';
 import { EnumFormModule, IdentifierFormModule } from '../..';
 import { MaterialModule } from 'src/app/material';
 
@@ -17,6 +17,7 @@ import { MaterialModule } from 'src/app/material';
 export class StateSidenavComponent implements OnChanges {
   @Input() public collectionId: string;
   @Input() public state: State;
+  @Input() public stateEnumerations: StateEnumeration[];
   @Input() public stateIdentifierMap: IdentifierMap;
 
   @Output() public errorEmitter: EventEmitter<string>;
@@ -48,7 +49,7 @@ export class StateSidenavComponent implements OnChanges {
         description: '',
         displayName: '',
         editable: true,
-        enumerations: [],
+        enumerations: this.stateEnumerations,
         externalLink: '',
         id: undefined,
         identifier: '',
@@ -61,7 +62,7 @@ export class StateSidenavComponent implements OnChanges {
       this.newState = {
         ...this.state,
         enumerations: [
-          ...this.state.enumerations.map(enumeration => { return { ...enumeration }})
+          ...this.stateEnumerations.map(enumeration => { return { ...enumeration }})
         ]
       };
     }

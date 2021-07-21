@@ -11,7 +11,8 @@ export const getStateIdentifierMap = createSelector(
 
 export const getStateEnumerations = createSelector(
   getStatesState,
-  (stateState: StateState) => stateState.stateEnumerationMap
+  (stateState: StateState) => 
+    stateState.selectedStateId ? stateState.stateEnumerationMap[stateState.selectedStateId]: []
 );
 
 export const getStateHistory = createSelector(

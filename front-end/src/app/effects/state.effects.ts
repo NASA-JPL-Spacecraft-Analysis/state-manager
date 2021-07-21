@@ -6,7 +6,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, of, EMPTY } from 'rxjs';
 
 import { StateService } from '../services';
-import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
+import { ToastActions, StateActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { StateResponse } from '../models';
 
@@ -80,19 +80,6 @@ export class StateEffects {
       switchMap(collectionId =>
         this.getStates(collectionId)
       )
-    )
-  );
-
-  public navStatesByCollectionId = createEffect(() =>
-    this.actions.pipe(
-      ofType(CollectionActions.setSelectedCollection),
-      switchMap(({ id }) => {
-        if (id !== null) {
-          return this.getStates(id);
-        }
-
-        return [];
-      })
     )
   );
 

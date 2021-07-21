@@ -3,10 +3,16 @@ import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
 import { State, StateEnumeration, StateHistory, stateTypes } from './../models';
-import { CreateStateInput, DeleteEnumerationsInput, ModifyStateEnumeration, UpdateStateInput } from '../inputs';
+import {
+  CreateStateEnumerationsInput,
+  CreateStateInput,
+  DeleteEnumerationsInput,
+  ModifyStateEnumeration,
+  UpdateStateInput
+} from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { DeleteEnumerationsResponse, Response, StateResponse, StatesResponse } from '../responses';
+import { DeleteEnumerationsResponse, StateEnumerationResponse, StateResponse, StatesResponse } from '../responses';
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
@@ -39,6 +45,42 @@ export class StateResolver implements ResolverInterface<State> {
       return {
         message: 'State Created',
         state,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => StateEnumerationResponse)
+  public async createStateEnumerations(@Arg('data') data: CreateStateEnumerationsInput): Promise<StateEnumerationResponse> {
+    try {
+      const stateEnumerations: StateEnumeration[] = [];
+
+      for (const enumeration of data.stateEnumerations) {
+        const state = await this.state({ collectionId: data.collectionId, identifier: enumeration.stateIdentifier });
+
+        if (!state) {
+          throw new UserInputError(StateConstants.stateNotFoundIdentifierError(enumeration.stateIdentifier));
+        }
+
+        const stateEnumeration = StateEnumeration.create({
+          label: enumeration.label,
+          stateId: state.id,
+          value: enumeration.value
+        });
+
+        await stateEnumeration.save();
+
+        stateEnumerations.push(stateEnumeration);
+      }
+
+      return {
+        stateEnumerations,
+        message: 'State Enumerations Created',
         success: true
       };
     } catch (error) {
@@ -176,7 +218,7 @@ export class StateResolver implements ResolverInterface<State> {
       const state = await this.state({ id: data.id });
 
       if (!state) {
-        throw new UserInputError(StateConstants.stateNotFoundError(data.id));
+        throw new UserInputError(StateConstants.stateNotFoundIdError(data.id));
       }
 
       this.validationService.isDuplicateIdentifier(await this.states({ collectionId: state.collectionId }), data.identifier, state.id);

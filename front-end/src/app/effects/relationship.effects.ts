@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, EMPTY } from 'rxjs';
+import { Observable, merge, EMPTY, of } from 'rxjs';
 
 import { EventService, InformationTypeService, StateService, RelationshipService, CommandService, ConstraintService } from '../services';
-import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions, CommandActions, ConstraintActions } from '../actions';
+import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions, CommandActions, ConstraintActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { RelationshipResponse } from '../models';
 
@@ -186,6 +186,9 @@ export class RelationshipEffects {
     if (url === 'relationships') {
       return merge(
         sharedActions,
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        })),
         this.relationshipService.getRelationships(
           collectionId
         ).pipe(
@@ -204,6 +207,9 @@ export class RelationshipEffects {
     } else if (url === 'relationship-history') {
       return merge(
         sharedActions,
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        })),
         this.relationshipService.getRelationshipHistory(
           collectionId
         ).pipe(

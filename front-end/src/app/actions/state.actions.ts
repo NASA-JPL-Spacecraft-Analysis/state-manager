@@ -58,7 +58,7 @@ export const saveEnumerations = createAction(
 
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
-  props<{ enumerations: StateEnumeration[]; stateId: string }>()
+  props<{ stateEnumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsFailure = createAction(
