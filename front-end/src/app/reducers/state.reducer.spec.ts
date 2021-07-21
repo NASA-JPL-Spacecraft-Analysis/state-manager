@@ -6,7 +6,8 @@ import {
   mockStateMap,
   mockStateEnumerations,
   mockStateEnumerationMap,
-  mockStateIdentifierMap
+  mockStateIdentifierMap,
+  mockStateTwo
 } from '../mocks';
 
 describe('StateReducer', () => {
@@ -29,7 +30,10 @@ describe('StateReducer', () => {
 
       expect(stateState).toEqual({
         ...initialState,
-        selectedState: mockStateOne,
+        selectedStateId: mockStateOne.id,
+        stateEnumerationMap: {
+          [mockStateOne.id]: []
+        },
         stateIdentifierMap: {
           ...stateState.stateIdentifierMap,
           [mockStateOne.identifier]: mockStateOne.id
@@ -62,47 +66,19 @@ describe('StateReducer', () => {
     });
   });
 
-  describe('updateStateSuccess', () => {
-    it('should set the selectedState, and update the stateIdentifierMap after editing a state', () => {
-      const stateState: StateState = reducer(
-        {
-          ...initialState,
-          stateIdentifierMap: {
-            ...mockStateIdentifierMap
-          },
-          stateMap: {
-            ...mockStateMap
-          }
-        },
-        StateActions.updateStateSuccess({
-          state: mockStateOne
-        })
-      );
+  describe('deleteEnumerationsSuccess', () => {
+    it('should', () => {
 
-      expect(stateState).toEqual({
-        ...initialState,
-        selectedState: mockStateOne,
-        stateIdentifierMap: {
-          ...stateState.stateIdentifierMap,
-          [mockStateOne.identifier]: mockStateOne.id
-        },
-        stateMap: {
-          ...stateState.stateMap,
-          [mockStateOne.id]: {
-            ...mockStateOne
-          }
-        }
-      });
     });
   });
+
 
   describe('saveEnumerationsSuccess', () => {
     it('should set enumerations after saving enumerations', () => {
       const stateState: StateState = reducer(
         { ...initialState },
         StateActions.saveEnumerationsSuccess({
-          enumerations: mockStateEnumerations,
-          stateId: mockStateOne.id
+          stateEnumerations: mockStateEnumerations
         })
       );
 
@@ -129,6 +105,12 @@ describe('StateReducer', () => {
     });
   });
 
+  describe('setStateHistory', () => {
+    it('should', () => {
+
+    });
+  });
+
   describe('setStates', () => {
     it('should set states', () => {
       const stateState: StateState = reducer(
@@ -140,11 +122,53 @@ describe('StateReducer', () => {
 
       expect(stateState).toEqual({
         ...initialState,
+        stateEnumerationMap: {
+          [mockStateOne.id]: [],
+          [mockStateTwo.id]: []
+        },
         stateIdentifierMap: {
           ...stateState.stateIdentifierMap
         },
         stateMap: {
           ...stateState.stateMap
+        }
+      });
+    });
+  });
+
+  describe('updateStateSuccess', () => {
+    it('should set the selectedState, and update the stateIdentifierMap after editing a state', () => {
+      const stateState: StateState = reducer(
+        {
+          ...initialState,
+          selectedStateId: mockStateOne.id,
+          stateIdentifierMap: {
+            ...mockStateIdentifierMap
+          },
+          stateMap: {
+            ...mockStateMap
+          }
+        },
+        StateActions.updateStateSuccess({
+          state: mockStateOne
+        })
+      );
+
+      expect(stateState).toEqual({
+        ...initialState,
+        selectedStateId: mockStateOne.id,
+        stateEnumerationMap: {
+          [mockStateOne.id]: []
+        },
+        stateIdentifierMap: {
+          ...stateState.stateIdentifierMap,
+          [mockStateOne.identifier]: mockStateOne.id
+        },
+        stateMap: {
+          ...stateState.stateMap,
+          [mockStateOne.id]: {
+            ...mockStateOne
+          }
         }
       });
     });
