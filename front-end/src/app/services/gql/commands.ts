@@ -43,6 +43,29 @@ export const CREATE_COMMAND = gql(`
   }
 `);
 
+export const CREATE_COMMAND_ARGUMENTS = gql(`
+  mutation CreateCommandArguments(
+    $collectionId: ID!
+    $commandArguments: [CreateCommandArgumentInput!]!
+  ) {
+    createCommandArguments(
+      data: {
+        collectionId: $collectionId
+        commandArguments: $commandArguments
+      }
+    ) {
+      arguments {
+        commandId
+        name
+        id
+        sortOrder
+      }
+      message
+      success
+    }
+  }
+`);
+
 export const CREATE_COMMANDS = gql(`
   mutation CreateCommands(
     $collectionId: ID!

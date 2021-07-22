@@ -61,6 +61,24 @@ export class CommandsComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  public onCommandArgumentFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.selectedCollectionId,
+      csvFormat: [ UploadConstants.commandArgumentCsvUploadFormat ],
+      dialogType: 'Command Argument',
+      jsonFormat: UploadConstants.commandArgumentJsonUploadFormat
+    }));
+  }
+
+  public onCommandFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.selectedCollectionId,
+      csvFormat: [ UploadConstants.commandCsvUploadFormat ],
+      dialogType: 'Command',
+      jsonFormat: UploadConstants.commandJsonUploadFormat
+    }));
+  }
+
   public onDuplicateIdentifier(duplicateIdentifier: boolean): void {
     if (duplicateIdentifier) {
       this.store.dispatch(
@@ -70,15 +88,6 @@ export class CommandsComponent implements OnDestroy {
         })
       );
     }
-  }
-
-  public onFileUpload(): void {
-    this.store.dispatch(LayoutActions.openFileUploadDialog({
-      collectionId: this.selectedCollectionId,
-      csvFormat: [ UploadConstants.commandCsvUploadFormat ],
-      dialogType: 'Command',
-      jsonFormat: UploadConstants.commandJsonUploadFormat
-    }));
   }
 
   public onModifyCommand(command?: Command): void {

@@ -103,15 +103,9 @@ export const reducer = createReducer(
 
     return {
       ...stateState,
-      stateEnumerationMap: {
-        ...stateEnumerationMap
-      },
-      stateIdentifierMap: {
-        ...stateIdentifierMap
-      },
-      stateMap: {
-        ...stateMap
-      }
+      stateEnumerationMap,
+      stateIdentifierMap,
+      stateMap
     };
   }),
   on(StateActions.updateStateSuccess, (stateState, { state }) => createOrUpdateStateSuccess(stateState, state))

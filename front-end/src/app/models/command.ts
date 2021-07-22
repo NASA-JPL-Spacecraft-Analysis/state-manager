@@ -14,6 +14,12 @@ export interface CommandArgument extends Node {
 
 export type CommandArgumentMap = StringTMap<CommandArgument>;
 
+export interface CommandArgumentUpload {
+  commandIdentifier: string;
+  name: string;
+  sortOrder: number;
+}
+
 export interface CommandHistory extends Command {
   commandId: string;
   updated: Date;

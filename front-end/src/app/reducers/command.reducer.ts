@@ -43,6 +43,25 @@ export const reducer = createReducer(
       commandMap
     };
   }),
+  on(CommandActions.saveCommandArgumentsSuccess, (state, { commandArguments }) => {
+    const commandArgumentMap = {};
+
+    for (const argument of commandArguments) {
+      if (!commandArgumentMap[argument.commandId]) {
+        commandArgumentMap[argument.commandId] = [];
+      }
+
+      commandArgumentMap[argument.commandId].push(argument);
+    }
+
+    return {
+      ...state,
+      commandArgumentMap: {
+        ...state.commandArgumentMap,
+        ...commandArgumentMap
+      }
+    };
+  }),
   on(CommandActions.setCommandHistory, (state, { commandHistory }) => ({
     ...state,
     commandHistory
@@ -63,6 +82,7 @@ export const reducer = createReducer(
 
     return {
       ...state,
+      commandArgumentMap,
       commandIdentifierMap,
       commandMap
     };
@@ -96,22 +116,21 @@ export const reducer = createReducer(
 );
 
 const createOrUpdateCommandSuccess = (state: CommandState, command: Command): CommandState => {
+  const commandArgumentMap = {};
   const commandIdentifierMap = {
     ...state.commandIdentifierMap
   };
+
+  if (command.arguments) {
+    for (const argument of command.arguments) {
+      commandArgumentMap[argument.id] = argument;
+    }
+  }
 
   for (const identifier of Object.keys(commandIdentifierMap)) {
     // Remove the old identifier from our map
     if (commandIdentifierMap[identifier] === command.id) {
       delete commandIdentifierMap[identifier];
-    }
-  }
-
-  const commandArgumentMap = {};
-
-  if (command.arguments) {
-    for (const argument of command.arguments) {
-      commandArgumentMap[argument.id] = argument;
     }
   }
 

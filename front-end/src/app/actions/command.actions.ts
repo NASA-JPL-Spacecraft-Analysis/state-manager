@@ -42,19 +42,9 @@ export const fetchCommandsFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const saveArguments = createAction(
-  '[command] saveArguments',
-  props<{ arguments: CommandArgument[], collectionId: string }>()
-);
-
-export const saveArgumentsFailure = createAction(
-  '[command] saveArgumentsFailure',
-  props<{ error: Error }>()
-);
-
-export const saveArgumentsSuccess = createAction(
-  '[command] saveArgumentsSuccess',
-  props<{ arguments: CommandArgument[] }>()
+export const saveCommandArgumentsSuccess = createAction(
+  '[command] saveCommandArgumentsSuccess',
+  props<{ commandArguments: CommandArgument[] }>()
 );
 
 export const setCommandHistory = createAction(
