@@ -1,5 +1,6 @@
+import { reduce } from 'rxjs/operators';
 import { CommandActions, FileUploadActions } from '../actions';
-import { mockCommand, mockCommandHistory, mockCommandIdentifierMap, mockCommands } from '../mocks';
+import { mockCommand, mockCommandArgument, mockCommandHistory, mockCommandIdentifierMap, mockCommands, mockCommandWithArgument } from '../mocks';
 import { CommandState, reducer, initialState } from './command.reducer';
 
 describe('CommandReducer', () => {
@@ -16,6 +17,9 @@ describe('CommandReducer', () => {
 
       expect(commandState).toEqual({
         ...initialState,
+        commandArgumentMap: {
+          [mockCommand.id]: []
+        },
         commandIdentifierMap: {
           [mockCommand.identifier]: mockCommand.id
         },
@@ -25,6 +29,56 @@ describe('CommandReducer', () => {
           }
         },
         selectedCommandId: mockCommand.id
+      })
+    });
+  });
+
+  describe('deleteArgumentsSuccess', () => {
+    it('should delete mockCommandWithArgument\'s argument', () => {
+      const commandState: CommandState = reducer(
+        {
+          ...initialState,
+          commandArgumentMap: {
+            [mockCommandWithArgument.id]: [
+              { ...mockCommandArgument}
+            ]
+          }
+        },
+        CommandActions.deleteArgumentsSuccess({
+          deletedArgumentIds: [ mockCommandArgument.id ]
+        })
+      );
+
+      expect(commandState).toEqual({
+        ...initialState,
+        commandArgumentMap: {
+          [mockCommandWithArgument.id]: []
+        }
+      })
+    });
+  });
+
+  describe('saveCommandArgumentsSuccess', () => {
+    it('should save the command arguments after they\'re uploaded', () => {
+      const commandState: CommandState = reducer(
+        {
+          ...initialState,
+          commandArgumentMap: {
+            [mockCommandWithArgument.id]: []
+          }
+        },
+        CommandActions.saveCommandArgumentsSuccess({
+          commandArguments: [ mockCommandArgument ]
+        })
+      );
+
+      expect(commandState).toEqual({
+        ...initialState,
+        commandArgumentMap: {
+          [mockCommandWithArgument.id]: [
+            mockCommandArgument
+          ]
+        }
       })
     });
   });
@@ -62,6 +116,9 @@ describe('CommandReducer', () => {
 
       expect(commandState).toEqual({
         ...initialState,
+        commandArgumentMap: {
+          [mockCommand.id]: []
+        },
         commandIdentifierMap: {
           [mockCommand.identifier]: mockCommand.id
         },
@@ -113,6 +170,9 @@ describe('CommandReducer', () => {
 
       expect(commandState).toEqual({
         ...initialState,
+        commandArgumentMap: {
+          [mockCommand.id]: []
+        },
         commandIdentifierMap: {
           [updatedMockCommand.identifier]: updatedMockCommand.id
         },
@@ -120,7 +180,8 @@ describe('CommandReducer', () => {
           [mockCommand.id]: {
             ...updatedMockCommand
           }
-        }
+        },
+        selectedCommandId: mockCommand.id
       })
     });
   });

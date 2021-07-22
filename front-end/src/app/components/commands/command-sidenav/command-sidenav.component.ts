@@ -5,7 +5,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { MaterialModule } from 'src/app/material';
-import { Command, IdentifierMap } from 'src/app/models';
+import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
 import { CommandArgumentFormModule } from '../../command-argument-form/command-argument-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 
@@ -18,6 +18,7 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
 export class CommandSidenavComponent implements OnChanges {
   @Input() public collectionId: string;
   @Input() public command: Command;
+  @Input() public commandArguments: CommandArgument[];
   @Input() public commandIdentifierMap: IdentifierMap;
 
   @Output() public errorEmitter: EventEmitter<string>;
@@ -44,7 +45,7 @@ export class CommandSidenavComponent implements OnChanges {
   public ngOnChanges(): void {
     if (!this.command) {
       this.newCommand = {
-        arguments: [],
+        arguments: this.commandArguments,
         collectionId: this.collectionId,
         description: '',
         displayName: '',
@@ -58,7 +59,7 @@ export class CommandSidenavComponent implements OnChanges {
       this.newCommand = {
         ...this.command,
         arguments: [
-          ...this.command.arguments.map(argument => { return { ...argument }})
+          ...this.commandArguments.map(argument => { return { ...argument }})
         ]
       };
     }

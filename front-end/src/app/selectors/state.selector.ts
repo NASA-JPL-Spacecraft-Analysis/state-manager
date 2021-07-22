@@ -12,7 +12,7 @@ export const getStateIdentifierMap = createSelector(
 export const getStateEnumerations = createSelector(
   getStatesState,
   (stateState: StateState) => 
-    stateState.selectedStateId ? stateState.stateEnumerationMap[stateState.selectedStateId]: []
+    stateState.selectedStateId ? stateState.stateEnumerationMap[stateState.selectedStateId] : []
 );
 
 export const getStateHistory = createSelector(

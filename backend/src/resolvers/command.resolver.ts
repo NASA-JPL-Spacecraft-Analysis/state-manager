@@ -4,10 +4,10 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CommandConstants } from '../constants';
-import { CreateCommandInput, CreateCommandsInput, DeleteArgumentsInput, ModifyCommandArgument, UpdateCommandInput } from '../inputs';
+import { CreateCommandArgumentsInput, CreateCommandInput, CreateCommandsInput, DeleteArgumentsInput, ModifyCommandArgument, UpdateCommandInput } from '../inputs';
 import { Command, CommandArgument, CommandHistory, commandTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { CommandResponse, CommandsResponse, DeleteArgumentResponse } from '../responses';
+import { CommandArgumentResponse, CommandResponse, CommandsResponse, DeleteArgumentResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver(() => Command)
@@ -80,6 +80,42 @@ export class CommandResolver implements ResolverInterface<Command> {
       return {
         command,
         message: 'Command Created',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => CommandArgumentResponse)
+  public async createCommandArguments(@Arg('data') data: CreateCommandArgumentsInput): Promise<CommandArgumentResponse> {
+    try {
+      const commandArguments: CommandArgument[] = [];
+
+      for (const argument of data.commandArguments) {
+        const command = await this.command({ collectionId: data.collectionId, identifier: argument.commandIdentifier });
+
+        if (!command) {
+          throw new UserInputError(CommandConstants.commandNotFoundIdentifierError(argument.commandIdentifier));
+        }
+
+        const commandArgument = CommandArgument.create({
+          commandId: command.id,
+          name: argument.name,
+          sortOrder: argument.sortOrder
+        });
+
+        await commandArgument.save();
+
+        commandArguments.push(commandArgument);
+      }
+
+      return {
+        commandArguments,
+        message: 'Command Arguments Created',
         success: true
       };
     } catch (error) {
@@ -169,7 +205,7 @@ export class CommandResolver implements ResolverInterface<Command> {
       const command = await this.command({ id: data.id });
 
       if (!command) {
-        throw new UserInputError(CommandConstants.commandNotFoundError(data.id));
+        throw new UserInputError(CommandConstants.commandNotFoundIdError(data.id));
       }
 
       // TODO: For now hardcore this value, there aren't any other options for commands.

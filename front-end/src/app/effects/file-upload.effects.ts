@@ -65,7 +65,7 @@ export class FileUploadEffects {
             ).pipe(
               switchMap((createCommandArguments: CommandArgumentResponse) => [
                 CommandActions.saveCommandArgumentsSuccess({
-                  commandArguments: createCommandArguments.arguments
+                  commandArguments: createCommandArguments.commandArguments
                 }),
                 ToastActions.showToast({
                   message: createCommandArguments.message,

@@ -32,6 +32,7 @@
     <command-sidenav
       [collectionId]="selectedCollectionId"
       [command]="command"
+      [commandArguments]="commandArguments"
       [commandIdentifierMap]="commandIdentifierMap"
       (errorEmitter)="onSidenavError($event)"
       (modifyCommand)="onSidenavOutput($event)">

@@ -43,7 +43,7 @@ export class StateSidenavComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (this.state === undefined) {
+    if (!this.state) {
       this.newState = {
         collectionId: this.collectionId,
         dataType: '',

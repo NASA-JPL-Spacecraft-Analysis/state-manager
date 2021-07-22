@@ -3,7 +3,7 @@ import { Response } from './response';
 
 export type DeleteArgumentResponse = Response & { deletedArgumentIds: string[] };
 
-export type CommandArgumentResponse = Response & { arguments: CommandArgument[] };
+export type CommandArgumentResponse = Response & { commandArguments: CommandArgument[] };
 
 export type CommandResponse = Response & { command: Command };
 

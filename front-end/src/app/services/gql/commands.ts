@@ -54,7 +54,7 @@ export const CREATE_COMMAND_ARGUMENTS = gql(`
         commandArguments: $commandArguments
       }
     ) {
-      arguments {
+      commandArguments {
         commandId
         name
         id

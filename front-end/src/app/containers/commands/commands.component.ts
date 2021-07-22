@@ -6,8 +6,8 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { Command, IdentifierMap } from 'src/app/models';
-import { getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
+import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
+import { getCommandArguments, getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
 import { CommandActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { CommandSidenavModule, CommandTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
@@ -20,6 +20,7 @@ import { UploadConstants } from 'src/app/constants';
 })
 export class CommandsComponent implements OnDestroy {
   public command: Command;
+  public commandArguments: CommandArgument[];
   public commandIdentifierMap: IdentifierMap;
   public commands: Command[];
   public showSidenav: boolean;
@@ -34,6 +35,10 @@ export class CommandsComponent implements OnDestroy {
     this.subscriptions = new SubSink();
 
     this.subscriptions.add(
+      this.store.pipe(select(getCommandArguments)).subscribe(commandArguments => {
+        this.commandArguments = commandArguments;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getCommandIdentifierMap)).subscribe(commandIdentifierMap => {
         this.commandIdentifierMap = commandIdentifierMap;
         this.changeDetectorRef.markForCheck();
