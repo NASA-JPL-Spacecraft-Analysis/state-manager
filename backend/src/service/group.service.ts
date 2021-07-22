@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 
-import { Event, GroupMapping, GroupMappingItemUnion, InformationType, State } from '../models';
+import { Event, Group, GroupMapping, GroupMappingItemUnion, InformationType, State } from '../models';
 
 @Service()
 export class GroupService {
@@ -26,6 +26,12 @@ export class GroupService {
 
     if (event) {
       return event;
+    }
+
+    const group = await Group.findOne({ where: { id: groupMapping.itemId }});
+
+    if (group) {
+      return group;
     }
 
     const informationType = await InformationType.findOne({ where: { id: groupMapping.itemId }});

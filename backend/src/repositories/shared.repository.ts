@@ -43,7 +43,7 @@ export class SharedRepository<T extends IdentifierType> extends Repository<T> {
     });
 
     if (!item) {
-      throw new UserInputError(`A ${this.entity.name} with the given parameters: [${collectionId}, ${identifier}] could not be found`)
+      throw new UserInputError(`A ${this.entity.name} with the given parameters: [${collectionId}, ${identifier}] could not be found`);
     }
 
     return item;

@@ -22,7 +22,7 @@ export class GroupService {
         mutation: gql.CREATE_GROUP,
         variables: {
           collectionId,
-          name: group.name,
+          identifier: group.identifier,
           groupMappings: group.groupMappings
         }
       })
@@ -110,7 +110,7 @@ export class GroupService {
         mutation: gql.UPDATE_GROUP,
         variables: {
           collectionId: collectionId,
-          name: group.name,
+          identifier: group.identifier,
           id: group.id,
           groupMappings: group.groupMappings
         }

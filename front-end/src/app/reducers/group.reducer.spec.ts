@@ -15,6 +15,12 @@ describe('GroupReducer', () => {
 
       expect(groupState).toEqual({
         ...initialState,
+        groupIdentifierMap: {
+          [mockGroup1.identifier]: mockGroup1.id
+        },
+        groupMap: {
+          [mockGroup1.id]: mockGroup1
+        },
         groups: [
           mockGroup1
         ],
@@ -57,6 +63,12 @@ describe('GroupReducer', () => {
 
       expect(groupState).toEqual({
         ...initialState,
+        groupIdentifierMap: {
+          [mockGroup1.identifier]: mockGroup1.id
+        },
+        groupMap: {
+          [mockGroup1.id]: mockGroup1
+        },
         groups: mockGroups
       });
     });
@@ -106,6 +118,12 @@ describe('GroupReducer', () => {
 
       expect(groupState).toEqual({
         ...initialState,
+        groupIdentifierMap: {
+          [mockGroup1.identifier]: mockGroup1.id
+        },
+        groupMap: {
+          [mockGroup1.id]: mockGroup1
+        },
         groups: [
           mockGroup1
         ],
@@ -114,7 +132,7 @@ describe('GroupReducer', () => {
 
       const updatedGroup: Group = {
         ...mockGroup1,
-        name: 'Test Group 3',
+        identifier: 'Test Group 3',
         groupMappings: [
           {
             id: '1-group-mapping',
@@ -135,6 +153,12 @@ describe('GroupReducer', () => {
 
       expect(groupState).toEqual({
         ...initialState,
+        groupIdentifierMap: {
+          [mockGroup1.identifier]: mockGroup1.id
+        },
+        groupMap: {
+          [mockGroup1.id]: mockGroup1
+        },
         groups: [
           updatedGroup
         ],
@@ -157,6 +181,12 @@ describe('GroupReducer', () => {
 
       expect(groupState).toEqual({
         ...initialState,
+        groupIdentifierMap: {
+          [mockGroup1.identifier]: mockGroup1.id
+        },
+        groupMap: {
+          [mockGroup1.id]: mockGroup1
+        },
         groups: [
           {
             ...mockGroup1,
@@ -185,6 +215,12 @@ describe('GroupReducer', () => {
 
       expect(groupState).toEqual({
         ...initialState,
+        groupIdentifierMap: {
+          [mockGroup1.identifier]: mockGroup1.id
+        },
+        groupMap: {
+          [mockGroup1.id]: mockGroup1
+        },
         groups: [
           mockGroup1,
           mockGroup2

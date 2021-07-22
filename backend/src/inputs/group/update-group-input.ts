@@ -14,5 +14,5 @@ export class UpdateGroupInput {
   public id!: string;
 
   @Field()
-  public name!: string;
+  public identifier!: string;
 }

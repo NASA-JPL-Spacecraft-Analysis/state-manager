@@ -2,6 +2,7 @@ import { createUnionType, Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 
 import { Event } from './event';
+import { Group } from './group';
 import { InformationType } from './information-type';
 import { Node } from './node';
 import { State } from './state';
@@ -27,10 +28,14 @@ export class GroupMapping extends Node {
 
 export const GroupMappingItemUnion = createUnionType({
   name: 'GroupMappingItemUnion',
-  types: () => [ Event, InformationType, State ] as const,
+  types: () => [ Event, Group, InformationType, State ] as const,
   resolveType: value => {
     if (value instanceof Event) {
       return Event;
+    }
+
+    if (value instanceof Group) {
+      return Group;
     }
 
     if (value instanceof InformationType) {
