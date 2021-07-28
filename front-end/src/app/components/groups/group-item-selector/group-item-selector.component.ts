@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgModule, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, NgModule, OnChanges, Output, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -8,16 +8,16 @@ import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { MaterialModule } from 'src/app/material';
-import { GroupItemType } from 'src/app/models';
+import { GroupItemType, GroupMapping } from 'src/app/models';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'autocomplete-input',
-  styleUrls: [ 'autocomplete-input.component.css' ],
-  templateUrl: 'autocomplete-input.component.html'
+  selector: 'group-item-selector',
+  styleUrls: [ 'group-item-selector.component.css' ],
+  templateUrl: 'group-item-selector.component.html'
 })
-export class AutocompleteInputComponent implements OnInit {
+export class GroupItemSelectorComponent implements OnChanges {
   @Input() public itemList: GroupItemType[];
   @Input() public selectedItems: GroupItemType[] | undefined;
 
@@ -38,13 +38,8 @@ export class AutocompleteInputComponent implements OnInit {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
   }
 
-  public ngOnInit(): void {
+  public ngOnChanges(): void {
     this.formControl = new FormControl();
-
-    // On a new group selectedItems will be undefined.
-    if (!this.selectedItems) {
-      this.selectedItems = [];
-    }
 
     // Setup the filter to run whenever the input changes.
     this.filteredItems = this.formControl.valueChanges.pipe(
@@ -60,15 +55,14 @@ export class AutocompleteInputComponent implements OnInit {
     );
   }
 
-  public onRemove(item): void {
+  public onRemove(item: GroupItemType): void {
     const index = this.selectedItems.indexOf(item);
 
     if (index >= 0) {
       this.selectedItems.splice(index, 1);
     }
 
-    // Add the removed item back into the selectable item list.
-    this.itemList.push(item);
+    this.selectionChange.emit(this.selectedItems);
   }
 
   public onSelected(event: MatAutocompleteSelectedEvent): void {
@@ -94,10 +88,10 @@ export class AutocompleteInputComponent implements OnInit {
 
 @NgModule({
   declarations: [
-    AutocompleteInputComponent
+    GroupItemSelectorComponent
   ],
   exports: [
-    AutocompleteInputComponent
+    GroupItemSelectorComponent
   ],
   imports: [
     CommonModule,
@@ -106,4 +100,4 @@ export class AutocompleteInputComponent implements OnInit {
     ReactiveFormsModule
   ]
 })
-export class AutocompleteInputModule {}
+export class GroupItemSelectorModule {}

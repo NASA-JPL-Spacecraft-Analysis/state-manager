@@ -180,7 +180,7 @@ export class GroupResolver implements ResolverInterface<Group> {
       }
 
       // Look at the remaining mappings, save them all to the group.
-      for (const itemId of Object.keys(groupMappingsMap)) {
+      for (const itemId of groupMappingsMap.keys()) {
         const groupMapping = GroupMapping.create({
           groupId: group.id,
           itemId: groupMappingsMap.get(itemId)?.itemId,

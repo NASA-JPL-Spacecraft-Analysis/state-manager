@@ -15,10 +15,11 @@
       (identifierEmitter)="onGroupIdentifierChange($event)">
     </app-identifier-form>
 
-    <autocomplete-input
-      [itemList]="collectionItems"
+    <group-item-selector
+      [itemList]="itemList"
+      [selectedItems]="selectedItems"
       (selectionChange)="onItemSelect($event)">
-    </autocomplete-input>
+    </group-item-selector>
 
     <div class="sidenav-actions">
       <button mat-raised-button color="primary" type="submit">Save</button>

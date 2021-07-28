@@ -32,7 +32,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
           group = await Group.findOne({
             where: {
               collectionId: data.collectionId,
-              name: groupMapping.name
+              identifier: groupMapping.itemIdentifier
             }
           });
         }
