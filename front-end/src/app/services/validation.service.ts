@@ -67,7 +67,7 @@ export class ValidationService {
   }
 
   public isGroupUpload(groupUpload: GroupUpload): groupUpload is GroupUpload {
-    if (!groupUpload.name) {
+    if (!groupUpload.identifier) {
       return false;
     }
 
@@ -75,7 +75,7 @@ export class ValidationService {
   }
 
   public isGroupUploadMappings(group: GroupUploadMappings): group is GroupUploadMappings {
-    if (!group.name || !group.groupMappings) {
+    if (!group.identifier || !group.groupMappings) {
       return false;
     }
 
@@ -99,7 +99,7 @@ export class ValidationService {
   }
 
   public isMappingsUpload(mappingsUpload: MappingsUpload): mappingsUpload is MappingsUpload {
-    return mappingsUpload.name !== undefined && mappingsUpload.itemIdentifier !== undefined
+    return mappingsUpload.identifier !== undefined && mappingsUpload.itemIdentifier !== undefined
       && mappingsUpload.itemType !== undefined;
   }
 

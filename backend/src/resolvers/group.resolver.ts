@@ -21,7 +21,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     try {
       const group = Group.create(data);
 
-      void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
+      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
 
       await group.save();
 
@@ -43,20 +43,20 @@ export class GroupResolver implements ResolverInterface<Group> {
   @Mutation(() => GroupsResponse)
   public async createGroups(@Arg('data') data: UploadGroupsInput): Promise<GroupsResponse> {
     try {
-      const groupNames = [];
+      const groupIdentifiers = [];
 
       for (const group of data.groups) {
-        groupNames.push(group.name);
+        groupIdentifiers.push(group.identifier);
       }
 
-      await this.checkForDuplicateGroupName(data.collectionId, undefined, groupNames);
+      await this.checkForDuplicateGroupIdentifier(data.collectionId, undefined, groupIdentifiers);
 
       const createdGroups: Group[] = [];
 
       for (const group of data.groups) {
         let newGroup = Group.create();
 
-        newGroup.name = group.name;
+        newGroup.identifier = group.identifier;
         newGroup.collectionId = data.collectionId;
         newGroup.groupMappings = [];
         newGroup = await newGroup.save();
@@ -125,8 +125,8 @@ export class GroupResolver implements ResolverInterface<Group> {
   }
 
   @Query(() => Group)
-  public group(@Arg('collectionId') collectionId: string, @Arg('name') name: string): Promise<Group | undefined> {
-    return this.findGroupByName(collectionId, name);
+  public group(@Arg('collectionId') collectionId: string, @Arg('identifier') identifier: string): Promise<Group | undefined> {
+    return this.findGroupByIdentifier(collectionId, identifier);
   }
 
   @FieldResolver()
@@ -155,7 +155,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       Object.assign(group, data);
 
-      void this.checkForDuplicateGroupName(group.collectionId, group.id, [ group.name ]);
+      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
 
       await group.save();
 
@@ -206,13 +206,14 @@ export class GroupResolver implements ResolverInterface<Group> {
   }
 
   /**
-   * This method queries the DB for a collection and a collection's groups and then checks the incoming list of names
+   * This method queries the DB for a collection and a collection's groups and then checks the incoming list of identifiers
    * for a duplicate.
    *
    * @param collectionId The ID of the collection we're looking at.
-   * @param groupNames A list of group names that we should check for.
+   * @param groupIdentifiers list of group identifiers that we should check for.
    */
-  private async checkForDuplicateGroupName(collectionId: string, groupId: string | undefined, groupNames: string[]): Promise<void> {
+  private async checkForDuplicateGroupIdentifier(
+    collectionId: string, groupId: string | undefined, groupIdentifiers: string[]): Promise<void> {
     const collection = await Collection.findOne({
       where: {
         id: collectionId
@@ -226,9 +227,9 @@ export class GroupResolver implements ResolverInterface<Group> {
     const collectionGroups = await this.findGroupsByCollectionId(collectionId);
 
     for (const collectionGroup of collectionGroups) {
-      for (const name of groupNames) {
-        if (collectionGroup.name === name && collectionGroup.id !== groupId) {
-          throw new UserInputError(GroupConstants.duplicateGroupNameError(name));
+      for (const identifier of groupIdentifiers) {
+        if (collectionGroup.identifier === identifier && collectionGroup.id !== groupId) {
+          throw new UserInputError(GroupConstants.duplicateGroupIdentifierError(identifier));
         }
       }
     }
@@ -248,12 +249,12 @@ export class GroupResolver implements ResolverInterface<Group> {
     return createdGroupMappings;
   }
 
-  private findGroupByName(collectionId: string, name: string): Promise<Group | undefined> {
+  private findGroupByIdentifier(collectionId: string, identifier: string): Promise<Group | undefined> {
     return Group.findOne({
       where: {
         collectionId,
         enabled: true,
-        name
+        identifier
       }
     });
   }

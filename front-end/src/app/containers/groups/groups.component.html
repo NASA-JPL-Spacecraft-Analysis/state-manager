@@ -7,7 +7,7 @@
     </button>
 
     <button mat-raised-button color="primary" (click)="onModifyGroup()">
-      Create New Group
+      New Group
     </button>
   </div>
 
@@ -17,7 +17,7 @@
   <div class="content">
     <ng-container *ngIf="groups.length > 0; else noGroups">
       <mat-list *ngFor="let group of groups">
-        <div mat-subheader (click)="onModifyGroup(group)">{{group.name}}</div>
+        <div mat-subheader (click)="onModifyGroup(group)">{{group.identifier}}</div>
 
         <mat-list-item *ngFor="let mapping of group.groupMappings">
           <div mat-line>{{mapping.item.identifier}}</div>
@@ -39,7 +39,7 @@
       [informationTypeMap]="informationTypeMap"
       [eventMap]="eventMap"
       [group]="group"
-      [groupNameMap]="groupNameMap"
+      [groupIdentifierMap]="groupIdentifierMap"
       [selectedCollectionId]="selectedCollectionId"
       [stateMap]="stateMap"
       (deleteGroup)="onDeleteGroup($event)"

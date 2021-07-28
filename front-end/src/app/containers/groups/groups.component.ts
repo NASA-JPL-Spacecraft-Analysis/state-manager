@@ -9,7 +9,6 @@ import { getEventMap, getGroups, getInformationTypeMap, getInformationTypes, get
 import { GroupsSidenavModule } from 'src/app/components/groups';
 import { EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { UploadConstants } from 'src/app/constants';
 
 @Component({
@@ -22,7 +21,7 @@ export class GroupsComponent implements OnDestroy {
   public eventMap: EventMap;
   public group: Group;
   public groups: Group[];
-  public groupNameMap: IdentifierMap;
+  public groupIdentifierMap: IdentifierMap;
   public informationTypeMap: InformationTypeMap;
   public showSidenav: boolean;
   public selectedCollectionId: string;
@@ -35,7 +34,7 @@ export class GroupsComponent implements OnDestroy {
     private store: Store<AppState>
   ) {
     this.subscriptions = new SubSink();
-    this.groupNameMap = {};
+    this.groupIdentifierMap = {};
 
     this.subscriptions.add(
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
@@ -46,7 +45,7 @@ export class GroupsComponent implements OnDestroy {
         this.groups = groups;
 
         for (const group of groups) {
-          this.groupNameMap[group.name] = group.id;
+          this.groupIdentifierMap[group.identifier] = group.id;
         }
 
         this.changeDetectorRef.markForCheck();

@@ -4,13 +4,13 @@ export const CREATE_GROUP = gql(`
   mutation CreateGroup(
     $collectionId: ID!
     $groupMappings: [CreateGroupMappingInput!]!
-    $name: String!
+    $identifier: String!
   ) {
     createGroup(
       data: {
         collectionId: $collectionId
         groupMappings: $groupMappings
-        name: $name
+        identifier: $identifier
       }
     ) {
       group {
@@ -49,7 +49,7 @@ export const CREATE_GROUP = gql(`
           }
         }
         id
-        name
+        identifier
       }
       message
       success
@@ -156,7 +156,7 @@ export const CREATE_GROUPS = gql(`
           }
         }
         id
-        name
+        identifier
       }
       message
       success
@@ -180,8 +180,8 @@ export const DELETE_GROUP = gql(`
 export const GET_GROUPS_AND_MAPPINGS = gql(`
   query groups($collectionId: ID!) {
     groups(collectionId: $collectionId) {
-      name
       id
+      identifier
       groupMappings {
         item {
           ... on Event {
@@ -225,14 +225,14 @@ export const UPDATE_GROUP = gql(`
     $collectionId: ID!
     $groupMappings: [CreateGroupMappingInput!]!
     $id: ID!
-    $name: String!
+    $identifier: String!
   ) {
     updateGroup(
       data: {
         collectionId: $collectionId
         groupMappings: $groupMappings
         id: $id
-        name: $name
+        identifier: $identifier
       }
     ) {
       group {
@@ -271,7 +271,7 @@ export const UPDATE_GROUP = gql(`
           }
         }
         id
-        name
+        identifier
       }
       message
       success

@@ -7,8 +7,8 @@ import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } 
 import { MaterialModule } from 'src/app/material';
 import { EventMap, Group, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
+import { AutocompleteInputModule } from '../../autocomplete-input/autocomplete-input.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +19,7 @@ import { StateManagementConstants } from 'src/app/constants/state-management.con
 export class GroupsSidenavComponent implements OnChanges {
   @Input() public eventMap: EventMap;
   @Input() public group: Group;
-  @Input() public groupNameMap: IdentifierMap;
+  @Input() public groupIdentifierMap: IdentifierMap;
   @Input() public informationTypeMap: InformationTypeMap;
   @Input() public selectedCollectionId: string;
   @Input() public stateMap: StateMap;
@@ -28,16 +28,14 @@ export class GroupsSidenavComponent implements OnChanges {
   @Output() public modifyGroup: EventEmitter<Group>;
   @Output() public showError: EventEmitter<string>;
 
-  @ViewChild('itemSelector') public itemSelector: MatSelect;
-
   public collectionItems: GroupItemType[];
   public formGroup: FormGroup;
   public groupMappings: GroupMapping[];
   public newGroup: Group;
-  public originalGroupName: string;
+  public originalGroupIdentifier: string;
   public selectedItem: GroupItemType;
 
-  private isDuplicateGroupName: boolean;
+  private isDuplicateGroupIdentifier: boolean;
   private groupItemMap: Map<string, GroupItemType>;
 
   constructor(
@@ -68,7 +66,7 @@ export class GroupsSidenavComponent implements OnChanges {
         collectionId: this.selectedCollectionId,
         groupMappings: [],
         id: undefined,
-        name: ''
+        identifier: ''
       };
 
       this.groupMappings = [];
@@ -80,10 +78,10 @@ export class GroupsSidenavComponent implements OnChanges {
     this.addToCollectionItems(this.eventMap);
     this.addToCollectionItems(this.stateMap);
 
-    this.originalGroupName = this.newGroup.name;
+    this.originalGroupIdentifier = this.newGroup.identifier;
 
     this.formGroup = new FormGroup({
-      name: new FormControl(this.newGroup.name, [ Validators.required ]),
+      identifier: new FormControl(this.newGroup.identifier, [ Validators.required ]),
       groupMappings: new FormControl(this.newGroup.groupMappings, [ Validators.required ])
     });
   }
@@ -92,54 +90,45 @@ export class GroupsSidenavComponent implements OnChanges {
     this.modifyGroup.emit(undefined);
   }
 
-  public onDeleteItem(item: GroupItemType): void {
-    // Remove the item from our mappings.
-    this.groupMappings = this.groupMappings.filter(mapping => mapping.item.id !== item.id);
-
-    // Remove the item from the map of group items.
-    this.groupItemMap.delete(item.id);
-
-    // Add the item back to the list of selectable items.
-    this.collectionItems.push(item);
-  }
-
   public onDeleteGroup(): void {
     this.deleteGroup.emit(true);
   }
 
-  public onDuplicateGroupName(duplicateGroupName: boolean): void {
-    this.isDuplicateGroupName = duplicateGroupName;
+  public onDuplicateGroupIdentifier(duplicateGroupIdentifier: boolean): void {
+    this.isDuplicateGroupIdentifier = duplicateGroupIdentifier;
   }
 
-  public onGroupNameChange(groupName: string): void {
-    this.newGroup.name = groupName;
-    this.formGroup.get('name').setValue(groupName);
+  public onGroupIdentifierChange(identifier: string): void {
+    this.newGroup.identifier = identifier;
+    this.formGroup.get('identifier').setValue(identifier);
   }
 
   /**
    * When an item is selected, add it to the groupItemMap and remove it 
    * from the collectionItems list.
-   * @param item The item that the user selected.
+   * @param groupItemList The list of items that the user has selected.
    */
-  public onItemSelect(change: MatSelectChange): void {
-    const value: GroupItemType = change.value;
+  public onItemSelect(groupItemList: GroupItemType[]): void {
+    this.groupMappings = [];
 
-    this.groupItemMap.set(value.id, value);
-    this.groupMappings.push({
-      id: '',
-      item: value,
-      itemId: value.id
-    });
+    for (const groupItem of groupItemList) {
+      this.groupMappings.push({
+        id: '',
+        item: groupItem,
+        itemId: groupItem.id
+      });
 
-    // Remove the item from out collection item list.
-    this.collectionItems = this.collectionItems.filter(item => item.id !== value.id);
+      this.groupItemMap.set(groupItem.id, groupItem);
 
-    this.itemSelector.value = null;
+      // Remove the item from our collection item list.
+      // FIXME: This doesn't actually remove it from the list for some reason.
+      this.collectionItems = this.collectionItems.filter(item => item.id !== groupItem.id);
+    }
   }
 
   public onSubmit(): void {
-    if (!this.isDuplicateGroupName && this.newGroup.name !== '') {
-      if (this.validateGroupName(this.newGroup.name)) {
+    if (!this.isDuplicateGroupIdentifier && this.newGroup.identifier !== '') {
+      if (this.validateGroupIdentifier(this.newGroup.identifier)) {
         this.formGroup.get('groupMappings').setValue(this.groupMappings);
 
         const groupMappingIds = [];
@@ -155,10 +144,10 @@ export class GroupsSidenavComponent implements OnChanges {
 
         this.modifyGroup.emit(this.newGroup);
       } else {
-        this.showError.emit('Your group name contains invalid characters, please only use alphanumerics and underscores');
+        this.showError.emit('Your group identifier contains invalid characters, please only use alphanumerics and underscores');
       }
     } else {
-      this.showError.emit('Please provide a unique group name');
+      this.showError.emit('Please provide a unique group identifier');
     }
   }
 
@@ -192,8 +181,8 @@ export class GroupsSidenavComponent implements OnChanges {
     }
   }
 
-  private validateGroupName(name: string): boolean {
-    return new RegExp(StateManagementConstants.groupNameRegex).test(name);
+  private validateGroupIdentifier(identifier: string): boolean {
+    return new RegExp(StateManagementConstants.groupIdentifierRegex).test(identifier);
   }
 }
 
@@ -205,6 +194,7 @@ export class GroupsSidenavComponent implements OnChanges {
     GroupsSidenavComponent
   ],
   imports: [
+    AutocompleteInputModule,
     CommonModule,
     FormsModule,
     IdentifierFormModule,

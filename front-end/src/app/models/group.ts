@@ -6,7 +6,7 @@ export interface Group {
   collectionId: string;
   groupMappings: GroupMapping[];
   id: string;
-  name: string;
+  identifier: string;
 }
 
 export interface GroupMapping {
@@ -22,7 +22,7 @@ export type GroupItemType =
   | State;
 
 export interface GroupUpload {
-  name: string;
+  identifier: string;
 }
 
 export interface GroupUploadMappings extends GroupUpload {

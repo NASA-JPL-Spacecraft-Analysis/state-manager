@@ -1,3 +1,4 @@
+export * from './autocomplete-input/autocomplete-input.component';
 export * from './collection-input/collection-input.component';
 export * from './commands';
 export * from './confirmation-dialog/confirmation-dialog.component';

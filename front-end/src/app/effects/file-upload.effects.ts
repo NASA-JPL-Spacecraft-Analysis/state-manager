@@ -373,7 +373,7 @@ export class FileUploadEffects {
             
             if (this.validationService.isGroupUpload(groupUpload)) {
               groups.push({
-                name: groupUpload.name,
+                identifier: groupUpload.identifier,
                 groupMappings: []
               });
 
