@@ -6,7 +6,7 @@
       Upload Groups
     </button>
 
-    <button mat-raised-button color="primary" (click)="onModifyGroup()">
+    <button mat-raised-button color="primary" (click)="onGroupSelected()">
       New Group
     </button>
   </div>
@@ -14,10 +14,19 @@
 </mat-toolbar>
 
 <div class="content-container">
+  <div class="sidenav">
+    <groups-menu
+      [groups]="groups"
+      (groupSelected)="onGroupSelected($event)">
+    </groups-menu>
+  </div>
+
   <div class="content">
     <ng-container *ngIf="groups.length > 0; else noGroups">
       <mat-list *ngFor="let group of groups">
-        <div mat-subheader (click)="onModifyGroup(group)">{{group.identifier}}</div>
+        <div mat-subheader (click)="onGroupSelected(group)">
+          {{group.identifier}}
+        </div>
 
         <mat-list-item *ngFor="let mapping of group.groupMappings">
           <div mat-line>{{mapping.item.identifier}}</div>

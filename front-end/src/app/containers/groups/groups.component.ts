@@ -5,8 +5,8 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { getEventMap, getGroups, getInformationTypeMap, getInformationTypes, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
-import { GroupsSidenavModule } from 'src/app/components/groups';
+import { getEventMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
+import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
 import { EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
@@ -105,7 +105,7 @@ export class GroupsComponent implements OnDestroy {
     }));
   }
 
-  public onModifyGroup(group?: Group): void {
+  public onGroupSelected(group?: Group): void {
     this.store.dispatch(GroupActions.setSelectedGroup({
       group
     }))
@@ -145,6 +145,7 @@ export class GroupsComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
+    GroupsMenuModule,
     GroupsSidenavModule,
     MaterialModule
   ]
