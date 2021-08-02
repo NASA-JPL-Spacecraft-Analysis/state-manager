@@ -96,11 +96,13 @@ export class GroupsComponent implements OnDestroy {
   }
 
   public onDeleteGroup(): void {
-    this.store.dispatch(
-      GroupActions.deleteGroup({
-        group: this.group
-      })
-    );
+    if (this.group) {
+      this.store.dispatch(
+        GroupActions.deleteGroup({
+          group: this.group
+        })
+      );
+    }
   }
 
   public onShowError(error: string): void {
