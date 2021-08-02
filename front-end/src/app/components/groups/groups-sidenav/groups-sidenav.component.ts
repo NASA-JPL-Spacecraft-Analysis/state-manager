@@ -24,7 +24,6 @@ export class GroupsSidenavComponent implements OnChanges {
   @Input() public selectedCollectionId: string;
   @Input() public stateMap: StateMap;
 
-  @Output() public deleteGroup: EventEmitter<boolean>;
   @Output() public modifyGroup: EventEmitter<Group>;
   @Output() public showError: EventEmitter<string>;
 
@@ -45,7 +44,6 @@ export class GroupsSidenavComponent implements OnChanges {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.deleteGroup = new EventEmitter<boolean>();
     this.modifyGroup = new EventEmitter<Group>();
     this.showError = new EventEmitter<string>();
   }
@@ -94,10 +92,6 @@ export class GroupsSidenavComponent implements OnChanges {
 
   public onCancel(): void {
     this.modifyGroup.emit(undefined);
-  }
-
-  public onDeleteGroup(): void {
-    this.deleteGroup.emit(true);
   }
 
   public onDuplicateGroupIdentifier(duplicateGroupIdentifier: boolean): void {

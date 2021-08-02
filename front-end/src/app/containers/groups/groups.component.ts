@@ -1,4 +1,6 @@
 import { CommonModule } from '@angular/common';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy, } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
@@ -32,8 +34,11 @@ export class GroupsComponent implements OnDestroy {
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
+    private domSanitizer: DomSanitizer,
+    private iconRegistry: MatIconRegistry,
     private store: Store<AppState>
   ) {
+    this.iconRegistry.addSvgIcon('delete', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/delete.svg'));
     this.subscriptions = new SubSink();
     this.groupIdentifierMap = {};
 
@@ -90,14 +95,12 @@ export class GroupsComponent implements OnDestroy {
     );
   }
 
-  public onDeleteGroup(deleteGroup: boolean): void {
-    if (deleteGroup) {
-      this.store.dispatch(
-        GroupActions.deleteGroup({
-          id: this.group.id
-        })
-      );
-    }
+  public onDeleteGroup(): void {
+    this.store.dispatch(
+      GroupActions.deleteGroup({
+        group: this.group
+      })
+    );
   }
 
   public onShowError(error: string): void {

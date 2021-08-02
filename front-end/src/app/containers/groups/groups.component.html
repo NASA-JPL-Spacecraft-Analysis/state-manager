@@ -8,6 +8,10 @@
       Upload Groups
     </button>
 
+    <button mat-button (click)="onDeleteGroup()">
+      <mat-icon svgIcon="delete"></mat-icon>
+    </button>
+
     <button mat-raised-button color="primary" (click)="onGroupSelected()">
       New Group
     </button>
@@ -52,7 +56,6 @@
       [groupIdentifierMap]="groupIdentifierMap"
       [selectedCollectionId]="selectedCollectionId"
       [stateMap]="stateMap"
-      (deleteGroup)="onDeleteGroup($event)"
       (modifyGroup)="onSidenavOutput($event)"
       (showError)=onShowError($event)>
     </groups-sidenav>

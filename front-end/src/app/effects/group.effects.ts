@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, EMPTY, merge, of } from 'rxjs';
+import { Observable, EMPTY, merge, of, forkJoin } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
 import { CollectionActions, EventActions, GroupActions, LayoutActions, StateActions, ToastActions } from '../actions';
@@ -10,11 +11,13 @@ import { AppState } from '../app-store';
 import { mapToParam, ofRoute } from '../functions/router';
 import { EventService, GroupService, StateService } from '../services';
 import { GroupResponse, Response } from '../models';
+import { ConfirmationDialogComponent } from '../components';
 
 @Injectable()
 export class GroupEffects {
   constructor(
     private actions: Actions,
+    private dialog: MatDialog,
     private eventService: EventService,
     private groupService: GroupService,
     private router: Router,
@@ -56,33 +59,60 @@ export class GroupEffects {
   public deleteGroup = createEffect(() =>
     this.actions.pipe(
       ofType(GroupActions.deleteGroup),
-      switchMap(({ id }) =>
-        this.groupService.deleteGroup(
-          id
-        ).pipe(
-          switchMap((deleteGroup: Response) => [
-            GroupActions.deleteGroupSuccess({
+      switchMap(({ group }) => {
+        const dialog = this.dialog.open(
+          ConfirmationDialogComponent,
+          {
+            data: {
+              confirmButtonColor: '#dc4545',
+              confirmButtonText: 'Delete',
+              message: 'Are you sure you want to delete "' + group.identifier + '"?',
+              title: 'Delete ' + group.identifier + '?'
+            }
+          }
+        );
+
+        return forkJoin([
+          of(group.id),
+          dialog.afterClosed()
+        ]);
+      }),
+      map(([ id, result ]) => ({
+        id,
+        result
+      })),
+      switchMap(({ id, result }) => {
+        if (result) {
+          return merge(
+            this.groupService.deleteGroup(
               id
-            }),
-            LayoutActions.toggleSidenav({
-              showSidenav: false
-            }),
-            ToastActions.showToast({
-              message: deleteGroup.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            GroupActions.deleteGroupFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
-        )
-      )
+            ).pipe(
+              switchMap((deleteGroup: Response) => [
+                GroupActions.deleteGroupSuccess({
+                  id
+                }),
+                LayoutActions.toggleSidenav({
+                  showSidenav: false
+                }),
+                ToastActions.showToast({
+                  message: deleteGroup.message,
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: Error) => [
+                GroupActions.deleteGroupFailure({
+                  error
+                }),
+                ToastActions.showToast({
+                  message: error.message,
+                  toastType: 'error'
+                })
+              ])
+            )
+          );
+        }
+        return EMPTY;
+      })
     )
   );
 

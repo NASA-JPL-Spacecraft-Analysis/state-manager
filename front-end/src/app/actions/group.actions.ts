@@ -24,7 +24,7 @@ export const fetchGroupsFailure = createAction(
 
 export const deleteGroup = createAction(
   '[group] deleteGroup',
-  props<{ id: string }>()
+  props<{ group: Group }>()
 );
 
 export const deleteGroupFailure = createAction(
