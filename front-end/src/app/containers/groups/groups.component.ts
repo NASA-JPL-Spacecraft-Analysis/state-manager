@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { getEventMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
+import { getEventMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowGroupsSidemenu, getShowSidenav, getStates } from 'src/app/selectors';
 import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
 import { EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
@@ -23,6 +23,7 @@ export class GroupsComponent implements OnDestroy {
   public groups: Group[];
   public groupIdentifierMap: IdentifierMap;
   public informationTypeMap: InformationTypeMap;
+  public showGroupsSidemenu: boolean;
   public showSidenav: boolean;
   public selectedCollectionId: string;
   public stateMap: StateMap;
@@ -54,6 +55,10 @@ export class GroupsComponent implements OnDestroy {
         this.informationTypeMap = informationTypeMap;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getShowGroupsSidemenu)).subscribe(showGroupsSidemenu => {
+        this.showGroupsSidemenu = showGroupsSidemenu;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
@@ -75,6 +80,14 @@ export class GroupsComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  public onCloseSidemenu(): void {
+    this.store.dispatch(
+      LayoutActions.toggleGroupsSidemenu({
+        showGroupsSidemenu: !this.showGroupsSidemenu
+      })
+    );
   }
 
   public onDeleteGroup(deleteGroup: boolean): void {

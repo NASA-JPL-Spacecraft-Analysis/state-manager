@@ -1,5 +1,7 @@
 <mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Groups 
+  <span class="groups-toggle-text" (click)="onCloseSidemenu()">
+    Groups
+  </span>
 
   <div>
     <button mat-button (click)="onFileUpload()">
@@ -10,11 +12,10 @@
       New Group
     </button>
   </div>
-
 </mat-toolbar>
 
 <div class="content-container">
-  <div class="sidenav">
+  <div class="sidenav" *ngIf="showGroupsSidemenu">
     <groups-menu
       [groups]="groups"
       (groupSelected)="onGroupSelected($event)">
