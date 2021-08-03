@@ -4,8 +4,15 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CommandConstants } from '../constants';
-import { CreateCommandArgumentsInput, CreateCommandInput, CreateCommandsInput, DeleteArgumentsInput, ModifyCommandArgument, UpdateCommandInput } from '../inputs';
-import { Command, CommandArgument, CommandHistory, commandTypes } from '../models';
+import {
+  CreateCommandArgumentsInput,
+  CreateCommandInput,
+  CreateCommandsInput,
+  DeleteArgumentsInput,
+  ModifyCommandArgument,
+  UpdateCommandInput
+} from '../inputs';
+import { Command, CommandArgument, CommandArgumentHistory, CommandHistory, commandTypes } from '../models';
 import { SharedRepository } from '../repositories';
 import { CommandArgumentResponse, CommandResponse, CommandsResponse, DeleteArgumentResponse } from '../responses';
 import { ValidationService } from '../service';
@@ -32,6 +39,15 @@ export class CommandResolver implements ResolverInterface<Command> {
   @Query(() => Command)
   public command(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<Command | undefined> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
+  }
+
+  @Query(() => [ CommandArgumentHistory ])
+  public commandArgumentHistory(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgumentHistory[]> {
+    return CommandArgumentHistory.find({
+      where: {
+        collectionId
+      }
+    });
   }
 
   @Query(() => [ CommandArgument ])
@@ -109,6 +125,8 @@ export class CommandResolver implements ResolverInterface<Command> {
         });
 
         await commandArgument.save();
+
+        this.createCommandArgumentHistory(commandArgument);
 
         commandArguments.push(commandArgument);
       }
@@ -237,16 +255,20 @@ export class CommandResolver implements ResolverInterface<Command> {
     }
   }
 
+  private createCommandArgumentHistory(commandArgument: CommandArgument): void {
+    const commandArgumentHistory = CommandArgumentHistory.create({
+      ...commandArgument,
+      commandArgumentId: commandArgument.id,
+      updated: new Date()
+    });
+
+    void commandArgumentHistory.save();
+  }
+
   private createCommandHistory(command: Command): void {
     const commandHistory = CommandHistory.create({
-      collectionId: command.collectionId,
+      ...command,
       commandId: command.id,
-      description: command.description,
-      displayName: command.displayName,
-      editable: command.editable,
-      externalLink: command.externalLink,
-      identifier: command.identifier,
-      type: command.type,
       updated: new Date()
     });
 
@@ -260,6 +282,8 @@ export class CommandResolver implements ResolverInterface<Command> {
         commandArgument.commandId = commandId;
 
         await commandArgument.save();
+
+        this.createCommandArgumentHistory(commandArgument);
       }
     }
 
