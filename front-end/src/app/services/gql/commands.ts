@@ -23,6 +23,7 @@ export const CREATE_COMMAND = gql(`
     ) {
       command {
         arguments {
+          collectionId
           commandId
           name
           id
@@ -55,6 +56,7 @@ export const CREATE_COMMAND_ARGUMENTS = gql(`
       }
     ) {
       commandArguments {
+        collectionId
         commandId
         name
         id
@@ -79,6 +81,7 @@ export const CREATE_COMMANDS = gql(`
     ) {
       commands {
         arguments {
+          collectionId
           commandId
           name
           id
@@ -117,10 +120,25 @@ export const DELETE_ARGUMENTS = gql(`
   }
 `);
 
+export const GET_COMMAND_ARGUMENT_HISTORY = gql(`
+  query CommandArgumentHistory($collectionId: ID!) {
+    commandArgumentHistory(collectionId: $collectionId) {
+      collectionId
+      commandArgumentId
+      commandId
+      name
+      id
+      sortOrder
+      updated
+    }
+  }
+`);
+
 export const GET_COMMAND_HISTORY = gql(`
   query CommandHistory($collectionId: ID!) {
     commandHistory(collectionId: $collectionId) {
       arguments {
+        collectionId
         commandId
         name
         id
@@ -144,6 +162,7 @@ export const GET_COMMANDS = gql(`
   query Commands($collectionId: ID!) {
     commands(collectionId: $collectionId) {
       arguments {
+        collectionId
         commandId
         name
         id
@@ -185,6 +204,7 @@ export const UPDATE_COMMAND = gql(`
     ) {
       command {
         arguments {
+          collectionId
           commandId
           name
           id

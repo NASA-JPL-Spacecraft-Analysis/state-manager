@@ -162,6 +162,26 @@ export class CommandEffects {
           )
         )
       );
+    } else if (url === 'command-argument-history') {
+      return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        })),
+        this.commandService.getCommandArgumentHistory(
+          collectionId
+        ).pipe(
+          map(commandArgumentHistory => CommandActions.setCommandArgumentHistory({
+            commandArgumentHistory
+          })),
+          catchError(
+            (error: Error) => [
+              CommandActions.fetchCommandArgumentHistoryFailure({
+                error
+              })
+            ]
+          )
+        )
+      );
     } else if (url === 'command-history') {
       return merge(
         of(LayoutActions.toggleSidenav({

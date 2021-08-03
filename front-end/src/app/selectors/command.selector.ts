@@ -15,6 +15,11 @@ export const getCommandArguments = createSelector(
     state.selectedCommandId ? state.commandArgumentMap[state.selectedCommandId] : []
 );
 
+export const getCommandArgumentHistory = createSelector(
+  getCommandState,
+  (state: CommandState) => state.commandArgumentHistory
+);
+
 export const getCommandHistory = createSelector(
   getCommandState,
   (state: CommandState) => state.commandHistory

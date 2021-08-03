@@ -17,6 +17,7 @@ import {
   CommandHistoryComponent,
   CommandsComponent
 } from './containers';
+import { CommandArgumentHistoryComponent } from './containers/command-argument-history/command-argument-history.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,10 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'states'
+      },
+      {
+        component: CommandArgumentHistoryComponent,
+        path: 'command-argument-history'
       },
       {
         component: CommandHistoryComponent,
