@@ -7,6 +7,7 @@ export interface Command extends IdentifierType {
 }
 
 export interface CommandArgument extends Node {
+  collectionId: string;
   commandId: string;
   name: string;
   sortOrder: number;

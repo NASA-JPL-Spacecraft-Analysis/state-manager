@@ -13,9 +13,10 @@ export const mockCommand: Command = {
 };
 
 export const mockCommandArgument: CommandArgument = {
-  commandId: "2",
-  id: "1",
-  name: "Mock Command Argument",
+  collectionId: '1',
+  commandId: '2',
+  id: '1',
+  name: 'Mock Command Argument',
   sortOrder: 1
 };
 
