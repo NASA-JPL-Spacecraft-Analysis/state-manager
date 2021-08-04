@@ -75,7 +75,11 @@ export class StateEffects {
 
   public navStates = createEffect(() =>
     this.actions.pipe(
-      ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
+      ofRoute([
+        'collection/:collectionId/state-enumeration-history',
+        'collection/:collectionId/states',
+        'collection/:collectionId/state-history'
+      ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId =>
         this.getStates(collectionId)

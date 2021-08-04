@@ -25,7 +25,7 @@ export class StateEnumerationTableComponent implements OnInit, OnChanges {
   public ngOnInit(): void {
     this.displayedColumns.push(
       'id',
-      'name',
+      'label',
       'stateId',
       'stateEnumerationId',
       'updated',

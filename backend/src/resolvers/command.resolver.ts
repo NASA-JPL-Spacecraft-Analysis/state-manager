@@ -257,7 +257,10 @@ export class CommandResolver implements ResolverInterface<Command> {
 
   private createCommandArgumentHistory(commandArgument: CommandArgument): void {
     const commandArgumentHistory = CommandArgumentHistory.create({
-      ...commandArgument,
+      collectionId: commandArgument.collectionId,
+      commandId: commandArgument.commandId,
+      name: commandArgument.name,
+      sortOrder: commandArgument.sortOrder,
       commandArgumentId: commandArgument.id,
       updated: new Date()
     });
@@ -267,8 +270,14 @@ export class CommandResolver implements ResolverInterface<Command> {
 
   private createCommandHistory(command: Command): void {
     const commandHistory = CommandHistory.create({
-      ...command,
+      collectionId: command.collectionId,
       commandId: command.id,
+      description: command.description,
+      displayName: command.displayName,
+      editable: command.editable,
+      externalLink: command.externalLink,
+      identifier: command.identifier,
+      type: command.type,
       updated: new Date()
     });
 

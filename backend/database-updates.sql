@@ -1,3 +1,14 @@
+CREATE TABLE `state_enumeration_history` (
+  `collectionId` varchar(36) NOT NULL,
+  `id` varchar(36) NOT NULL,
+  `label` text,
+  `stateEnumerationId` varchar(36) NOT NULL,
+  `stateId` varchar(36) NOT NULL,
+  `updated` timestamp NOT NULL,
+  `value` text,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `command_arguments` (
   `collectionId` varchar(36) NOT NULL,
   `commandId` varchar(36) NOT NULL,

@@ -1,7 +1,10 @@
-import { Field, InputType } from 'type-graphql';
+import { Field, ID, InputType } from 'type-graphql';
 
 @InputType()
 export class CreateStateEnumerationInput {
+  @Field(() => ID)
+  public collectionId!: string;
+
   @Field()
   public label!: string;
 
