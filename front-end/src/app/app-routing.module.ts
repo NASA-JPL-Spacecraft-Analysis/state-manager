@@ -15,9 +15,10 @@ import {
   ConstraintsComponent,
   ConstraintHistoryComponent,
   CommandHistoryComponent,
-  CommandsComponent
+  CommandsComponent,
+  CommandArgumentHistoryComponent,
+  StateEnumerationHistoryComponent
 } from './containers';
-import { CommandArgumentHistoryComponent } from './containers/command-argument-history/command-argument-history.component';
 
 export const routes: Routes = [
   {
@@ -76,6 +77,10 @@ export const routes: Routes = [
       {
         component: RelationshipHistoryComponent,
         path: 'relationship-history'
+      },
+      {
+        component: StateEnumerationHistoryComponent,
+        path: 'state-enumeration-history'
       },
       {
         component: StatesComponent,

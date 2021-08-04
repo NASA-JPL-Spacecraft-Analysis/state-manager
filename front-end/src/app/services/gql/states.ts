@@ -106,6 +106,19 @@ export const CREATE_STATES = gql(`
   }
 `);
 
+export const GET_STATE_ENUMERATION_HISTORY = gql(`
+  query stateEnumerationHistory($collectionId: ID!) {
+    stateEnumerationHistory(collectionId: $collectionId) {
+      id
+      label
+      stateEnumerationId
+      stateId
+      updated
+      value
+    }
+  }
+`);
+
 export const GET_STATES = gql(`
   query states($collectionId: ID!) {
     states(collectionId: $collectionId) {

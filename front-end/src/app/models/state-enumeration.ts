@@ -7,6 +7,11 @@ export interface StateEnumeration {
   value: string;
 }
 
+export interface StateEnumerationHistory extends StateEnumeration {
+  stateEnumerationId: string;
+  updated: Date;
+}
+
 export interface StateEnumerationUpload {
   label: string;
   stateIdentifier: string;

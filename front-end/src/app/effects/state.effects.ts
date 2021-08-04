@@ -142,6 +142,26 @@ export class StateEffects {
           )
         )
       );
+    } else if (url === 'state-enumeration-history') {
+      return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        })),
+        this.stateService.getStateEnumerationHistory(
+          collectionId
+        ).pipe(
+          map(stateEnumerationHistory => StateActions.setStateEnumerationHistory({
+            stateEnumerationHistory
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStateEnumerationHistoryFailure({
+                error
+              })
+            ]
+          )
+        )
+      );
     } else if (url === 'state-history') {
       return merge(
         of(LayoutActions.toggleSidenav({

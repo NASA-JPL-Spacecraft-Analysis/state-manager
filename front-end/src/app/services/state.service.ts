@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { StateResponse, StatesResponse, State, StateHistory, StateEnumerationUpload, StateEnumerationsResponse, DeleteEnumerationsResponse } from '../models';
+import { StateResponse, StatesResponse, State, StateHistory, StateEnumerationUpload, StateEnumerationsResponse, DeleteEnumerationsResponse, StateEnumerationHistory } from '../models';
 
 import * as gql from './gql/states';
 
@@ -98,6 +98,18 @@ export class StateService {
 
         return deleteEnumerations;
       }));
+  }
+
+  public getStateEnumerationHistory(collectionId: string): Observable<StateEnumerationHistory[]> {
+    return this.apollo
+      .query<{ stateEnumerationHistory: StateEnumerationHistory[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_STATE_ENUMERATION_HISTORY,
+        variables: {
+          collectionId
+        }
+      })
+      .pipe(map(({ data: { stateEnumerationHistory } }) => stateEnumerationHistory));
   }
 
   /**

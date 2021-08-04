@@ -1,4 +1,5 @@
 export * from './collections/collections.component';
+export * from './command-argument-history/command-argument-history.component';
 export * from './command-history/command-history.component';
 export * from './commands';
 export * from './constraint-history/constraint-history.component';
@@ -10,6 +11,7 @@ export * from './groups/groups.component';
 export * from './information-types/information-types.component';
 export * from './relationship-history/relationship-history.component';
 export * from './relationships/relationships.component';
+export * from './state';
 export * from './state-history/state-history.component';
 export * from './states/states.component';
 export * from './toolbar/toolbar.component';
