@@ -7,6 +7,7 @@ import { MaterialModule } from 'src/app/material';
 interface ConfirmationDialogData {
   confirmButtonColor: string;
   confirmButtonText: string;
+  delete: boolean;
   message: string;
   title: string;
 }
@@ -21,7 +22,9 @@ export class ConfirmationDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData
-  ) {}
+  ) {
+    console.log(data);
+  }
 
   public onCancel(): void {
     this.dialogRef.close();

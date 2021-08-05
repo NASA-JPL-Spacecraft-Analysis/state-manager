@@ -11,7 +11,11 @@
     Cancel
   </button>
 
-  <button mat-button [style.background]="data.confirmButtonColor" class="submit-button" (click)="onSubmit()">
+  <button mat-button
+    [style.background]="data.confirmButtonColor"
+    class="submit-button"
+    [ngClass]="{ 'delete': data.delete }"
+    (click)="onSubmit()">
     {{data.confirmButtonText}}
   </button>
 </div>

@@ -63,9 +63,10 @@ export class GroupEffects {
         const dialog = this.dialog.open(
           ConfirmationDialogComponent,
           {
+            autoFocus: false,
             data: {
-              confirmButtonColor: '#dc4545',
-              confirmButtonText: 'Delete',
+              confirmButtonText: 'Yes, delete ' + group.identifier,
+              delete: true,
               message: 'Are you sure you want to delete "' + group.identifier + '"?',
               title: 'Delete ' + group.identifier + '?'
             }

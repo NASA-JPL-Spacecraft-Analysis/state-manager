@@ -50,6 +50,11 @@ body {
 }
 
 /* Global Styles */
+.cancel-button {
+  color: #333333;
+  background-color: #D5D5D5;
+}
+
 .chip-text {
   width: calc(100%);
   white-space: nowrap;
@@ -65,6 +70,10 @@ body {
   display: flex;
   flex-flow: row nowrap;
   height: 100%;
+}
+
+.delete {
+  background-color: #FF0E65;
 }
 
 .form-input {

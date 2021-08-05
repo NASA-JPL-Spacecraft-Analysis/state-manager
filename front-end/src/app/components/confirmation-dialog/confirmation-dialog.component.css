@@ -1,10 +1,11 @@
-.cancel-button {
-  color: white;
-  background-color: #B0B0B0;
-}
-
-.mat-dialog-actions {
-  justify-content: flex-end;
+.mat-dialog-title {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 10px;
+  margin: 20px 0 30px;
+  text-transform: uppercase;
 }
 
 .submit-button {
