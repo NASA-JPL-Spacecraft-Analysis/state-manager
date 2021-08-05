@@ -144,11 +144,37 @@ td.mat-cell:first-of-type{
 }
 
 /*Make collection container inline with navbar content*/
-.collection-container .mat-form-field-wrapper{
+.collection-container .mat-form-field-wrapper {
   line-height: 36px;
   padding-bottom: 0;
 }
 
-.mat-toolbar .mat-form-field-infix{
+.mat-toolbar .mat-form-field-infix {
   border-top-width: 0px;
+}
+
+/**************
+6. Toastr
+**************/
+
+#toast-container > .ngx-toastr {
+  box-shadow: 3px 3px 9px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  background-color: white;
+  background-image: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: bold;
+  letter-spacing: 0.09em;
+  padding: 15px;
+  text-transform: uppercase;
+}
+
+#toast-container > .toast-error {
+  color: #FF0E65;
+}
+
+#toast-container > .toast-success {
+  color: #00B4AD;
 }

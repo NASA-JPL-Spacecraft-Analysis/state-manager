@@ -22,9 +22,7 @@ export class ConfirmationDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData
-  ) {
-    console.log(data);
-  }
+  ) {}
 
   public onCancel(): void {
     this.dialogRef.close();
