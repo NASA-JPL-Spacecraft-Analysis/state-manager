@@ -12,13 +12,17 @@ Table of Contents
 7. Sidenav
 **************/
 
-
 /**************
 1. Colors
 **************/
 
 $light-accent-text: #D9E2F4;
 $body: #283346;
+$blue: #4FA1FF;
+$yellow: #FFDD5C;
+$light-mode-yellow: #FFC93E;
+$red: #FF7760;
+$green: #1AFF66;
 
 $mat-primary: (
   50: #DEF5FB,
@@ -114,14 +118,13 @@ $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
 
-
 $primary: mat-palette($mat-grey, 100);
 $accent: mat-palette($mat-accent, 700);
 $toolbar-theme: mat-light-theme($primary, $accent);
 
 @include mat-toolbar-color($toolbar-theme);
 
-.mat-toolbar .mat-button.mat-primary{
+.mat-toolbar .mat-button.mat-primary {
   color: inherit;
 }
 
@@ -198,6 +201,11 @@ table {
   @include button();
 }
 
+.delete-button {
+  background-color: $red;
+  color: white;
+}
+
 /**************
 6. Toolbar
 **************/
@@ -243,4 +251,16 @@ table {
 
 .sidemenu {
   background-color: mat-color($mat-grey, 200);
+}
+
+/**************
+9. Toastr
+**************/
+
+#toast-container > .ngx-toastr {
+  background-color: white;
+}
+
+#toast-container > .toast-error, #toast-container > .toast-success {
+  color: mat-color($mat-grey, 800);
 }

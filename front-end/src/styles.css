@@ -72,10 +72,6 @@ body {
   height: 100%;
 }
 
-.delete {
-  background-color: #FF0E65;
-}
-
 .form-input {
   background: #FAFAFA;
   border: 1px solid #BEBEBE;
@@ -160,21 +156,12 @@ td.mat-cell:first-of-type{
 #toast-container > .ngx-toastr {
   box-shadow: 3px 3px 9px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
-  background-color: white;
   background-image: none;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-style: normal;
-  font-weight: bold;
-  letter-spacing: 0.09em;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+  line-height: 16px;
   padding: 15px;
-  text-transform: uppercase;
-}
-
-#toast-container > .toast-error {
-  color: #FF0E65;
-}
-
-#toast-container > .toast-success {
-  color: #00B4AD;
 }
