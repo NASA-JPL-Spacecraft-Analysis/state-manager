@@ -10,6 +10,9 @@ Table of Contents
 5. Buttons
 6. Toolbar
 7. Sidenav
+8. Group Sidemenu
+9. Toastr
+10. Chips
 **************/
 
 /**************
@@ -222,6 +225,7 @@ table {
   h6 {
     @include headline-6();
   }
+
   .mat-button.mat-button-base.active{
     color: mat-color($mat-primary, 100)
   }
@@ -263,4 +267,22 @@ table {
 
 #toast-container > .toast-error, #toast-container > .toast-success {
   color: mat-color($mat-grey, 800);
+}
+
+/**************
+10. Chips
+**************/
+
+.mat-chip > .chip-text {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
+.mat-chip.group-chip {
+  background-color: #0E43FF2E;
+  color: black;
 }
