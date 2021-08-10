@@ -79,34 +79,28 @@ $mat-accent: (
 );
 
 $mat-grey: (
-  50: #F7F8FA,
-  75: #F3F5F7,
-  100: #EFF1F5,
-  200: #E8ECF0,
-  250: #E2E6EA,
-  300: #DDE1E7,
-  400: #CBD1DB,
-  500: #A9B1BF,
-  550: #828B9A,
-  600: #868E96,
-  700: #464E60,
-  800: #32394A,
-  900: #202535,
+  10: #F8F8F8,
+  20: #EBECEC,
+  30: #BEC0C2,
+  40: #BCBCBC,
+  50: #969696,
+  60: #545F64,
+  70: #444C50,
+  80: #293137,
+  90: #1F2223,
+  100: #0D1019,
 
   contrast: (
+    10: $body,
+    20: $body,
+    30: $body,
+    40: $body,
     50: $body,
-    75: $body,
-    100: $body,
-    200: $body,
-    250: $body,
-    300: $light-accent-text,
-    400: $light-accent-text,
-    500: $light-accent-text,
-    550: $light-accent-text,
-    600: $light-accent-text,
-    700: $light-accent-text,
-    800: $light-accent-text,
-    900: $light-accent-text
+    60: $light-accent-text,
+    70: $light-accent-text,
+    80: $light-accent-text,
+    90: $light-accent-text,
+    100: $light-accent-text
   )
 );
 
@@ -120,7 +114,7 @@ $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
 
-$primary: mat-palette($mat-grey, 100);
+$primary: mat-palette($mat-grey, 10);
 $accent: mat-palette($mat-accent, 700);
 $toolbar-theme: mat-light-theme($primary, $accent);
 
@@ -164,14 +158,14 @@ table {
   }
 
   .mat-header-cell, th{
-    background-color: mat-color($mat-grey, 100);
+    background-color: mat-color($mat-grey, 10);
     color: mat-color($mat-grey, 700);
     letter-spacing: .15px;
   }
 
   tr {
     th.mat-header-cell, td.mat-cell {
-      border-bottom: 1px solid mat-color($mat-grey, 300);
+      border-bottom: 1px solid mat-color($mat-grey, 30);
     }
   }
 }
@@ -182,8 +176,8 @@ table {
 
 .filter-container > div {
   padding: 1em;
-  border-bottom: 1px solid mat-color($mat-grey, 400);
-  box-shadow: 0px 4px 5px mat-color($mat-grey, 250);
+  border-bottom: 1px solid mat-color($mat-grey, 40);
+  box-shadow: 0px 4px 5px mat-color($mat-grey, 30);
   background: #eff1f5;
 }
 
@@ -235,7 +229,7 @@ table {
 }
 
 .secondary-toolbar{
-  border-bottom: 1px solid mat-color($mat-grey, 400);
+  border-bottom: 1px solid mat-color($mat-grey, 40);
 }
 
 /**************
@@ -245,7 +239,7 @@ table {
 .sidenav-container {
   padding: 1em;
   height: 100%;
-  border-left: 1px solid mat-color($mat-grey, 400);
+  border-left: 1px solid mat-color($mat-grey, 40);
 }
 
 /**************
@@ -253,7 +247,7 @@ table {
 **************/
 
 .sidemenu {
-  background-color: mat-color($mat-grey, 200);
+  background-color: mat-color($mat-grey, 20);
 }
 
 /**************
@@ -265,7 +259,7 @@ table {
 }
 
 #toast-container > .toast-error, #toast-container > .toast-success {
-  color: mat-color($mat-grey, 800);
+  color: mat-color($mat-grey, 80);
 }
 
 /**************
@@ -282,6 +276,6 @@ table {
 }
 
 .mat-chip.group-chip {
-  background-color: #0E43FF2E;
-  color: black;
+  background-color: mat-color($mat-accent, 50);
+  color: mat-color($mat-grey, 100);
 }
