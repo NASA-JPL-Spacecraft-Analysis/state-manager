@@ -12,9 +12,8 @@
   </button>
 
   <button mat-button
-    [style.background]="data.confirmButtonColor"
     class="submit-button"
-    [ngClass]="{ 'delete-button': data.delete }"
+    [ngClass]="data.delete ? 'delete-button' : 'confirm-button'"
     (click)="onSubmit()">
     {{data.confirmButtonText}}
   </button>
