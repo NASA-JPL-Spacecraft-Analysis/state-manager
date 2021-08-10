@@ -9,9 +9,8 @@ import { MaterialModule } from 'src/app/material';
 import { Command, IdentifierMap } from 'src/app/models';
 import { getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
 import { CommandActions, LayoutActions, ToastActions } from 'src/app/actions';
-import { CommandTableModule } from 'src/app/components';
+import { CommandSidenavModule, CommandTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
-import { CommandSidenavModule } from '../../components/commands/command-sidenav/command-sidenav.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

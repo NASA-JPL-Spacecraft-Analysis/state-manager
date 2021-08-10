@@ -6,7 +6,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, of, EMPTY } from 'rxjs';
 
 import { StateService } from '../services';
-import { ToastActions, StateActions, CollectionActions, LayoutActions } from '../actions';
+import { ToastActions, StateActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { StateResponse } from '../models';
 
@@ -15,22 +15,13 @@ export class StateEffects {
   public createState = createEffect(() =>
     this.actions.pipe(
       ofType(StateActions.createState),
-      switchMap(({ collectionId, state: newState }) =>
+      switchMap(({ state }) =>
         this.stateService.createState(
-          collectionId,
-          newState
+          state
         ).pipe(
           switchMap((createState: StateResponse) => [
-            LayoutActions.toggleSidenav({
-              showSidenav: false
-            }),
             StateActions.createStateSuccess({
               state: createState.state
-            }),
-            StateActions.saveEnumerations({
-              collectionId,
-              stateId: createState.state.id,
-              enumerations: newState.enumerations
             }),
             ToastActions.showToast({
               message: createState.message,
@@ -61,7 +52,7 @@ export class StateEffects {
         ).pipe(
           switchMap((deleteEnumerations) => [
             StateActions.deleteEnumerationsSuccess({
-              deletedEnumerationIds
+              deletedEnumerationIds: deleteEnumerations.deletedEnumerationIds
             }),
             ToastActions.showToast({
               message: deleteEnumerations.message,
@@ -92,76 +83,12 @@ export class StateEffects {
     )
   );
 
-  public navStatesByCollectionId = createEffect(() =>
-    this.actions.pipe(
-      ofType(CollectionActions.setSelectedCollection),
-      switchMap(({ id }) => {
-        if (id !== null) {
-          return this.getStates(id);
-        }
-
-        return [];
-      })
-    )
-  );
-
-  public saveEnumerations = createEffect(() =>
-    this.actions.pipe(
-      ofType(StateActions.saveEnumerations),
-      switchMap(({ collectionId, stateId, enumerations }) => {
-        const saveEnumerations = [];
-
-        for (const enumeration of enumerations) {
-          let id: string | undefined;
-
-          if (enumeration.id) {
-            id = enumeration.id;
-          }
-
-          saveEnumerations.push(
-            {
-              id,
-              label: enumeration.label.toString(),
-              stateId,
-              value: enumeration.value.toString()
-            }
-          );
-        }
-
-        return this.stateService.saveEnumerations(
-          collectionId,
-          saveEnumerations
-        ).pipe(
-          switchMap((saveEnumerations) => [
-            StateActions.saveEnumerationsSuccess({
-              enumerations: saveEnumerations.enumerations,
-              stateId
-            }),
-            ToastActions.showToast({
-              message: saveEnumerations.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            StateActions.saveEnumerationsFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
-        );
-      })
-    )
-  );
-
   public updateState = createEffect(() =>
     this.actions.pipe(
       ofType(StateActions.updateState),
-      switchMap(({ updatedState }) =>
+      switchMap(({ state }) =>
         this.stateService.updateState(
-          updatedState
+          state
         ).pipe(
           switchMap((updateState: StateResponse) => [
             StateActions.updateStateSuccess({

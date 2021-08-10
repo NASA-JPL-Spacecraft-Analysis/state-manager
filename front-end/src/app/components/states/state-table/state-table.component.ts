@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitt
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { State, StateMap } from '../../models';
+import { State, StateMap } from '../../../models';
 import { MaterialModule } from 'src/app/material';
 import { MatPaginator } from '@angular/material/paginator';
 

@@ -27,12 +27,10 @@ export const mockStateEnumerationUploadTwo: StateEnumerationUpload = {
 };
 
 export const mockStateEnumerationMap: StateEnumerationMap = {
-  [mockStateEnumerationOne.id]: [
+  [mockStateEnumerationOne.stateId]: [
     {
       ...mockStateEnumerationOne
-    }
-  ],
-  [mockStateEnumerationTwo.id]: [
+    },
     {
       ...mockStateEnumerationTwo
     }

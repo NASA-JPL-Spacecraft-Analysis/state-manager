@@ -5,15 +5,15 @@
     <button mat-button routerLink="../state-history">
       History
     </button>
-    <button mat-button (click)="statesFileUpload.click()">
+
+    <button mat-button (click)="onStateFileUpload()">
       Upload States
     </button>
-    <input #statesFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, statesUploadableType)" />
 
-    <button mat-button (click)="enumerationsFileUpload.click()">
+    <button mat-button (click)="onStateEnumerationFileUpload()">
       Upload Enumerations
     </button>
-    <input #enumerationsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event, enumerationsUploadableType)" />
+
     <button mat-raised-button color="primary" (click)="onModifyState()">
       Create New State
     </button>
@@ -28,11 +28,14 @@
     </app-state-table>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav">
+  <div class="sidenav" *ngIf="showSidenav && collectionId">
     <app-state-sidenav
+      [collectionId]="collectionId"
       [state]="state"
-      (modifyState)="onSidenavOutput($event)"
-      (modifyEnumerations)="onEnumerationsOutput($event)">
+      [stateEnumerations]="stateEnumerations"
+      [stateIdentifierMap]="stateIdentifierMap"
+      (errorEmitter)="onSidenavError($event)"
+      (modifyState)="onSidenavOutput($event)">
     </app-state-sidenav>
   </div>
 </div>

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
@@ -20,7 +19,7 @@ import {
   MappingsUpload,
   GroupMappingsResponse,
   StatesResponse,
-  EnumerationsResponse,
+  StateEnumerationsResponse,
   EventsResponse,
   CreateInformationTypesResponse,
   RelationshipsResponse,
@@ -243,29 +242,20 @@ export class FileUploadEffects {
           }
 
           return concat(
-            this.stateService.saveEnumerations(
+            this.stateService.createStateEnumerations(
               collectionId,
               stateEnumerations
             ).pipe(
-              switchMap((saveEnumerations: EnumerationsResponse) => {
-                let stateId: string;
-
-                if (saveEnumerations.enumerations.length > 0) {
-                  stateId = saveEnumerations.enumerations[0].stateId;
-                }
-
-                return [
-                  StateActions.saveEnumerationsSuccess({
-                    enumerations: saveEnumerations.enumerations,
-                    stateId
-                  }),
-                  ToastActions.showToast({
-                    message: saveEnumerations.message,
-                    toastType: 'success'
-                  })
-                ];
-              }),
-              catchError((error: HttpErrorResponse) => [
+              switchMap((saveEnumerations: StateEnumerationsResponse) => [
+                StateActions.saveEnumerationsSuccess({
+                  stateEnumerations: saveEnumerations.stateEnumerations
+                }),
+                ToastActions.showToast({
+                  message: saveEnumerations.message,
+                  toastType: 'success'
+                })
+              ]),
+              catchError((error: Error) => [
                 FileUploadActions.uploadStateEnumerationsFailure({
                   error
                 }),

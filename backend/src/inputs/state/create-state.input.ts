@@ -1,9 +1,9 @@
 import { InputType, Field, ID } from 'type-graphql';
 
-import { State } from '../../models';
+import { ModifyStateEnumeration } from './modify-state-enumeration.input';
 
 @InputType()
-export class CreateStateInput implements Partial<State> {
+export class CreateStateInput {
   @Field(() => ID, { nullable: true })
   public collectionId: string;
 
@@ -15,6 +15,9 @@ export class CreateStateInput implements Partial<State> {
 
   @Field({ nullable: true })
   public displayName?: string;
+
+  @Field(() => [ ModifyStateEnumeration ], { nullable: true })
+  public enumerations?: ModifyStateEnumeration[];
 
   @Field({ nullable: true })
   public externalLink?: string;

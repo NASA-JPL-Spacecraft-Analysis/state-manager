@@ -8,7 +8,7 @@ import {
 
 export const createState = createAction(
   '[state] createState',
-  props<{ collectionId: string; state: State }>()
+  props<{ state: State }>()
 );
 
 export const createStateFailure = createAction(
@@ -51,14 +51,9 @@ export const fetchStatesFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const saveEnumerations = createAction(
-  '[state] saveEnumerations',
-  props<{ collectionId: string; stateId: string; enumerations: StateEnumeration[] }>()
-);
-
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
-  props<{ enumerations: StateEnumeration[]; stateId: string }>()
+  props<{ stateEnumerations: StateEnumeration[] }>()
 );
 
 export const saveEnumerationsFailure = createAction(
@@ -78,12 +73,12 @@ export const setStates = createAction(
 
 export const setSelectedState = createAction(
   '[state] setSelectedState',
-  props<{ state: State }>()
+  props<{ id: string }>()
 );
 
 export const updateState = createAction(
   '[state] updateState',
-  props<{ updatedState: State }>()
+  props<{ state: State }>()
 );
 
 export const updateStateFailure = createAction(

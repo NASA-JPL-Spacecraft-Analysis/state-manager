@@ -89,7 +89,9 @@ export class AppComponent {}
       deps: [ HttpLink ],
       provide: APOLLO_OPTIONS,
       useFactory: (httpLink: HttpLink) => ({
-        cache: new InMemoryCache(),
+        cache: new InMemoryCache({
+          addTypename: false
+        }),
         link: httpLink.create({
           uri: environment.apolloServerUrl
         })

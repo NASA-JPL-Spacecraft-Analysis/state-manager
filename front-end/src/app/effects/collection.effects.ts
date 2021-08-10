@@ -207,11 +207,7 @@ export class CollectionEffects {
           this.router.navigate([ 'collection/' + id ]);
         }
 
-        return [
-          LayoutActions.toggleSidenav({
-            showSidenav: false
-          })
-        ];
+        return [];
       })
     )
   );

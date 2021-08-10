@@ -31,21 +31,13 @@ export class EnumFormComponent implements OnChanges {
     this.updateEnumerationsLabel();
   }
 
-  public updateEnumerationsLabel(): void {
-    this.enumerationsLabel = this.enumerations.length + ' Enum';
-
-    if (this.enumerations.length !== 1) {
-      this.enumerationsLabel += 's';
-    }
-  }
-
   // Add a new blank enumeration.
   public onAddEnumeration(): void {
     this.enumerations.push({
-      id: null,
-      stateId: null,
+      id: undefined,
+      stateId: undefined,
       label: '',
-      value: null
+      value: ''
     });
 
     this.updateEnumerationsLabel();
@@ -61,6 +53,14 @@ export class EnumFormComponent implements OnChanges {
     }
 
     this.updateEnumerationsLabel();
+  }
+
+  private updateEnumerationsLabel(): void {
+    this.enumerationsLabel = this.enumerations.length + ' Enum';
+
+    if (this.enumerations.length !== 1) {
+      this.enumerationsLabel += 's';
+    }
   }
 }
 

@@ -3,9 +3,9 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { StateResponse, StatesResponse, State, StateEnumeration, StateHistory, StateEnumerationUpload, Response, EnumerationsResponse } from '../models';
+import { StateResponse, StatesResponse, State, StateHistory, StateEnumerationUpload, StateEnumerationsResponse, DeleteEnumerationsResponse } from '../models';
 
-import * as gql from './gql';
+import * as gql from './gql/states';
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +15,17 @@ export class StateService {
     private apollo: Apollo
   ) {}
 
-  public createState(collectionId: string, state: State): Observable<StateResponse> {
+  public createState(state: State): Observable<StateResponse> {
     return this.apollo
       .mutate<{ createState: StateResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATE,
         variables: {
-          collectionId,
+          collectionId: state.collectionId,
           dataType: state.dataType,
           description: state.description,
           displayName: state.displayName,
+          enumerations: state.enumerations,
           externalLink: state.externalLink,
           identifier: state.identifier,
           source: state.source,
@@ -39,6 +40,25 @@ export class StateService {
         }
 
         return createState;
+      }));
+  }
+
+  public createStateEnumerations(collectionId: string, stateEnumerations: StateEnumerationUpload[]): Observable<StateEnumerationsResponse> {
+    return this.apollo
+      .mutate<{ createStateEnumerations: StateEnumerationsResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_STATE_ENUMERATIONS,
+        variables: {
+          collectionId,
+          stateEnumerations
+        }
+      })
+      .pipe(map(({ data: { createStateEnumerations } }) => {
+        if (!createStateEnumerations.success) {
+          throw new Error(createStateEnumerations.message);
+        }
+
+        return createStateEnumerations;
       }));
   }
 
@@ -61,9 +81,9 @@ export class StateService {
       }));
   }
 
-  public deleteEnumerations(enumerationIds: string[], stateId: string): Observable<Response> {
+  public deleteEnumerations(enumerationIds: string[], stateId: string): Observable<DeleteEnumerationsResponse> {
     return this.apollo
-      .mutate<{ deleteEnumerations: Response }>({
+      .mutate<{ deleteEnumerations: DeleteEnumerationsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.DELETE_ENUMERATIONS,
         variables: {
@@ -107,28 +127,6 @@ export class StateService {
       .pipe(map(({ data: { stateHistory } }) => stateHistory));
   }
 
-  public saveEnumerations(
-    collectionId: string,
-    enumerations: StateEnumeration[] | StateEnumerationUpload[]
-  ): Observable<EnumerationsResponse> {
-    return this.apollo
-      .mutate<{ saveEnumerations: EnumerationsResponse }>({
-        fetchPolicy: 'no-cache',
-        mutation: gql.SAVE_ENUMERATIONS,
-        variables: {
-          collectionId,
-          enumerations
-        }
-      })
-      .pipe(map(({ data: { saveEnumerations } }) => {
-        if (!saveEnumerations.success) {
-          throw new Error(saveEnumerations.message);
-        }
-
-        return saveEnumerations;
-      }));
-  }
-
   public updateState(state: State): Observable<StateResponse> {
     return this.apollo
       .mutate<{ updateState: StateResponse }>({
@@ -138,6 +136,8 @@ export class StateService {
           dataType: state.dataType,
           description: state.description,
           displayName: state.displayName,
+          enumerations: state.enumerations,
+          externalLink: state.externalLink,
           id: state.id,
           identifier: state.identifier,
           source: state.source,
