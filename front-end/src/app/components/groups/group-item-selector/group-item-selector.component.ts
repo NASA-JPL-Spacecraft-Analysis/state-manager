@@ -8,8 +8,9 @@ import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { MaterialModule } from 'src/app/material';
-import { GroupItemType, GroupMapping } from 'src/app/models';
+import { GroupItemType } from 'src/app/models';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ChipModule } from '../../chip/chip.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,8 +56,16 @@ export class GroupItemSelectorComponent implements OnChanges {
     );
   }
 
-  public onRemove(item: GroupItemType): void {
-    const index = this.selectedItems.indexOf(item);
+  public onRemove(item: { id: string, text: string }): void {
+    let index: number;
+
+    for (const groupItem of this.selectedItems) {
+      if (groupItem.id === item.id && groupItem.identifier === item.text) {
+        index = this.selectedItems.indexOf(groupItem);
+
+        break;
+      }
+    }
 
     if (index >= 0) {
       this.selectedItems.splice(index, 1);
@@ -94,6 +103,7 @@ export class GroupItemSelectorComponent implements OnChanges {
     GroupItemSelectorComponent
   ],
   imports: [
+    ChipModule,
     CommonModule,
     FormsModule,
     MaterialModule,

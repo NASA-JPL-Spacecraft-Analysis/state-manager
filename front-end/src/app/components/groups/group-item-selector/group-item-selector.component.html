@@ -1,30 +1,17 @@
 <mat-form-field appearance="outline">
   <mat-label>Data</mat-label>
 
-  <mat-chip-list #chipList aria-label="Item selection">
-    <input matInput
-      placeholder="Search for data..."
-      #itemInput
-      [formControl]="formControl"
-      [matAutocomplete]="auto"
-      [matChipInputFor]="chipList"
-      [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+  <input matInput
+    placeholder="Search for data..."
+    #itemInput
+    [formControl]="formControl"
+    [matAutocomplete]="auto" />
 
-    <mat-chip
-      class="group-chip"
-      *ngFor="let item of selectedItems"
-      selectable="true"
-      removable="true"
-      [matTooltip]="item.identifier"
-      matTooltipPosition="left"
-      (removed)="onRemove(item)">
-      <span class="chip-text">
-        {{item.identifier}}
-      </span>
-
-      <mat-icon matChipRemove svgIcon="clear">Cancel</mat-icon>
-    </mat-chip>
-  </mat-chip-list>
+  <chip *ngFor="let item of selectedItems"
+    [id]="item.id"
+    [text]="item.identifier"
+    (removed)="onRemove($event)">
+  </chip>
 
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelected($event)">
     <mat-option *ngFor="let item of filteredItems | async" [value]="item">

@@ -266,16 +266,11 @@ table {
 10. Chips
 **************/
 
-.mat-chip > .chip-text {
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0.25px;
-}
-
-.mat-chip.group-chip {
+.chip {
   background-color: mat-color($mat-accent, 50);
   color: mat-color($mat-grey, 100);
+}
+
+.chip-remove {
+  background-color: mat-color($mat-gray, 80);
 }
