@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Command, Constraint, Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, informationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
+import { Command, CommandArgumentUpload, Constraint, Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, informationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +37,15 @@ export class ValidationService {
       && command.externalLink
       && command.identifier
       && command.type) {
+        return false;
+      }
+
+    return true;
+  }
+
+  public isCommandArgumentUpload(commandArgumentUpload: CommandArgumentUpload): commandArgumentUpload is CommandArgumentUpload {
+    if (!commandArgumentUpload.commandIdentifier
+      && commandArgumentUpload.name) {
         return false;
       }
 

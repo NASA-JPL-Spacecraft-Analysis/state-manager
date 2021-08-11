@@ -26,21 +26,34 @@ export const reducer = createReducer(
     const commandArgumentMap = {
       ...state.commandArgumentMap
     };
-    const commandMap = state.commandMap;
 
-    for (const deletedArgumentId of deletedArgumentIds) {
-      delete commandArgumentMap[deletedArgumentId];
-    }
-
-    // Remove any deleted arguments from the commandMap.
-    for (const id of Object.keys(commandMap)) {
-      commandMap[id].arguments.filter((argument) => deletedArgumentIds.indexOf(argument.id) === -1);
+    for (const commandId of Object.keys(commandArgumentMap)) {
+      commandArgumentMap[commandId] =
+        commandArgumentMap[commandId].filter((argument) => !deletedArgumentIds.includes(argument.id));
     }
 
     return {
       ...state,
-      commandArgumentMap,
-      commandMap
+      commandArgumentMap
+    };
+  }),
+  on(CommandActions.saveCommandArgumentsSuccess, (state, { commandArguments }) => {
+    const commandArgumentMap = {};
+
+    for (const argument of commandArguments) {
+      if (!commandArgumentMap[argument.commandId]) {
+        commandArgumentMap[argument.commandId] = [];
+      }
+
+      commandArgumentMap[argument.commandId].push(argument);
+    }
+
+    return {
+      ...state,
+      commandArgumentMap: {
+        ...state.commandArgumentMap,
+        ...commandArgumentMap
+      }
     };
   }),
   on(CommandActions.setCommandHistory, (state, { commandHistory }) => ({
@@ -53,16 +66,14 @@ export const reducer = createReducer(
     const commandMap = {};
 
     for (const command of commands) {
-      for (const commandArgument of command.arguments) {
-        commandArgumentMap[commandArgument.id] = commandArgument;
-      }
-
+      commandArgumentMap[command.id] = command.arguments;
       commandIdentifierMap[command.identifier] = command.id;
       commandMap[command.id] = command;
     }
 
     return {
       ...state,
+      commandArgumentMap,
       commandIdentifierMap,
       commandMap
     };
@@ -96,6 +107,9 @@ export const reducer = createReducer(
 );
 
 const createOrUpdateCommandSuccess = (state: CommandState, command: Command): CommandState => {
+  const commandArgumentMap = {};
+  commandArgumentMap[command.id] = command.arguments;
+
   const commandIdentifierMap = {
     ...state.commandIdentifierMap
   };
@@ -107,18 +121,9 @@ const createOrUpdateCommandSuccess = (state: CommandState, command: Command): Co
     }
   }
 
-  const commandArgumentMap = {};
-
-  if (command.arguments) {
-    for (const argument of command.arguments) {
-      commandArgumentMap[argument.id] = argument;
-    }
-  }
-
   return {
     ...state,
     commandArgumentMap: {
-      ...state.commandArgumentMap,
       ...commandArgumentMap
     },
     commandIdentifierMap: {
@@ -130,6 +135,7 @@ const createOrUpdateCommandSuccess = (state: CommandState, command: Command): Co
       [command.id]: {
         ...command
       }
-    }
+    },
+    selectedCommandId: command.id
   };
 };

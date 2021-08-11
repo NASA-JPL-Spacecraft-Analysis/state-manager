@@ -1,4 +1,22 @@
 export class UploadConstants {
+  public static commandArgumentCsvUploadFormat: string = `
+    commandIdentifier,name,sortOrder
+    Example Command Upload,Argument 1,,
+  `;
+
+  public static commandArgumentJsonUploadFormat: string = `
+    [
+      {
+        "commandIdentifier": "Example Command Identifier",
+        "name": "Argument 1",
+        "sortOrder": 1
+      },
+      {
+        ...
+      }
+    ]
+  `;
+
   public static commandCsvUploadFormat: string = `
     description,displayName,externalLink,identifier
     Example description.,Example Command Upload,https://js.jpl.nasa.gov/,EXAMPLE_COMMAND_UPLOAD

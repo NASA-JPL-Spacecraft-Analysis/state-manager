@@ -2,6 +2,16 @@ import { createAction, props } from '@ngrx/store';
 
 import { Command, Constraint, Event, Group, GroupMapping, InformationType, Relationship } from '../models';
 
+export const uploadCommandArguments = createAction(
+  '[file upload] uploadCommandArguments',
+  props<{ collectionId: string, file: File }>()
+);
+
+export const uploadCommandArgumentsFailure = createAction(
+  '[file upload] uploadCommandArgumentsFailure',
+  props<{ error: Error }>()
+);
+
 export const uploadCommands = createAction(
   '[file upload] uploadCommands',
   props<{ collectionId: string, file: File }>()
@@ -30,16 +40,6 @@ export const uploadConstraintsFailure = createAction(
 export const uploadConstraintsSuccess = createAction(
   '[file upload] uploadConstraintsSuccess',
   props<{ constraints: Constraint[] }>()
-);
-
-export const uploadStateEnumerations = createAction(
-  '[file upload] uploadStateEnumerations',
-  props<{ collectionId: string, file: File }>()
-);
-
-export const uploadStateEnumerationsFailure = createAction(
-  '[file upload] uploadStateEnumerationsFailure',
-  props<{ error: Error }>()
 );
 
 export const uploadEvents = createAction(
@@ -110,6 +110,16 @@ export const uploadRelationshipsFailure = createAction(
 export const uploadRelationshipsSuccess = createAction(
   '[file upload] uploadRelationshipsSuccess',
   props<{ relationships: Relationship[] }>()
+);
+
+export const uploadStateEnumerations = createAction(
+  '[file upload] uploadStateEnumerations',
+  props<{ collectionId: string, file: File }>()
+);
+
+export const uploadStateEnumerationsFailure = createAction(
+  '[file upload] uploadStateEnumerationsFailure',
+  props<{ error: Error }>()
 );
 
 export const uploadStates = createAction(

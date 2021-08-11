@@ -38,21 +38,15 @@ export const reducer = createReducer(
     const stateEnumerationMap = {
       ...state.stateEnumerationMap
     };
-    const stateMap = state.stateMap;
 
-    for (const deletedEnumerationId of deletedEnumerationIds) {
-      delete stateEnumerationMap[deletedEnumerationId];
-    }
-
-    // Remove any deleted arguments from the stateMap.
-    for (const id of Object.keys(stateMap)) {
-      stateMap[id].enumerations.filter((enumeration) => deletedEnumerationIds.indexOf(enumeration.id) === -1);
+    for (const stateId of Object.keys(stateEnumerationMap)) {
+      stateEnumerationMap[stateId] =
+        stateEnumerationMap[stateId].filter((enumeration) => !deletedEnumerationIds.includes(enumeration.id));
     }
 
     return {
       ...state,
-      stateEnumerationMap,
-      stateMap
+      stateEnumerationMap
     };
   }),
   on(StateActions.saveEnumerationsSuccess, (stateState, { stateEnumerations }) => {
@@ -103,15 +97,9 @@ export const reducer = createReducer(
 
     return {
       ...stateState,
-      stateEnumerationMap: {
-        ...stateEnumerationMap
-      },
-      stateIdentifierMap: {
-        ...stateIdentifierMap
-      },
-      stateMap: {
-        ...stateMap
-      }
+      stateEnumerationMap,
+      stateIdentifierMap,
+      stateMap
     };
   }),
   on(StateActions.updateStateSuccess, (stateState, { state }) => createOrUpdateStateSuccess(stateState, state))

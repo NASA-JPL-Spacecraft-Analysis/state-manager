@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Command, CommandHistory, CommandResponse, CommandsResponse, DeleteArgumentResponse } from './../models';
+import { Command, CommandArgumentResponse, CommandArgumentUpload, CommandHistory, CommandResponse, CommandsResponse, DeleteArgumentResponse } from './../models';
 
 import * as gql from './gql/commands';
 
@@ -38,6 +38,25 @@ export class CommandService {
 
         return createCommand;
       }));
+  }
+
+  public createCommandArguments(collectionId: string, commandArguments: CommandArgumentUpload[]): Observable<CommandArgumentResponse> {
+    return this.apollo
+      .mutate<{ createCommandArguments: CommandArgumentResponse }>({
+        fetchPolicy: 'no-cache',
+        mutation: gql.CREATE_COMMAND_ARGUMENTS,
+        variables: {
+          collectionId,
+          commandArguments
+        }
+      })
+      .pipe(map(({ data: { createCommandArguments } }) => {
+        if (!createCommandArguments.success) {
+          throw new Error(createCommandArguments.message);
+        }
+
+        return createCommandArguments;
+      }))
   }
 
   public createCommands(collectionId: string, commands: Command[]): Observable<CommandsResponse> {
