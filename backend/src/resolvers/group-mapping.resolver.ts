@@ -19,26 +19,27 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
     try {
       // Keep a list of the mappings we are trying to save.
       const groupMappingsToSave: GroupMapping[] = [];
-      // Keep track of our groups by name.
+      // Keep track of our groups by identifier.
       const groupMap = new Map<string, Group>();
 
       for (const groupMapping of data.groupMappings) {
         let group: Group | undefined;
 
         // Find the group that our mapping is trying to bind to.
-        if (groupMapping.name && groupMap.get(groupMapping.name)) {
-          group = groupMap.get(groupMapping.name);
+        if (groupMapping.identifier && groupMap.get(groupMapping.identifier)) {
+          group = groupMap.get(groupMapping.identifier);
         } else {
           group = await Group.findOne({
             where: {
               collectionId: data.collectionId,
-              name: groupMapping.name
+              identifier: groupMapping.identifier
             }
           });
         }
 
         if (!group) {
-          throw new UserInputError(GroupConstants.groupNotFoundNameError(groupMapping.name ? groupMapping.name : 'undefined'));
+          throw new UserInputError(
+            GroupConstants.groupNotFoundIdentifierError(groupMapping.identifier? groupMapping.identifier: 'undefined'));
         }
 
         // Find the item the mapping is trying to bind to.

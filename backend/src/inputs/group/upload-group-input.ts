@@ -8,5 +8,5 @@ export class UploadGroupInput {
   public groupMappings!: UploadGroupMappingInput[];
 
   @Field()
-  public name!: string;
+  public identifier!: string;
 }

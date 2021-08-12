@@ -4,14 +4,14 @@ export const mockGroup1: Group = {
   collectionId: '1-collection',
   groupMappings: [],
   id: '1-Group',
-  name: 'Test Group'
+  identifier: 'Test Group'
 };
 
 export const mockGroup2: Group = {
   collectionId: '1-collection',
   groupMappings: [],
   id: '2-Group',
-  name: 'Test Group'
+  identifier: 'Test Group'
 };
 
 export const mockGroupMapping1: GroupMapping = {

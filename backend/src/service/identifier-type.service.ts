@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server-errors';
 import { Service } from 'typedi';
 import { ErrorConstants } from '../constants';
 
-import { Event, IdentifierTypeUnion, InformationType, State } from '../models';
+import { Event, Group, IdentifierTypeUnion, InformationType, State } from '../models';
 
 @Service()
 export class IdentifierTypeService {

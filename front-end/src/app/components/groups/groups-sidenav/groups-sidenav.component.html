@@ -1,10 +1,10 @@
 <div class ="sidenav-container">
   <div class="sidenav-header">
     <app-identifier-form
-      [originalIdentifier]="originalGroupName"
-      [identifierMap]="groupNameMap"
-      (duplicateIdentifier)="onDuplicateGroupName($event)"
-      (identifierEmitter)="onGroupNameChange($event)">
+      [originalIdentifier]="originalGroupIdentifier"
+      [identifierMap]="groupIdentifierMap"
+      (duplicateIdentifier)="onDuplicateGroupIdentifier($event)"
+      (identifierEmitter)="onGroupIdentifierChange($event)">
     </app-identifier-form>
 
     <button mat-icon-button (click)="onCancel()">

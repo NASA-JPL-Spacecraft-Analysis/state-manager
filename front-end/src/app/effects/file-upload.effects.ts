@@ -56,6 +56,10 @@ export class FileUploadEffects {
                 this.throwFileParseError(commandArguments)
               ];
             }
+
+            if (!commandArgument.sortOrder) {
+              commandArgument.sortOrder = undefined;
+            }
           }
 
           return concat(
@@ -373,7 +377,7 @@ export class FileUploadEffects {
             
             if (this.validationService.isGroupUpload(groupUpload)) {
               groups.push({
-                name: groupUpload.name,
+                identifier: groupUpload.identifier,
                 groupMappings: []
               });
 

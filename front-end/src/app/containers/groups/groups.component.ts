@@ -5,11 +5,10 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { getEventMap, getGroups, getInformationTypeMap, getInformationTypes, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
+import { getEventMap, getGroupIdentifierMap, getGroupMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
 import { GroupsSidenavModule } from 'src/app/components/groups';
-import { EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
+import { EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { UploadConstants } from 'src/app/constants';
 
 @Component({
@@ -21,8 +20,10 @@ import { UploadConstants } from 'src/app/constants';
 export class GroupsComponent implements OnDestroy {
   public eventMap: EventMap;
   public group: Group;
-  public groups: Group[];
+  public groupIdentifierMap: IdentifierMap;
+  public groupMap: GroupMap;
   public groupNameMap: IdentifierMap;
+  public groups: Group[];
   public informationTypeMap: InformationTypeMap;
   public showSidenav: boolean;
   public selectedCollectionId: string;
@@ -42,13 +43,16 @@ export class GroupsComponent implements OnDestroy {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getGroupMap)).subscribe(groupMap => {
+        this.groupMap = { ...groupMap };
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getGroupIdentifierMap)).subscribe(groupIdentifierMap => {
+        this.groupIdentifierMap = groupIdentifierMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getGroups)).subscribe(groups => {
         this.groups = groups;
-
-        for (const group of groups) {
-          this.groupNameMap[group.name] = group.id;
-        }
-
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {
