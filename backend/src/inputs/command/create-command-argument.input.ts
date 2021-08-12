@@ -2,8 +2,8 @@ import { Field, ID, InputType } from 'type-graphql';
 
 @InputType()
 export class CreateCommandArgumentInput {
-  @Field(() => ID)
-  public collectionId!: string;
+  @Field(() => ID, { nullable: true })
+  public collectionId?: string;
 
   @Field()
   public commandIdentifier!: string;

@@ -76,7 +76,11 @@ export class CommandEffects {
 
   public navCommands = createEffect(() =>
     this.actions.pipe(
-      ofRoute([ 'collection/:collectionId/commands', 'collection/:collectionId/command-history' ]),
+      ofRoute([
+        'collection/:collectionId/command-argument-history',
+        'collection/:collectionId/commands',
+        'collection/:collectionId/command-history'
+      ]),
       withLatestFrom(this.store),
       map(([_, state]) => state),
       switchMap(state => {
@@ -141,6 +145,8 @@ export class CommandEffects {
 
   private getCommands(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
+
+    console.log(url);
 
     if (url === 'commands') {
       return merge(

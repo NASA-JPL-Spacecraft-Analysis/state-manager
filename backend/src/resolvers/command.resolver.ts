@@ -46,6 +46,9 @@ export class CommandResolver implements ResolverInterface<Command> {
     return CommandArgumentHistory.find({
       where: {
         collectionId
+      },
+      order: {
+        updated: 'DESC'
       }
     });
   }
@@ -119,6 +122,7 @@ export class CommandResolver implements ResolverInterface<Command> {
         }
 
         const commandArgument = CommandArgument.create({
+          collectionId: command.collectionId,
           commandId: command.id,
           name: argument.name,
           sortOrder: argument.sortOrder
