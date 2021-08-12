@@ -1,8 +1,31 @@
-CREATE TABLE `command_arguments` (
+CREATE TABLE `state_enumeration_history` (
+  `collectionId` varchar(36) NOT NULL,
   `id` varchar(36) NOT NULL,
+  `label` text,
+  `stateEnumerationId` varchar(36) NOT NULL,
+  `stateId` varchar(36) NOT NULL,
+  `updated` timestamp NOT NULL,
+  `value` text,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `command_arguments` (
+  `collectionId` varchar(36) NOT NULL,
   `commandId` varchar(36) NOT NULL,
+  `id` varchar(36) NOT NULL,
   `name` text NOT NULL,
   `sortOrder` int,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `command_arguments_history` (
+  `collectionId` varchar(36) NOT NULL,
+  `commandArgumentId` varchar(36) NOT NULL,
+  `commandId` varchar(36) NOT NULL,
+  `id` varchar(36) NOT NULL,
+  `name` text NOT NULL,
+  `sortOrder` int(11),
+  `updated` timestamp NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

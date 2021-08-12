@@ -2,7 +2,7 @@ import { Resolver, Query, Arg, Mutation, ResolverInterface , FieldResolver, Root
 import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
-import { State, StateEnumeration, StateHistory, stateTypes } from './../models';
+import { State, StateEnumeration, StateEnumerationHistory, StateHistory, stateTypes } from './../models';
 import {
   CreateStateEnumerationsInput,
   CreateStateInput,
@@ -68,12 +68,15 @@ export class StateResolver implements ResolverInterface<State> {
         }
 
         const stateEnumeration = StateEnumeration.create({
+          collectionId: state.collectionId,
           label: enumeration.label,
           stateId: state.id,
           value: enumeration.value
         });
 
         await stateEnumeration.save();
+
+        this.createStateEnumerationHistory(stateEnumeration);
 
         stateEnumerations.push(stateEnumeration);
       }
@@ -185,6 +188,18 @@ export class StateResolver implements ResolverInterface<State> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
+  @Query(() => [ StateEnumerationHistory ])
+  public stateEnumerationHistory(@Args() { collectionId }: CollectionIdArgs): Promise<StateEnumerationHistory[]> {
+    return StateEnumerationHistory.find({
+      where: {
+        collectionId
+      },
+      order: {
+        updated: 'DESC'
+      }
+    });
+  }
+
   @Query(() => [ StateEnumeration ])
   public stateEnumerations(@Arg('stateId') stateId: string): Promise<StateEnumeration[]> {
     return StateEnumeration.find({
@@ -246,6 +261,19 @@ export class StateResolver implements ResolverInterface<State> {
     }
   }
 
+  private createStateEnumerationHistory(stateEnumeration: StateEnumeration): void {
+    const stateEnumerationHistory = StateEnumerationHistory.create({
+      collectionId: stateEnumeration.collectionId,
+      label: stateEnumeration.label,
+      stateId: stateEnumeration.stateId,
+      stateEnumerationId: stateEnumeration.id,
+      updated: new Date(),
+      value: stateEnumeration.value
+    });
+
+    void stateEnumerationHistory.save();
+  }
+
   private createStateHistory(state: State): void {
     const stateHistory = StateHistory.create({
       collectionId: state.collectionId,
@@ -274,6 +302,8 @@ export class StateResolver implements ResolverInterface<State> {
         stateEnumeration.stateId = stateId;
 
         await stateEnumeration.save();
+
+        this.createStateEnumerationHistory(stateEnumeration);
       }
     }
 

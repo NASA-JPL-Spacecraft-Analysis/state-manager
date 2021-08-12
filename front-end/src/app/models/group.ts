@@ -1,6 +1,7 @@
 import { Event } from './event';
 import { InformationType } from './information-type';
 import { State } from './state';
+import { StringTMap } from './string-t-map';
 
 export interface Group {
   collectionId: string;
@@ -8,6 +9,8 @@ export interface Group {
   id: string;
   identifier: string;
 }
+
+export type GroupMap = StringTMap<Event>;
 
 export interface GroupMapping {
   groupId?: string;
@@ -18,6 +21,7 @@ export interface GroupMapping {
 
 export type GroupItemType =
   | Event
+  | Group
   | InformationType
   | State;
 

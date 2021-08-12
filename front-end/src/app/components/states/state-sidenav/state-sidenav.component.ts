@@ -125,6 +125,7 @@ export class StateSidenavComponent implements OnChanges {
 
   /**
    * Checks to see if the enumerations were modified. If they were, then we save them.
+   * Also set the collection id for each enumeration.
    */
   private processEnumerations(): boolean {
     // Check and make sure values are set for all our enumerations.
@@ -132,6 +133,8 @@ export class StateSidenavComponent implements OnChanges {
       if (!enumeration.label || !enumeration.value) {
         return false;
       }
+
+      enumeration.collectionId = this.collectionId;
     }
 
     return true;

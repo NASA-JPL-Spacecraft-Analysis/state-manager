@@ -5,7 +5,7 @@ import { CollectionIdArgs, IdArgs } from '../args';
 import { CollectionConstants, GroupConstants } from '../constants';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
-import { Collection, Group, GroupMapping } from '../models';
+import { Collection, Group, GroupMapping, GroupMappingItemUnion } from '../models';
 import { GroupResponse, GroupsResponse, Response } from '../responses';
 import { GroupService, IdentifierTypeService } from '../service';
 
@@ -69,9 +69,15 @@ export class GroupResolver implements ResolverInterface<Group> {
             sortOrder: mapping.sortOrder
           });
 
-          const item =
-            await
-            this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
+          let item: typeof GroupMappingItemUnion | undefined;
+
+          // Do a special lookup for a group because it's not an IdentifierType.
+          if (mapping.itemType === Group.name) {
+            item = await this.group(data.collectionId, mapping.itemIdentifier);
+          } else {
+            item =
+              await this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
+          }
 
           if (item) {
             newMapping.itemId = item.id;
@@ -83,7 +89,7 @@ export class GroupResolver implements ResolverInterface<Group> {
         }
       }
 
-      let message;
+      let message: string;
 
       if (createdGroups.length > 1) {
         message = createdGroups.length.toString() + ' Groups Created';

@@ -9,6 +9,11 @@ export const getStateIdentifierMap = createSelector(
   (stateState: StateState) => stateState.stateIdentifierMap
 );
 
+export const getStateEnumerationHistory = createSelector(
+  getStatesState,
+  (stateState: StateState) => stateState.stateEnumerationHistory
+);
+
 export const getStateEnumerations = createSelector(
   getStatesState,
   (stateState: StateState) => 

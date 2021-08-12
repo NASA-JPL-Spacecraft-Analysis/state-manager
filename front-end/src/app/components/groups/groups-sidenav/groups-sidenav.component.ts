@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 import { MaterialModule } from 'src/app/material';
-import { EventMap, Group, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
+import { EventMap, Group, GroupMap, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { GroupItemSelectorModule } from '../group-item-selector/group-item-selector.component';
@@ -19,6 +20,7 @@ import { GroupItemSelectorModule } from '../group-item-selector/group-item-selec
 export class GroupsSidenavComponent implements OnChanges {
   @Input() public eventMap: EventMap;
   @Input() public group: Group;
+  @Input() public groupMap: GroupMap;
   @Input() public groupIdentifierMap: IdentifierMap;
   @Input() public informationTypeMap: InformationTypeMap;
   @Input() public selectedCollectionId: string;
@@ -52,8 +54,9 @@ export class GroupsSidenavComponent implements OnChanges {
     this.collectionItems = [];
     this.selectedItems = [];
 
-    this.addToCollectionItems(this.informationTypeMap);
     this.addToCollectionItems(this.eventMap);
+    this.addToCollectionItems(this.groupMap);
+    this.addToCollectionItems(this.informationTypeMap);
     this.addToCollectionItems(this.stateMap);
 
     // Copy our collectionItems so we can remove items that are already selected later.
@@ -80,6 +83,12 @@ export class GroupsSidenavComponent implements OnChanges {
         id: undefined,
         identifier: ''
       };
+    }
+
+
+    // If we're updating a group, remove it from the map so the user can't add it as a group item.
+    if (this.newGroup.id) {
+      delete this.groupMap[this.newGroup.id];
     }
 
     this.originalGroupIdentifier = this.newGroup.identifier;

@@ -15,7 +15,9 @@ import {
   ConstraintsComponent,
   ConstraintHistoryComponent,
   CommandHistoryComponent,
-  CommandsComponent
+  CommandsComponent,
+  CommandArgumentHistoryComponent,
+  StateEnumerationHistoryComponent
 } from './containers';
 
 export const routes: Routes = [
@@ -31,6 +33,10 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'states'
+      },
+      {
+        component: CommandArgumentHistoryComponent,
+        path: 'command-argument-history'
       },
       {
         component: CommandHistoryComponent,
@@ -71,6 +77,10 @@ export const routes: Routes = [
       {
         component: RelationshipHistoryComponent,
         path: 'relationship-history'
+      },
+      {
+        component: StateEnumerationHistoryComponent,
+        path: 'state-enumeration-history'
       },
       {
         component: StatesComponent,

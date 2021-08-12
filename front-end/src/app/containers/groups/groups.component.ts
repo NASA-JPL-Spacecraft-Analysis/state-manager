@@ -7,9 +7,9 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { getEventMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowGroupsSidemenu, getShowSidenav, getStates } from 'src/app/selectors';
 import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
-import { EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
+import { getEventMap, getGroupIdentifierMap, getShowGroupsSidemenu, getGroupMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
+import { EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
 
@@ -22,8 +22,10 @@ import { UploadConstants } from 'src/app/constants';
 export class GroupsComponent implements OnDestroy {
   public eventMap: EventMap;
   public group: Group;
-  public groups: Group[];
   public groupIdentifierMap: IdentifierMap;
+  public groupMap: GroupMap;
+  public groupNameMap: IdentifierMap;
+  public groups: Group[];
   public informationTypeMap: InformationTypeMap;
   public showGroupsSidemenu: boolean;
   public showSidenav: boolean;
@@ -45,6 +47,14 @@ export class GroupsComponent implements OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
         this.eventMap = eventMap;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getGroupMap)).subscribe(groupMap => {
+        this.groupMap = { ...groupMap };
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getGroupIdentifierMap)).subscribe(groupIdentifierMap => {
+        this.groupIdentifierMap = groupIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getGroups)).subscribe(groups => {

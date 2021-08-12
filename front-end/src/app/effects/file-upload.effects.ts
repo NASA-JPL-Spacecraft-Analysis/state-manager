@@ -56,6 +56,10 @@ export class FileUploadEffects {
                 this.throwFileParseError(commandArguments)
               ];
             }
+
+            if (!commandArgument.sortOrder) {
+              commandArgument.sortOrder = undefined;
+            }
           }
 
           return concat(

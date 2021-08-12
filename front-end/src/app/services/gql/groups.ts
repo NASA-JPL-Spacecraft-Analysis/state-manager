@@ -23,6 +23,10 @@ export const CREATE_GROUP = gql(`
               id
               identifier
             }
+            ... on Group {
+              id
+              identifier
+            }
             ... on InformationType {
               description
               displayName
@@ -78,6 +82,10 @@ export const CREATE_GROUP_MAPPINGS = gql(`
             id
             identifier
           }
+          ... on Group {
+            id
+            identifier
+          }
           ... on InformationType {
             description
             displayName
@@ -127,6 +135,10 @@ export const CREATE_GROUPS = gql(`
               description
               displayName
               externalLink
+              id
+              identifier
+            }
+            ... on Group {
               id
               identifier
             }
@@ -180,6 +192,7 @@ export const DELETE_GROUP = gql(`
 export const GET_GROUPS_AND_MAPPINGS = gql(`
   query groups($collectionId: ID!) {
     groups(collectionId: $collectionId) {
+      identifier
       id
       identifier
       groupMappings {
@@ -188,6 +201,10 @@ export const GET_GROUPS_AND_MAPPINGS = gql(`
             description
             displayName
             externalLink
+            id
+            identifier
+          }
+          ... on Group {
             id
             identifier
           }
@@ -242,6 +259,10 @@ export const UPDATE_GROUP = gql(`
               description
               displayName
               externalLink
+              id
+              identifier
+            }
+            ... on Group {
               id
               identifier
             }

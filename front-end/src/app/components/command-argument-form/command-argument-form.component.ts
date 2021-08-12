@@ -20,6 +20,7 @@ import { CommandArgument } from 'src/app/models';
 })
 export class CommandArgumentFormComponent implements OnChanges {
   @Input() arguments: CommandArgument[];
+  @Input() collectionId: string;
   @Input() deletedArgumentIds: string[];
 
   public argumentLabel: string;
@@ -39,6 +40,7 @@ export class CommandArgumentFormComponent implements OnChanges {
   // Add a new blank command argument.
   public onAddArgument(): void {
     this.arguments.push({
+      collectionId: this.collectionId,
       commandId: undefined,
       id: undefined,
       name: '',

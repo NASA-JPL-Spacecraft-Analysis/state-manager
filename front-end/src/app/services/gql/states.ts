@@ -36,8 +36,10 @@ export const CREATE_STATE = gql(`
         description
         displayName
         enumerations {
-          stateId
+          collectionId
           label
+          id
+          stateId
           value
         }
         externalLink
@@ -66,6 +68,7 @@ export const CREATE_STATE_ENUMERATIONS = gql(`
     ) {
       message
       stateEnumerations {
+        collectionId
         label
         id
         stateId
@@ -106,6 +109,20 @@ export const CREATE_STATES = gql(`
   }
 `);
 
+export const GET_STATE_ENUMERATION_HISTORY = gql(`
+  query stateEnumerationHistory($collectionId: ID!) {
+    stateEnumerationHistory(collectionId: $collectionId) {
+      collectionId
+      id
+      label
+      stateEnumerationId
+      stateId
+      updated
+      value
+    }
+  }
+`);
+
 export const GET_STATES = gql(`
   query states($collectionId: ID!) {
     states(collectionId: $collectionId) {
@@ -114,8 +131,10 @@ export const GET_STATES = gql(`
       displayName
       editable
       enumerations {
-        id
+        collectionId
         label
+        id
+        stateId
         value
       }
       externalLink
@@ -179,10 +198,11 @@ export const SAVE_ENUMERATIONS = gql(`
       }
     ) {
       enumerations {
-        id
+        collectionId
         label
-        value
+        id
         stateId
+        value
       }
       message
       success
@@ -226,6 +246,7 @@ export const UPDATE_STATE = gql(`
         description
         displayName
         enumerations {
+          collectionId
           label
           id
           stateId
