@@ -75,7 +75,11 @@ export class StateEffects {
 
   public navStates = createEffect(() =>
     this.actions.pipe(
-      ofRoute([ 'collection/:collectionId/states', 'collection/:collectionId/state-history' ]),
+      ofRoute([
+        'collection/:collectionId/state-enumeration-history',
+        'collection/:collectionId/states',
+        'collection/:collectionId/state-history'
+      ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId =>
         this.getStates(collectionId)
@@ -136,6 +140,26 @@ export class StateEffects {
           catchError(
             (error: Error) => [
               StateActions.fetchStatesFailure({
+                error
+              })
+            ]
+          )
+        )
+      );
+    } else if (url === 'state-enumeration-history') {
+      return merge(
+        of(LayoutActions.toggleSidenav({
+          showSidenav: false
+        })),
+        this.stateService.getStateEnumerationHistory(
+          collectionId
+        ).pipe(
+          map(stateEnumerationHistory => StateActions.setStateEnumerationHistory({
+            stateEnumerationHistory
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStateEnumerationHistoryFailure({
                 error
               })
             ]

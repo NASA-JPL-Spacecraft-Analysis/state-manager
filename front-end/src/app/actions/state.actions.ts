@@ -3,6 +3,7 @@ import { createAction, props } from '@ngrx/store';
 import {
   State,
   StateEnumeration,
+  StateEnumerationHistory,
   StateHistory
 } from '../models';
 
@@ -41,6 +42,11 @@ export const deleteEnumerationsSuccess = createAction(
   props<{ deletedEnumerationIds: string[] }>()
 );
 
+export const fetchStateEnumerationHistoryFailure = createAction(
+  '[state] fetchStateEnumerationHistoryFailure',
+  props<{ error: Error }>()
+);
+
 export const fetchStateHistoryFailure = createAction(
   '[state] fetchStateHistoryFailure',
   props<{ error: Error }>()
@@ -59,6 +65,11 @@ export const saveEnumerationsSuccess = createAction(
 export const saveEnumerationsFailure = createAction(
   '[state] saveEnumerationsFailure',
   props<{ error: Error }>()
+);
+
+export const setStateEnumerationHistory = createAction(
+  '[state] setStateEnumerationHistory',
+  props<{ stateEnumerationHistory: StateEnumerationHistory[] }>()
 );
 
 export const setStateHistory = createAction(

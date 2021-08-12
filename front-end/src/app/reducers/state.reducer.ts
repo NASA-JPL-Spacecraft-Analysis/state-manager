@@ -1,15 +1,18 @@
+import { state } from '@angular/animations';
 import { createReducer, on } from '@ngrx/store';
 
 import { StateActions } from '../actions';
 import {
   IdentifierMap,
   State,
+  StateEnumerationHistory,
   StateEnumerationMap,
   StateMap
 } from '../models';
 
 export interface StateState {
   selectedStateId: string;
+  stateEnumerationHistory: StateEnumerationHistory[];
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
   stateIdentifierMap: IdentifierMap;
@@ -18,6 +21,7 @@ export interface StateState {
 
 export const initialState: StateState = {
   selectedStateId: undefined,
+  stateEnumerationHistory: undefined,
   stateEnumerationMap: undefined,
   stateHistoryMap: undefined,
   stateIdentifierMap: undefined,
@@ -71,6 +75,10 @@ export const reducer = createReducer(
   on(StateActions.setSelectedState, (stateState, { id }) => ({
     ...stateState,
     selectedStateId: id
+  })),
+  on(StateActions.setStateEnumerationHistory, (stateState, { stateEnumerationHistory }) => ({
+    ...stateState,
+    stateEnumerationHistory
   })),
   on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
     const stateHistoryMap = {};

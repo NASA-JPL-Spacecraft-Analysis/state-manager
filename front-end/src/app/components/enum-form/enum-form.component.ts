@@ -14,6 +14,7 @@ import { MaterialModule } from 'src/app/material';
   templateUrl: 'enum-form.component.html'
 })
 export class EnumFormComponent implements OnChanges {
+  @Input() collectionId: string;
   @Input() deletedEnumerationIds: string[];
   @Input() enumerations: StateEnumeration[];
 
@@ -34,6 +35,7 @@ export class EnumFormComponent implements OnChanges {
   // Add a new blank enumeration.
   public onAddEnumeration(): void {
     this.enumerations.push({
+      collectionId: this.collectionId,
       id: undefined,
       stateId: undefined,
       label: '',

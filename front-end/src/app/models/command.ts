@@ -7,9 +7,15 @@ export interface Command extends IdentifierType {
 }
 
 export interface CommandArgument extends Node {
+  collectionId: string;
   commandId: string;
   name: string;
   sortOrder: number;
+}
+
+export interface CommandArgumentHistory extends CommandArgument {
+  commandArgumentId: string;
+  updated: Date;
 }
 
 export type CommandArgumentMap = StringTMap<CommandArgument[]>;

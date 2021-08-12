@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
 import { Command } from 'src/app/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'command-table',
   styleUrls: [ 'command-table.component.css' ],
   templateUrl: 'command-table.component.html'

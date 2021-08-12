@@ -4,6 +4,9 @@ import { StateEnumeration } from '../../models';
 
 @InputType()
 export class ModifyStateEnumeration implements Partial<StateEnumeration> {
+  @Field(() => ID, { nullable: true} )
+  public collectionId?: string;
+
   @Field(() => ID, { nullable: true })
   public id?: string;
 
