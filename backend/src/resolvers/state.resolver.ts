@@ -68,6 +68,7 @@ export class StateResolver implements ResolverInterface<State> {
         }
 
         const stateEnumeration = StateEnumeration.create({
+          collectionId: state.collectionId,
           label: enumeration.label,
           stateId: state.id,
           value: enumeration.value
@@ -192,6 +193,9 @@ export class StateResolver implements ResolverInterface<State> {
     return StateEnumerationHistory.find({
       where: {
         collectionId
+      },
+      order: {
+        updated: 'DESC'
       }
     });
   }
