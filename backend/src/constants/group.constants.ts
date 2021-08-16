@@ -9,5 +9,5 @@ export class GroupConstants {
     `Group with given id: ${id} not found`;
 
   public static groupNotFoundIdentifierError = (identifier: string): string =>
-    `A group with the identifier ${identifier} does not exist, please supply a valid group identifier and try again`;
+    `A group with the identifier: ${identifier} does not exist, please supply a valid group identifier and try again`;
 }

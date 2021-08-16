@@ -1,3 +1,4 @@
+export * from './chip/chip.component';
 export * from './collection-input/collection-input.component';
 export * from './commands';
 export * from './confirmation-dialog/confirmation-dialog.component';
@@ -6,6 +7,7 @@ export * from './enum-form/enum-form.component';
 export * from './event-sidenav/event-sidenav.component';
 export * from './event-table/event-table.component';
 export * from './file-upload-dialog/file-upload-dialog.component';
+export * from './groups';
 export * from './identifier-form/identifier-form.component';
 export * from './information-type-table/information-type-table.component';
 export * from './relationship-sidenav/relationship-sidenav.component';

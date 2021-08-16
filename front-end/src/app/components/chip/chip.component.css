@@ -1,0 +1,28 @@
+.chip {
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .5em;
+  padding: 4px 8px;
+}
+
+.chip-remove {
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+}
+
+.chip-text {
+  align-items: center;
+  display: flex;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(100%);
+  white-space: nowrap;
+}

@@ -194,6 +194,7 @@ export const GET_GROUPS_AND_MAPPINGS = gql(`
     groups(collectionId: $collectionId) {
       identifier
       id
+      identifier
       groupMappings {
         item {
           ... on Event {

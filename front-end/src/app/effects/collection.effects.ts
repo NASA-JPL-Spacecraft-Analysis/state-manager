@@ -5,7 +5,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MatDialog } from '@angular/material/dialog';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
-import { CollectionActions, LayoutActions, ToastActions } from '../actions';
+import { CollectionActions, ToastActions } from '../actions';
 import { CollectionService } from '../services';
 import { CollectionResponse } from '../models';
 import { of, forkJoin, concat } from 'rxjs';
@@ -55,8 +55,8 @@ export class CollectionEffects {
           ConfirmationDialogComponent,
           {
             data: {
-              confirmButtonColor: '#dc4545',
               confirmButtonText: 'Delete',
+              delete: true,
               message: 'You can recover your data by contacting FSPA support.',
               title: 'Delete collection "' + name + '"?'
             }

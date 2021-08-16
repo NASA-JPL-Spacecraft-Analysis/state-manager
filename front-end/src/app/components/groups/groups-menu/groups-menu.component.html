@@ -1,0 +1,13 @@
+<div class="sidenav-container sidemenu">
+  <div class="sidenav-header">
+    <span>All Groups</span>
+  </div>
+
+  <div *ngIf="groups.length > 0">
+    <mat-list *ngFor="let group of groups">
+      <span class="group-name" (click)="onGroupSelected(group)">
+        {{group.identifier}}
+      </span>
+    </mat-list>
+  </div>
+</div>

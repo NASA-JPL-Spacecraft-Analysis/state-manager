@@ -18,7 +18,8 @@ export class ToastEffects {
         }
 
         this.toastrService[action.toastType](message, '', {
-          positionClass: 'toast-bottom-center',
+          closeButton: true,
+          positionClass: 'toast-bottom-right',
           timeOut: 5000
         });
 

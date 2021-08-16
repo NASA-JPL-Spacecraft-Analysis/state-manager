@@ -12,7 +12,7 @@ Table of Contents
 1. Layout
 **************/
 
-html, body {
+html, body, main {
   height: 100%;
 }
 
@@ -34,6 +34,7 @@ body {
 **************/
 
 /* Angular Material Global Overwrites */
+
 .mat-form-field {
   display: flex;
   width: 100%;
@@ -44,6 +45,11 @@ body {
 }
 
 /* Global Styles */
+.cancel-button {
+  color: #333333;
+  background-color: #D5D5D5;
+}
+
 .content {
   flex-grow: 1;
 }
@@ -51,6 +57,7 @@ body {
 .content-container {
   display: flex;
   flex-flow: row nowrap;
+  height: 100%;
 }
 
 .form-input {
@@ -121,11 +128,28 @@ td.mat-cell:first-of-type{
 }
 
 /*Make collection container inline with navbar content*/
-.collection-container .mat-form-field-wrapper{
+.collection-container .mat-form-field-wrapper {
   line-height: 36px;
   padding-bottom: 0;
 }
 
-.mat-toolbar .mat-form-field-infix{
+.mat-toolbar .mat-form-field-infix {
   border-top-width: 0px;
+}
+
+/**************
+6. Toastr
+**************/
+
+#toast-container > .ngx-toastr {
+  box-shadow: 3px 3px 9px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  background-image: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+  padding: 15px;
 }

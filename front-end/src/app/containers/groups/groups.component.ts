@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy, } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { getEventMap, getGroupIdentifierMap, getGroupMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
-import { GroupsSidenavModule } from 'src/app/components/groups';
+import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
+import { getEventMap, getGroupIdentifierMap, getShowGroupsSidemenu, getGroupMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
 import { EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
@@ -25,6 +27,7 @@ export class GroupsComponent implements OnDestroy {
   public groupNameMap: IdentifierMap;
   public groups: Group[];
   public informationTypeMap: InformationTypeMap;
+  public showGroupsSidemenu: boolean;
   public showSidenav: boolean;
   public selectedCollectionId: string;
   public stateMap: StateMap;
@@ -33,10 +36,13 @@ export class GroupsComponent implements OnDestroy {
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
+    private domSanitizer: DomSanitizer,
+    private iconRegistry: MatIconRegistry,
     private store: Store<AppState>
   ) {
+    this.iconRegistry.addSvgIcon('delete', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/delete.svg'));
     this.subscriptions = new SubSink();
-    this.groupNameMap = {};
+    this.groupIdentifierMap = {};
 
     this.subscriptions.add(
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
@@ -57,6 +63,10 @@ export class GroupsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {
         this.informationTypeMap = informationTypeMap;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getShowGroupsSidemenu)).subscribe(showGroupsSidemenu => {
+        this.showGroupsSidemenu = showGroupsSidemenu;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
@@ -82,11 +92,19 @@ export class GroupsComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public onDeleteGroup(deleteGroup: boolean): void {
-    if (deleteGroup) {
+  public onCloseSidemenu(): void {
+    this.store.dispatch(
+      LayoutActions.toggleGroupsSidemenu({
+        showGroupsSidemenu: !this.showGroupsSidemenu
+      })
+    );
+  }
+
+  public onDeleteGroup(): void {
+    if (this.group) {
       this.store.dispatch(
         GroupActions.deleteGroup({
-          id: this.group.id
+          group: this.group
         })
       );
     }
@@ -110,7 +128,7 @@ export class GroupsComponent implements OnDestroy {
     }));
   }
 
-  public onModifyGroup(group?: Group): void {
+  public onGroupSelected(group?: Group): void {
     this.store.dispatch(GroupActions.setSelectedGroup({
       group
     }))
@@ -150,6 +168,7 @@ export class GroupsComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
+    GroupsMenuModule,
     GroupsSidenavModule,
     MaterialModule
   ]

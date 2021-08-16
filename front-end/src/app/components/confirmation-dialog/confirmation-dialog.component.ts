@@ -5,8 +5,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material';
 
 interface ConfirmationDialogData {
-  confirmButtonColor: string;
   confirmButtonText: string;
+  delete: boolean;
   message: string;
   title: string;
 }

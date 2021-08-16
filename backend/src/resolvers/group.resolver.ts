@@ -29,7 +29,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       return {
         group,
-        message: 'Group Created',
+        message: group.identifier + ' Created',
         success: true
       };
     } catch (error) {
@@ -89,9 +89,17 @@ export class GroupResolver implements ResolverInterface<Group> {
         }
       }
 
+      let message: string;
+
+      if (createdGroups.length > 1) {
+        message = createdGroups.length.toString() + ' Groups Created';
+      } else {
+        message = '1 Group Created';
+      }
+
       return {
         groups: createdGroups,
-        message: 'Groups Created',
+        message,
         success: true
       };
     } catch (error) {
@@ -117,17 +125,17 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       group.enabled = false;
       void group.save();
+
+      return {
+        message: group.identifier + ' Deleted',
+        success: true
+      };
     } catch (error) {
       return {
         message: error,
         success: false
       };
     }
-
-    return {
-      message: 'Group Deleted',
-      success: true
-    };
   }
 
   @Query(() => Group)
@@ -200,7 +208,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       return {
         group,
-        message: 'Group Updated',
+        message: group.identifier + ' Updated',
         success: true
       };
     } catch (error) {
@@ -216,10 +224,10 @@ export class GroupResolver implements ResolverInterface<Group> {
    * for a duplicate.
    *
    * @param collectionId The ID of the collection we're looking at.
-   * @param groupIdentifiers A list of group identifiers that we should check for.
+   * @param groupIdentifiers list of group identifiers that we should check for.
    */
-  private async checkForDuplicateGroupIdentifier(collectionId: string, groupId: string | undefined, groupIdentifiers: string[])
-    : Promise<void> {
+  private async checkForDuplicateGroupIdentifier(
+    collectionId: string, groupId: string | undefined, groupIdentifiers: string[]): Promise<void> {
     const collection = await Collection.findOne({
       where: {
         id: collectionId

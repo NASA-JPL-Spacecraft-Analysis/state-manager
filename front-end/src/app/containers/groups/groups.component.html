@@ -1,23 +1,37 @@
 <mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Groups 
+  <span class="groups-toggle-text" (click)="onCloseSidemenu()">
+    Groups
+  </span>
 
   <div>
     <button mat-button (click)="onFileUpload()">
       Upload Groups
     </button>
 
-    <button mat-raised-button color="primary" (click)="onModifyGroup()">
-      Create New Group
+    <button mat-button (click)="onDeleteGroup()">
+      <mat-icon svgIcon="delete"></mat-icon>
+    </button>
+
+    <button mat-raised-button color="primary" (click)="onGroupSelected()">
+      New Group
     </button>
   </div>
-
 </mat-toolbar>
 
 <div class="content-container">
+  <div class="sidenav" *ngIf="showGroupsSidemenu">
+    <groups-menu
+      [groups]="groups"
+      (groupSelected)="onGroupSelected($event)">
+    </groups-menu>
+  </div>
+
   <div class="content">
     <ng-container *ngIf="groups.length > 0; else noGroups">
       <mat-list *ngFor="let group of groups">
-        <div mat-subheader (click)="onModifyGroup(group)">{{group.identifier}}</div>
+        <div mat-subheader (click)="onGroupSelected(group)">
+          {{group.identifier}}
+        </div>
 
         <mat-list-item *ngFor="let mapping of group.groupMappings">
           <div mat-line>{{mapping.item.identifier}}</div>
@@ -43,7 +57,6 @@
       [groupIdentifierMap]="groupIdentifierMap"
       [selectedCollectionId]="selectedCollectionId"
       [stateMap]="stateMap"
-      (deleteGroup)="onDeleteGroup($event)"
       (modifyGroup)="onSidenavOutput($event)"
       (showError)=onShowError($event)>
     </groups-sidenav>

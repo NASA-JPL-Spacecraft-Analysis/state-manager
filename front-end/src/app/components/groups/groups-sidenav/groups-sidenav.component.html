@@ -1,5 +1,13 @@
 <div class ="sidenav-container">
   <div class="sidenav-header">
+    <span>Group Details</span>
+
+    <button mat-icon-button class="sidenav-cancel-button" (click)="onCancel()">
+      <mat-icon svgIcon="clear"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <app-identifier-form
       [originalIdentifier]="originalGroupIdentifier"
       [identifierMap]="groupIdentifierMap"
@@ -7,38 +15,14 @@
       (identifierEmitter)="onGroupIdentifierChange($event)">
     </app-identifier-form>
 
-    <button mat-icon-button (click)="onCancel()">
-      <mat-icon svgIcon="clear"></mat-icon>
-    </button>
-  </div>
-
-  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-    <p>Add Item:</p>
-
-    <mat-select #itemSelector
-      [disabled]="collectionItems.length === 0"
+    <group-item-selector
+      [itemList]="itemList"
+      [selectedItems]="selectedItems"
       (selectionChange)="onItemSelect($event)">
-      <mat-option [value]="item" *ngFor="let item of collectionItems">
-        {{item.identifier}}
-      </mat-option>
-    </mat-select>
-
-    <p>Items:</p>
-
-    <mat-list-item *ngFor="let mapping of groupMappings">
-      <div mat-line class="item-line">
-        {{mapping.item.identifier}}
-
-        <mat-icon svgIcon="clear" matTooltip="Delete this item" (click)="onDeleteItem(mapping.item)"></mat-icon>
-      </div>
-    </mat-list-item>
+    </group-item-selector>
 
     <div class="sidenav-actions">
       <button mat-raised-button color="primary" type="submit">Save</button>
-
-      <ng-container *ngIf="group && group.id">
-        <button mat-raised-button type="button" (click)="onDeleteGroup()">Delete Group</button>
-      </ng-container>
     </div>
   </form>
 </div>

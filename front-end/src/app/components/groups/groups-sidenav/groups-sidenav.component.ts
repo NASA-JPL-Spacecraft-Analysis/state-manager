@@ -1,4 +1,4 @@
-import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges, ViewChild } from '@angular/core';
+import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -9,6 +9,7 @@ import { MaterialModule } from 'src/app/material';
 import { EventMap, Group, GroupMap, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
+import { GroupItemSelectorModule } from '../group-item-selector/group-item-selector.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,21 +26,19 @@ export class GroupsSidenavComponent implements OnChanges {
   @Input() public selectedCollectionId: string;
   @Input() public stateMap: StateMap;
 
-  @Output() public deleteGroup: EventEmitter<boolean>;
   @Output() public modifyGroup: EventEmitter<Group>;
   @Output() public showError: EventEmitter<string>;
 
-  @ViewChild('itemSelector') public itemSelector: MatSelect;
-
   public collectionItems: GroupItemType[];
   public formGroup: FormGroup;
-  public groupMappings: GroupMapping[];
+  // Keeps track of the currently selectable items.
+  public itemList: GroupItemType[];
   public newGroup: Group;
   public originalGroupIdentifier: string;
   public selectedItem: GroupItemType;
+  public selectedItems: GroupItemType[];
 
   private isDuplicateGroupIdentifier: boolean;
-  private groupItemMap: Map<string, GroupItemType>;
 
   constructor(
     private iconRegistry: MatIconRegistry,
@@ -47,23 +46,36 @@ export class GroupsSidenavComponent implements OnChanges {
   ) {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
-    this.deleteGroup = new EventEmitter<boolean>();
     this.modifyGroup = new EventEmitter<Group>();
     this.showError = new EventEmitter<string>();
   }
 
   public ngOnChanges(): void {
     this.collectionItems = [];
-    this.groupItemMap = new Map();
+    this.selectedItems = [];
+
+    this.addToCollectionItems(this.eventMap);
+    this.addToCollectionItems(this.groupMap);
+    this.addToCollectionItems(this.informationTypeMap);
+    this.addToCollectionItems(this.stateMap);
+
+    // Copy our collectionItems so we can remove items that are already selected later.
+    this.itemList = [
+      ...this.collectionItems
+    ];
 
     if (this.group) {
       this.newGroup = {
-        ...this.group
+        ...this.group,
+        groupMappings: [
+          ...this.group.groupMappings.map(groupMapping => { return { ...groupMapping } })
+        ]
       };
 
-      this.groupMappings = [
-        ...this.group.groupMappings
-      ];
+      for (const groupMapping of this.group.groupMappings) {
+        this.selectedItems.push(groupMapping.item);
+        this.filterItemList(groupMapping);
+      }
     } else {
       this.newGroup = {
         collectionId: this.selectedCollectionId,
@@ -71,21 +83,13 @@ export class GroupsSidenavComponent implements OnChanges {
         id: undefined,
         identifier: ''
       };
-
-      this.groupMappings = [];
     }
 
-    this.populateGroupItemMap();
 
     // If we're updating a group, remove it from the map so the user can't add it as a group item.
     if (this.newGroup.id) {
       delete this.groupMap[this.newGroup.id];
     }
-
-    this.addToCollectionItems(this.eventMap);
-    this.addToCollectionItems(this.groupMap)
-    this.addToCollectionItems(this.informationTypeMap);
-    this.addToCollectionItems(this.stateMap);
 
     this.originalGroupIdentifier = this.newGroup.identifier;
 
@@ -97,21 +101,6 @@ export class GroupsSidenavComponent implements OnChanges {
 
   public onCancel(): void {
     this.modifyGroup.emit(undefined);
-  }
-
-  public onDeleteItem(item: GroupItemType): void {
-    // Remove the item from our mappings.
-    this.groupMappings = this.groupMappings.filter(mapping => mapping.item.id !== item.id);
-
-    // Remove the item from the map of group items.
-    this.groupItemMap.delete(item.id);
-
-    // Add the item back to the list of selectable items.
-    this.collectionItems.push(item);
-  }
-
-  public onDeleteGroup(): void {
-    this.deleteGroup.emit(true);
   }
 
   public onDuplicateGroupIdentifier(duplicateGroupIdentifier: boolean): void {
@@ -126,33 +115,38 @@ export class GroupsSidenavComponent implements OnChanges {
   /**
    * When an item is selected, add it to the groupItemMap and remove it 
    * from the collectionItems list.
-   * @param item The item that the user selected.
+   * @param groupItemList The list of items that the user has selected.
    */
-  public onItemSelect(change: MatSelectChange): void {
-    const value: GroupItemType = change.value;
+  public onItemSelect(groupItemList: GroupItemType[]): void {
+    // Reset our itemList to keep it up to date with added / removed groups.
+    this.itemList = [
+      ...this.collectionItems
+    ];
 
-    this.groupItemMap.set(value.id, value);
-    this.groupMappings.push({
-      id: '',
-      item: value,
-      itemId: value.id
-    });
+    this.newGroup.groupMappings = [];
 
-    // Remove the item from out collection item list.
-    this.collectionItems = this.collectionItems.filter(item => item.id !== value.id);
+    for (const groupItem of groupItemList) {
+      const groupMapping = {
+        id: undefined,
+        item: groupItem,
+        itemId: undefined
+      };
 
-    this.itemSelector.value = null;
+      this.newGroup.groupMappings.push(groupMapping);
+
+      this.filterItemList(groupMapping);
+    }
   }
 
   public onSubmit(): void {
     if (!this.isDuplicateGroupIdentifier && this.newGroup.identifier !== '') {
       if (this.validateGroupIdentifier(this.newGroup.identifier)) {
-        this.formGroup.get('groupMappings').setValue(this.groupMappings);
+        this.formGroup.get('groupMappings').setValue(this.newGroup.groupMappings);
 
         const groupMappingIds = [];
 
         // Pull out just the item ids so we can save the mappings.
-        for (const mapping of this.groupMappings) {
+        for (const mapping of this.newGroup.groupMappings) {
           groupMappingIds.push({
             itemId: mapping.item.id
           });
@@ -177,26 +171,13 @@ export class GroupsSidenavComponent implements OnChanges {
   private addToCollectionItems(itemMap: StringTMap<GroupItemType>): void {
     if (itemMap) {
       for (const item of Object.keys(itemMap)) {
-        // Only add an item if it isn't already in this group.
-        if (!this.groupItemMap.has(itemMap[item].id)) {
-          this.collectionItems.push(itemMap[item]);
-        }
+        this.collectionItems.push(itemMap[item]);
       }
     }
   }
 
-  /** 
-   * Create a map of item ids to items for our current group.
-   * Only try and populate the map if our group has items in it.
-  */
-  private populateGroupItemMap(): void {
-    if (this.newGroup.groupMappings.length > 0) {
-      for (const index of Object.keys(this.newGroup.groupMappings)) {
-        const item = this.newGroup.groupMappings[index].item;
-
-        this.groupItemMap.set(item.id, item);
-      }
-    }
+  private filterItemList(groupMapping: GroupMapping): void {
+    this.itemList = this.itemList.filter(item => item.id !== groupMapping.item.id);
   }
 
   private validateGroupIdentifier(identifier: string): boolean {
@@ -214,6 +195,7 @@ export class GroupsSidenavComponent implements OnChanges {
   imports: [
     CommonModule,
     FormsModule,
+    GroupItemSelectorModule,
     IdentifierFormModule,
     MaterialModule,
     ReactiveFormsModule
