@@ -59,11 +59,6 @@ export class GroupsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getGroups)).subscribe(groups => {
         this.groups = groups;
-
-        for (const group of groups) {
-          this.groupIdentifierMap[group.identifier] = group.id;
-        }
-
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {

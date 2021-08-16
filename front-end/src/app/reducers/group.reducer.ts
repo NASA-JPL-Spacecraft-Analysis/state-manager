@@ -39,8 +39,12 @@ export const reducer = createReducer(
     selectedGroup: group
   })),
   on(GroupActions.deleteGroupSuccess, (state, { id }) => {
-    const groupIdentifierMap = state.groupIdentifierMap;
-    const groupMap = state.groupMap;
+    const groupIdentifierMap = {
+      ...state.groupIdentifierMap
+    };
+    const groupMap = {
+      ...state.groupMap
+    };
 
     for (const identifier of Object.keys(groupIdentifierMap)) {
       if (groupIdentifierMap[identifier] = id) {
@@ -149,11 +153,29 @@ export const reducer = createReducer(
       ]
     };
   }),
-  on(FileUploadActions.uploadGroupsSuccess, (state, { groups }) => ({
-    ...state,
-    groups: [
-      ...state.groups,
-      ...groups
-    ]
-  }))
+  on(FileUploadActions.uploadGroupsSuccess, (state, { groups }) => {
+    const groupIdentifierMap = {};
+    const groupMap = {};
+
+    for (const group of groups) {
+      groupIdentifierMap[group.identifier] = group.id;
+      groupMap[group.id] = group;
+    }
+
+    return {
+      ...state,
+      groupIdentifierMap: {
+        ...state.groupIdentifierMap,
+        ...groupIdentifierMap
+      },
+      groupMap: {
+        ...state.groupMap,
+        ...groupMap
+      },
+      groups: [
+        ...state.groups,
+        ...groups
+      ]
+    };
+  })
 );

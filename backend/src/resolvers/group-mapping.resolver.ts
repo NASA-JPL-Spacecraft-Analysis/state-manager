@@ -32,14 +32,17 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
           group = await Group.findOne({
             where: {
               collectionId: data.collectionId,
-              identifier: groupMapping.itemIdentifier
+              enabled: true,
+              identifier: groupMapping.identifier
             }
           });
         }
 
-        if (!group) {
+        if (group) {
+          groupMap.set(group.identifier, group);
+        } else {
           throw new UserInputError(
-            GroupConstants.groupNotFoundIdentifierError(groupMapping.identifier? groupMapping.identifier: 'undefined'));
+            GroupConstants.groupNotFoundIdentifierError(groupMapping.identifier ? groupMapping.identifier: 'undefined'));
         }
 
         // Find the item the mapping is trying to bind to.
