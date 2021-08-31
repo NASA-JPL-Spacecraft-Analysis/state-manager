@@ -46,6 +46,7 @@ export class StateHistory extends State {
 }
 
 export const stateTypes: Set<string> = new Set([
+  'alarm_limit',
   'channel',
   'fsw_parameter',
   'model_input',
