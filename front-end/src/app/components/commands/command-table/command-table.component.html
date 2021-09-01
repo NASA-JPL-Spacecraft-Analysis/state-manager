@@ -48,6 +48,11 @@
   </table>
 </div>
 
+<mat-paginator
+  [pageSize]="100"
+  [pageSizeOptions]="[100, 250, 1000]"
+  showFirstLastButtons></mat-paginator>
+
 <ng-template #noCommands>
   <span>There are no defined commands.</span>
 </ng-template>

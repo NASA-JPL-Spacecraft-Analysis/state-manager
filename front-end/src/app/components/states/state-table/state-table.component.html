@@ -66,9 +66,12 @@
       (click)="onRowClick(row)">
     </tr>
   </table>
-
-  <mat-paginator [pageSizeOptions]="[100, 250, 1000]" showFirstLastButtons></mat-paginator>
 </div>
+
+<mat-paginator
+  [pageSize]="100"
+  [pageSizeOptions]="[100, 250, 1000]"
+  showFirstLastButtons></mat-paginator>
 
 <ng-template #noStates>
   <span>There are no defined states.</span>

@@ -54,10 +54,10 @@ export class CommandResolver implements ResolverInterface<Command> {
   }
 
   @Query(() => [ CommandArgument ])
-  public commandArguments(@Arg('commandId') commandId: string): Promise<CommandArgument[]> {
+  public commandArguments(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgument[]> {
     return CommandArgument.find({
       where: {
-        commandId
+        collectionId
       }
     });
   }
@@ -300,6 +300,10 @@ export class CommandResolver implements ResolverInterface<Command> {
       }
     }
 
-    return this.commandArguments(commandId);
+    return CommandArgument.find({
+      where: {
+        commandId
+      }
+    });
   }
 }

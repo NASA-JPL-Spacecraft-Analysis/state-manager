@@ -83,19 +83,16 @@ export const reducer = createReducer(
     commandHistory
   })),
   on(CommandActions.setCommands, (state, { commands }) => {
-    const commandArgumentMap = {};
     const commandIdentifierMap = {};
     const commandMap = {};
 
     for (const command of commands) {
-      commandArgumentMap[command.id] = command.arguments;
       commandIdentifierMap[command.identifier] = command.id;
       commandMap[command.id] = command;
     }
 
     return {
       ...state,
-      commandArgumentMap,
       commandIdentifierMap,
       commandMap
     };

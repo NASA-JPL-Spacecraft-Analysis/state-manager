@@ -40,6 +40,11 @@
   </table>
 </div>
 
+<mat-paginator
+  [pageSize]="100"
+  [pageSizeOptions]="[100, 250, 1000]"
+  showFirstLastButtons></mat-paginator>
+
 <ng-template #noInformationTypes>
   <span>There are no defined information types.</span>
 </ng-template>
