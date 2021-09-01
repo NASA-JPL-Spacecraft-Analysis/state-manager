@@ -19,7 +19,7 @@ export const createCommandSuccess = createAction(
 
 export const deleteArguments = createAction(
   '[command] deleteArguments',
-  props<{ commandId: string, deletedArgumentIds: string[] }>()
+  props<{ commandId: string; deletedArgumentIds: string[] }>()
 );
 
 export const deleteArgumentsFailure = createAction(
@@ -34,6 +34,11 @@ export const deleteArgumentsSuccess = createAction(
 
 export const fetchCommandArgumentHistoryFailure = createAction(
   '[command] fetchCommandArgumentHistoryFailure',
+  props<{ error: Error }>()
+);
+
+export const fetchCommandArgumentsFailure = createAction(
+  '[command] fetchCommandArgumentsFailure',
   props<{ error: Error }>()
 );
 
@@ -55,6 +60,11 @@ export const saveCommandArgumentsSuccess = createAction(
 export const setCommandArgumentHistory = createAction(
   '[command] setCommandArgumentHistory',
   props<{ commandArgumentHistory: CommandArgumentHistory[] }>()
+);
+
+export const setCommandArguments = createAction(
+  '[command] setCommandArguments',
+  props<{ commandArguments: CommandArgument[] }>()
 );
 
 export const setCommandHistory = createAction(

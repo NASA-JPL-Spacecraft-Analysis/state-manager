@@ -43,6 +43,10 @@ export class StateSidenavComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
+    if (!this.stateEnumerations) {
+      this.stateEnumerations = [];
+    }
+
     if (!this.state) {
       this.newState = {
         collectionId: this.collectionId,

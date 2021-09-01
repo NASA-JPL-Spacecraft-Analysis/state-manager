@@ -123,6 +123,18 @@ export const GET_STATE_ENUMERATION_HISTORY = gql(`
   }
 `);
 
+export const GET_STATE_ENUMERATIONS = gql(`
+  query stateEnumerations($collectionId: ID!) {
+    stateEnumerations(collectionId: $collectionId) {
+      collectionId
+      label
+      id
+      stateId
+      value
+    }
+  }
+`);
+
 export const GET_STATES = gql(`
   query states($collectionId: ID!) {
     states(collectionId: $collectionId) {
@@ -130,13 +142,6 @@ export const GET_STATES = gql(`
       description
       displayName
       editable
-      enumerations {
-        collectionId
-        label
-        id
-        stateId
-        value
-      }
       externalLink
       id
       identifier

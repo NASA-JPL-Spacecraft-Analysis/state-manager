@@ -43,6 +43,10 @@ export class CommandSidenavComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
+    if (!this.commandArguments) {
+      this.commandArguments = [];
+    }
+
     if (!this.command) {
       this.newCommand = {
         arguments: this.commandArguments,
