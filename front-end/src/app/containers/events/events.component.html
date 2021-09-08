@@ -6,10 +6,9 @@
       History
     </button>
 
-    <button mat-button (click)="eventsFileUpload.click()">
+    <button mat-button class="gray-button" (click)="onEventFileUpload()">
       Upload Events
     </button>
-    <input #eventsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
 
     <button mat-raised-button color="primary" (click)="onModifyEvent()">
       Create New Event

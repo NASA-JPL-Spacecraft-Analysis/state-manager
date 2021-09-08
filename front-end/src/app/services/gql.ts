@@ -48,11 +48,17 @@ export const CREATE_EVENTS = gql(`
         events: $events
       }
     ) {
-      description
-      displayName
-      externalLink
-      id
-      identifier
+      events {
+        collectionId
+        description
+        displayName
+        externalLink
+        id
+        identifier
+        type
+      }
+      message
+      success
     }
   }
 `);

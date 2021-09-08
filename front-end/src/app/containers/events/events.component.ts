@@ -6,11 +6,12 @@ import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
-import { EventActions, LayoutActions, ToastActions, FileUploadActions } from 'src/app/actions';
+import { EventActions, LayoutActions, ToastActions } from 'src/app/actions';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
 import { Event as StateEvent, EventMap, IdentifierMap } from 'src/app/models';
 import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId, getEventIdentifierMap } from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
+import { UploadConstants } from 'src/app/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -82,15 +83,13 @@ export class EventsComponent implements OnDestroy {
     }));
   }
 
-  public onFileUpload(fileEvent: Event): void {
-    const file = (fileEvent.target as HTMLInputElement).files[0];
-
-    if (file) {
-      this.store.dispatch(FileUploadActions.uploadEvents({
-        file,
-        collectionId: this.selectedCollectionId
-      }));
-    }
+  public onEventFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.selectedCollectionId,
+      csvFormat: [ UploadConstants.eventCsvUploadFormat ],
+      dialogType: 'Event',
+      jsonFormat: UploadConstants.eventJsonUploadFormat
+    }));
   }
 
   public onSidenavOutput(event: StateEvent): void {

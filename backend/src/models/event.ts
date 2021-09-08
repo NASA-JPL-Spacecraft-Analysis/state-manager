@@ -8,7 +8,7 @@ import { IdentifierType } from './identifier-type';
 export class Event extends IdentifierType {}
 
 @Entity({
-  name: 'event-history',
+  name: 'event_history',
   orderBy: {
     updated: 'DESC'
   }

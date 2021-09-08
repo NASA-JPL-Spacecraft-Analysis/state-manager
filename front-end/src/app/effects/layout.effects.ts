@@ -9,11 +9,6 @@ import { FileUploadDialogComponent } from '../components/file-upload-dialog/file
 
 @Injectable()
 export class LayoutEffects {
-  constructor(
-    private actions: Actions,
-    private dialog: MatDialog
-  ) {}
-
   public openFileUploadDialog = createEffect(() =>
     this.actions.pipe(
       ofType(LayoutActions.openFileUploadDialog),
@@ -28,7 +23,7 @@ export class LayoutEffects {
             }
           }
         );
-        
+
         return forkJoin([
           of(collectionId),
           of(dialogType),
@@ -122,4 +117,9 @@ export class LayoutEffects {
       })
     )
   );
+
+  constructor(
+    private actions: Actions,
+    private dialog: MatDialog
+  ) {}
 }
