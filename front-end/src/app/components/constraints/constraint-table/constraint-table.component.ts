@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
@@ -15,6 +16,8 @@ export class ConstraintTableComponent implements OnInit, OnChanges {
   @Input() public history: boolean;
 
   @Output() public constraintSelected: EventEmitter<Constraint>;
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<Constraint>;
   public displayedColumns: string[];
@@ -45,6 +48,8 @@ export class ConstraintTableComponent implements OnInit, OnChanges {
   public ngOnChanges(): void {
     if (this.constraints && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.constraints);
+
+      this.dataSource.paginator = this.paginator;
     }
 
     this.showConstraintTable = this.constraints && this.constraints.length > 0;

@@ -1,6 +1,7 @@
-import { Component, NgModule, ChangeDetectionStrategy, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, NgModule, ChangeDetectionStrategy, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 import { MaterialModule } from 'src/app/material';
 import { InformationType } from 'src/app/models';
@@ -13,6 +14,8 @@ import { InformationType } from 'src/app/models';
 })
 export class InformationTypeTableComponent implements OnInit, OnChanges {
   @Input() public informationTypes: InformationType[];
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<InformationType>;
   public displayedColumns: string[];
@@ -36,6 +39,8 @@ export class InformationTypeTableComponent implements OnInit, OnChanges {
   public ngOnChanges(): void {
     if (this.informationTypes && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.informationTypes);
+
+      this.dataSource.paginator = this.paginator;
     }
 
     this.showTable = this.informationTypes && this.informationTypes.length > 0;

@@ -63,7 +63,6 @@ export class StateTableComponent implements OnChanges, OnInit {
       this.dataSource = new MatTableDataSource(state);
 
       this.dataSource.paginator = this.paginator;
-
       this.dataSource.filterPredicate = this.filter;
     }
   }

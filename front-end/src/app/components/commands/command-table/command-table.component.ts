@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
@@ -16,6 +17,8 @@ export class CommandTableComponent implements OnInit, OnChanges {
   @Input() public history: boolean;
 
   @Output() public commandSelected: EventEmitter<Command>;
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<Command>;
   public displayedColumns: string[];
@@ -46,6 +49,8 @@ export class CommandTableComponent implements OnInit, OnChanges {
   public ngOnChanges(): void {
     if (this.commands && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.commands);
+
+      this.dataSource.paginator = this.paginator;
     }
 
     this.showCommandTable = this.commands && this.commands.length > 0;
