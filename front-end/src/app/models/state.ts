@@ -18,6 +18,7 @@ export interface StateHistory extends State {
 export type StateMap = StringTMap<State>;
 
 export const stateTypes: string[] = [
+  'alarm_limit',
   'channel',
   'fsw_parameter',
   'model_input',
