@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import { createReducer, on } from '@ngrx/store';
 
 import { StateActions } from '../actions';
@@ -80,6 +79,22 @@ export const reducer = createReducer(
     ...stateState,
     stateEnumerationHistory
   })),
+  on(StateActions.setStateEnumerations, (stateState, { stateEnumerations }) => {
+    const stateEnumerationMap = {};
+
+    for (const stateEnumeration of stateEnumerations) {
+      if (!stateEnumerationMap[stateEnumeration.stateId]) {
+        stateEnumerationMap[stateEnumeration.stateId] = [];
+      }
+
+      stateEnumerationMap[stateEnumeration.stateId].push(stateEnumeration);
+    }
+
+    return {
+      ...stateState,
+      stateEnumerationMap
+    };
+  }),
   on(StateActions.setStateHistory, (stateState, { stateHistory }) => {
     const stateHistoryMap = {};
 
@@ -93,19 +108,16 @@ export const reducer = createReducer(
     };
   }),
   on(StateActions.setStates, (stateState, { states }) => {
-    const stateEnumerationMap = {};
     const stateMap = {};
     const stateIdentifierMap = {};
 
     for (const state of states) {
       stateMap[state.id] = state;
       stateIdentifierMap[state.identifier] = state.id;
-      stateEnumerationMap[state.id] = state.enumerations;
     }
 
     return {
       ...stateState,
-      stateEnumerationMap,
       stateIdentifierMap,
       stateMap
     };

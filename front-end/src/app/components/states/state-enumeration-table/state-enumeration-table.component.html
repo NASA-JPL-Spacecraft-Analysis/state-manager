@@ -47,6 +47,11 @@
   </table>
 </div>
 
+<mat-paginator
+  [pageSize]="100"
+  [pageSizeOptions]="[100, 250, 1000]"
+  showFirstLastButtons></mat-paginator>
+
 <ng-template #noHistory>
   <span>There is no state enumeration history.</span>
 </ng-template>

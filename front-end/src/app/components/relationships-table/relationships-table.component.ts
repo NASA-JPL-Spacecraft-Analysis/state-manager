@@ -1,6 +1,7 @@
-import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 import { RelationshipMap, Relationship, StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum, CommandMap, ConstraintMap } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
@@ -21,6 +22,8 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
   @Input() public stateMap: StateMap;
 
   @Output() public relationshipSelected: EventEmitter<Relationship>;
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<Relationship>;
   public displayedColumns: string[] = [];
@@ -58,6 +61,7 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
 
       this.dataSource = new MatTableDataSource(this.relationshipsList);
 
+      this.dataSource.paginator = this.paginator;
       this.dataSource.filterPredicate = this.filter;
     }
   }

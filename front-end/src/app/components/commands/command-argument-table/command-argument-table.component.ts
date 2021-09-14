@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
@@ -13,6 +14,8 @@ import { CommandArgumentHistory } from 'src/app/models';
 })
 export class CommandArgumentTableComponent implements OnInit, OnChanges {
   @Input() public commandArgumentHistory: CommandArgumentHistory[];
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<CommandArgumentHistory>;
   public displayedColumns: string[];
@@ -36,6 +39,8 @@ export class CommandArgumentTableComponent implements OnInit, OnChanges {
   public ngOnChanges(): void {
     if (this.commandArgumentHistory && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.commandArgumentHistory);
+
+      this.dataSource.paginator = this.paginator;
     }
 
     this.showTable = this.commandArgumentHistory && this.commandArgumentHistory.length > 0;

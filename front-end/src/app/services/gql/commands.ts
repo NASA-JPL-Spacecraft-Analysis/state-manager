@@ -134,16 +134,21 @@ export const GET_COMMAND_ARGUMENT_HISTORY = gql(`
   }
 `);
 
+export const GET_COMMAND_ARGUMENTS = gql(`
+  query CommandArguments($collectionId: ID!) {
+    commandArguments(collectionId: $collectionId) {
+      collectionId
+      commandId
+      name
+      id
+      sortOrder
+    }
+  }
+`);
+
 export const GET_COMMAND_HISTORY = gql(`
   query CommandHistory($collectionId: ID!) {
     commandHistory(collectionId: $collectionId) {
-      arguments {
-        collectionId
-        commandId
-        name
-        id
-        sortOrder
-      }
       commandId
       collectionId
       description
@@ -161,13 +166,6 @@ export const GET_COMMAND_HISTORY = gql(`
 export const GET_COMMANDS = gql(`
   query Commands($collectionId: ID!) {
     commands(collectionId: $collectionId) {
-      arguments {
-        collectionId
-        commandId
-        name
-        id
-        sortOrder
-      }
       collectionId
       description
       displayName

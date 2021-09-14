@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
@@ -13,6 +14,8 @@ import { StateEnumerationHistory } from 'src/app/models';
 })
 export class StateEnumerationTableComponent implements OnInit, OnChanges {
   @Input() public stateEnumerationHistory: StateEnumerationHistory[];
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<StateEnumerationHistory>;
   public displayedColumns: string[];
@@ -36,6 +39,8 @@ export class StateEnumerationTableComponent implements OnInit, OnChanges {
   public ngOnChanges(): void {
     if (this.stateEnumerationHistory && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.stateEnumerationHistory);
+
+      this.dataSource.paginator = this.paginator;
     }
 
     this.showTable = this.stateEnumerationHistory && this.stateEnumerationHistory.length > 0;

@@ -10,6 +10,7 @@ import { CommandService } from '../services';
 import { AppState } from '../app-store';
 import { ofRoute } from '../functions/router';
 import { CommandResponse, DeleteArgumentResponse } from '../models';
+import { CommandArgumentHistoryComponent } from '../containers';
 
 @Injectable()
 export class CommandEffects {
@@ -146,13 +147,25 @@ export class CommandEffects {
   private getCommands(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
 
-    console.log(url);
-
     if (url === 'commands') {
       return merge(
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
+        this.commandService.getCommandArguments(
+          collectionId
+        ).pipe(
+          map(commandArguments => CommandActions.setCommandArguments({
+            commandArguments
+          })),
+          catchError(
+            (error: Error) => [
+              CommandActions.fetchCommandArgumentsFailure({
+                error
+              })
+            ]
+          )
+        ),
         this.commandService.getCommands(
           collectionId
         ).pipe(

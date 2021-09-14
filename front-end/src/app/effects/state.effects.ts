@@ -131,6 +131,20 @@ export class StateEffects {
         of(LayoutActions.toggleSidenav({
           showSidenav: false
         })),
+        this.stateService.getStateEnumerations(
+          collectionId
+        ).pipe(
+          map(stateEnumerations => StateActions.setStateEnumerations({
+            stateEnumerations
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStateEnumerationsFailure({
+                error
+              })
+            ]
+          )
+        ),
         this.stateService.getStates(
           collectionId
         ).pipe(

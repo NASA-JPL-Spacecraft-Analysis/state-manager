@@ -3,7 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { StateResponse, StatesResponse, State, StateHistory, StateEnumerationUpload, StateEnumerationsResponse, DeleteEnumerationsResponse, StateEnumerationHistory } from '../models';
+import { StateResponse, StatesResponse, State, StateHistory, StateEnumerationUpload, StateEnumerationsResponse, DeleteEnumerationsResponse, StateEnumerationHistory, StateEnumeration } from '../models';
 
 import * as gql from './gql/states';
 
@@ -113,9 +113,18 @@ export class StateService {
       .pipe(map(({ data: { stateEnumerationHistory } }) => stateEnumerationHistory));
   }
 
-  /**
-   * TODO: Figure out a way to exclude enumerations for when we query for states on the relationships page.
-   */
+  public getStateEnumerations(collectionId: string): Observable<StateEnumeration[]> {
+    return this.apollo
+      .query<{ stateEnumerations: StateEnumeration[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_STATE_ENUMERATIONS,
+        variables: {
+          collectionId
+        }
+      })
+      .pipe(map(({ data: { stateEnumerations } }) => stateEnumerations));
+  }
+
   public getStates(collectionId: string): Observable<State[]> {
     return this.apollo
       .query<{ states: State[] }>({

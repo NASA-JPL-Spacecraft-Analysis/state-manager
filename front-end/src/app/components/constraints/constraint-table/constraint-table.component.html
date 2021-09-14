@@ -48,6 +48,11 @@
   </table>
 </div>
 
+<mat-paginator
+  [pageSize]="100"
+  [pageSizeOptions]="[100, 250, 1000]"
+  showFirstLastButtons></mat-paginator>
+
 <ng-template #noConstraints>
   <span>There are no defined constraints.</span>
 </ng-template>

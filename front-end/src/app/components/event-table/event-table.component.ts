@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 import { MaterialModule } from 'src/app/material';
 import { EventMap, Event } from 'src/app/models';
@@ -17,6 +18,8 @@ export class EventTableComponent implements OnChanges, OnInit {
 
   @Output() public eventSelected: EventEmitter<Event>;
 
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
   public dataSource: MatTableDataSource<Event>;
   public displayedColumns: string[];
 
@@ -28,6 +31,8 @@ export class EventTableComponent implements OnChanges, OnInit {
   public ngOnChanges(): void {
     if (this.eventMap && this.displayedColumns) {
       this.dataSource = new MatTableDataSource([ ...Object.values(this.eventMap) ]);
+
+      this.dataSource.paginator = this.paginator;
 
       this.dataSource.filterPredicate = this.filter;
     }

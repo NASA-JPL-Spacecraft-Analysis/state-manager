@@ -201,10 +201,10 @@ export class StateResolver implements ResolverInterface<State> {
   }
 
   @Query(() => [ StateEnumeration ])
-  public stateEnumerations(@Arg('stateId') stateId: string): Promise<StateEnumeration[]> {
+  public stateEnumerations(@Args() { collectionId }: CollectionIdArgs): Promise<StateEnumeration[]> {
     return StateEnumeration.find({
       where: {
-        stateId
+        collectionId
       }
     });
   }
@@ -307,6 +307,12 @@ export class StateResolver implements ResolverInterface<State> {
       }
     }
 
-    return this.stateEnumerations(stateId);
+    console.log('done');
+
+    return StateEnumeration.find({
+      where: {
+        stateId
+      }
+    });
   }
 }

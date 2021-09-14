@@ -47,6 +47,11 @@ export const fetchStateEnumerationHistoryFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchStateEnumerationsFailure = createAction(
+  '[state] fetchStatesEnumerationsFailure',
+  props<{ error: Error }>()
+);
+
 export const fetchStateHistoryFailure = createAction(
   '[state] fetchStateHistoryFailure',
   props<{ error: Error }>()
@@ -70,6 +75,11 @@ export const saveEnumerationsFailure = createAction(
 export const setStateEnumerationHistory = createAction(
   '[state] setStateEnumerationHistory',
   props<{ stateEnumerationHistory: StateEnumerationHistory[] }>()
+);
+
+export const setStateEnumerations = createAction(
+  '[state] setStateEnumerations',
+  props<{ stateEnumerations: StateEnumeration[] }>()
 );
 
 export const setStateHistory = createAction(
