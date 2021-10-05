@@ -1,30 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
 import { Constraint } from 'src/app/models';
+import { TableComponent } from '../../table/table.component';
 
 @Component({
   selector: 'constraint-table',
   styleUrls: [ 'constraint-table.component.css' ],
   templateUrl: 'constraint-table.component.html'
 })
-export class ConstraintTableComponent implements OnInit, OnChanges {
+export class ConstraintTableComponent extends TableComponent<Constraint> implements OnInit, OnChanges {
   @Input() public constraints: Constraint[];
   @Input() public history: boolean;
 
   @Output() public constraintSelected: EventEmitter<Constraint>;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
-  public dataSource: MatTableDataSource<Constraint>;
-  public displayedColumns: string[];
   public showConstraintTable: boolean;
 
   constructor() {
-    this.displayedColumns = [];
+    super();
+
     this.constraintSelected = new EventEmitter<Constraint>();
   }
 
@@ -49,7 +46,7 @@ export class ConstraintTableComponent implements OnInit, OnChanges {
     if (this.constraints && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.constraints);
 
-      this.dataSource.paginator = this.paginator;
+      super.ngOnChanges();
     }
 
     this.showConstraintTable = this.constraints && this.constraints.length > 0;
@@ -57,6 +54,14 @@ export class ConstraintTableComponent implements OnInit, OnChanges {
 
   public onRowClick(constraint: Constraint) {
     this.constraintSelected.emit(constraint);
+  }
+
+  public filter(constraint: Constraint, filterValue: string): boolean {
+    return constraint.description?.toLowerCase().includes(filterValue)
+      || constraint.displayName?.toLowerCase().includes(filterValue)
+      || constraint.externalLink?.toLowerCase().includes(filterValue)
+      || constraint.identifier?.toLowerCase().includes(filterValue)
+      || constraint.type?.toLowerCase().includes(filterValue);
   }
 }
 

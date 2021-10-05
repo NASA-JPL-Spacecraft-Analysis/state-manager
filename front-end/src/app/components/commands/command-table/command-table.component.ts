@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
 import { Command } from 'src/app/models';
+import { TableComponent } from '../../table/table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,20 +13,17 @@ import { Command } from 'src/app/models';
   styleUrls: [ 'command-table.component.css' ],
   templateUrl: 'command-table.component.html'
 })
-export class CommandTableComponent implements OnInit, OnChanges {
+export class CommandTableComponent extends TableComponent<Command> implements OnInit, OnChanges {
   @Input() public commands: Command[];
   @Input() public history: boolean;
 
   @Output() public commandSelected: EventEmitter<Command>;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
-  public dataSource: MatTableDataSource<Command>;
-  public displayedColumns: string[];
   public showCommandTable: boolean;
 
   constructor() {
-    this.displayedColumns = [];
+    super();
+
     this.commandSelected = new EventEmitter<Command>();
   }
 
@@ -50,7 +48,7 @@ export class CommandTableComponent implements OnInit, OnChanges {
     if (this.commands && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.commands);
 
-      this.dataSource.paginator = this.paginator;
+      super.ngOnChanges();
     }
 
     this.showCommandTable = this.commands && this.commands.length > 0;
@@ -58,6 +56,14 @@ export class CommandTableComponent implements OnInit, OnChanges {
 
   public onRowClick(command: Command) {
     this.commandSelected.emit(command);
+  }
+
+  public filter(command: Command, filterValue: string): boolean {
+    return command.description?.toLowerCase().includes(filterValue)
+      || command.displayName?.toLowerCase().includes(filterValue)
+      || command.externalLink?.toLowerCase().includes(filterValue)
+      || command.identifier?.toLowerCase().includes(filterValue)
+      || command.type?.toLowerCase().includes(filterValue);
   }
 }
 

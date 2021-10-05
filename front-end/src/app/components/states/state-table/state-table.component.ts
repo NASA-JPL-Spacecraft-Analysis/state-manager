@@ -4,7 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 import { State, StateMap } from '../../../models';
 import { MaterialModule } from 'src/app/material';
-import { MatPaginator } from '@angular/material/paginator';
+import { TableComponent } from '../../table/table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,19 +12,17 @@ import { MatPaginator } from '@angular/material/paginator';
   styleUrls: [ 'state-table.component.css' ],
   templateUrl: 'state-table.component.html'
 })
-export class StateTableComponent implements OnChanges, OnInit {
+export class StateTableComponent extends TableComponent<State> implements OnChanges, OnInit {
   @Input() public stateMap: StateMap;
   @Input() public history: boolean;
 
   @Output() public stateSelected: EventEmitter<State>;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
-  public dataSource: MatTableDataSource<State>;
   public stateMapSize: number;
-  public displayedColumns: string[] = [];
 
   constructor() {
+    super();
+
     this.stateSelected = new EventEmitter<State>();
   }
 
@@ -62,21 +60,8 @@ export class StateTableComponent implements OnChanges, OnInit {
 
       this.dataSource = new MatTableDataSource(state);
 
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.filterPredicate = this.filter;
+      super.ngOnChanges();
     }
-  }
-
-  /**
-   * Called when the user inputs a character into our filter. We need to clean the filter up before actually
-   * using it.
-   *
-   * @param filterValue The filter the user has entered.
-   */
-  public applyFilter(filterValue: string): void {
-    filterValue = filterValue.trim().toLowerCase();
-
-    this.dataSource.filter = filterValue;
   }
 
   public onRowClick(state: State): void {
@@ -84,7 +69,7 @@ export class StateTableComponent implements OnChanges, OnInit {
   }
 
   // Check each field for the filter value, this will eventually change to search by field.
-  private filter(state: State, filterValue: string): boolean {
+  public filter(state: State, filterValue: string): boolean {
     return state.description?.toLowerCase().includes(filterValue)
       || state.displayName?.toLowerCase().includes(filterValue)
       || state.identifier?.toLowerCase().includes(filterValue)
