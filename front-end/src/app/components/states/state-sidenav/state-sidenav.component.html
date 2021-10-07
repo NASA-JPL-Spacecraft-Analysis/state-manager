@@ -12,6 +12,7 @@
       <app-identifier-form
         [originalIdentifier]="originalIdentifier"
         [identifierMap]="stateIdentifierMap"
+        [type]="type"
         (duplicateIdentifier)="onDuplicateIdentifier($event)"
         (identifierEmitter)="onIdentifierChange($event)">
       </app-identifier-form>
@@ -68,7 +69,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>State Type</mat-label>
-        <mat-select placeholder="State Type" [(value)]="form.value.type">
+        <mat-select placeholder="State Type" [(value)]="type">
           <mat-option *ngFor="let stateType of stateTypes" [value]="stateType">
             {{stateType}}
           </mat-option>

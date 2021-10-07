@@ -113,7 +113,7 @@ export const reducer = createReducer(
 
     for (const state of states) {
       stateMap[state.id] = state;
-      stateIdentifierMap[state.identifier] = state.id;
+      stateIdentifierMap[state.identifier] = state.type;
     }
 
     return {

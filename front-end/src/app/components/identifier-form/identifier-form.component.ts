@@ -7,6 +7,7 @@ import { MaterialModule } from 'src/app/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IdentifierMap } from 'src/app/models';
+import { ConstraintsModule } from 'src/app/containers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,15 +15,17 @@ import { IdentifierMap } from 'src/app/models';
   styleUrls: [ 'identifier-form.component.css' ],
   templateUrl: 'identifier-form.component.html'
 })
-export class IdentifierFormComponent {
+export class IdentifierFormComponent implements OnChanges {
   @Input() public originalIdentifier: string;
   @Input() public identifierMap: IdentifierMap;
+  @Input() public type: string;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public identifierEmitter: EventEmitter<string>;
 
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
+  public currentIdentifier: string;
   public identifierIcon: string;
   public identifierTooltipText: string;
 
@@ -36,6 +39,10 @@ export class IdentifierFormComponent {
     this.identifierEmitter = new EventEmitter<string>();
   }
 
+  public ngOnChanges(): void {
+    this.onIdentifierChange(this.currentIdentifier);
+  }
+
   /**
    * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
    * if the identifier isn't empty.
@@ -43,6 +50,12 @@ export class IdentifierFormComponent {
    * @param identifier The current identifier.
    */
   public onIdentifierChange(identifier: string): void {
+    /**
+     * Keep track of the current identifier, so if the user changes the type
+     * we check if it's a duplicate again.
+     */
+    this.currentIdentifier = identifier;
+
     if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
@@ -75,7 +88,7 @@ export class IdentifierFormComponent {
    */
   private isIdentifierDuplicate(identifier: string): boolean {
     if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
-      return this.identifierMap[identifier]
+      return this.identifierMap[identifier] === this.type
         && (!this.originalIdentifier || identifier !== this.originalIdentifier);
     }
 
