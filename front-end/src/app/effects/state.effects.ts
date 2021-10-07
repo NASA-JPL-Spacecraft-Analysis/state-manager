@@ -144,32 +144,34 @@ export class StateEffects {
 
   public getStates(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return this.stateService.getStateEnumerations(
-        collectionId
-      ).pipe(
-        map(stateEnumerations => StateActions.setStateEnumerations({
-          stateEnumerations
-        })),
-        catchError(
-          (error: Error) => [
-            StateActions.fetchStateEnumerationsFailure({
-              error
-            })
-          ]
-        )
-      ),
-      this.stateService.getStates(
-        collectionId
-      ).pipe(
-        map(states => StateActions.setStates({
-          states
-        })),
-        catchError(
-          (error: Error) => [
-            StateActions.fetchStatesFailure({
-              error
-            })
-          ]
+      return merge(
+        this.stateService.getStateEnumerations(
+          collectionId
+        ).pipe(
+          map(stateEnumerations => StateActions.setStateEnumerations({
+            stateEnumerations
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStateEnumerationsFailure({
+                error
+              })
+            ]
+          )
+        ),
+        this.stateService.getStates(
+          collectionId
+        ).pipe(
+          map(states => StateActions.setStates({
+            states
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStatesFailure({
+                error
+              })
+            ]
+          )
         )
       );
     } else {
