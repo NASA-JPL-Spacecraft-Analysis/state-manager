@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, of, EMPTY } from 'rxjs';
+import { Observable, merge, of } from 'rxjs';
 
 import { StateService } from '../services';
 import { ToastActions, StateActions, LayoutActions } from '../actions';
@@ -81,9 +81,28 @@ export class StateEffects {
         'collection/:collectionId/state-history'
       ]),
       mapToParam<string>('collectionId'),
-      switchMap(collectionId =>
-        this.getStates(collectionId)
-      )
+      switchMap(collectionId => {
+        const url = this.router.routerState.snapshot.url.split('/').pop();
+        let history = true;
+
+        if (url === 'state-enumeration-history') {
+          return merge(
+            of(LayoutActions.toggleSidenav({
+              showSidenav: false
+            })),
+            this.getStateEnumerationHistory(collectionId)
+          );
+        } else if (url === 'states') {
+          history = false;
+        }
+
+        return merge(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.getStates(collectionId, history)
+        );
+      })
     )
   );
 
@@ -123,99 +142,82 @@ export class StateEffects {
     private stateService: StateService
   ) {}
 
-  private getStates(collectionId: string): Observable<Action> {
-    const url = this.router.routerState.snapshot.url.split('/').pop();
-
-    if (url === 'states') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+  public getStates(collectionId: string, history: boolean): Observable<Action> {
+    if (!history) {
+      return this.stateService.getStateEnumerations(
+        collectionId
+      ).pipe(
+        map(stateEnumerations => StateActions.setStateEnumerations({
+          stateEnumerations
         })),
-        this.stateService.getStateEnumerations(
-          collectionId
-        ).pipe(
-          map(stateEnumerations => StateActions.setStateEnumerations({
-            stateEnumerations
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStateEnumerationsFailure({
-                error
-              })
-            ]
-          )
-        ),
-        this.stateService.getStates(
-          collectionId
-        ).pipe(
-          map(states => StateActions.setStates({
-            states
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStatesFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            StateActions.fetchStateEnumerationsFailure({
+              error
+            })
+          ]
+        )
+      ),
+      this.stateService.getStates(
+        collectionId
+      ).pipe(
+        map(states => StateActions.setStates({
+          states
+        })),
+        catchError(
+          (error: Error) => [
+            StateActions.fetchStatesFailure({
+              error
+            })
+          ]
         )
       );
-    } else if (url === 'state-enumeration-history') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+    } else {
+      return this.stateService.getStateHistory(
+        collectionId
+      ).pipe(
+        map(stateHistory => StateActions.setStateHistory({
+          stateHistory
         })),
-        this.stateService.getStateEnumerationHistory(
-          collectionId
-        ).pipe(
-          map(stateEnumerationHistory => StateActions.setStateEnumerationHistory({
-            stateEnumerationHistory
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStateEnumerationHistoryFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            StateActions.fetchStateHistoryFailure({
+              error
+            })
+          ]
         )
-      );
-    } else if (url === 'state-history') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+      ),
+      this.stateService.getStates(
+        collectionId
+      ).pipe(
+        map(states => StateActions.setStates({
+          states
         })),
-        this.stateService.getStateHistory(
-          collectionId
-        ).pipe(
-          map(stateHistory => StateActions.setStateHistory({
-            stateHistory
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStateHistoryFailure({
-                error
-              })
-            ]
-          )
-        ),
-        this.stateService.getStates(
-          collectionId
-        ).pipe(
-          map(states => StateActions.setStates({
-            states
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStatesFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            StateActions.fetchStatesFailure({
+              error
+            })
+          ]
         )
       );
     }
+  }
 
-    return EMPTY;
+  public getStateEnumerationHistory(collectionId: string): Observable<Action> {
+    return this.stateService.getStateEnumerationHistory(
+      collectionId
+    ).pipe(
+      map(stateEnumerationHistory => StateActions.setStateEnumerationHistory({
+        stateEnumerationHistory
+      })),
+      catchError(
+        (error: Error) => [
+          StateActions.fetchStateEnumerationHistoryFailure({
+            error
+          })
+        ]
+      )
+    );
   }
 }

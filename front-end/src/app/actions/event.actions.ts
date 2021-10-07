@@ -17,8 +17,8 @@ export const createEventSuccess = createAction(
   props<{ event: Event }>()
 );
 
-export const fetchEventMapFailure = createAction(
-  '[event] fetchEventMapFailure',
+export const fetchEventsFailure = createAction(
+  '[event] fetchEventsFailure',
   props<{ error: Error }>()
 );
 

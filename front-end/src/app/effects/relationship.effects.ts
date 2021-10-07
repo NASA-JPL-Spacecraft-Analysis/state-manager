@@ -3,12 +3,17 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, EMPTY, of } from 'rxjs';
+import { Observable, merge, of } from 'rxjs';
 
-import { EventService, InformationTypeService, StateService, RelationshipService, CommandService, ConstraintService } from '../services';
-import { ToastActions, RelationshipActions, CollectionActions, EventActions, InformationTypeActions, StateActions, CommandActions, ConstraintActions, LayoutActions } from '../actions';
+import { RelationshipService } from '../services';
+import { ToastActions, RelationshipActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { RelationshipResponse } from '../models';
+import { InformationTypeEffects } from './information-types.effects';
+import { EventEffects } from './event.effects';
+import { StateEffects } from './state.effects';
+import { CommandEffects } from './command.effects';
+import { ConstraintEffects } from './constraint.effects';
 
 @Injectable()
 export class RelationshipEffects {
@@ -46,23 +51,29 @@ export class RelationshipEffects {
 
   public navRelationships = createEffect(() =>
     this.actions.pipe(
-      ofRoute([ 'collection/:collectionId/relationships', 'collection/:collectionId/relationship-history' ]),
+      ofRoute([
+        'collection/:collectionId/relationships',
+        'collection/:collectionId/relationship-history'
+      ]),
       mapToParam<string>('collectionId'),
-      switchMap(collectionId =>
-        this.getRelationships(collectionId)
-      )
-    )
-  );
+      switchMap(collectionId => {
+        let history = true;
 
-  public navRelationshipsByCollectionId = createEffect(() =>
-    this.actions.pipe(
-      ofType(CollectionActions.setSelectedCollection),
-      switchMap(({ id }) => {
-        if (id !== null) {
-          return this.getRelationships(id);
+        if (this.router.routerState.snapshot.url.split('/').pop() === 'relationships') {
+          history = false;
         }
 
-        return [];
+        return merge(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.constraintEffects.getConstraints(collectionId, false),
+          this.commandEffects.getCommands(collectionId, false),
+          this.eventEffects.getEvents(collectionId, false),
+          this.informationTypeEffects.getInformationTypes(collectionId),
+          this.stateEffects.getStates(collectionId, false),
+          this.getRelationships(collectionId, history)
+        );
       })
     )
   );
@@ -99,134 +110,46 @@ export class RelationshipEffects {
 
   constructor(
     private actions: Actions,
-    private commandService: CommandService,
-    private constraintService: ConstraintService,
-    private eventService: EventService,
-    private informationTypeService: InformationTypeService,
-    private router: Router,
+    private commandEffects: CommandEffects,
+    private constraintEffects: ConstraintEffects,
+    private eventEffects: EventEffects,
+    private informationTypeEffects: InformationTypeEffects,
+    private stateEffects: StateEffects,
     private relationshipService: RelationshipService,
-    private stateService: StateService
+    private router: Router
   ) {}
 
-  private getRelationships(collectionId: string): Observable<Action> {
-    const url = this.router.routerState.snapshot.url.split('/').pop();
-    const sharedActions = merge(
-      this.commandService.getCommands(
+  private getRelationships(collectionId: string, history: boolean): Observable<Action> {
+    if (!history) {
+      return this.relationshipService.getRelationships(
         collectionId
       ).pipe(
-        map(commands => CommandActions.setCommands({
-          commands
+        map(relationships => RelationshipActions.setRelationships({
+          relationships
         })),
         catchError(
           (error: Error) => [
-            CommandActions.fetchCommandsFailure({
+            RelationshipActions.fetchRelationshipsFailure({
               error
             })
           ]
-        )
-      ),
-      this.constraintService.getConstraints(
-        collectionId
-      ).pipe(
-        map(constraints => ConstraintActions.setConstraints({
-          constraints
-        })),
-        catchError(
-          (error: Error) => [
-            ConstraintActions.fetchConstraintsFailure({
-              error
-            })
-          ]
-        )
-      ),
-      this.eventService.getEvents(
-        collectionId
-      ).pipe(
-        map(events => EventActions.setEvents({
-          events
-        })),
-        catchError(
-          (error: Error) => [
-            EventActions.fetchEventMapFailure({
-              error
-            })
-          ]
-        )
-      ),
-      this.informationTypeService.getInformationTypes(
-        collectionId
-      ).pipe(
-        map(informationTypes => InformationTypeActions.setInformationTypes({
-          informationTypes
-        })),
-        catchError(
-          (error: Error) => [
-            InformationTypeActions.fetchInformationTypesFailure({
-              error
-            })
-          ]
-        )
-      ),
-      this.stateService.getStates(
-        collectionId
-      ).pipe(
-        map(states => StateActions.setStates({
-          states
-        })),
-        catchError(
-          (error: Error) => [
-            StateActions.fetchStatesFailure({
-              error
-            })
-          ]
-        )
-      )
-    );
-
-    if (url === 'relationships') {
-      return merge(
-        sharedActions,
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
-        })),
-        this.relationshipService.getRelationships(
-          collectionId
-        ).pipe(
-          map(relationships => RelationshipActions.setRelationships({
-            relationships
-          })),
-          catchError(
-            (error: Error) => [
-              RelationshipActions.fetchRelationshipsFailure({
-                error
-              })
-            ]
-          )
         )
       );
-    } else if (url === 'relationship-history') {
-      return merge(
-        sharedActions,
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+    } else {
+      this.relationshipService.getRelationshipHistory(
+        collectionId
+      ).pipe(
+        map(relationshipHistory => RelationshipActions.setRelationshipHistory({
+          relationshipHistory
         })),
-        this.relationshipService.getRelationshipHistory(
-          collectionId
-        ).pipe(
-          map(relationshipHistory => RelationshipActions.setRelationshipHistory({
-            relationshipHistory
-          })),
-          catchError(
-            (error: Error) => [
-              RelationshipActions.fetchRelationshipHistoryFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            RelationshipActions.fetchRelationshipHistoryFailure({
+              error
+            })
+          ]
         )
       );
     }
-
-    return EMPTY;
   }
 }

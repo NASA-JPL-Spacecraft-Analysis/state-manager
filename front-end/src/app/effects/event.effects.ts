@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, EMPTY, merge, of } from 'rxjs';
-import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { Observable, merge, of } from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { CollectionActions, EventActions, LayoutActions, ToastActions } from '../actions';
+import { EventActions, LayoutActions, ToastActions } from '../actions';
 import { EventService } from '../services';
-import { AppState } from '../app-store';
-import { ofRoute } from '../functions/router';
+import { mapToParam, ofRoute } from '../functions/router';
 import { EventResponse } from '../models';
 
 @Injectable()
@@ -47,30 +46,26 @@ export class EventEffects {
     )
   );
 
-  public getEventByStateCollectionId = createEffect(() =>
+  public navEvents = createEffect(() =>
     this.actions.pipe(
-      ofRoute([ 'collection/:collectionId/events', 'collection/:collectionId/event-history' ]),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        if (state.collection.selectedCollectionId) {
-          return this.getEventInformation(state.collection.selectedCollectionId);
+      ofRoute([
+        'collection/:collectionId/events',
+        'collection/:collectionId/event-history'
+      ]),
+      mapToParam<string>('collectionId'),
+      switchMap(collectionId => {
+        let history = true;
+
+        if (this.router.routerState.snapshot.url.split('/').pop() === 'events') {
+          history = false;
         }
 
-        return [];
-      })
-    )
-  );
-
-  public getEventByCollectionId = createEffect(() =>
-    this.actions.pipe(
-      ofType(CollectionActions.setSelectedCollection),
-      switchMap(({ id }) => {
-        if (id !== null) {
-          return this.getEventInformation(id);
-        }
-
-        return [];
+        return merge(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.getEvents(collectionId, history)
+        );
       })
     )
   );
@@ -78,8 +73,8 @@ export class EventEffects {
   public updateEvent = createEffect(() =>
     this.actions.pipe(
       ofType(EventActions.updateEvent),
-      switchMap(({ event }) => {
-        return this.eventService.updateEvent(
+      switchMap(({ event }) =>
+        this.eventService.updateEvent(
           event
         ).pipe(
           switchMap((updateEvent: EventResponse) => [
@@ -100,63 +95,48 @@ export class EventEffects {
               toastType: 'error'
             })
           ])
-        );
-      })
+        )
+      )
     )
   );
 
   constructor(
     private actions: Actions,
     private router: Router,
-    private store: Store<AppState>,
     private eventService: EventService
   ) {}
 
-  private getEventInformation(collectionId: string): Observable<Action> {
-    const url = this.router.routerState.snapshot.url.split('/').pop();
-
-    if (url === 'events') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+  public getEvents(collectionId: string, history: boolean): Observable<Action> {
+    if (!history) {
+      return this.eventService.getEvents(
+        collectionId
+      ).pipe(
+        map(events => EventActions.setEvents({
+          events
         })),
-        this.eventService.getEvents(
-          collectionId
-        ).pipe(
-          map(events => EventActions.setEvents({
-            events
-          })),
-          catchError(
-            (error: Error) => [
-              EventActions.fetchEventMapFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            EventActions.fetchEventsFailure({
+              error
+            })
+          ]
         )
       );
-    } else if (url === 'event-history') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+    } else {
+      return this.eventService.getEventHistory(
+        collectionId
+      ).pipe(
+        map(eventHistory => EventActions.setEventHistory({
+          eventHistory
         })),
-        this.eventService.getEventHistory(
-          collectionId
-        ).pipe(
-          map(eventHistory => EventActions.setEventHistory({
-            eventHistory
-          })),
-          catchError(
-            (error: Error) => [
-              EventActions.fetchEventHistoryMapFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            EventActions.fetchEventHistoryMapFailure({
+              error
+            })
+          ]
         )
       );
     }
-
-    return EMPTY;
   }
 }

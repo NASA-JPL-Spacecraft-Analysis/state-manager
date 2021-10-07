@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, EMPTY, merge, of } from 'rxjs';
-import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { Observable, merge, of } from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { CollectionActions, CommandActions, LayoutActions, ToastActions } from '../actions';
+import { CommandActions, LayoutActions, ToastActions } from '../actions';
 import { CommandService } from '../services';
-import { AppState } from '../app-store';
-import { ofRoute } from '../functions/router';
+import { mapToParam, ofRoute } from '../functions/router';
 import { CommandResponse, DeleteArgumentResponse } from '../models';
-import { CommandArgumentHistoryComponent } from '../containers';
 
 @Injectable()
 export class CommandEffects {
@@ -82,27 +80,28 @@ export class CommandEffects {
         'collection/:collectionId/commands',
         'collection/:collectionId/command-history'
       ]),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        if (state.collection.selectedCollectionId) {
-          return this.getCommands(state.collection.selectedCollectionId);
+      mapToParam<string>('collectionId'),
+      switchMap(collectionId => {
+        const url = this.router.routerState.snapshot.url.split('/').pop();
+        let history = true;
+
+        if (url === 'command-argument-history') {
+          return merge(
+            of(LayoutActions.toggleSidenav({
+              showSidenav: false
+            })),
+            this.getCommandArgumentHistory(collectionId)
+          );
+        } else if (url === 'commands') {
+          history = false;
         }
 
-        return [];
-      })
-    )
-  );
-
-  public getCommandsByCollectionId = createEffect(() =>
-    this.actions.pipe(
-      ofType(CollectionActions.setSelectedCollection),
-      switchMap(({ id }) => {
-        if (id !== null) {
-          return this.getCommands(id);
-        }
-
-        return [];
+        return merge(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.getCommands(collectionId, history)
+        );
       })
     )
   );
@@ -140,18 +139,29 @@ export class CommandEffects {
   constructor(
     private actions: Actions,
     private commandService: CommandService,
-    private router: Router,
-    private store: Store<AppState>
+    private router: Router
   ) {}
 
-  private getCommands(collectionId: string): Observable<Action> {
-    const url = this.router.routerState.snapshot.url.split('/').pop();
+  public getCommandArgumentHistory(collectionId: string): Observable<Action> {
+    return this.commandService.getCommandArgumentHistory(
+      collectionId
+    ).pipe(
+      map(commandArgumentHistory => CommandActions.setCommandArgumentHistory({
+        commandArgumentHistory
+      })),
+      catchError(
+        (error: Error) => [
+          CommandActions.fetchCommandArgumentHistoryFailure({
+            error
+          })
+        ]
+      )
+    );
+  }
 
-    if (url === 'commands') {
+  public getCommands(collectionId: string, history: boolean): Observable<Action> {
+    if (!history) {
       return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
-        })),
         this.commandService.getCommandArguments(
           collectionId
         ).pipe(
@@ -181,48 +191,21 @@ export class CommandEffects {
           )
         )
       );
-    } else if (url === 'command-argument-history') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+    } else {
+      return this.commandService.getCommandHistory(
+        collectionId
+      ).pipe(
+        map(commandHistory => CommandActions.setCommandHistory({
+          commandHistory
         })),
-        this.commandService.getCommandArgumentHistory(
-          collectionId
-        ).pipe(
-          map(commandArgumentHistory => CommandActions.setCommandArgumentHistory({
-            commandArgumentHistory
-          })),
-          catchError(
-            (error: Error) => [
-              CommandActions.fetchCommandArgumentHistoryFailure({
-                error
-              })
-            ]
-          )
-        )
-      );
-    } else if (url === 'command-history') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
-        })),
-        this.commandService.getCommandHistory(
-          collectionId
-        ).pipe(
-          map(commandHistory => CommandActions.setCommandHistory({
-            commandHistory
-          })),
-          catchError(
-            (error: Error) => [
-              CommandActions.fetchCommandHistoryFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            CommandActions.fetchCommandHistoryFailure({
+              error
+            })
+          ]
         )
       );
     }
-
-    return EMPTY;
   }
 }

@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, EMPTY, merge, of } from 'rxjs';
-import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { Observable, merge, of } from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { CollectionActions, ConstraintActions, LayoutActions, ToastActions } from '../actions';
+import { ConstraintActions, LayoutActions, ToastActions } from '../actions';
 import { ConstraintService } from '../services';
-import { AppState } from '../app-store';
-import { ofRoute } from '../functions/router';
+import { mapToParam, ofRoute } from '../functions/router';
 import { ConstraintResponse } from '../models';
 
 @Injectable()
@@ -45,28 +44,24 @@ export class ConstraintEffects {
 
   public navConstraints = createEffect(() =>
     this.actions.pipe(
-      ofRoute([ 'collection/:collectionId/constraints', 'collection/:collectionId/constraint-history' ]),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        if (state.collection.selectedCollectionId) {
-          return this.getConstraints(state.collection.selectedCollectionId);
+      ofRoute([
+        'collection/:collectionId/constraints',
+        'collection/:collectionId/constraint-history'
+      ]),
+      mapToParam<string>('collectionId'),
+      switchMap(collectionId => {
+        let history = true;
+
+        if (this.router.routerState.snapshot.url.split('/').pop() === 'constraints') {
+          history = false;
         }
 
-        return [];
-      })
-    )
-  );
-
-  public getConstraintsByCollectionId = createEffect(() =>
-    this.actions.pipe(
-      ofType(CollectionActions.setSelectedCollection),
-      switchMap(({ id }) => {
-        if (id !== null) {
-          return this.getConstraints(id);
-        }
-
-        return [];
+        return merge(
+          of(LayoutActions.toggleSidenav({
+            showSidenav: false
+          })),
+          this.getConstraints(collectionId, history)
+        );
       })
     )
   );
@@ -104,55 +99,40 @@ export class ConstraintEffects {
   constructor(
     private actions: Actions,
     private constraintService: ConstraintService,
-    private router: Router,
-    private store: Store<AppState>
+    private router: Router
   ) {}
 
-  private getConstraints(collectionId: string): Observable<Action> {
-    const url = this.router.routerState.snapshot.url.split('/').pop();
-
-    if (url === 'constraints') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+  public getConstraints(collectionId: string, history: boolean): Observable<Action> {
+    if (!history) {
+      return this.constraintService.getConstraints(
+        collectionId
+      ).pipe(
+        map(constraints => ConstraintActions.setConstraints({
+          constraints
         })),
-        this.constraintService.getConstraints(
-          collectionId
-        ).pipe(
-          map(constraints => ConstraintActions.setConstraints({
-            constraints
-          })),
-          catchError(
-            (error: Error) => [
-              ConstraintActions.fetchConstraintsFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            ConstraintActions.fetchConstraintsFailure({
+              error
+            })
+          ]
         )
       );
-    } else if (url === 'constraint-history') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
+    } else {
+      return this.constraintService.getConstraintHistory(
+        collectionId
+      ).pipe(
+        map(constraintHistory => ConstraintActions.setConstraintHistory({
+          constraintHistory
         })),
-        this.constraintService.getConstraintHistory(
-          collectionId
-        ).pipe(
-          map(constraintHistory => ConstraintActions.setConstraintHistory({
-            constraintHistory
-          })),
-          catchError(
-            (error: Error) => [
-              ConstraintActions.fetchConstraintHistoryFailure({
-                error
-              })
-            ]
-          )
+        catchError(
+          (error: Error) => [
+            ConstraintActions.fetchConstraintHistoryFailure({
+              error
+            })
+          ]
         )
       );
     }
-
-    return EMPTY;
   }
 }
