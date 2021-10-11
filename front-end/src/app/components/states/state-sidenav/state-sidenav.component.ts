@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 
-import { stateTypes, IdentifierMap, State, StateEnumeration } from '../../../models';
+import { stateTypes, NewIdentifierMap, State, StateEnumeration } from '../../../models';
 import { MaterialModule } from 'src/app/material';
 import { EnumFormModule } from '../../enum-form/enum-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
@@ -19,7 +19,7 @@ export class StateSidenavComponent implements OnChanges {
   @Input() public collectionId: string;
   @Input() public state: State;
   @Input() public stateEnumerations: StateEnumeration[];
-  @Input() public stateIdentifierMap: IdentifierMap;
+  @Input() public stateIdentifierMap: NewIdentifierMap;
 
   @Output() public errorEmitter: EventEmitter<string>;
   @Output() public modifyState: EventEmitter<{ state: State; deletedEnumerationIds: string[] }>;
@@ -27,7 +27,6 @@ export class StateSidenavComponent implements OnChanges {
   public deletedEnumerationIds: string[];
   public form: FormGroup;
   public newState: State;
-  public originalIdentifier: string;
   public stateTypes = stateTypes;
   public type: string;
 
@@ -68,14 +67,13 @@ export class StateSidenavComponent implements OnChanges {
       this.newState = {
         ...this.state,
         enumerations: [
-          ...this.stateEnumerations.map(enumeration => { return { ...enumeration }})
+          ...this.stateEnumerations.map(enumeration => ({ ...enumeration }))
         ]
       };
     }
 
     this.type = this.newState.type;
 
-    this.originalIdentifier = this.newState.identifier;
     this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({

@@ -10,8 +10,9 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div *ngIf="stateIdentifierMap">
       <app-identifier-form
-        [originalIdentifier]="originalIdentifier"
-        [identifierMap]="stateIdentifierMap"
+        [originalIdentifier]="newState.identifier"
+        [newIdentifierMap]="stateIdentifierMap"
+        [id]="newState.id"
         [type]="type"
         (duplicateIdentifier)="onDuplicateIdentifier($event)"
         (identifierEmitter)="onIdentifierChange($event)">

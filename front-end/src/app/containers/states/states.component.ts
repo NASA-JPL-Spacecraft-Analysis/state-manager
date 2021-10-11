@@ -4,8 +4,15 @@ import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { State, StateMap, StateEnumeration, IdentifierMap } from '../../models';
-import { getStates, getSelectedState, getShowSidenav, getSelectedCollectionId, getStateIdentifierMap, getStateEnumerations } from '../../selectors';
+import { State, StateMap, StateEnumeration, NewIdentifierMap } from '../../models';
+import {
+  getStates,
+  getSelectedState,
+  getShowSidenav,
+  getSelectedCollectionId,
+  getStateIdentifierMap,
+  getStateEnumerations
+} from '../../selectors';
 import { StateActions, LayoutActions, ToastActions } from '../../actions';
 import { StateSidenavModule, StateTableModule } from 'src/app/components';
 import { AppState } from 'src/app/app-store';
@@ -24,7 +31,7 @@ export class StatesComponent implements OnDestroy {
   public stateMap: StateMap;
   public state: State;
   public stateEnumerations: StateEnumeration[];
-  public stateIdentifierMap: IdentifierMap;
+  public stateIdentifierMap: NewIdentifierMap;
 
   private subscriptions = new SubSink();
 

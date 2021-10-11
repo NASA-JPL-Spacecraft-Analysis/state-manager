@@ -2,7 +2,7 @@ import { createReducer, on } from '@ngrx/store';
 
 import { StateActions } from '../actions';
 import {
-  IdentifierMap,
+  NewIdentifierMap,
   State,
   StateEnumerationHistory,
   StateEnumerationMap,
@@ -14,7 +14,7 @@ export interface StateState {
   stateEnumerationHistory: StateEnumerationHistory[];
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
-  stateIdentifierMap: IdentifierMap;
+  stateIdentifierMap: NewIdentifierMap;
   stateMap: StateMap;
 }
 
@@ -113,8 +113,18 @@ export const reducer = createReducer(
 
     for (const state of states) {
       stateMap[state.id] = state;
-      stateIdentifierMap[state.identifier] = state.type;
+
+      if (!stateIdentifierMap[state.identifier]) {
+        stateIdentifierMap[state.identifier] = [];
+      }
+
+      stateIdentifierMap[state.identifier].push({
+        id: state.id,
+        type: state.type
+      });
     }
+
+    console.log({ stateIdentifierMap });
 
     return {
       ...stateState,
@@ -138,8 +148,11 @@ const createOrUpdateStateSuccess = (stateState: StateState, state: State): State
   };
 
   for (const identifier of Object.keys(stateIdentifierMap)) {
-    if (stateIdentifierMap[identifier] === state.id) {
-      delete stateIdentifierMap[identifier];
+    for (const item of stateIdentifierMap[identifier]) {
+      console.log(item);
+      if (item.id === state.id) {
+        delete stateIdentifierMap[identifier];
+      }
     }
   }
 
@@ -151,7 +164,13 @@ const createOrUpdateStateSuccess = (stateState: StateState, state: State): State
     },
     stateIdentifierMap: {
       ...stateState.stateIdentifierMap,
-      [state.identifier]: state.id
+      [state.identifier]: [
+        ...stateIdentifierMap[state.identifier],
+        {
+          id: state.id,
+          type: state.type
+        }
+      ]
     },
     stateMap: {
       ...stateState.stateMap,

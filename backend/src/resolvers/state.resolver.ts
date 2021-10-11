@@ -30,14 +30,14 @@ export class StateResolver implements ResolverInterface<State> {
   @Mutation(() => StateResponse)
   public async createState(@Arg('data') data: CreateStateInput): Promise<StateResponse> {
     try {
-      this.validationService.isDuplicateIdentifier(await this.states({ collectionId: data.collectionId }), data.identifier);
-
       const state = State.create(data);
 
       this.validationService.hasValidType([ state ], stateTypes);
 
-      await state.save();
+      this.validationService.isDuplicateIdentifierWithType(
+        await this.states({ collectionId: data.collectionId }), data.identifier, data.type);
 
+      await state.save();
       this.createStateHistory(state);
 
       state.enumerations = await this.saveStateEnumerations(data.enumerations, state.id);
@@ -236,11 +236,12 @@ export class StateResolver implements ResolverInterface<State> {
         throw new UserInputError(StateConstants.stateNotFoundIdError(data.id));
       }
 
-      this.validationService.isDuplicateIdentifier(await this.states({ collectionId: state.collectionId }), data.identifier, state.id);
+      this.validationService.hasValidType([ state ], stateTypes);
+
+      this.validationService.isDuplicateIdentifierWithType(
+        await this.states({ collectionId: state.collectionId }), data.identifier, data.type);
 
       Object.assign(state, data);
-
-      this.validationService.hasValidType([ state ], stateTypes);
 
       await state.save();
 

@@ -39,4 +39,14 @@ export class ValidationService {
 
     return false;
   }
+
+  public isDuplicateIdentifierWithType(items: IdentifierType[], identifier: string, type: string): boolean {
+    for (const item of items) {
+      if (item.identifier === identifier && item.type === type) {
+        throw new UserInputError(ErrorConstants.duplicateIdentifierError(identifier));
+      }
+    }
+
+    return false;
+  }
 }

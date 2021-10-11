@@ -22,8 +22,8 @@ export class UpdateStateInput {
   @Field(() => ID)
   public id!: string;
 
-  @Field({ nullable: true })
-  public identifier?: string;
+  @Field()
+  public identifier!: string;
 
   @Field({ nullable: true })
   public source?: string;

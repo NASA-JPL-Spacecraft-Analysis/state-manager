@@ -1,4 +1,4 @@
-import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
+import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -6,8 +6,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MaterialModule } from 'src/app/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IdentifierMap } from 'src/app/models';
-import { ConstraintsModule } from 'src/app/containers';
+import { NewIdentifierMap, IdentifierMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,6 +17,8 @@ import { ConstraintsModule } from 'src/app/containers';
 export class IdentifierFormComponent implements OnChanges {
   @Input() public originalIdentifier: string;
   @Input() public identifierMap: IdentifierMap;
+  @Input() public newIdentifierMap: NewIdentifierMap;
+  @Input() public id: string;
   @Input() public type: string;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
@@ -40,6 +41,10 @@ export class IdentifierFormComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
+    if (!this.currentIdentifier) {
+      this.currentIdentifier = this.originalIdentifier;
+    }
+
     this.onIdentifierChange(this.currentIdentifier);
   }
 
@@ -56,7 +61,7 @@ export class IdentifierFormComponent implements OnChanges {
      */
     this.currentIdentifier = identifier;
 
-    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
+    if (this.newIdentifierMap && Object.keys(this.newIdentifierMap).length > 0) {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
         this.identifierTooltipText = 'Your identifier is a duplicate';
@@ -81,15 +86,21 @@ export class IdentifierFormComponent implements OnChanges {
   /**
    * Checks to see if an identifier is duplicate by:
    * 1) That we have some identifiers
-   * 2) That we have a unique identifier
-   * 3) AND that we're not flagging an edited identifier on it's own value
+   * 2) That we have a unique identifier and type
    *
    * @param identifier The current identifier.
    */
   private isIdentifierDuplicate(identifier: string): boolean {
-    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
-      return this.identifierMap[identifier] === this.type
-        && (!this.originalIdentifier || identifier !== this.originalIdentifier);
+    const identifierList = this.newIdentifierMap[identifier];
+
+    // If we have more than 1 identifier in our list then we need to check the types for duplicates.
+    if (identifierList && identifierList.length > 1) {
+      for (const item of identifierList) {
+        // Check each item that isn't the item we have open in the sidenav, and its type.
+        if (item.id !== this.id && item.type === this.type) {
+          return true;
+        }
+      }
     }
 
     return false;
