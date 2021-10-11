@@ -73,7 +73,6 @@ export class StateSidenavComponent implements OnChanges {
     }
 
     this.type = this.newState.type;
-
     this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({

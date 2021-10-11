@@ -47,7 +47,7 @@ export class ConstraintResolver {
   public async createConstraint(@Arg('data') data: CreateConstraintInput): Promise<ConstraintResponse> {
     try {
       this.validationService.isDuplicateIdentifier(
-        await this.constraints({ collectionId: data.collectionId }), data.identifier);
+        await this.constraints({ collectionId: data.collectionId }), data.identifier, data.type);
 
       const constraint = Constraint.create(data);
 
@@ -77,7 +77,7 @@ export class ConstraintResolver {
 
       // Check to make sure each constraint has a unique identifier.
       for (const constraint of data.constraints) {
-        this.validationService.isDuplicateIdentifier(existingConstraints, constraint.identifier);
+        this.validationService.isDuplicateIdentifier(existingConstraints, constraint.identifier, constraint.type);
       }
 
       const constraints = Constraint.create(data.constraints);
@@ -114,7 +114,7 @@ export class ConstraintResolver {
       }
 
       this.validationService.isDuplicateIdentifier(
-        await this.constraints({ collectionId: constraint.collectionId}), data.identifier, constraint.id);
+        await this.constraints({ collectionId: constraint.collectionId}), data.identifier, data.type);
 
       Object.assign(constraint, data);
 

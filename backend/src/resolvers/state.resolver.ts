@@ -34,7 +34,7 @@ export class StateResolver implements ResolverInterface<State> {
 
       this.validationService.hasValidType([ state ], stateTypes);
 
-      this.validationService.isDuplicateIdentifierWithType(
+      this.validationService.isDuplicateIdentifier(
         await this.states({ collectionId: data.collectionId }), data.identifier, data.type);
 
       await state.save();
@@ -101,7 +101,8 @@ export class StateResolver implements ResolverInterface<State> {
       const stateEnumerationMap = new Map<string, ModifyStateEnumeration[] | undefined>();
 
       for (const state of data.states) {
-        this.validationService.isDuplicateIdentifier(existingStates, state.identifier);
+        // TODO: I don't think this is checking the incoming list as well as what already exists.
+        this.validationService.isDuplicateIdentifier(existingStates, state.identifier, state.type);
 
         stateEnumerationMap.set(state.identifier, state.enumerations);
 
@@ -238,7 +239,7 @@ export class StateResolver implements ResolverInterface<State> {
 
       this.validationService.hasValidType([ state ], stateTypes);
 
-      this.validationService.isDuplicateIdentifierWithType(
+      this.validationService.isDuplicateIdentifier(
         await this.states({ collectionId: state.collectionId }), data.identifier, data.type);
 
       Object.assign(state, data);

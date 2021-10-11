@@ -24,7 +24,8 @@ export class EventResolver {
   @Mutation(() => EventResponse)
   public async createEvent(@Arg('data') data: CreateEventInput): Promise<EventResponse> {
     try {
-      this.validationService.isDuplicateIdentifier(await this.events({ collectionId: data.collectionId}), data.identifier);
+      this.validationService.isDuplicateIdentifier(
+        await this.events({ collectionId: data.collectionId}), data.identifier, data.type);
 
       const event = Event.create(data);
 
@@ -53,7 +54,7 @@ export class EventResolver {
       const existingEvents = await this.events({ collectionId: data.collectionId });
 
       for (const event of data.events) {
-        this.validationService.isDuplicateIdentifier(existingEvents, event.identifier);
+        this.validationService.isDuplicateIdentifier(existingEvents, event.identifier, event.type);
 
         event.collectionId = data.collectionId;
       }
@@ -113,7 +114,7 @@ export class EventResolver {
         throw new UserInputError(EventConstants.eventNotFoundError(data.id));
       }
 
-      this.validationService.isDuplicateIdentifier(await this.events({ collectionId: event.collectionId}), data.identifier, event.id);
+      this.validationService.isDuplicateIdentifier(await this.events({ collectionId: event.collectionId}), data.identifier, data.type);
 
       Object.assign(event, data);
 
