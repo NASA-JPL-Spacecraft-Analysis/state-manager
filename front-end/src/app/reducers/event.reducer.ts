@@ -1,6 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
+import { cloneDeep } from 'lodash';
 
 import { EventActions, FileUploadActions } from '../actions';
+import { mapIdentifiers, mapItems } from '../functions/helpers';
 import { EventMap, Event, IdentifierMap } from '../models';
 
 export interface EventState {
@@ -21,40 +23,26 @@ export const reducer = createReducer(
   initialState,
   on(EventActions.createEventSuccess, (state, { event }) => modifyEvent(state, event)),
   on(EventActions.updateEventSuccess, (state, { event }) => modifyEvent(state, event)),
-  on(FileUploadActions.uploadEventsSuccess, (state, { events }) => {
-    const eventMap = {};
-
-    for (const event of events) {
-      eventMap[event.id] = event;
+  on(FileUploadActions.uploadEventsSuccess, (state, { events }) => ({
+    ...state,
+    eventMap: {
+      ...state.eventMap,
+      ...mapItems(events) as EventMap
+    },
+    eventIdentifierMap: {
+      ...state.eventIdentifierMap,
+      ...mapIdentifiers(events)
     }
-
-    return {
-      ...state,
-      eventMap: {
-        ...state.eventMap,
-        ...eventMap
-      }
-    };
-  }),
-  on(EventActions.setEvents, (state, { events }) => {
-    const eventMap = {};
-    const eventIdentifierMap = {};
-
-    for (const event of events) {
-      eventMap[event.id] = event;
-      eventIdentifierMap[event.identifier] = event.id;
+  })),
+  on(EventActions.setEvents, (state, { events }) => ({
+    ...state,
+    eventMap: {
+      ...mapItems(events) as EventMap
+    },
+    eventIdentifierMap: {
+      ...mapIdentifiers(events)
     }
-
-    return {
-      ...state,
-      eventIdentifierMap: {
-        ...eventIdentifierMap
-      },
-      eventMap: {
-        ...eventMap
-      }
-    };
-  }),
+  })),
   on(EventActions.setEventHistory, (state, { eventHistory }) => {
     const eventHistoryMap = {};
 
@@ -75,23 +63,32 @@ export const reducer = createReducer(
   }))
 );
 
-const modifyEvent = (state: EventState, event: Event) => {
-  const eventIdentifierMap = {
-    ...state.eventIdentifierMap
-  };
+const modifyEvent = (state: EventState, event: Event): EventState => {
+  const eventIdentifierMap = cloneDeep(state.eventIdentifierMap);
 
   for (const identifier of Object.keys(eventIdentifierMap)) {
-    // Remove the old identifier from our map
-    if (eventIdentifierMap[identifier] === event.id) {
-      delete eventIdentifierMap[identifier];
+    let index = 0;
+
+    for (const item of eventIdentifierMap[identifier]) {
+      if (item.id === event.id) {
+        eventIdentifierMap[identifier] = eventIdentifierMap[identifier].splice(index, 1);
+      }
+
+      index++;
     }
   }
 
   return {
     ...state,
     eventIdentifierMap: {
-      ...eventIdentifierMap,
-      [event.identifier]: event.id
+      ...state.eventIdentifierMap,
+      [event.identifier]: [
+        ...eventIdentifierMap[event.identifier],
+        {
+          id: event.id,
+          type: event.type
+        }
+      ]
     },
     eventMap: {
       ...state.eventMap,

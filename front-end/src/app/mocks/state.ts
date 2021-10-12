@@ -33,8 +33,18 @@ export const mockStateTwo: State = {
 };
 
 export const mockStateIdentifierMap: IdentifierMap = {
-  [mockStateOne.identifier]: mockStateOne.id,
-  [mockStateTwo.identifier]: mockStateTwo.id
+  [mockStateOne.identifier]: [
+    {
+      id: mockStateOne.id,
+      type: mockStateOne.type
+    }
+  ],
+  [mockStateTwo.identifier]: [
+    {
+      id: mockStateTwo.id,
+      type: mockStateTwo.type
+    }
+  ]
 };
 
 export const mockStates: State[] = [

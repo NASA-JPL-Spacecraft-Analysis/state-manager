@@ -1,20 +1,22 @@
 import { createReducer, on } from '@ngrx/store';
+import { cloneDeep } from 'lodash';
 
 import { StateActions } from '../actions';
 import {
-  NewIdentifierMap,
+  IdentifierMap,
   State,
   StateEnumerationHistory,
   StateEnumerationMap,
   StateMap
 } from '../models';
+import { mapIdentifiers, mapItems } from '../functions/helpers';
 
 export interface StateState {
   selectedStateId: string;
   stateEnumerationHistory: StateEnumerationHistory[];
   stateEnumerationMap: StateEnumerationMap;
   stateHistoryMap: StateMap;
-  stateIdentifierMap: NewIdentifierMap;
+  stateIdentifierMap: IdentifierMap;
   stateMap: StateMap;
 }
 
@@ -29,12 +31,14 @@ export const initialState: StateState = {
 
 export const reducer = createReducer(
   initialState,
-  on(StateActions.createStateSuccess, (stateState, { state }) => createOrUpdateStateSuccess(stateState, state)),
+  on(StateActions.createStateSuccess, (stateState, { state }) => modifyState(stateState, state)),
   on(StateActions.createStatesSuccess, (stateState, { states }) => ({
     ...stateState,
+    stateIdentifierMap: {
+      ...mapIdentifiers(states)
+    },
     stateMap: {
-      ...stateState.stateMap,
-      ...mapStates(states)
+      ...mapItems(states) as StateMap
     }
   })),
   on(StateActions.deleteEnumerationsSuccess, (state, { deletedEnumerationIds }) => {
@@ -107,35 +111,19 @@ export const reducer = createReducer(
       stateHistoryMap
     };
   }),
-  on(StateActions.setStates, (stateState, { states }) => {
-    const stateMap = {};
-    const stateIdentifierMap = {};
-
-    for (const state of states) {
-      stateMap[state.id] = state;
-
-      if (!stateIdentifierMap[state.identifier]) {
-        stateIdentifierMap[state.identifier] = [];
-      }
-
-      stateIdentifierMap[state.identifier].push({
-        id: state.id,
-        type: state.type
-      });
+  on(StateActions.setStates, (stateState, { states }) => ({
+    ...stateState,
+    stateIdentifierMap: {
+      ...mapIdentifiers(states)
+    },
+    stateMap: {
+      ...mapItems(states) as StateMap
     }
-
-    console.log({ stateIdentifierMap });
-
-    return {
-      ...stateState,
-      stateIdentifierMap,
-      stateMap
-    };
-  }),
-  on(StateActions.updateStateSuccess, (stateState, { state }) => createOrUpdateStateSuccess(stateState, state))
+  })),
+  on(StateActions.updateStateSuccess, (stateState, { state }) => modifyState(stateState, state))
 );
 
-const createOrUpdateStateSuccess = (stateState: StateState, state: State): StateState => {
+const modifyState = (stateState: StateState, state: State): StateState => {
   const stateEnumerationMap = {
     ...stateState.stateEnumerationMap
   };
@@ -143,16 +131,17 @@ const createOrUpdateStateSuccess = (stateState: StateState, state: State): State
   // Overwrite the current list of enumerations for the created or updated state.
   stateEnumerationMap[state.id] = state.enumerations;
 
-  const stateIdentifierMap = {
-    ...stateState.stateIdentifierMap
-  };
+  const stateIdentifierMap = cloneDeep(stateState.stateIdentifierMap);
 
   for (const identifier of Object.keys(stateIdentifierMap)) {
+    let index = 0;
+
     for (const item of stateIdentifierMap[identifier]) {
-      console.log(item);
       if (item.id === state.id) {
-        delete stateIdentifierMap[identifier];
+        stateIdentifierMap[identifier] = stateIdentifierMap[identifier].splice(index, 1);
       }
+
+      index++;
     }
   }
 
@@ -179,14 +168,4 @@ const createOrUpdateStateSuccess = (stateState: StateState, state: State): State
       }
     }
   };
-};
-
-const mapStates = (states: State[]): StateMap => {
-  const stateMap = {};
-
-  for (const state of states) {
-    stateMap[state.id] = state;
-  }
-
-  return stateMap;
 };

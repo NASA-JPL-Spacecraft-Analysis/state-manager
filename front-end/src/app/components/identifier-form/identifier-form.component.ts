@@ -2,11 +2,11 @@ import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output,
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-
-import { MaterialModule } from 'src/app/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NewIdentifierMap, IdentifierMap } from 'src/app/models';
+
+import { MaterialModule } from 'src/app/material';
+import { IdentifierMap } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +17,6 @@ import { NewIdentifierMap, IdentifierMap } from 'src/app/models';
 export class IdentifierFormComponent implements OnChanges {
   @Input() public originalIdentifier: string;
   @Input() public identifierMap: IdentifierMap;
-  @Input() public newIdentifierMap: NewIdentifierMap;
   @Input() public id: string;
   @Input() public type: string;
 
@@ -41,9 +40,7 @@ export class IdentifierFormComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    if (!this.currentIdentifier) {
-      this.currentIdentifier = this.originalIdentifier;
-    }
+    this.currentIdentifier = this.originalIdentifier;
 
     this.onIdentifierChange(this.currentIdentifier);
   }
@@ -61,7 +58,7 @@ export class IdentifierFormComponent implements OnChanges {
      */
     this.currentIdentifier = identifier;
 
-    if (this.newIdentifierMap && Object.keys(this.newIdentifierMap).length > 0) {
+    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
         this.identifierTooltipText = 'Your identifier is a duplicate';
@@ -91,10 +88,9 @@ export class IdentifierFormComponent implements OnChanges {
    * @param identifier The current identifier.
    */
   private isIdentifierDuplicate(identifier: string): boolean {
-    const identifierList = this.newIdentifierMap[identifier];
+    const identifierList = this.identifierMap[identifier];
 
-    // If we have more than 1 identifier in our list then we need to check the types for duplicates.
-    if (identifierList && identifierList.length > 1) {
+    if (identifierList) {
       for (const item of identifierList) {
         // Check each item that isn't the item we have open in the sidenav, and its type.
         if (item.id !== this.id && item.type === this.type) {

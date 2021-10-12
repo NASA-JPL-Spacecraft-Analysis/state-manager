@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 
-import { stateTypes, NewIdentifierMap, State, StateEnumeration } from '../../../models';
+import { stateTypes, IdentifierMap, State, StateEnumeration } from '../../../models';
 import { MaterialModule } from 'src/app/material';
 import { EnumFormModule } from '../../enum-form/enum-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
@@ -19,7 +19,7 @@ export class StateSidenavComponent implements OnChanges {
   @Input() public collectionId: string;
   @Input() public state: State;
   @Input() public stateEnumerations: StateEnumeration[];
-  @Input() public stateIdentifierMap: NewIdentifierMap;
+  @Input() public stateIdentifierMap: IdentifierMap;
 
   @Output() public errorEmitter: EventEmitter<string>;
   @Output() public modifyState: EventEmitter<{ state: State; deletedEnumerationIds: string[] }>;

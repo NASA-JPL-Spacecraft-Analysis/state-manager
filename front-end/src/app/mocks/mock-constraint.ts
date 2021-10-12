@@ -26,5 +26,10 @@ export const mockConstraints: Constraint[] = [
 ];
 
 export const mockConstraintIdentifierMap: IdentifierMap = {
-  [mockConstraint.identifier]: mockConstraint.id
+  [mockConstraint.identifier]: [
+    {
+      id: mockConstraint.id,
+      type: mockConstraint.type
+    }
+  ]
 };

@@ -12,6 +12,8 @@
       <app-identifier-form
         [originalIdentifier]="originalIdentifier"
         [identifierMap]="eventIdentifierMap"
+        [id]="newEvent.id"
+        [type]="type"
         (duplicateIdentifier)="onDuplicateIdentifier($event)"
         (identifierEmitter)="onIdentifierChange($event)">
       </app-identifier-form>
@@ -51,7 +53,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-select placeholder="Event Type" [(value)]="selectedEventType">
+        <mat-select placeholder="Event Type" [(value)]="type">
           <mat-option *ngFor="let eventType of eventTypes" [value]="eventType">
             {{eventType}}
           </mat-option>

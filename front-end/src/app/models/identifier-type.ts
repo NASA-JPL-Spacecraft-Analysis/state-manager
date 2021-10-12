@@ -11,9 +11,7 @@ export interface IdentifierType extends Node {
   type: string;
 }
 
-export type IdentifierMap = StringTMap<string>;
-
-export type NewIdentifierMap = StringTMap<IdentifierComparison[]>;
+export type IdentifierMap = StringTMap<IdentifierComparison[]>;
 export interface IdentifierComparison {
   id: string;
   type: string;

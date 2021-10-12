@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { State, StateMap, StateEnumeration, NewIdentifierMap } from '../../models';
+import { State, StateMap, StateEnumeration, IdentifierMap } from '../../models';
 import {
   getStates,
   getSelectedState,
@@ -31,7 +31,7 @@ export class StatesComponent implements OnDestroy {
   public stateMap: StateMap;
   public state: State;
   public stateEnumerations: StateEnumeration[];
-  public stateIdentifierMap: NewIdentifierMap;
+  public stateIdentifierMap: IdentifierMap;
 
   private subscriptions = new SubSink();
 

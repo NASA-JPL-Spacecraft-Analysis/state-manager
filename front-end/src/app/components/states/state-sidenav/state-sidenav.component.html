@@ -11,7 +11,7 @@
     <div *ngIf="stateIdentifierMap">
       <app-identifier-form
         [originalIdentifier]="newState.identifier"
-        [newIdentifierMap]="stateIdentifierMap"
+        [identifierMap]="stateIdentifierMap"
         [id]="newState.id"
         [type]="type"
         (duplicateIdentifier)="onDuplicateIdentifier($event)"

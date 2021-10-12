@@ -3,7 +3,17 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { StateResponse, StatesResponse, State, StateHistory, StateEnumerationUpload, StateEnumerationsResponse, DeleteEnumerationsResponse, StateEnumerationHistory, StateEnumeration } from '../models';
+import {
+  StateResponse,
+  StatesResponse,
+  State,
+  StateHistory,
+  StateEnumerationUpload,
+  StateEnumerationsResponse,
+  DeleteEnumerationsResponse,
+  StateEnumerationHistory,
+  StateEnumeration
+} from '../models';
 
 import * as gql from './gql/states';
 
@@ -16,7 +26,6 @@ export class StateService {
   ) {}
 
   public createState(state: State): Observable<StateResponse> {
-    console.log(state);
     return this.apollo
       .mutate<{ createState: StateResponse }>({
         fetchPolicy: 'no-cache',
@@ -150,7 +159,6 @@ export class StateService {
   }
 
   public updateState(state: State): Observable<StateResponse> {
-    console.log(state);
     return this.apollo
       .mutate<{ updateState: StateResponse }>({
         fetchPolicy: 'no-cache',

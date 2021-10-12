@@ -1,27 +1,26 @@
 import { Injectable } from '@angular/core';
 
-import { Command, CommandArgumentUpload, Constraint, Event, GroupMappingUpload, GroupUpload, GroupUploadMappings, IdentifierMap, InformationType, informationTypes, MappingsUpload, Relationship, State, StateEnumerationUpload } from '../models';
+import {
+  Command,
+  CommandArgumentUpload,
+  Constraint,
+  Event,
+  GroupMappingUpload,
+  GroupUpload,
+  GroupUploadMappings,
+  IdentifierMap,
+  InformationType,
+  informationTypes,
+  MappingsUpload,
+  Relationship,
+  State,
+  StateEnumerationUpload
+} from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ValidationService {
-  public isDuplicateIdentifier(identifier: string, id: string, identifierMap: IdentifierMap) {
-    /**
-     * If we come across a duplicate identifier
-     * AND we have an id
-     * AND we are looking at a different item (event, information type, or state)
-     * then we have a duplicate.
-     */
-    for (const key of Object.keys(identifierMap)) {
-      if (key === identifier && (id && identifierMap[key] !== id)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   public validateEvent(event: Event): boolean {
     return (
       event.hasOwnProperty('identifier')
