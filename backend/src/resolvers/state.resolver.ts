@@ -2,7 +2,7 @@ import { Resolver, Query, Arg, Mutation, ResolverInterface , FieldResolver, Root
 import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
-import { State, StateEnumeration, StateEnumerationHistory, StateHistory, stateTypes } from './../models';
+import { Group, State, StateEnumeration, StateEnumerationHistory, StateHistory, stateTypes, Relationship } from './../models';
 import {
   CreateStateEnumerationsInput,
   CreateStateInput,
@@ -10,9 +10,9 @@ import {
   ModifyStateEnumeration,
   UpdateStateInput
 } from '../inputs';
-import { ValidationService } from '../service';
+import { GroupService, ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { DeleteEnumerationsResponse, StateEnumerationResponse, StateResponse, StatesResponse } from '../responses';
+import { DeleteEnumerationsResponse, DeleteStatesResponse, StateEnumerationResponse, StateResponse, StatesResponse } from '../responses';
 import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
@@ -22,6 +22,7 @@ export class StateResolver implements ResolverInterface<State> {
   private sharedRepository: SharedRepository<State>;
 
   constructor(
+    private readonly groupService: GroupService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<State>(getConnection(), State);
@@ -124,6 +125,39 @@ export class StateResolver implements ResolverInterface<State> {
       return {
         message: 'States Created',
         states,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => DeleteStatesResponse)
+  public async deleteAllStates(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteStatesResponse> {
+    try {
+      const states = await State.find({
+        where: {
+          collectionId
+        }
+      });
+
+      // Check to make sure each state can be deleted, otherwise throw an error.
+      await this.validationService.canBeDeleted(states, collectionId);
+
+      const deletedIds: string[] = [];
+
+      for (const state of states) {
+        deletedIds.push(state.id);
+
+        await state.remove();
+      }
+
+      return {
+        deletedStateIds: deletedIds,
+        message: 'States deleted successfully',
         success: true
       };
     } catch (error) {

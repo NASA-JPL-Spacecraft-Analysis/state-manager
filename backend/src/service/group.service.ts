@@ -21,6 +21,20 @@ export class GroupService {
     });
   }
 
+  public async getGroupMappingsByCollectionId(collectionId: string): Promise<GroupMapping[]> {
+    const groups = await Group.find({
+      where: {
+        collectionId
+      }
+    });
+
+    const groupIds = groups.map((group) => group.id);
+
+    return GroupMapping.createQueryBuilder('groupMapping')
+      .where('groupMapping.groupId in (:...groupIds)', { groupIds })
+      .getMany();
+  }
+
   public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof GroupMappingItemUnion | undefined> {
     const event = await Event.findOne({ where: { id: groupMapping.itemId }});
 

@@ -10,6 +10,12 @@ export class DeleteEnumerationsResponse extends Response {
 }
 
 @ObjectType()
+export class DeleteStatesResponse extends Response {
+  @Field(() => [ ID ], { nullable: true })
+  public deletedStateIds?: string[];
+}
+
+@ObjectType()
 export class StateEnumerationResponse extends Response {
   @Field(() => [ StateEnumeration ], { nullable: true })
   public stateEnumerations?: StateEnumeration[];
