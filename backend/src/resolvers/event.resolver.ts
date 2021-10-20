@@ -7,7 +7,7 @@ import { Event, EventHistory, eventTypes } from './../models';
 import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs/event';
 import { ValidationService } from '../service';
 import { SharedRepository } from '../repositories';
-import { EventResponse, EventsResponse } from '../responses';
+import { DeleteItemsResponse, EventResponse, EventsResponse } from '../responses';
 import { EventConstants } from '../constants';
 
 
@@ -18,7 +18,7 @@ export class EventResolver {
   constructor(
     private readonly validationService: ValidationService
   ) {
-    this.sharedRepository = new SharedRepository<Event>(getConnection(), Event);
+    this.sharedRepository = new SharedRepository<Event>(getConnection(), Event, validationService);
   }
 
   @Mutation(() => EventResponse)
@@ -80,6 +80,11 @@ export class EventResolver {
         success: false
       };
     }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllEvents(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteAll(collectionId);
   }
 
   @Query(() => Event)

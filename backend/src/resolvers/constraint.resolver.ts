@@ -7,7 +7,7 @@ import { ConstraintConstants } from '../constants';
 import { CreateConstraintInput, CreateConstraintsInput, UpdateConstraintInput } from '../inputs';
 import { Constraint, ConstraintHistory, constraintTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { ConstraintResponse, ConstraintsResponse } from '../responses';
+import { ConstraintResponse, ConstraintsResponse, DeleteItemsResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver()
@@ -17,7 +17,7 @@ export class ConstraintResolver {
   constructor(
     private readonly validationService: ValidationService
   ) {
-    this.sharedRepository = new SharedRepository<Constraint>(getConnection(), Constraint);
+    this.sharedRepository = new SharedRepository<Constraint>(getConnection(), Constraint, validationService);
   }
 
   @Query(() => Constraint)
@@ -102,6 +102,11 @@ export class ConstraintResolver {
         success: false
       };
     }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllConstraints(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteAll(collectionId);
   }
 
   @Mutation(() => ConstraintResponse)

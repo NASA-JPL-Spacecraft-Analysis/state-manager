@@ -5,7 +5,7 @@ import { CollectionIdArgs, IdentifierArgs } from '../args';
 import { CreateInformationTypesInput } from '../inputs';
 import { InformationType, informationTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { InformationTypeResponse } from '../responses';
+import { DeleteItemsResponse, InformationTypeResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver()
@@ -15,7 +15,7 @@ export class InformationTypeResolver {
   constructor(
     private readonly validationService: ValidationService
   ) {
-    this.sharedRepository = new SharedRepository<InformationType>(getConnection(), InformationType);
+    this.sharedRepository = new SharedRepository<InformationType>(getConnection(), InformationType, validationService);
   }
 
   @Mutation(() => InformationTypeResponse)
@@ -44,6 +44,11 @@ export class InformationTypeResolver {
         success: false
       };
     }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllInformationTypes(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteAll(collectionId);
   }
 
   @Query(() => InformationType)

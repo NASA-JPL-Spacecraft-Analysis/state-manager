@@ -14,7 +14,7 @@ import {
 } from '../inputs';
 import { Command, CommandArgument, CommandArgumentHistory, CommandHistory, commandTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { CommandArgumentResponse, CommandResponse, CommandsResponse, DeleteArgumentResponse } from '../responses';
+import { CommandArgumentResponse, CommandResponse, CommandsResponse, DeleteArgumentResponse, DeleteItemsResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver(() => Command)
@@ -24,7 +24,7 @@ export class CommandResolver implements ResolverInterface<Command> {
   constructor(
     private readonly validationService: ValidationService
   ) {
-    this.sharedRepository = new SharedRepository<Command>(getConnection(), Command);
+    this.sharedRepository = new SharedRepository<Command>(getConnection(), Command, validationService);
   }
 
   @FieldResolver(() => [ CommandArgument ])
@@ -220,6 +220,11 @@ export class CommandResolver implements ResolverInterface<Command> {
         success: false
       };
     }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllCommands(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteAll(collectionId);
   }
 
   @Mutation(() => CommandResponse)

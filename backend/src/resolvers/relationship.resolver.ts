@@ -12,11 +12,16 @@ import {
   IdentifierTypeUnion,
   Constraint
 } from '../models';
-import { RelationshipResponse, RelationshipsResponse } from '../responses';
+import { DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
 import { RelationshipConstants } from '../constants';
+import { ValidationService } from '../service';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
+  constructor(
+    private readonly validationService: ValidationService
+  ) {}
+
   @Mutation(() => RelationshipResponse)
   public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<RelationshipResponse> {
     try {
@@ -72,6 +77,39 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
       return {
         message: 'Relationships Created',
         relationships,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllRelationships(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    try {
+      const relationships = await Relationship.find({
+        where: {
+          collectionId
+        }
+      });
+
+      // Check to make sure each relationship can be deleted, otherwise throw an error.
+      await this.validationService.canRelationshipsBeDeleted(relationships, collectionId);
+
+      const deletedIds: string[] = [];
+
+      for (const relationship of relationships) {
+        deletedIds.push(relationship.id);
+
+        await relationship.remove();
+      }
+
+      return {
+        deletedIds,
+        message: 'Relationships deleted successfully',
         success: true
       };
     } catch (error) {
