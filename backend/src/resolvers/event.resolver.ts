@@ -2,12 +2,12 @@ import { Resolver, Query, Arg, Mutation, Args } from 'type-graphql';
 import { UserInputError } from 'apollo-server';
 import { getConnection } from 'typeorm';
 
-import { CollectionIdArgs, IdentifierArgs } from '../args';
+import { CollectionIdArgs, IdentifierArgs, TypeArgs } from '../args';
 import { Event, EventHistory, eventTypes } from './../models';
 import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs/event';
 import { ValidationService } from '../service';
 import { SharedRepository } from '../repositories';
-import { DeleteItemsResponse, EventResponse, EventsResponse } from '../responses';
+import { DeleteItemResponse, DeleteItemsResponse, EventResponse, EventsResponse } from '../responses';
 import { EventConstants } from '../constants';
 
 
@@ -85,6 +85,11 @@ export class EventResolver {
   @Mutation(() => DeleteItemsResponse)
   public async deleteAllEvents(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
     return this.sharedRepository.deleteAll(collectionId);
+  }
+
+  @Mutation(() => DeleteItemResponse)
+  public deleteEvent(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
+    return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
   }
 
   @Query(() => Event)

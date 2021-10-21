@@ -10,10 +10,10 @@ import {
   ModifyStateEnumeration,
   UpdateStateInput
 } from '../inputs';
-import { GroupService, ValidationService } from '../service';
+import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { DeleteEnumerationsResponse, DeleteItemsResponse, StateEnumerationResponse, StateResponse, StatesResponse } from '../responses';
-import { CollectionIdArgs, IdentifierArgs } from '../args';
+import { DeleteEnumerationsResponse, DeleteItemResponse, DeleteItemsResponse, StateEnumerationResponse, StateResponse, StatesResponse } from '../responses';
+import { CollectionIdArgs, IdentifierArgs, TypeArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
 
@@ -22,7 +22,6 @@ export class StateResolver implements ResolverInterface<State> {
   private sharedRepository: SharedRepository<State>;
 
   constructor(
-    private readonly groupService: GroupService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<State>(getConnection(), State, this.validationService);
@@ -179,6 +178,11 @@ export class StateResolver implements ResolverInterface<State> {
         success: false
       };
     }
+  }
+
+  @Mutation(() => DeleteItemResponse)
+  public deleteState(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
+    return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
   }
 
   @FieldResolver(() => [ StateEnumeration ])

@@ -1,7 +1,7 @@
 import { Resolver, Query, ResolverInterface, FieldResolver, Root, Args, Mutation, Arg } from 'type-graphql';
 import { UserInputError } from 'apollo-server';
 
-import { CollectionIdArgs, IdentifierArgs } from '../args';
+import { CollectionIdArgs, IdArgs, IdentifierArgs } from '../args';
 import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
 import {
   Relationship,
@@ -12,8 +12,8 @@ import {
   IdentifierTypeUnion,
   Constraint
 } from '../models';
-import { DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
-import { RelationshipConstants } from '../constants';
+import { DeleteItemResponse, DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
+import { ErrorConstants, RelationshipConstants } from '../constants';
 import { ValidationService } from '../service';
 
 @Resolver(() => Relationship)
@@ -112,6 +112,35 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         message: 'Relationships deleted successfully',
         success: true
       };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => DeleteItemResponse)
+  public async deleteRelationship(@Args() { id }: IdArgs): Promise<DeleteItemResponse> {
+    try {
+      const relationship = await Relationship.findOne({
+        where: {
+          id
+        }
+      });
+
+      if (!relationship) {
+        throw new UserInputError(ErrorConstants.itemNotFoundIdError(id));
+      }
+
+      await relationship.remove();
+
+      return {
+        deletedId: id,
+        message: 'Relationship deleted',
+        success: true
+      };
+
     } catch (error) {
       return {
         message: error,

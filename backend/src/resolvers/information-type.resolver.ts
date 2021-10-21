@@ -1,11 +1,11 @@
 import { Resolver, Query, Arg, Mutation, Args } from 'type-graphql';
 import { getConnection } from 'typeorm';
 
-import { CollectionIdArgs, IdentifierArgs } from '../args';
+import { CollectionIdArgs, IdentifierArgs, TypeArgs } from '../args';
 import { CreateInformationTypesInput } from '../inputs';
 import { InformationType, informationTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { DeleteItemsResponse, InformationTypeResponse } from '../responses';
+import { DeleteItemResponse, DeleteItemsResponse, InformationTypeResponse } from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver()
@@ -49,6 +49,11 @@ export class InformationTypeResolver {
   @Mutation(() => DeleteItemsResponse)
   public async deleteAllInformationTypes(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
     return this.sharedRepository.deleteAll(collectionId);
+  }
+
+  @Mutation(() => DeleteItemResponse)
+  public deleteInformationType(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
+    return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
   }
 
   @Query(() => InformationType)
