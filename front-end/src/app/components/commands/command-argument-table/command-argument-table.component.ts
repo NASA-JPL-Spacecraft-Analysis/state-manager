@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
-import { CommandArgumentHistory } from 'src/app/models';
+import { CommandArgument, CommandArgumentHistory } from 'src/app/models';
+import { TableComponent } from '../..';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,17 +12,11 @@ import { CommandArgumentHistory } from 'src/app/models';
   styleUrls: [ 'command-argument-table.component.css' ],
   templateUrl: 'command-argument-table.component.html'
 })
-export class CommandArgumentTableComponent implements OnInit, OnChanges {
+export class CommandArgumentTableComponent extends TableComponent<CommandArgument> implements OnInit, OnChanges {
   @Input() public commandArgumentHistory: CommandArgumentHistory[];
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
-  public dataSource: MatTableDataSource<CommandArgumentHistory>;
-  public displayedColumns: string[];
-  public showTable: boolean;
-
   constructor() {
-    this.displayedColumns = [];
+    super();
   }
 
   public ngOnInit(): void {
@@ -40,10 +34,12 @@ export class CommandArgumentTableComponent implements OnInit, OnChanges {
     if (this.commandArgumentHistory && this.displayedColumns) {
       this.dataSource = new MatTableDataSource(this.commandArgumentHistory);
 
-      this.dataSource.paginator = this.paginator;
+      super.ngOnChanges();
     }
+  }
 
-    this.showTable = this.commandArgumentHistory && this.commandArgumentHistory.length > 0;
+  public filter(commandArgumentHistory: CommandArgumentHistory, filterValue: string): boolean {
+    return commandArgumentHistory.name?.toLowerCase().includes(filterValue);
   }
 }
 
