@@ -1,10 +1,20 @@
 import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
 
-import { RelationshipMap, Relationship, StateMap, InformationTypeMap, EventMap, IdentifierTypeEnum, CommandMap, ConstraintMap } from 'src/app/models';
+import {
+  RelationshipMap,
+  Relationship,
+  StateMap,
+  InformationTypeMap,
+  EventMap,
+  IdentifierTypeEnum,
+  CommandMap,
+  ConstraintMap
+} from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
+
+import { TableComponent } from '../table/table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +22,7 @@ import { MaterialModule } from 'src/app/material';
   styleUrls: [ 'relationships-table.component.css' ],
   templateUrl: 'relationships-table.component.html'
 })
-export class RelationshipsTableComponent implements OnInit, OnChanges {
+export class RelationshipsTableComponent extends TableComponent<Relationship> implements OnInit, OnChanges {
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
@@ -23,13 +33,11 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
 
   @Output() public relationshipSelected: EventEmitter<Relationship>;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
-  public dataSource: MatTableDataSource<Relationship>;
-  public displayedColumns: string[] = [];
   public relationshipsList: Relationship[];
 
   constructor() {
+    super();
+
     this.relationshipSelected = new EventEmitter<Relationship>();
   }
 
@@ -61,22 +69,15 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
 
       this.dataSource = new MatTableDataSource(this.relationshipsList);
 
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.filterPredicate = this.filter;
+      super.ngOnChanges();
     }
-  }
-
-  public applyFilter(filterValue: string): void {
-    filterValue = filterValue.trim().toLowerCase();
-
-    this.dataSource.filter = filterValue;
   }
 
   public getType(id: string, type: string): string {
     switch (type) {
       case IdentifierTypeEnum.command:
         if (this.commandMap && this.commandMap[id]) {
-          return this.commandMap[id].identifier
+          return this.commandMap[id].identifier;
         }
 
         break;
@@ -102,6 +103,8 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
         if (this.stateMap && this.stateMap[id]) {
           return this.stateMap[id].identifier;
         }
+
+        break;
       default:
         return '';
     }
@@ -113,7 +116,7 @@ export class RelationshipsTableComponent implements OnInit, OnChanges {
     this.relationshipSelected.emit(relationship);
   }
 
-  private filter(relationship: Relationship, filterValue: string): boolean {
+  public filter(relationship: Relationship, filterValue: string): boolean {
     return relationship.description?.toLowerCase().includes(filterValue)
       || relationship.displayName?.toLowerCase().includes(filterValue)
       || relationship.subjectType?.toString().toLowerCase().includes(filterValue)
