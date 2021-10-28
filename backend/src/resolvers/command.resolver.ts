@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server';
 import { Arg, Args, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 import { getConnection } from 'typeorm';
 
-import { CollectionIdArgs, IdentifierArgs, TypeArgs } from '../args';
+import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { CommandConstants } from '../constants';
 import {
   CreateCommandArgumentsInput,
@@ -14,7 +14,14 @@ import {
 } from '../inputs';
 import { Command, CommandArgument, CommandArgumentHistory, CommandHistory, commandTypes } from '../models';
 import { SharedRepository } from '../repositories';
-import { CommandArgumentResponse, CommandResponse, CommandsResponse, DeleteArgumentResponse, DeleteItemResponse, DeleteItemsResponse } from '../responses';
+import {
+  CommandArgumentResponse,
+  CommandResponse,
+  CommandsResponse,
+  DeleteArgumentResponse,
+  DeleteItemResponse,
+  DeleteItemsResponse
+} from '../responses';
 import { ValidationService } from '../service';
 
 @Resolver(() => Command)
@@ -230,6 +237,11 @@ export class CommandResolver implements ResolverInterface<Command> {
   @Mutation(() => DeleteItemResponse)
   public deleteCommand(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
     return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public deleteCommandsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, commandTypes);
   }
 
   @Mutation(() => CommandResponse)

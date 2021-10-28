@@ -193,7 +193,7 @@ export class StateResolver implements ResolverInterface<State> {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public deleteStateByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+  public deleteStatesByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
     return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, stateTypes);
   }
 

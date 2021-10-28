@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server-errors';
 import { Arg, Args, Mutation, Query, Resolver } from 'type-graphql';
 import { getConnection } from 'typeorm';
 
-import { CollectionIdArgs, IdentifierArgs, TypeArgs } from '../args';
+import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { ConstraintConstants } from '../constants';
 import { CreateConstraintInput, CreateConstraintsInput, UpdateConstraintInput } from '../inputs';
 import { Constraint, ConstraintHistory, constraintTypes } from '../models';
@@ -112,6 +112,11 @@ export class ConstraintResolver {
   @Mutation(() => DeleteItemResponse)
   public deleteConstraint(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
     return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public deleteConstraintsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, constraintTypes);
   }
 
   @Mutation(() => ConstraintResponse)
