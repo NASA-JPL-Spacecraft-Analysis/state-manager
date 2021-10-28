@@ -12,8 +12,15 @@ import {
 } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { DeleteEnumerationsResponse, DeleteItemResponse, DeleteItemsResponse, StateEnumerationResponse, StateResponse, StatesResponse } from '../responses';
-import { CollectionIdArgs, IdentifierArgs, TypeArgs } from '../args';
+import {
+  DeleteEnumerationsResponse,
+  DeleteItemResponse,
+  DeleteItemsResponse,
+  StateEnumerationResponse,
+  StateResponse,
+  StatesResponse
+} from '../responses';
+import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
 
@@ -183,6 +190,11 @@ export class StateResolver implements ResolverInterface<State> {
   @Mutation(() => DeleteItemResponse)
   public deleteState(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
     return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public deleteStateByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, stateTypes);
   }
 
   @FieldResolver(() => [ StateEnumeration ])

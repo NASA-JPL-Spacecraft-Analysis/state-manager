@@ -26,6 +26,12 @@ export class SharedRepository<T extends IdentifierType> extends Repository<T> {
     });
   }
 
+  /**
+   * Deletes ALL items of a given type and collection id.
+   *
+   * @param collectionId The collection id of the items we are deleting.
+   * @returns A list of deleted item ids.
+   */
   public async deleteAll(collectionId: string): Promise<DeleteItemsResponse> {
     try {
       const items = await this.find({
@@ -34,15 +40,43 @@ export class SharedRepository<T extends IdentifierType> extends Repository<T> {
         }
       });
 
-      await this.validationService.canBeDeleted(items, collectionId);
+      const deletedIds = await this.deleteItems(items, collectionId);
 
-      const deletedIds: string[] = [];
+      return {
+        deletedIds,
+        message: `${this.entity.name}s deleted successfully`,
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
 
-      for (const item of items) {
-        deletedIds.push(item.id);
-
-        await item.remove();
+  /**
+   * Deletes ALL items of a given collection id and type.
+   *
+   * @param collectionId The collection id of the items we are deleting.
+   * @param type The type of the items we are deleting.
+   * @param validTypes A list of valid types.
+   * @returns A list of deleted item ids.
+   */
+  public async deleteByCollectionIdAndType(collectionId: string, type: string, validTypes: Set<string>): Promise<DeleteItemsResponse> {
+    try {
+      if (!validTypes.has(type)) {
+        throw new UserInputError(`Type: ${type} is not valid for ${this.entity.name}s`);
       }
+
+      const items = await this.find({
+        where: {
+          collectionId,
+          type
+        }
+      });
+
+      const deletedIds = await this.deleteItems(items, collectionId);
 
       return {
         deletedIds,
@@ -125,5 +159,26 @@ export class SharedRepository<T extends IdentifierType> extends Repository<T> {
     }
 
     return item;
+  }
+
+  /**
+   * Checks to see if the passed list of items can be deleted, and then deletes them.
+   *
+   * @param items The list of items we are trying to delete.
+   * @param collectionId The collection id of the items we're trying to delete.
+   * @returns A list of ids that were deleted.
+   */
+  private async deleteItems(items: T[], collectionId: string): Promise<string[]> {
+    await this.validationService.canBeDeleted(items, collectionId);
+
+    const deletedIds: string[] = [];
+
+    for (const item of items) {
+      deletedIds.push(item.id);
+
+      await item.remove();
+    }
+
+    return deletedIds;
   }
 }
