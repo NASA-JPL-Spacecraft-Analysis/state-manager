@@ -21,8 +21,8 @@ import {
   templateUrl: 'relationship-type-picker.component.html'
 })
 export class RelationshipTypePickerComponent implements OnChanges {
-  @Input() public commandMap: CommandMap;
   @Input() public commandArgumentMap: CommandArgumentMap;
+  @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public informationTypeMap: InformationTypeMap;

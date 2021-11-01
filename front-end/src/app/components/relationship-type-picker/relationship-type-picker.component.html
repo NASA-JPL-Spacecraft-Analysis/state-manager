@@ -11,19 +11,19 @@
     </mat-select>
   </mat-form-field>
 
-  <!--
   <mat-form-field *ngIf="type === 'commandArgument'" appearance="outline">
     <mat-label>{{type}}</mat-label>
     <mat-select
       [(value)]="relationship[formProperty]"
       (selectionChange)="onValueChange($event)">
-      <mat-option *ngFor="let value of commandArgumentMap | keyvalue"
-        [value]="commandArgumentMap[value.key].id">
-        {{commandArgumentMap[value.key].name}}
-      </mat-option>
+      <ng-container *ngFor="let value of commandArgumentMap | keyvalue">
+        <mat-option *ngFor="let commandArgument of commandArgumentMap[value.key]"
+          [value]="commandArgument.id">
+          {{commandArgument.name}}
+        </mat-option>
+      </ng-container>
     </mat-select>
   </mat-form-field>
-  -->
 
   <mat-form-field *ngIf="type === 'constraint'" appearance="outline">
     <mat-label>{{type}}</mat-label>

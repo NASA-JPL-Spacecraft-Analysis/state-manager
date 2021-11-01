@@ -10,11 +10,15 @@ import {
   EventMap,
   IdentifierTypeEnum,
   CommandMap,
-  ConstraintMap
+  ConstraintMap,
+  CommandArgumentMap,
+  StringTMap,
+  CommandArgument
 } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
 import { TableComponent } from '../table/table.component';
+import { TouchSequence } from 'selenium-webdriver';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +27,7 @@ import { TableComponent } from '../table/table.component';
   templateUrl: 'relationships-table.component.html'
 })
 export class RelationshipsTableComponent extends TableComponent<Relationship> implements OnInit, OnChanges {
+  @Input() public commandArgumentMap: CommandArgumentMap;
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
@@ -34,6 +39,8 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   @Output() public relationshipSelected: EventEmitter<Relationship>;
 
   public relationshipsList: Relationship[];
+  // Keep a map of command arguments so we don't have to loop over the list each time.
+  public commandArguments: StringTMap<string>;
 
   constructor() {
     super();
@@ -61,6 +68,7 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
 
   public ngOnChanges(): void {
     this.relationshipsList = [];
+    this.commandArguments = {};
 
     if (this.relationshipMap && this.displayedColumns) {
       for (const key of Object.keys(this.relationshipMap)) {
@@ -75,6 +83,17 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
 
   public getType(id: string, type: string): string {
     switch (type) {
+      case IdentifierTypeEnum.commandArgument:
+        // If this is the first time we've seen a command argument, memoize them.
+        if (Object.keys(this.commandArguments).length === 0) {
+          this.mapCommandArguments();
+        }
+
+        if (this.commandArguments && this.commandArguments[id]) {
+          return this.commandArguments[id];
+        }
+
+        break;
       case IdentifierTypeEnum.command:
         if (this.commandMap && this.commandMap[id]) {
           return this.commandMap[id].identifier;
@@ -121,6 +140,14 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
       || relationship.displayName?.toLowerCase().includes(filterValue)
       || relationship.subjectType?.toString().toLowerCase().includes(filterValue)
       || relationship.targetType?.toString().toLowerCase().includes(filterValue);
+  }
+
+  private mapCommandArguments() {
+    for (const key of Object.keys(this.commandArgumentMap)) {
+      for (const commandArgument of this.commandArgumentMap[key]) {
+        this.commandArguments[commandArgument.id] = commandArgument.name;
+      }
+    }
   }
 }
 
