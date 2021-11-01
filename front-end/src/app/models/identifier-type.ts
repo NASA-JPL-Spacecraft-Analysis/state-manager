@@ -16,12 +16,3 @@ export interface IdentifierComparison {
   id: string;
   type: string;
 }
-
-export enum IdentifierTypeEnum {
-  'command' = 'command',
-  'commandArgument' = 'commandArgument',
-  'constraint' = 'constraint',
-  'event' = 'event',
-  'informationType' = 'informationType',
-  'state' = 'state'
-};

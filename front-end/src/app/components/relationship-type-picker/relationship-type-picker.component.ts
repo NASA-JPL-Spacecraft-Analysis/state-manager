@@ -11,7 +11,8 @@ import {
   EventMap,
   ConstraintMap,
   CommandMap,
-  CommandArgumentMap
+  CommandArgumentMap,
+  StateEnumerationMap
 } from 'src/app/models';
 
 @Component({
@@ -29,6 +30,7 @@ export class RelationshipTypePickerComponent implements OnChanges {
   @Input() public isSubject: boolean;
   @Input() public parentFormGroup: FormGroup;
   @Input() public relationship: Relationship;
+  @Input() public stateEnumerationMap: StateEnumerationMap;
   @Input() public stateMap: StateMap;
   @Input() public type: string;
 
