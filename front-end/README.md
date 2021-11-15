@@ -1,7 +1,6 @@
 # State Manager Front-End
 > The front-end implementation for State Manager.
 
-
 ### To Run
 1. `npm i` to install the project dependencies.
 2. `ng serve` to start the application.
