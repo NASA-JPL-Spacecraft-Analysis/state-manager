@@ -3,7 +3,12 @@ import { Column, Entity } from 'typeorm';
 
 import { IdentifierType } from './identifier-type';
 
-@Entity('constraints')
+@Entity({
+  name: 'constraints',
+  orderBy: {
+    identifier: 'ASC'
+  }
+})
 @ObjectType()
 export class Constraint extends IdentifierType {}
 
