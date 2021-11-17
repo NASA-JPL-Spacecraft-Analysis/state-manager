@@ -38,7 +38,7 @@ export class StateResolver implements ResolverInterface<State> {
         await this.states({ collectionId: data.collectionId }), data.identifier, data.type);
 
       await state.save();
-      this.createStateHistory(state);
+      this.createStateHistory([ state ]);
 
       state.enumerations = await this.saveStateEnumerations(data.enumerations, state.id);
 
@@ -104,7 +104,9 @@ export class StateResolver implements ResolverInterface<State> {
         // TODO: I don't think this is checking the incoming list as well as what already exists.
         this.validationService.isDuplicateIdentifier(existingStates, state.identifier, state.type);
 
-        stateEnumerationMap.set(state.identifier, state.enumerations);
+        if (state.enumerations && state.enumerations.length > 0) {
+          stateEnumerationMap.set(state.identifier, state.enumerations);
+        }
 
         state.collectionId = data.collectionId;
       }
@@ -113,13 +115,23 @@ export class StateResolver implements ResolverInterface<State> {
 
       this.validationService.hasValidType(states, stateTypes);
 
-      for (const state of states) {
-        await state.save();
 
-        state.enumerations = await this.saveStateEnumerations(stateEnumerationMap.get(state.identifier), state.id);
+      await getConnection().createQueryBuilder().insert().into(State).values(states).execute();
 
-        this.createStateHistory(state);
+      // Only try and save enumerations if the user uploaded them.
+      if (stateEnumerationMap.size > 0) {
+        const stateIdentifierMap = new Map<string, string>();
+
+        for (const state of states) {
+          stateIdentifierMap.set(state.identifier, state.id);
+        }
+
+        for (const stateIdentifier of stateEnumerationMap.keys()) {
+          await this.saveStateEnumerations(stateEnumerationMap.get(stateIdentifier), stateIdentifierMap.get(stateIdentifier));
+        }
       }
+
+      this.createStateHistory(states);
 
       return {
         message: 'States Created',
@@ -246,7 +258,7 @@ export class StateResolver implements ResolverInterface<State> {
 
       await state.save();
 
-      this.createStateHistory(state);
+      this.createStateHistory([ state ]);
 
       state.enumerations = await this.saveStateEnumerations(data.enumerations, state.id);
 
@@ -276,28 +288,34 @@ export class StateResolver implements ResolverInterface<State> {
     void stateEnumerationHistory.save();
   }
 
-  private createStateHistory(state: State): void {
-    const stateHistory = StateHistory.create({
-      collectionId: state.collectionId,
-      dataType: state.dataType,
-      description: state.description,
-      displayName: state.displayName,
-      editable: state.editable,
-      externalLink: state.externalLink,
-      identifier: state.identifier,
-      source: state.source,
-      stateId: state.id,
-      subsystem: state.subsystem,
-      type: state.type,
-      units: state.units,
-      updated: new Date()
-    });
+  private createStateHistory(states: State[]): void {
+    const stateHistoryList = [];
 
-    void stateHistory.save();
+    for (const state of states) {
+      const stateHistory = StateHistory.create({
+        collectionId: state.collectionId,
+        dataType: state.dataType,
+        description: state.description,
+        displayName: state.displayName,
+        editable: state.editable,
+        externalLink: state.externalLink,
+        identifier: state.identifier,
+        source: state.source,
+        stateId: state.id,
+        subsystem: state.subsystem,
+        type: state.type,
+        units: state.units,
+        updated: new Date()
+      });
+
+      stateHistoryList.push(stateHistory);
+    }
+
+    void getConnection().createQueryBuilder().insert().into(StateHistory).values(stateHistoryList).execute();
   }
 
   private async saveStateEnumerations(
-    stateEnumerations: ModifyStateEnumeration[] | undefined, stateId: string): Promise<StateEnumeration[]> {
+    stateEnumerations: ModifyStateEnumeration[] | undefined, stateId: string | undefined): Promise<StateEnumeration[]> {
     if (stateEnumerations) {
       for (const enumeration of stateEnumerations) {
         const stateEnumeration = StateEnumeration.create(enumeration);
