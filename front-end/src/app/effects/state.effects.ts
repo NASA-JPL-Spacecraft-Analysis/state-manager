@@ -188,20 +188,6 @@ export class StateEffects {
             })
           ]
         )
-      ),
-      this.stateService.getStates(
-        collectionId
-      ).pipe(
-        map(states => StateActions.setStates({
-          states
-        })),
-        catchError(
-          (error: Error) => [
-            StateActions.fetchStatesFailure({
-              error
-            })
-          ]
-        )
       );
     }
   }

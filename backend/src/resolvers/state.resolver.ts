@@ -115,7 +115,6 @@ export class StateResolver implements ResolverInterface<State> {
 
       this.validationService.hasValidType(states, stateTypes);
 
-
       await getConnection().createQueryBuilder().insert().into(State).values(states).execute();
 
       // Only try and save enumerations if the user uploaded them.
