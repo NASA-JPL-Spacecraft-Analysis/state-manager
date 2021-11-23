@@ -4,7 +4,12 @@ import { ObjectType, Field, ID } from 'type-graphql';
 import { IdentifierType } from './identifier-type';
 import { StateEnumeration } from './state-enumeration';
 
-@Entity('states')
+@Entity({
+  name: 'states',
+  orderBy: {
+    identifier: 'ASC'
+  }
+})
 @ObjectType()
 export class State extends IdentifierType {
   @Column({ default: null, nullable: true })

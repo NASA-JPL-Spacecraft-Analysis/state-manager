@@ -22,13 +22,13 @@ export class CommandSidenavComponent implements OnChanges {
   @Input() public commandIdentifierMap: IdentifierMap;
 
   @Output() public errorEmitter: EventEmitter<string>;
-  @Output() public modifyCommand: EventEmitter<{ command: Command, deletedArgumentIds: string[] }>;
+  @Output() public modifyCommand: EventEmitter<{ command: Command; deletedArgumentIds: string[] }>;
 
   public deletedArgumentIds: string[];
   public form: FormGroup;
   public newCommand: Command;
   public originalIdentifier: string;
-  public selectedType: string;
+  public type: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -39,7 +39,7 @@ export class CommandSidenavComponent implements OnChanges {
     this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
 
     this.errorEmitter = new EventEmitter<string>();
-    this.modifyCommand = new EventEmitter<{ command: Command, deletedArgumentIds: string[] }>();
+    this.modifyCommand = new EventEmitter<{ command: Command; deletedArgumentIds: string[] }>();
   }
 
   public ngOnChanges(): void {
@@ -63,11 +63,12 @@ export class CommandSidenavComponent implements OnChanges {
       this.newCommand = {
         ...this.command,
         arguments: [
-          ...this.commandArguments.map(argument => { return { ...argument }})
+          ...this.commandArguments.map(argument => ({ ...argument }))
         ]
       };
     }
 
+    this.type = this.newCommand.type;
     this.originalIdentifier = this.newCommand.identifier;
     this.deletedArgumentIds = [];
 
@@ -79,7 +80,7 @@ export class CommandSidenavComponent implements OnChanges {
       externalLink: new FormControl(this.newCommand.externalLink),
       id: new FormControl(this.newCommand.id),
       identifier: new FormControl(this.newCommand.identifier),
-      type: new FormControl(this.selectedType, [ Validators.required ])
+      type: new FormControl(this.type, [ Validators.required ])
     });
   }
 

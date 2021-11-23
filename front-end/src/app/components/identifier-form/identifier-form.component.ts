@@ -1,11 +1,11 @@
-import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
+import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-
-import { MaterialModule } from 'src/app/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import { MaterialModule } from 'src/app/material';
 import { IdentifierMap } from 'src/app/models';
 
 @Component({
@@ -14,15 +14,18 @@ import { IdentifierMap } from 'src/app/models';
   styleUrls: [ 'identifier-form.component.css' ],
   templateUrl: 'identifier-form.component.html'
 })
-export class IdentifierFormComponent {
+export class IdentifierFormComponent implements OnChanges {
   @Input() public originalIdentifier: string;
   @Input() public identifierMap: IdentifierMap;
+  @Input() public id: string;
+  @Input() public type: string;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public identifierEmitter: EventEmitter<string>;
 
   @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
 
+  public currentIdentifier: string;
   public identifierIcon: string;
   public identifierTooltipText: string;
 
@@ -36,6 +39,12 @@ export class IdentifierFormComponent {
     this.identifierEmitter = new EventEmitter<string>();
   }
 
+  public ngOnChanges(): void {
+    this.currentIdentifier = this.originalIdentifier;
+
+    this.onIdentifierChange(this.currentIdentifier);
+  }
+
   /**
    * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
    * if the identifier isn't empty.
@@ -43,6 +52,12 @@ export class IdentifierFormComponent {
    * @param identifier The current identifier.
    */
   public onIdentifierChange(identifier: string): void {
+    /**
+     * Keep track of the current identifier, so if the user changes the type
+     * we check if it's a duplicate again.
+     */
+    this.currentIdentifier = identifier;
+
     if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
       if (this.isIdentifierDuplicate(identifier)) {
         this.identifierIcon = 'clear';
@@ -68,15 +83,20 @@ export class IdentifierFormComponent {
   /**
    * Checks to see if an identifier is duplicate by:
    * 1) That we have some identifiers
-   * 2) That we have a unique identifier
-   * 3) AND that we're not flagging an edited identifier on it's own value
+   * 2) That we have a unique identifier and type
    *
    * @param identifier The current identifier.
    */
   private isIdentifierDuplicate(identifier: string): boolean {
-    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
-      return this.identifierMap[identifier]
-        && (!this.originalIdentifier || identifier !== this.originalIdentifier);
+    const identifierList = this.identifierMap[identifier];
+
+    if (identifierList) {
+      for (const item of identifierList) {
+        // Check each item that isn't the item we have open in the sidenav, and its type.
+        if (item.id !== this.id && item.type === this.type) {
+          return true;
+        }
+      }
     }
 
     return false;

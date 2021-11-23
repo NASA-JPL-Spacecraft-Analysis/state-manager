@@ -27,12 +27,12 @@ export class ValidationService {
    * Checks to make sure we're not saving a duplicate identifier.
    *
    * @param items The list of our current items that have identifiers.
-   * @param id The optional id that we're updating.
    * @param identifier The identifier of the new/updated id.
+   * @param type The type of the item we're checking.
    */
-  public isDuplicateIdentifier(items: IdentifierType[], identifier: string | undefined, id?: string): boolean {
+  public isDuplicateIdentifier(items: IdentifierType[], identifier: string, type: string | undefined): boolean {
     for (const item of items) {
-      if (item.id !== id && item.identifier === identifier) {
+      if (item.identifier === identifier && item.type === type) {
         throw new UserInputError(ErrorConstants.duplicateIdentifierError(identifier));
       }
     }

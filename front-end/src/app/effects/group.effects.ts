@@ -1,32 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Action, Store } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of, forkJoin } from 'rxjs';
-import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { CollectionActions, EventActions, GroupActions, LayoutActions, StateActions, ToastActions } from '../actions';
-import { AppState } from '../app-store';
+import { GroupActions, LayoutActions, ToastActions } from '../actions';
 import { mapToParam, ofRoute } from '../functions/router';
-import { EventService, GroupService, StateService } from '../services';
+import { GroupService } from '../services';
 import { GroupResponse, Response } from '../models';
 import { ConfirmationDialogComponent } from '../components';
+import { InformationTypeEffects } from './information-types.effects';
+import { EventEffects } from './event.effects';
+import { StateEffects } from './state.effects';
+import { CommandEffects } from './command.effects';
+import { ConstraintEffects } from './constraint.effects';
 
 @Injectable()
 export class GroupEffects {
-  constructor(
-    private actions: Actions,
-    private dialog: MatDialog,
-    private eventService: EventService,
-    private groupService: GroupService,
-    private router: Router,
-    private stateService: StateService,
-    private store: Store<AppState>
-  ) {}
-
-  public createGroup = createEffect(() => {
-    return this.actions.pipe(
+  public createGroup = createEffect(() =>
+    this.actions.pipe(
       ofType(GroupActions.createGroup),
       switchMap(({ collectionId, group }) =>
         this.groupService.createGroup(
@@ -54,7 +48,7 @@ export class GroupEffects {
         )
       )
     )
-  });
+  );
 
   public deleteGroup = createEffect(() =>
     this.actions.pipe(
@@ -117,46 +111,25 @@ export class GroupEffects {
     )
   );
 
-  public getGroupsAndMappingsByCollectionId = createEffect(() => {
-    return this.actions.pipe(
-      ofType(CollectionActions.setSelectedCollection),
-      switchMap(({ id }) => {
-        if (id) {
-          return this.getGroupsAndMappings(id);
-        }
-
-        return [];
-      })
-    )
-  });
-
-  public getGroupsAndMappingsBySelectedCollectionId = createEffect(() => {
-    return this.actions.pipe(
-      ofRoute('collection/:collectionId/groups'),
-      withLatestFrom(this.store),
-      map(([_, state]) => state),
-      switchMap(state => {
-        if (state.collection.selectedCollectionId) {
-          return this.getGroupsAndMappings(state.collection.selectedCollectionId);
-        }
-
-        return [];
-      })
-    )
-  });
-
-  public navGroups = createEffect(() => {
-    return this.actions.pipe(
+  public navGroups = createEffect(() =>
+    this.actions.pipe(
       ofRoute('collection/:collectionId/groups'),
       mapToParam<string>('collectionId'),
       switchMap(collectionId =>
-        this.getItems(collectionId)
+        merge(
+          this.constraintEffects.getConstraints(collectionId, false),
+          this.commandEffects.getCommands(collectionId, false),
+          this.eventEffects.getEvents(collectionId, false),
+          this.getGroupsAndMappings(collectionId),
+          this.informationTypeEffects.getInformationTypes(collectionId),
+          this.stateEffects.getStates(collectionId, false)
+        )
       )
     )
-  });
+  );
 
-  public updateGroup = createEffect(() => {
-    return this.actions.pipe(
+  public updateGroup = createEffect(() =>
+    this.actions.pipe(
       ofType(GroupActions.updateGroup),
       switchMap(({ collectionId, group }) =>
         this.groupService.updateGroup(
@@ -184,45 +157,20 @@ export class GroupEffects {
         )
       )
     )
-  });
+  );
 
-  private getItems(collectionId: string): Observable<Action> {
-    const url = this.router.routerState.snapshot.url.split('/').pop();
+  constructor(
+    private actions: Actions,
+    private commandEffects: CommandEffects,
+    private constraintEffects: ConstraintEffects,
+    private dialog: MatDialog,
+    private eventEffects: EventEffects,
+    private groupService: GroupService,
+    private informationTypeEffects: InformationTypeEffects,
+    private router: Router,
+    private stateEffects: StateEffects
+  ) {}
 
-    if (url === 'groups') {
-      return merge(
-        this.eventService.getEvents(
-          collectionId
-        ).pipe(
-          map(events => EventActions.setEvents({
-            events
-          })),
-          catchError(
-            (error: Error) => [
-              EventActions.fetchEventMapFailure({
-                error
-              })
-            ]
-          )
-        ),
-        this.stateService.getStates(
-          collectionId
-        ).pipe(
-          map(states => StateActions.setStates({
-            states
-          })),
-          catchError(
-            (error: Error) => [
-              StateActions.fetchStatesFailure({
-                error
-              })
-            ]
-          )
-        )
-      )
-    }
-  }
-  
   private getGroupsAndMappings(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
 

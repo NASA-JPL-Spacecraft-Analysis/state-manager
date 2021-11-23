@@ -3,7 +3,12 @@ import { Field, ID, ObjectType } from 'type-graphql';
 
 import { IdentifierType } from './identifier-type';
 
-@Entity('events')
+@Entity({
+  name: 'events',
+  orderBy: {
+    identifier: 'ASC'
+  }
+})
 @ObjectType()
 export class Event extends IdentifierType {}
 

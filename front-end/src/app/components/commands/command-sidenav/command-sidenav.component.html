@@ -12,6 +12,8 @@
       <app-identifier-form
         [originalIdentifier]="originalIdentifier"
         [identifierMap]="commandIdentifierMap"
+        [id]="newCommand.id"
+        [type]="type"
         (duplicateIdentifier)="onDuplicateIdentifier($event)"
         (identifierEmitter)="onIdentifierChange($event)">
       </app-identifier-form>

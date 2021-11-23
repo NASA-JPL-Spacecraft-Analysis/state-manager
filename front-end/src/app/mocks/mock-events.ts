@@ -25,11 +25,16 @@ export const mockEvent1History: EventHistory = {
 };
 
 export const mockEventIdentifierMap: IdentifierMap = {
-  [mockEvent1.identifier]: mockEvent1.id
-}
+  [mockEvent1.identifier]: [
+    {
+      id: mockEvent1.id,
+      type: mockEvent1.type
+    }
+  ]
+};
 
 export const mockEvents: Event[] = [
-  mockEvent1 
+  mockEvent1
 ];
 
 export const mockEventHistory: EventHistory[] = [

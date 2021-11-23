@@ -27,8 +27,8 @@ export class StateSidenavComponent implements OnChanges {
   public deletedEnumerationIds: string[];
   public form: FormGroup;
   public newState: State;
-  public originalIdentifier: string;
   public stateTypes = stateTypes;
+  public type: string;
 
   private duplicateIdentifier: boolean;
 
@@ -67,12 +67,12 @@ export class StateSidenavComponent implements OnChanges {
       this.newState = {
         ...this.state,
         enumerations: [
-          ...this.stateEnumerations.map(enumeration => { return { ...enumeration }})
+          ...this.stateEnumerations.map(enumeration => ({ ...enumeration }))
         ]
       };
     }
 
-    this.originalIdentifier = this.newState.identifier;
+    this.type = this.newState.type;
     this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({
@@ -115,7 +115,8 @@ export class StateSidenavComponent implements OnChanges {
         this.modifyState.emit({
           state: {
             ...this.form.value,
-            enumerations: this.newState.enumerations
+            enumerations: this.newState.enumerations,
+            type: this.type
           },
           deletedEnumerationIds: this.deletedEnumerationIds
         });

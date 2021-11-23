@@ -11,7 +11,11 @@ export interface IdentifierType extends Node {
   type: string;
 }
 
-export type IdentifierMap = StringTMap<string>;
+export type IdentifierMap = StringTMap<IdentifierComparison[]>;
+export interface IdentifierComparison {
+  id: string;
+  type: string;
+}
 
 export enum IdentifierTypeEnum {
   'command' = 'command',

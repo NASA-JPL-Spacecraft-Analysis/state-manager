@@ -4,7 +4,12 @@ import { Column, Entity } from 'typeorm';
 import { IdentifierType } from './identifier-type';
 import { Node } from './node';
 
-@Entity('commands')
+@Entity({
+  name: 'commands',
+  orderBy: {
+    identifier: 'ASC'
+  }
+})
 @ObjectType()
 export class Command extends IdentifierType {
   @Field(() => [ CommandArgument ], { nullable: true })

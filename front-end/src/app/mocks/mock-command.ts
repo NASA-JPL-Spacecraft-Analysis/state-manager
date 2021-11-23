@@ -47,5 +47,10 @@ export const mockCommands: Command[] = [
 ];
 
 export const mockCommandIdentifierMap: IdentifierMap = {
-  [mockCommand.identifier]: mockCommand.id
+  [mockCommand.identifier]: [
+    {
+      id: mockCommand.id,
+      type: mockCommand.type
+    }
+  ]
 };

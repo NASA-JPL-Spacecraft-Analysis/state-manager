@@ -5,7 +5,14 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { State, StateMap, StateEnumeration, IdentifierMap } from '../../models';
-import { getStates, getSelectedState, getShowSidenav, getSelectedCollectionId, getStateIdentifierMap, getStateEnumerations } from '../../selectors';
+import {
+  getStates,
+  getSelectedState,
+  getShowSidenav,
+  getSelectedCollectionId,
+  getStateIdentifierMap,
+  getStateEnumerations
+} from '../../selectors';
 import { StateActions, LayoutActions, ToastActions } from '../../actions';
 import { StateSidenavModule, StateTableModule } from 'src/app/components';
 import { AppState } from 'src/app/app-store';

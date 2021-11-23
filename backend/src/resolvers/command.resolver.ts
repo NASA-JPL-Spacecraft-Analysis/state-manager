@@ -83,12 +83,12 @@ export class CommandResolver implements ResolverInterface<Command> {
   @Mutation(() => CommandResponse)
   public async createCommand(@Arg('data') data: CreateCommandInput): Promise<CommandResponse> {
     try {
-      this.validationService.isDuplicateIdentifier(await this.commands({ collectionId: data.collectionId }), data.identifier);
-
       const command = Command.create(data);
 
       // TODO: For now hardcore this value, there aren't any other options for commands.
       command.type = 'command';
+
+      this.validationService.isDuplicateIdentifier(await this.commands({ collectionId: data.collectionId }), data.identifier, command.type);
 
       await command.save();
 
@@ -154,7 +154,8 @@ export class CommandResolver implements ResolverInterface<Command> {
       const existingCommands = await this.commands({ collectionId: data.collectionId });
 
       for (const command of data.commands) {
-        this.validationService.isDuplicateIdentifier(existingCommands, command.identifier);
+        // TODO: For now hardcore this value, there aren't any other options for commands.
+        this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, 'command');
       }
 
       const commands = Command.create(data.commands);
@@ -234,7 +235,7 @@ export class CommandResolver implements ResolverInterface<Command> {
       command.type = 'command';
 
       this.validationService.isDuplicateIdentifier(
-        await this.commands({ collectionId: command.collectionId}), data.identifier, command.id);
+        await this.commands({ collectionId: command.collectionId}), command.identifier, command.type);
 
       Object.assign(command, data);
 

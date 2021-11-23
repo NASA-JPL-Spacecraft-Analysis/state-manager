@@ -26,7 +26,7 @@ export class EventSidenavComponent implements OnChanges {
   public eventTypes = eventTypes;
   public newEvent: Event;
   public originalIdentifier: string;
-  public selectedEventType: string;
+  public type: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -59,7 +59,7 @@ export class EventSidenavComponent implements OnChanges {
     }
 
     this.originalIdentifier = this.newEvent.identifier;
-    this.selectedEventType = this.newEvent.type;
+    this.type = this.newEvent.type;
 
     this.form = new FormGroup({
       id: new FormControl(this.newEvent.id),
@@ -68,7 +68,7 @@ export class EventSidenavComponent implements OnChanges {
       displayName: new FormControl(this.newEvent.displayName),
       description: new FormControl(this.newEvent.description),
       externalLink: new FormControl(this.newEvent.externalLink),
-      type: new FormControl(this.selectedEventType)
+      type: new FormControl(this.type)
     });
   }
 
@@ -87,7 +87,7 @@ export class EventSidenavComponent implements OnChanges {
 
   public onSubmit(): void {
     if (!this.isDuplicateIdentifier) {
-      this.form.value.type = this.selectedEventType;
+      this.form.value.type = this.type;
 
       this.modifyEvent.emit(this.form.value);
     } else {

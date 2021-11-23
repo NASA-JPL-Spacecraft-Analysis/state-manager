@@ -1,13 +1,15 @@
 import { createReducer, on } from '@ngrx/store';
+import { cloneDeep } from 'lodash';
 
 import { ConstraintActions, FileUploadActions } from '../actions';
+import { mapIdentifiers, mapItems } from '../functions/helpers';
 import { Constraint, ConstraintMap, IdentifierMap } from '../models';
 
 export interface ConstraintState {
   constraintHistory: Constraint[];
-  constraintIdentifierMap: IdentifierMap,
-  constraintMap: ConstraintMap,
-  selectedConstraintId: string
+  constraintIdentifierMap: IdentifierMap;
+  constraintMap: ConstraintMap;
+  selectedConstraintId: string;
 }
 
 export const initialState: ConstraintState = {
@@ -19,11 +21,63 @@ export const initialState: ConstraintState = {
 
 export const reducer = createReducer(
   initialState,
-  on(ConstraintActions.createConstraintSuccess, (state, { constraint }) => ({
+  on(ConstraintActions.createConstraintSuccess, (state, { constraint }) => modifyConstraint(state, constraint)),
+  on(ConstraintActions.setConstraintHistory, (state, { constraintHistory }) => ({
+    ...state,
+    constraintHistory
+  })),
+  on(ConstraintActions.setConstraints, (state, { constraints }) => ({
+    ...state,
+    constraintIdentifierMap: {
+      ...mapIdentifiers(constraints)
+    },
+    constraintMap: {
+      ...mapItems(constraints) as ConstraintMap
+    }
+  })),
+  on(ConstraintActions.setSelectedConstraint, (state, { id }) => ({
+    ...state,
+    selectedConstraintId: id
+  })),
+  on(ConstraintActions.updateConstraintSuccess, (state, { constraint }) => modifyConstraint(state, constraint)),
+  on(FileUploadActions.uploadConstraintsSuccess, (state, { constraints }) => ({
+    ...state,
+    constraintMap: {
+      ...state.constraintMap,
+      ...mapItems(constraints) as ConstraintMap
+    },
+    constraintIdentifierMap: {
+      ...state.constraintIdentifierMap,
+      ...mapIdentifiers(constraints)
+    }
+  }))
+);
+
+const modifyConstraint = (state: ConstraintState, constraint: Constraint): ConstraintState => {
+  const constraintIdentifierMap = cloneDeep(state.constraintIdentifierMap);
+
+  for (const identifier of Object.keys(constraintIdentifierMap)) {
+    let index = 0;
+
+    for (const item of constraintIdentifierMap[identifier]) {
+      if (item.id === constraint.id) {
+        constraintIdentifierMap[identifier] = constraintIdentifierMap[identifier].splice(index, 1);
+      }
+
+      index++;
+    }
+  }
+  return {
     ...state,
     constraintIdentifierMap: {
       ...state.constraintIdentifierMap,
-      [constraint.identifier]: constraint.id
+      [constraint.identifier]: [
+        ...constraintIdentifierMap[constraint.identifier],
+        {
+          id: constraint.id,
+          type: constraint.type
+        }
+      ]
     },
     constraintMap: {
       ...state.constraintMap,
@@ -32,75 +86,5 @@ export const reducer = createReducer(
       }
     },
     selectedConstraintId: constraint.id
-  })),
-  on(ConstraintActions.setConstraintHistory, (state, { constraintHistory }) => ({
-    ...state,
-    constraintHistory
-  })),
-  on(ConstraintActions.setConstraints, (state, { constraints }) => {
-    const constraintIdentifierMap = {};
-    const constraintMap = {};
-
-    for (const constraint of constraints) {
-      constraintIdentifierMap[constraint.identifier] = constraint.id;
-      constraintMap[constraint.id] = constraint;
-    }
-
-    return {
-      ...state,
-      constraintIdentifierMap,
-      constraintMap
-    };
-  }),
-  on(ConstraintActions.setSelectedConstraint, (state, { id }) => ({
-    ...state,
-    selectedConstraintId: id
-  })),
-  on(ConstraintActions.updateConstraintSuccess, (state, { constraint }) => {
-    const constraintIdentifierMap = {
-      ...state.constraintIdentifierMap
-    };
-
-    for (const identifier of Object.keys(constraintIdentifierMap)) {
-      // Remove the old identifier from our map
-      if (constraintIdentifierMap[identifier] === constraint.id) {
-        delete constraintIdentifierMap[identifier];
-      }
-    }
-
-    return {
-      ...state,
-      constraintIdentifierMap: {
-        ...constraintIdentifierMap,
-        [constraint.identifier]: constraint.id
-      },
-      constraintMap: {
-        ...state.constraintMap,
-        [constraint.id]: {
-          ...constraint
-        }
-      }
-    };
-  }),
-  on(FileUploadActions.uploadConstraintsSuccess, (state, { constraints }) => {
-    const constraintIdentifierMap = {};
-    const constraintMap = {};
-
-    for (const constraint of constraints) {
-      constraintIdentifierMap[constraint.identifier] = constraint.id;
-      constraintMap[constraint.id] = constraint;
-    }
-
-    return {
-      ...state,
-      constraintIdentifierMap: {
-        ...state.constraintIdentifierMap,
-        ...constraintIdentifierMap
-      },
-      constraintMap: {
-        ...state.constraintMap,
-        ...constraintMap
-      }
-    };
-  })
-);
+  };
+};

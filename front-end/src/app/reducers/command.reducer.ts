@@ -1,15 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
+import { cloneDeep } from 'lodash';
 
 import { CommandActions, FileUploadActions } from '../actions';
+import { mapIdentifiers, mapItems } from '../functions/helpers';
 import { Command, CommandArgumentHistory, CommandArgumentMap, CommandHistory, CommandMap, IdentifierMap } from '../models';
 
 export interface CommandState {
   commandArgumentHistory: CommandArgumentHistory[];
   commandArgumentMap: CommandArgumentMap;
   commandHistory: CommandHistory[];
-  commandIdentifierMap: IdentifierMap,
-  commandMap: CommandMap,
-  selectedCommandId: string
+  commandIdentifierMap: IdentifierMap;
+  commandMap: CommandMap;
+  selectedCommandId: string;
 }
 
 export const initialState: CommandState = {
@@ -23,7 +25,7 @@ export const initialState: CommandState = {
 
 export const reducer = createReducer(
   initialState,
-  on(CommandActions.createCommandSuccess, (state, { command }) => createOrUpdateCommandSuccess(state, command)),
+  on(CommandActions.createCommandSuccess, (state, { command }) => modifyCommand(state, command)),
   on(CommandActions.deleteArgumentsSuccess, (state, { deletedArgumentIds }) => {
     const commandArgumentMap = {
       ...state.commandArgumentMap
@@ -82,61 +84,48 @@ export const reducer = createReducer(
     ...state,
     commandHistory
   })),
-  on(CommandActions.setCommands, (state, { commands }) => {
-    const commandIdentifierMap = {};
-    const commandMap = {};
-
-    for (const command of commands) {
-      commandIdentifierMap[command.identifier] = command.id;
-      commandMap[command.id] = command;
+  on(CommandActions.setCommands, (state, { commands }) => ({
+    ...state,
+    commandMap: {
+      ...mapItems(commands) as CommandMap
+    },
+    commandIdentifierMap: {
+      ...mapIdentifiers(commands)
     }
-
-    return {
-      ...state,
-      commandIdentifierMap,
-      commandMap
-    };
-  }),
+  })),
   on(CommandActions.setSelectedCommand, (state, { id }) => ({
     ...state,
     selectedCommandId: id
   })),
-  on(CommandActions.updateCommandSuccess, (state, { command }) => createOrUpdateCommandSuccess(state, command)),
-  on(FileUploadActions.uploadCommandsSuccess, (state, { commands }) => {
-    const commandIdentifierMap = {};
-    const commandMap = {};
-
-    for (const command of commands) {
-      commandIdentifierMap[command.identifier] = command.id;
-      commandMap[command.id] = command;
+  on(CommandActions.updateCommandSuccess, (state, { command }) => modifyCommand(state, command)),
+  on(FileUploadActions.uploadCommandsSuccess, (state, { commands }) => ({
+    ...state,
+    commandMap: {
+      ...state.commandMap,
+      ...mapItems(commands) as CommandMap
+    },
+    commandIdentifierMap: {
+      ...state.commandIdentifierMap,
+      ...mapIdentifiers(commands)
     }
-
-    return {
-      ...state,
-      commandIdentifierMap: {
-        ...state.commandIdentifierMap,
-        ...commandIdentifierMap
-      },
-      commandMap: {
-        ...state.commandMap,
-        ...commandMap
-      }
-    };
-  })
+  }))
 );
 
-const createOrUpdateCommandSuccess = (state: CommandState, command: Command): CommandState => {
+const modifyCommand = (state: CommandState, command: Command): CommandState => {
   const commandArgumentMap = {};
   commandArgumentMap[command.id] = command.arguments;
 
-  const commandIdentifierMap = {
-    ...state.commandIdentifierMap
-  };
+  const commandIdentifierMap = cloneDeep(state.commandIdentifierMap);
 
   for (const identifier of Object.keys(commandIdentifierMap)) {
-    // Remove the old identifier from our map
-    if (commandIdentifierMap[identifier] === command.id) {
-      delete commandIdentifierMap[identifier];
+    let index = 0;
+
+    for (const item of commandIdentifierMap[identifier]) {
+      if (item.id === command.id) {
+        commandIdentifierMap[identifier] = commandIdentifierMap[identifier].splice(index, 1);
+      }
+
+      index++;
     }
   }
 
@@ -146,8 +135,14 @@ const createOrUpdateCommandSuccess = (state: CommandState, command: Command): Co
       ...commandArgumentMap
     },
     commandIdentifierMap: {
-      ...commandIdentifierMap,
-      [command.identifier]: command.id
+      ...state.commandIdentifierMap,
+      [command.identifier]: [
+        ...commandIdentifierMap[command.identifier],
+        {
+          id: command.id,
+          type: command.type
+        }
+      ]
     },
     commandMap: {
       ...state.commandMap,
