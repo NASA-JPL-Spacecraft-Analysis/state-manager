@@ -145,6 +145,9 @@ const modifyState = (stateState: StateState, state: State): StateState => {
     }
   }
 
+  const currentIdentifierMap =
+        stateIdentifierMap[state.identifier] ? stateIdentifierMap[state.identifier] : [];
+
   return {
     ...stateState,
     selectedStateId: state.id,
@@ -154,7 +157,7 @@ const modifyState = (stateState: StateState, state: State): StateState => {
     stateIdentifierMap: {
       ...stateState.stateIdentifierMap,
       [state.identifier]: [
-        ...stateIdentifierMap[state.identifier],
+        ...currentIdentifierMap,
         {
           id: state.id,
           type: state.type

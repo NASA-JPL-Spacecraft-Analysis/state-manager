@@ -331,8 +331,6 @@ export class StateResolver implements ResolverInterface<State> {
       }
     }
 
-    console.log('done');
-
     return StateEnumeration.find({
       where: {
         stateId

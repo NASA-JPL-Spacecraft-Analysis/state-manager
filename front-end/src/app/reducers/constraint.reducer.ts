@@ -67,12 +67,16 @@ const modifyConstraint = (state: ConstraintState, constraint: Constraint): Const
       index++;
     }
   }
+
+  const currentIdentifierMap =
+        constraintIdentifierMap[constraint.identifier] ? constraintIdentifierMap[constraint.identifier] : [];
+
   return {
     ...state,
     constraintIdentifierMap: {
       ...state.constraintIdentifierMap,
       [constraint.identifier]: [
-        ...constraintIdentifierMap[constraint.identifier],
+        ...currentIdentifierMap,
         {
           id: constraint.id,
           type: constraint.type
