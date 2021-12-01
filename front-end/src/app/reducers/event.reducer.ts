@@ -78,12 +78,15 @@ const modifyEvent = (state: EventState, event: Event): EventState => {
     }
   }
 
+  const currentIdentifierMap =
+        eventIdentifierMap[event.identifier] ? eventIdentifierMap[event.identifier] : [];
+
   return {
     ...state,
     eventIdentifierMap: {
       ...state.eventIdentifierMap,
       [event.identifier]: [
-        ...eventIdentifierMap[event.identifier],
+        ...currentIdentifierMap,
         {
           id: event.id,
           type: event.type

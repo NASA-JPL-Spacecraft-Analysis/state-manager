@@ -6,7 +6,7 @@ import { CollectionConstants, GroupConstants } from '../constants';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping, GroupMappingItemUnion } from '../models';
-import { GroupResponse, GroupsResponse, Response } from '../responses';
+import { DeleteItemsResponse, GroupResponse, GroupsResponse, Response } from '../responses';
 import { GroupService, IdentifierTypeService } from '../service';
 
 @Resolver(() => Group)
@@ -128,6 +128,36 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       return {
         message: group.identifier + ' Deleted',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllGroups(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    try {
+      const groups = await Group.find({
+        where: {
+          collectionId
+        }
+      });
+
+      const deletedIds: string[] = [];
+
+      for (const group of groups) {
+        deletedIds.push(group.id);
+
+        await group.remove();
+      }
+
+      return {
+        deletedIds,
+        message: 'Groups deleted successfully',
         success: true
       };
     } catch (error) {

@@ -129,13 +129,16 @@ const modifyCommand = (state: CommandState, command: Command): CommandState => {
     }
   }
 
+  const currentIdentifierMap =
+        commandIdentifierMap[command.identifier] ? commandIdentifierMap[command.identifier] : [];
+
   return {
     ...state,
     commandArgumentMap: {
       ...commandArgumentMap
     },
     commandIdentifierMap: {
-      ...state.commandIdentifierMap,
+      ...currentIdentifierMap,
       [command.identifier]: [
         ...commandIdentifierMap[command.identifier],
         {

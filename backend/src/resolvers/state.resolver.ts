@@ -12,8 +12,15 @@ import {
 } from '../inputs';
 import { ValidationService } from '../service';
 import { CreateStatesInput } from '../inputs/state/create-states.input';
-import { DeleteEnumerationsResponse, StateEnumerationResponse, StateResponse, StatesResponse } from '../responses';
-import { CollectionIdArgs, IdentifierArgs } from '../args';
+import {
+  DeleteEnumerationsResponse,
+  DeleteItemResponse,
+  DeleteItemsResponse,
+  StateEnumerationResponse,
+  StateResponse,
+  StatesResponse
+} from '../responses';
+import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
 
@@ -24,7 +31,7 @@ export class StateResolver implements ResolverInterface<State> {
   constructor(
     private readonly validationService: ValidationService
   ) {
-    this.sharedRepository = new SharedRepository<State>(getConnection(), State);
+    this.sharedRepository = new SharedRepository<State>(getConnection(), State, this.validationService);
   }
 
   @Mutation(() => StateResponse)
@@ -145,6 +152,11 @@ export class StateResolver implements ResolverInterface<State> {
     }
   }
 
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllStates(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteAll(collectionId);
+  }
+
   @Mutation(() => DeleteEnumerationsResponse)
   public async deleteEnumerations(@Arg('data') data: DeleteEnumerationsInput): Promise<DeleteEnumerationsResponse> {
     try {
@@ -184,6 +196,16 @@ export class StateResolver implements ResolverInterface<State> {
         success: false
       };
     }
+  }
+
+  @Mutation(() => DeleteItemResponse)
+  public deleteState(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
+    return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public deleteStatesByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, stateTypes);
   }
 
   @FieldResolver(() => [ StateEnumeration ])

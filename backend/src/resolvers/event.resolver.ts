@@ -2,12 +2,12 @@ import { Resolver, Query, Arg, Mutation, Args } from 'type-graphql';
 import { UserInputError } from 'apollo-server';
 import { getConnection } from 'typeorm';
 
-import { CollectionIdArgs, IdentifierArgs } from '../args';
+import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { Event, EventHistory, eventTypes } from './../models';
 import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs/event';
 import { ValidationService } from '../service';
 import { SharedRepository } from '../repositories';
-import { EventResponse, EventsResponse } from '../responses';
+import { DeleteItemResponse, DeleteItemsResponse, EventResponse, EventsResponse } from '../responses';
 import { EventConstants } from '../constants';
 
 
@@ -18,7 +18,7 @@ export class EventResolver {
   constructor(
     private readonly validationService: ValidationService
   ) {
-    this.sharedRepository = new SharedRepository<Event>(getConnection(), Event);
+    this.sharedRepository = new SharedRepository<Event>(getConnection(), Event, validationService);
   }
 
   @Mutation(() => EventResponse)
@@ -80,6 +80,21 @@ export class EventResolver {
         success: false
       };
     }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllEvents(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteAll(collectionId);
+  }
+
+  @Mutation(() => DeleteItemResponse)
+  public deleteEvent(@Args() { collectionId, identifier, type }: TypeArgs): Promise<DeleteItemResponse> {
+    return this.sharedRepository.deleteByIdentifierAndType(collectionId, identifier, type);
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public deleteEventsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, eventTypes);
   }
 
   @Query(() => Event)

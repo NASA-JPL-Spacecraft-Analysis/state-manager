@@ -1,7 +1,7 @@
 import { Resolver, Query, ResolverInterface, FieldResolver, Root, Args, Mutation, Arg } from 'type-graphql';
 import { UserInputError } from 'apollo-server';
 
-import { CollectionIdArgs, IdentifierArgs } from '../args';
+import { CollectionIdArgs, IdArgs, IdentifierArgs } from '../args';
 import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
 import {
   Relationship,
@@ -12,11 +12,16 @@ import {
   IdentifierTypeUnion,
   Constraint
 } from '../models';
-import { RelationshipResponse, RelationshipsResponse } from '../responses';
-import { RelationshipConstants } from '../constants';
+import { DeleteItemResponse, DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
+import { ErrorConstants, RelationshipConstants } from '../constants';
+import { ValidationService } from '../service';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
+  constructor(
+    private readonly validationService: ValidationService
+  ) {}
+
   @Mutation(() => RelationshipResponse)
   public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<RelationshipResponse> {
     try {
@@ -74,6 +79,68 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         relationships,
         success: true
       };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => DeleteItemsResponse)
+  public async deleteAllRelationships(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+    try {
+      const relationships = await Relationship.find({
+        where: {
+          collectionId
+        }
+      });
+
+      // Check to make sure each relationship can be deleted, otherwise throw an error.
+      await this.validationService.canRelationshipsBeDeleted(relationships, collectionId);
+
+      const deletedIds: string[] = [];
+
+      for (const relationship of relationships) {
+        deletedIds.push(relationship.id);
+
+        await relationship.remove();
+      }
+
+      return {
+        deletedIds,
+        message: 'Relationships deleted successfully',
+        success: true
+      };
+    } catch (error) {
+      return {
+        message: error,
+        success: false
+      };
+    }
+  }
+
+  @Mutation(() => DeleteItemResponse)
+  public async deleteRelationship(@Args() { id }: IdArgs): Promise<DeleteItemResponse> {
+    try {
+      const relationship = await Relationship.findOne({
+        where: {
+          id
+        }
+      });
+
+      if (!relationship) {
+        throw new UserInputError(ErrorConstants.itemNotFoundIdError(id));
+      }
+
+      await relationship.remove();
+
+      return {
+        deletedId: id,
+        message: 'Relationship deleted',
+        success: true
+      };
+
     } catch (error) {
       return {
         message: error,
