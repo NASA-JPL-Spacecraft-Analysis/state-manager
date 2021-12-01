@@ -129,7 +129,11 @@ export class EventResolver {
         throw new UserInputError(EventConstants.eventNotFoundError(data.id));
       }
 
-      this.validationService.isDuplicateIdentifier(await this.events({ collectionId: event.collectionId}), data.identifier, data.type);
+      // Remove the event we're updating from the list so we don't mark it as a duplicate identifier.
+      let events = await this.events({ collectionId: event.collectionId });
+      events = events.filter((e) => e.id !== event.id);
+
+      this.validationService.isDuplicateIdentifier(events, data.identifier, data.type);
 
       Object.assign(event, data);
 

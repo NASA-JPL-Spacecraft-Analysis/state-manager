@@ -128,8 +128,11 @@ export class ConstraintResolver {
         throw new UserInputError(ConstraintConstants.constraintNotFoundError(data.id));
       }
 
-      this.validationService.isDuplicateIdentifier(
-        await this.constraints({ collectionId: constraint.collectionId}), data.identifier, data.type);
+      // Remove the constraint we're updating from the list so we don't mark it as a duplicate identifier.
+      let constraints = await this.constraints({ collectionId: constraint.collectionId });
+      constraints = constraints.filter((s) => s.id !== constraint.id);
+
+      this.validationService.isDuplicateIdentifier(constraints, data.identifier, data.type);
 
       Object.assign(constraint, data);
 

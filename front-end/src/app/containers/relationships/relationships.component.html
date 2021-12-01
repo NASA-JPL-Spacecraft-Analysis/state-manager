@@ -21,11 +21,13 @@
 <div class="content-container">
   <div class="content">
     <app-relationships-table
+      [commandArgumentMap]="commandArgumentMap"
       [commandMap]="commandMap"
       [constraintMap]="constraintMap"
       [eventMap]="eventMap"
       [informationTypeMap]="informationTypeMap"
       [relationshipMap]="relationshipMap"
+      [stateEnumerationMap]="stateEnumerationMap"
       [stateMap]="stateMap"
       (relationshipSelected)="onModifyRelationship($event)">
     </app-relationships-table>
@@ -33,11 +35,13 @@
 
   <div class="sidenav" *ngIf="showSidenav">
     <app-relationship-sidenav
+      [commandArgumentMap]="commandArgumentMap"
       [commandMap]="commandMap"
       [constraintMap]="constraintMap"
       [eventMap]="eventMap"
       [informationTypeMap]="informationTypeMap"
       [relationship]="relationship"
+      [stateEnumerationMap]="stateEnumerationMap"
       [stateMap]="stateMap"
       (formError)="onFormErrorOutput($event)"
       (modifyRelationship)="onRelationshipOutput($event)">

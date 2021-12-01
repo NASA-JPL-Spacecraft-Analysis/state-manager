@@ -272,8 +272,11 @@ export class StateResolver implements ResolverInterface<State> {
 
       this.validationService.hasValidType([ state ], stateTypes);
 
-      this.validationService.isDuplicateIdentifier(
-        await this.states({ collectionId: state.collectionId }), data.identifier, data.type);
+      // Remove the state we're updating from the list so we don't mark it as a duplicate identifier.
+      let states = await this.states({ collectionId: state.collectionId });
+      states = states.filter((s) => s.id !== state.id);
+
+      this.validationService.isDuplicateIdentifier(states, data.identifier, data.type);
 
       Object.assign(state, data);
 

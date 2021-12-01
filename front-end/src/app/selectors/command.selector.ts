@@ -37,12 +37,12 @@ export const getCommandMap = createSelector(
 
 export const getCommands = createSelector(
   getCommandState,
-  (state: CommandState) => 
+  (state: CommandState) =>
     state.commandMap ? Object.values(state.commandMap) : undefined
 );
 
 export const getSelectedCommand = createSelector(
   getCommandState,
-  (state: CommandState) => 
+  (state: CommandState) =>
     state.selectedCommandId ? state.commandMap[state.selectedCommandId] : undefined
 );

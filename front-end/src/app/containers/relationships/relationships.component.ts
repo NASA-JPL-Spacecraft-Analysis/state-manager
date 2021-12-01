@@ -16,13 +16,14 @@ import {
   getInformationTypeMap,
   getCommandMap,
   getConstraintMap,
-  getCommandArgumentMap
+  getCommandArgumentMap,
+  getStateEnumerationMap,
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { LayoutActions, ToastActions, FileUploadActions, RelationshipActions } from 'src/app/actions';
 import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
-import { StateMap, InformationTypeMap, EventMap, ConstraintMap, CommandMap, CommandArgumentMap } from 'src/app/models';
+import { StateMap, InformationTypeMap, EventMap, ConstraintMap, CommandMap, CommandArgumentMap, StateEnumerationMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 
 @Component({
@@ -40,6 +41,7 @@ export class RelationshipsComponent implements OnDestroy {
   public relationshipMap: RelationshipMap;
   public relationship: Relationship;
   public showSidenav: boolean;
+  public stateEnumerationMap: StateEnumerationMap;
   public stateMap: StateMap;
 
   private collectionId: string;
@@ -88,6 +90,10 @@ export class RelationshipsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getStates)).subscribe(stateMap => {
         this.stateMap = stateMap;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateEnumerationMap)).subscribe(stateEnumerationMap => {
+        this.stateEnumerationMap = stateEnumerationMap;
         this.changeDetectorRef.markForCheck();
       })
     );

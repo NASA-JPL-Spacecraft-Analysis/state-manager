@@ -14,6 +14,11 @@ export const getStateEnumerationHistory = createSelector(
   (stateState: StateState) => stateState.stateEnumerationHistory
 );
 
+export const getStateEnumerationMap = createSelector(
+  getStatesState,
+  (stateState: StateState) => stateState.stateEnumerationMap
+);
+
 export const getStateEnumerations = createSelector(
   getStatesState,
   (stateState: StateState) =>
