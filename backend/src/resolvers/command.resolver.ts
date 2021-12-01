@@ -256,8 +256,11 @@ export class CommandResolver implements ResolverInterface<Command> {
       // TODO: For now hardcore this value, there aren't any other options for commands.
       command.type = 'command';
 
-      this.validationService.isDuplicateIdentifier(
-        await this.commands({ collectionId: command.collectionId}), command.identifier, command.type);
+      // Remove the command we're updating from the list so we don't mark it as a duplicate identifier.
+      let commands = await this.commands({ collectionId: command.collectionId });
+      commands = commands.filter((c) => c.id !== command.id);
+
+      this.validationService.isDuplicateIdentifier(commands, command.identifier, command.type);
 
       Object.assign(command, data);
 
