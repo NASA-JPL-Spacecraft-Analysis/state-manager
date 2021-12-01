@@ -5,23 +5,23 @@ CREATE TABLE `collections` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `command_arguments` (
-  `collectionId` varchar(36) NOT NULL,
-  `commandId` varchar(36) NOT NULL,
-  `id` varchar(36) NOT NULL,
-  `name` text NOT NULL,
-  `sortOrder` int,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `command_arguments_history` (
+CREATE TABLE `command_argument_history` (
   `collectionId` varchar(36) NOT NULL,
   `commandArgumentId` varchar(36) NOT NULL,
   `commandId` varchar(36) NOT NULL,
   `id` varchar(36) NOT NULL,
   `name` text NOT NULL,
-  `sortOrder` int(11),
+  `sortOrder` int(11) DEFAULT NULL,
   `updated` timestamp NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `command_arguments` (
+  `collectionId` varchar(36) NOT NULL,
+  `commandId` varchar(36) NOT NULL,
+  `id` varchar(36) NOT NULL,
+  `name` text NOT NULL,
+  `sortOrder` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -30,9 +30,9 @@ CREATE TABLE `command_history` (
   `commandId` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `description` text,
-  `displayName` text,
+  `displayName` text NOT NULL,
   `externalLink` text,
-  `editable` boolean NOT NULL,
+  `editable` tinyint(1) NOT NULL,
   `identifier` text NOT NULL,
   `type` text NOT NULL,
   `updated` timestamp NOT NULL,
@@ -43,9 +43,9 @@ CREATE TABLE `commands` (
   `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `description` text,
-  `displayName` text,
+  `displayName` text NOT NULL,
   `externalLink` text,
-  `editable` boolean NOT NULL,
+  `editable` tinyint(1) NOT NULL,
   `identifier` text NOT NULL,
   `type` text NOT NULL,
   PRIMARY KEY (`id`)
@@ -58,7 +58,7 @@ CREATE TABLE `constraint_history` (
   `description` text,
   `displayName` text,
   `externalLink` text,
-  `editable` boolean NOT NULL,
+  `editable` tinyint(1) NOT NULL,
   `identifier` text NOT NULL,
   `type` text NOT NULL,
   `updated` timestamp NOT NULL,
@@ -69,9 +69,9 @@ CREATE TABLE `constraints` (
   `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `description` text,
-  `displayName` text,
+  `displayName` text NOT NULL,
   `externalLink` text,
-  `editable` boolean NOT NULL,
+  `editable` tinyint(1) NOT NULL,
   `identifier` text NOT NULL,
   `type` text NOT NULL,
   PRIMARY KEY (`id`)
@@ -86,18 +86,20 @@ CREATE TABLE `event_history` (
   `description` text,
   `externalLink` text,
   `editable` tinyint(4) NOT NULL DEFAULT '1',
+  `type` text NOT NULL,
   `updated` timestamp NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `events` (
-  `id` varchar(36) NOT NULL,
+  `id` varchar(36) NOT NULL DEFAULT '',
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
   `displayName` text,
   `description` text,
   `externalLink` text,
   `editable` tinyint(4) NOT NULL DEFAULT '1',
+  `type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -112,7 +114,7 @@ CREATE TABLE `flight_rule_history` (
   `flightRuleId` varchar(36) NOT NULL,
   `updated` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `flight_rules` (
   `id` varchar(36) NOT NULL,
@@ -123,12 +125,13 @@ CREATE TABLE `flight_rules` (
   `externalLink` text,
   `stage` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `group_mapping` (
   `id` varchar(36) NOT NULL,
   `groupId` varchar(36) NOT NULL,
   `itemId` varchar(36) NOT NULL,
+  `sortOrder` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -143,10 +146,12 @@ CREATE TABLE `groups` (
 CREATE TABLE `information_types` (
   `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) DEFAULT NULL,
+  `type` text NOT NULL,
   `identifier` varchar(45) NOT NULL,
   `displayName` text,
   `description` text,
   `externalLink` text,
+  `editable` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -156,8 +161,8 @@ CREATE TABLE `relationship_history` (
   `relationshipId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
   `description` text,
-  `subjectType` int(11) NOT NULL,
-  `targetType` int(11) NOT NULL,
+  `subjectType` text NOT NULL,
+  `targetType` text NOT NULL,
   `subjectTypeId` varchar(36) NOT NULL,
   `targetTypeId` varchar(36) NOT NULL,
   `updated` timestamp NOT NULL,
@@ -169,22 +174,22 @@ CREATE TABLE `relationships` (
   `collectionId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
   `description` text,
-  `subjectType` int(11) NOT NULL,
-  `targetType` int(11) NOT NULL,
+  `subjectType` text NOT NULL,
+  `targetType` text NOT NULL,
   `subjectTypeId` varchar(36) NOT NULL,
   `targetTypeId` varchar(36) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_enumeration_history` (
-  `collectionId` varchar(36) NOT NULL,
   `id` varchar(36) NOT NULL,
-  `label` text,
-  `stateEnumerationId` varchar(36) NOT NULL,
-  `stateId` varchar(36) NOT NULL,
   `updated` timestamp NOT NULL,
+  `stateEnumerationId` varchar(36) NOT NULL,
   `value` text,
-  PRIMARY KEY (id)
+  `label` text,
+  `collectionId` varchar(36) NOT NULL,
+  `stateId` varchar(36) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_enumerations` (
@@ -207,7 +212,10 @@ CREATE TABLE `state_history` (
   `source` text,
   `subsystem` text,
   `description` text,
+  `editable` tinyint(4) NOT NULL DEFAULT '1',
+  `externalLink` text,
   `updated` timestamp NOT NULL,
+  `type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -221,5 +229,9 @@ CREATE TABLE `states` (
   `source` text,
   `subsystem` text,
   `description` text,
+  `editable` tinyint(4) NOT NULL DEFAULT '1',
+  `externalLink` text,
+  `type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
