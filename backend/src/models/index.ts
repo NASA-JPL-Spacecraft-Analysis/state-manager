@@ -8,6 +8,7 @@ export * from './identifier-type-union';
 export * from './identifier-type';
 export * from './information-type';
 export * from './information-type.enum';
+export * from './relationship-type-union';
 export * from './relationship';
 export * from './state-enumeration';
 export * from './state';
