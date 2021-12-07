@@ -13,6 +13,7 @@ To be able to run and develop the application you need the following software in
 2. First start MySQL and create a schema named `state-manager`.
 3. Next create the `state-management-db-user` database user and grant it all privileges on our schema.
 4. To setup the database, connect to the MySQL server, and execute `backend/database-setup.sql`.
+5. This project uses the Stellar design system, follow the install instructions from Artifactory [here](https://github.jpl.nasa.gov/Stellar/stellar#installation-prerequisites)
 
 ### Running The Application
 1. Ensure MySQL server is running.
