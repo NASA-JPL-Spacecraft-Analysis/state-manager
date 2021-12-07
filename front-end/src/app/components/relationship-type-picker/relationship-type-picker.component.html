@@ -19,7 +19,7 @@
       <ng-container *ngFor="let value of commandArgumentMap | keyvalue">
         <mat-option *ngFor="let commandArgument of commandArgumentMap[value.key]"
           [value]="commandArgument.id">
-          {{commandArgument.name}}
+          {{ commandMap[commandArgument.commandId].identifier }} - {{commandArgument.name}}
         </mat-option>
       </ng-container>
     </mat-select>
@@ -69,7 +69,7 @@
       <ng-container *ngFor="let value of stateEnumerationMap | keyvalue">
         <mat-option *ngFor="let stateEnumeration of stateEnumerationMap[value.key]"
           [value]="stateEnumeration.id">
-          {{stateEnumeration.label}}
+          {{stateMap[stateEnumeration.stateId].identifier}} - {{stateEnumeration.label}}
         </mat-option>
       </ng-container>
     </mat-select>
