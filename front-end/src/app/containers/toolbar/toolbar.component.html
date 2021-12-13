@@ -6,49 +6,49 @@
   </div>
 
   <div class="navigation-container">
-    <button mat-button color="primary"
+    <button class="st-button"
       routerLink="/collection/{{selectedCollectionId}}/states"
       [ngClass]="{ 'active': route === 'states' || route === 'state-history' }">
       States
     </button>
 
-    <button mat-button color="primary"
+    <button class="st-button"
       routerLink="/collection/{{selectedCollectionId}}/relationships"
       [ngClass]="{ 'active': route === 'relationships' || route === 'relationship-history' }">
       Relationships
     </button>
 
-    <button mat-button color="primary"
+    <button class="st-button"
       routerLink="/collection/{{selectedCollectionId}}/events"
       [ngClass]="{ 'active': route === 'events' || route === 'event-history' }">
       Events
     </button>
 
-    <button mat-button color="primary"
+    <button class="st-button"
       routerLink="/collection/{{selectedCollectionId}}/constraints"
       [ngClass]="{ 'active': route === 'constraints' || route === 'constraint-history' }">
       Constraints
     </button>
 
-    <button mat-button color="primary"
+    <button class="st-button"
       routerLink="/collection/{{selectedCollectionId}}/commands"
       [ngClass]="{ 'active': route === 'commands' || route === 'command-history' }">
       Commands
     </button>
 
-    <button mat-button color="primary"
+    <button class="st-button"
       routerLink="/collection/{{selectedCollectionId}}/information-types"
       [ngClass]="{ 'active': route === 'information-types' }">
       Information Types 
     </button>
 
-    <button mat-button color="primary"
+    <button class="st-button"
       routerLink="/collection/{{selectedCollectionId}}/groups"
       [ngClass]="{ 'active': route === 'groups' }">
       Groups
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="versionMenu">
+    <button class="st-button" [matMenuTriggerFor]="versionMenu">
       <mat-icon class="help-icon" svgIcon="help"></mat-icon>
     </button>
 
@@ -56,7 +56,7 @@
       <span class="version-text">State Manager V3.0</span>
     </mat-menu>
 
-    <button mat-icon-button [matMenuTriggerFor]="menu">
+    <button class="st-button" [matMenuTriggerFor]="menu">
       <mat-icon svgIcon="more_vert"></mat-icon>
     </button>
 

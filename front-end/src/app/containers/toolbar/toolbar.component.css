@@ -18,6 +18,11 @@ button {
   color: black;
 }
 
+.navigation-container {
+  display: flex;
+  justify-content: center;
+}
+
 .toolbar-container {
   display: flex;
   align-items: center;
