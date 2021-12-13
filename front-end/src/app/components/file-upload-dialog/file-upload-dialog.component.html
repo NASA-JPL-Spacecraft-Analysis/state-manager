@@ -24,12 +24,12 @@
   </div>
 </div>
 
-<div mat-dialog-actions>
-  <button mat-button class="cancel-button" (click)="onCancel()">
+<div class="file-upload-actions" mat-dialog-actions>
+  <button class="st-button tertiary" (click)="onCancel()">
     Cancel
   </button>
 
-  <button mat-button class="gray-button" (click)="fileUpload.click()">
+  <button class="st-button" (click)="fileUpload.click()">
     Upload {{data.dialogType}}
   </button>
   <input #fileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
