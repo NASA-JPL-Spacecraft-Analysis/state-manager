@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~11.0.3",
     "@angular/platform-browser-dynamic": "~11.0.3",
     "@angular/router": "~11.0.3",
+    "@gov.nasa.jpl.stellar/icons": "^1.0.3",
     "@gov.nasa.jpl.stellar/stellar": "^1.0.20",
     "@ngrx/effects": "~10.1.0",
     "@ngrx/router-store": "~10.1.0",

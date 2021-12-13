@@ -102,10 +102,6 @@ td.mat-cell:first-of-type{
   width: 25%;
 }
 
-.sidenav-cancel-button {
-  top: -8px;
-}
-
 .sidenav-header {
   display: flex;
   font-size: 1.5em;
