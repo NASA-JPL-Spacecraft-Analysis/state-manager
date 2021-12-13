@@ -1,8 +1,6 @@
 import { Component, NgModule, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatIconRegistry } from '@angular/material/icon';
 
 import { stateTypes, IdentifierMap, State, StateEnumeration } from '../../../models';
 import { MaterialModule } from 'src/app/material';
@@ -32,12 +30,7 @@ export class StateSidenavComponent implements OnChanges {
 
   private duplicateIdentifier: boolean;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer,
-  ) {
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-
+  constructor() {
     this.errorEmitter = new EventEmitter<string>();
     this.modifyState = new EventEmitter<{ state: State; deletedEnumerationIds: string[] }>();
   }

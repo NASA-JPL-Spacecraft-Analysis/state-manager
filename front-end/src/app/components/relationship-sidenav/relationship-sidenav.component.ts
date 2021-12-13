@@ -1,8 +1,6 @@
 import { Component, NgModule, ChangeDetectionStrategy, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
 
 import { Relationship } from '../../models/relationship';
 import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
@@ -43,12 +41,7 @@ export class RelationshipSidenavComponent implements OnChanges {
   public subjectType: string;
   public targetType: string;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-
+  constructor() {
     this.formError = new EventEmitter<string>();
     this.modifyRelationship = new EventEmitter<Relationship>();
 

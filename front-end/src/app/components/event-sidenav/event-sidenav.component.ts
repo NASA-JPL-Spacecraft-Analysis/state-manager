@@ -1,8 +1,6 @@
 import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
 
 import { MaterialModule } from 'src/app/material';
 import { Event, eventTypes, IdentifierMap } from 'src/app/models';
@@ -30,12 +28,7 @@ export class EventSidenavComponent implements OnChanges {
 
   private isDuplicateIdentifier: boolean;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-
+  constructor() {
     this.duplicateIdentifier = new EventEmitter<boolean>();
     this.modifyEvent = new EventEmitter<Event>();
   }
