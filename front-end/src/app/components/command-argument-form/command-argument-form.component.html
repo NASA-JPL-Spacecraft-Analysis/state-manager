@@ -26,15 +26,15 @@
       </td>
 
       <td>
-        <button mat-button type="button" (click)="onDeleteArgument(argument)" class="mat-icon-button">
-          <mat-icon svgIcon="clear"></mat-icon>
+        <button class="st-button icon tertiary" (click)="onDeleteArgument(argument)">
+          <i class="si si-close"></i>
         </button>
       </td>
     </tr>
     <tr>
       <td colspan="3">
-        <button id="add-enum" mat-button type="button" (click)="onAddArgument()"  class="text-italic text-secondary">
-          <mat-icon svgIcon="add"></mat-icon>
+        <button id="add-enum" class="st-button icon tertiary text-italic text-secondary" (click)="onAddArgument()">
+          <i class="si si-plus"></i>
           Add a command argument...
         </button>
       </td>

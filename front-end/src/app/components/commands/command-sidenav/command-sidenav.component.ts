@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import { MaterialModule } from 'src/app/material';
 import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
@@ -32,12 +30,7 @@ export class CommandSidenavComponent implements OnChanges {
 
   private isDuplicateIdentifier: boolean;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-
+  constructor() {
     this.errorEmitter = new EventEmitter<string>();
     this.modifyCommand = new EventEmitter<{ command: Command; deletedArgumentIds: string[] }>();
   }

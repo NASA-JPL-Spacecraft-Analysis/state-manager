@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import { MaterialModule } from 'src/app/material';
 import { Constraint, constraintTypes, IdentifierMap } from 'src/app/models';
@@ -29,12 +27,7 @@ export class ConstraintSidenavComponent implements OnChanges {
 
   private isDuplicateIdentifier: boolean;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-
+  constructor() {
     this.duplicateIdentifier = new EventEmitter<boolean>();
     this.modifyConstraint = new EventEmitter<Constraint>();
   }

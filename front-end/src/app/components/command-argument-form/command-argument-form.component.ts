@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import { MaterialModule } from 'src/app/material';
 import { CommandArgument } from 'src/app/models';
@@ -24,14 +22,6 @@ export class CommandArgumentFormComponent implements OnChanges {
   @Input() deletedArgumentIds: string[];
 
   public argumentLabel: string;
-
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('add', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/add.svg'));
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-  }
 
   public ngOnChanges(): void {
     this.updateArgumentsLabel();
