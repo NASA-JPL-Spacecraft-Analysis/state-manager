@@ -45,11 +45,6 @@ body {
 }
 
 /* Global Styles */
-.cancel-button {
-  color: #333333;
-  background-color: #D5D5D5;
-}
-
 .content {
   flex-grow: 1;
 }

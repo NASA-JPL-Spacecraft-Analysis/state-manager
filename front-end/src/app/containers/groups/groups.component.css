@@ -1,3 +1,8 @@
+.group-buttons {
+  display: flex;
+  justify-content: center;
+}
+
 .groups-toggle-text {
   cursor: pointer;
 }

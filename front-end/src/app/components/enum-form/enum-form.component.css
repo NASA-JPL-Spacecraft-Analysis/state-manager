@@ -42,13 +42,6 @@ table td {
   width: 100%;
 }
 
-/*use Icon styling for size, and plain button for hover state for delete button*/
-.mat-button.mat-icon-button{
-  height: 24px;
-  line-height: 24px;
-  width: 24px;
-}
-
 /*Add a hover state for enum button*/
 #add-enum{
   font-style: italic;

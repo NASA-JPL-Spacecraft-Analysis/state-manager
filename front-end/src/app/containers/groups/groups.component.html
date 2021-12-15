@@ -3,16 +3,16 @@
     Groups
   </span>
 
-  <div>
-    <button mat-button (click)="onFileUpload()">
+  <div class="group-buttons">
+    <button class="st-button" (click)="onFileUpload()">
       Upload Groups
     </button>
 
-    <button mat-button (click)="onDeleteGroup()">
+    <button class="st-button icon" (click)="onDeleteGroup()">
       <mat-icon svgIcon="delete"></mat-icon>
     </button>
 
-    <button mat-raised-button color="primary" (click)="onGroupSelected()">
+    <button class="st-button tertiary" (click)="onGroupSelected()">
       New Group
     </button>
   </div>
