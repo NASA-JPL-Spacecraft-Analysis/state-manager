@@ -1,12 +1,12 @@
-button {
-  margin-right: .5em;
+.st-button.tertiary {
+  color: var(--st-secondary-10);
 }
 
 .help-icon {
   vertical-align: middle;
 }
 
-#logotype{
+#logotype {
   font-family: 'Montserrat', sans-serif;
   font-size: .9em;
   font-weight: 00;
