@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { StateEnumeration } from '../../models';
-import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,8 +64,7 @@ export class EnumFormComponent implements OnChanges {
   ],
   imports: [
     CommonModule,
-    FormsModule,
-    MaterialModule
+    FormsModule
   ]
 })
 export class EnumFormModule {}

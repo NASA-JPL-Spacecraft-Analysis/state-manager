@@ -1,4 +1,4 @@
-<div *ngIf="enumerations">
+<div *ngIf="enumerations" class="enumeration-container">
   <div class="enumerations-header">
     <span class="enumeration-label">{{enumerationsLabel}}</span>
   </div>
@@ -12,14 +12,14 @@
 
     <tr *ngFor="let enumeration of enumerations">
       <td>
-        <input matInput 
+        <input class="st-input"
           [(ngModel)]="enumeration.value"
           type="text"
           placeholder="Value" />
       </td>
 
       <td>
-        <input matInput 
+        <input class="st-input"
           [(ngModel)]="enumeration.label"
           type="text"
           placeholder="Label" />

@@ -1,7 +1,4 @@
-import { NgModule, Component, ViewChild, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
+import { NgModule, Component, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -23,18 +20,13 @@ export class IdentifierFormComponent implements OnChanges {
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public identifierEmitter: EventEmitter<string>;
 
-  @ViewChild(MatTooltip, { static: false }) duplicateTooltip: MatTooltip;
-
   public currentIdentifier: string;
   public identifierIcon: string;
   public identifierTooltipText: string;
+  public isDuplicateIdentifier: boolean;
+  public showDuplicateIdentifierMessage: boolean;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('done', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/done.svg'));
-
+  constructor() {
     this.duplicateIdentifier = new EventEmitter<boolean>();
     this.identifierEmitter = new EventEmitter<string>();
   }
@@ -46,8 +38,7 @@ export class IdentifierFormComponent implements OnChanges {
   }
 
   /**
-   * Called everytime the text for the identifier changes. Changes our icon, and also sets the tooltip
-   * if the identifier isn't empty.
+   * Called everytime the text for the identifier changes.
    *
    * @param identifier The current identifier.
    */
@@ -58,23 +49,21 @@ export class IdentifierFormComponent implements OnChanges {
      */
     this.currentIdentifier = identifier;
 
-    if (this.identifierMap && Object.keys(this.identifierMap).length > 0) {
+    if (this.identifierMap && this.currentIdentifier && Object.keys(this.identifierMap).length > 0) {
+      this.showDuplicateIdentifierMessage = true;
+
       if (this.isIdentifierDuplicate(identifier)) {
-        this.identifierIcon = 'clear';
-        this.identifierTooltipText = 'Your identifier is a duplicate';
+        this.isDuplicateIdentifier = true;
 
         // Emit an error so the user can't save when there's a duplicate.
-        this.duplicateIdentifier.emit(true);
+        this.duplicateIdentifier.emit(this.isDuplicateIdentifier);
       } else {
-        this.identifierIcon = 'done';
-        this.identifierTooltipText = 'Your identifier is unique';
+        this.isDuplicateIdentifier = false;
 
-        this.duplicateIdentifier.emit(false);
+        this.duplicateIdentifier.emit(this.isDuplicateIdentifier);
       }
     } else {
-      // Reset everything when the user clears the field.
-      this.identifierIcon = null;
-      this.identifierTooltipText = null;
+      this.showDuplicateIdentifierMessage = false;
     }
 
     this.identifierEmitter.emit(identifier);

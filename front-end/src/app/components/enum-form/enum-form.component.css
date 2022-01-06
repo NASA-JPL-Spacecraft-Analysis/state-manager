@@ -25,6 +25,9 @@ table td {
   background-color: #fff;
 }
 
+.enumeration-container {
+  margin-top: 3em;
+}
 
 .enumerations-header {
   display: flex;
@@ -32,8 +35,8 @@ table td {
 }
 
 .enumeration-label {
-  color: rgba(0,0,0,.6);
-  font-size: 14px;
+  color: var(--st-gray-60);
+  font-size: 12px;
   padding-bottom: .2em;
 }
 

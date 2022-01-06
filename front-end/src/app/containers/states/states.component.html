@@ -2,24 +2,22 @@
   States
 
   <div>
-    <button class="st-button" routerLink="../state-history">
+    <button class="st-button tertiary" routerLink="../state-history">
       State History
     </button>
 
-    <button class="st-button" routerLink="../state-enumeration-history">
+    <button class="st-button tertiary" routerLink="../state-enumeration-history">
       State Enumeration History
     </button>
 
-    <button class="st-button" (click)="onStateFileUpload()">
+    <button class="st-button icon tertiary" (click)="onStateFileUpload()">
+      <i class="si-upload"></i>
       Upload States
     </button>
 
-    <button class="st-button" (click)="onStateEnumerationFileUpload()">
+    <button class="st-button icon tertiary" (click)="onStateEnumerationFileUpload()">
+      <i class="si-upload"></i>
       Upload Enumerations
-    </button>
-
-    <button class="st-button tertiary" (click)="onModifyState()">
-      Create New State
     </button>
   </div>
 </mat-toolbar>

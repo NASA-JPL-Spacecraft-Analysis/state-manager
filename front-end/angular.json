@@ -36,7 +36,12 @@
               "node_modules/ngx-toastr/toastr.css",
               "src/clipper-stellar.css",
               "node_modules/@gov.nasa.jpl.stellar/icons/font/stellar-icons.css",
-              "node_modules/@gov.nasa.jpl.stellar/stellar/css/button.css"
+              "node_modules/@gov.nasa.jpl.stellar/stellar/css/button.css",
+              "node_modules/@gov.nasa.jpl.stellar/stellar/css/input.css",
+              "node_modules/@gov.nasa.jpl.stellar/stellar/css/select.css",
+              "node_modules/@gov.nasa.jpl.stellar/stellar/css/table.css",
+              "node_modules/@gov.nasa.jpl.stellar/stellar/css/typography.css",
+              "node_modules/@gov.nasa.jpl.stellar/stellar/font/inter/inter.css"
             ],
             "scripts": []
           },

@@ -6,6 +6,7 @@ Table of Contents
 4. Tables
 5. Sidenav
 6. Toolbar
+7. Global
 **************/
 
 /**************
@@ -14,6 +15,14 @@ Table of Contents
 
 html, body, main {
   height: 100%;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 .hidden {
@@ -94,14 +103,52 @@ td.mat-cell:first-of-type{
 **************/
 
 .sidenav {
-  width: 25%;
+  max-width: 400px;
 }
 
-.sidenav-header {
+.sidenav-container {
+  border: 1px solid var(--st-gray-20);
+}
+
+.sidenav-container input, .sidenav-container select, .sidenav-container textarea {
+  min-width: 100% !important;
+}
+
+.sidenav-container label {
+  color: var(--st-gray-60);
+  display: inline-block;
+  font-size: .75em;
+  margin-bottom: .75em;
+  margin-top: 3em;
+}
+
+.sidenav-content {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.sidenav-footer {
+  border-bottom: 0 !important;
+  margin-top: 3em;
+  justify-content: flex-end !important;
+}
+
+.sidenav-footer button {
+  margin-left: .5em;
+}
+
+.sidenav-header, .sidenav-footer {
+  align-items: center;
+  background-color: var(--st-gray-10);
+  border-bottom: 1px solid var(--st-gray-20);
   display: flex;
-  font-size: 1.5em;
+  height: 2.75em;
   justify-content: space-between;
-  padding-bottom: 1em;
+  padding: 0em 1em;
+}
+
+.sidenav-header button {
+  font-size: 2em;
 }
 
 .sidenav-actions {
@@ -143,4 +190,20 @@ td.mat-cell:first-of-type{
   letter-spacing: 0.04em;
   line-height: 16px;
   padding: 15px;
+}
+
+/**************
+7. Global
+**************/
+
+button > i {
+  font-size: 24px;
+}
+
+.error {
+  color: var(--st-red);
+}
+
+.success {
+  color: var(--st-green);
 }

@@ -1,18 +1,20 @@
-<mat-form-field appearance="outline">
-  <mat-label>Identifier</mat-label>
-  <input matInput
-    placeholder="Identifier"
-    type="text"
-    [ngModel]="originalIdentifier"
-    (ngModelChange)="onIdentifierChange($event)"
-    required
-  />
+<label for="Identifier">Identifier</label>
+<input class="st-input"
+  placeholder="Identifier"
+  type="text"
+  [ngModel]="originalIdentifier"
+  (ngModelChange)="onIdentifierChange($event)"
+  required
+/>
 
-  <mat-icon matSuffix
-    #duplicateTooltip
-    [ngClass]="identifierIcon"
-    matTooltipPosition="above"
-    [matTooltip]="identifierTooltipText">
-    {{identifierIcon}}
-  </mat-icon>
-</mat-form-field>
+<ng-container *ngIf="showDuplicateIdentifierMessage">
+  <div *ngIf="isDuplicateIdentifier" class="error">
+    <i class="si si-warning"></i>
+    <span>This identifier is a duplicate</span>
+  </div>
+
+  <div *ngIf="!isDuplicateIdentifier" class="success">
+    <i class="si si-check"></i>
+    <span>This identifier is unique</span>
+  </div>
+</ng-container>
