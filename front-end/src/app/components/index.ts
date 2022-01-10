@@ -13,4 +13,5 @@ export * from './information-type-table/information-type-table.component';
 export * from './relationship-sidenav/relationship-sidenav.component';
 export * from './relationship-type-picker/relationship-type-picker.component';
 export * from './states';
+export * from './stellar-table/stellar-table.component';
 export * from './table/table.component';

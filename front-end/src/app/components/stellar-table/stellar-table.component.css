@@ -1,0 +1,13 @@
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.pagination > * {
+  margin-right: 64px;
+}
+
+.pagination-navigation > * {
+  margin-left: 20px;
+}

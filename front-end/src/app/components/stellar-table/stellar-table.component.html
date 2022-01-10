@@ -1,0 +1,53 @@
+<div *ngIf="rows.length > 0; else noData">
+  <table class="st-table" [ngClass]="{ 'history': historyTable }">
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns">
+          {{formatColumnName(column)}}
+
+          <button class="st-button icon tertiary" (click)="sortColumn(column, true)">
+            <i class="si si-chevron_up"></i>
+          </button>
+
+          <button class="st-button icon tertiary" (click)="sortColumn(column, false)">
+            <i class="si si-chevron_down"></i>
+          </button>
+
+          <input class="st-input"
+            [placeholder]="formatColumnName(column)" 
+            [name]="formatColumnName(column)"
+            type="text"
+            (keyup)="filterData($event, column)"
+            />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of paginatedRows" (click)="onRowClick(row)">
+        <td *ngFor="let column of columns">
+          {{row[column]}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination st-typography-bold">
+    <span>Items per page: {{paginatedRows.length}}</span>
+
+    <span>{{page}} of {{maxPages}}</span>
+
+    <div class="pagination-navigation">
+      <button class="st-button icon tertiary" (click)="pageChange(page - 1)">
+        <i class="si si-chevron_left"></i>
+      </button>
+
+      <button class="st-button icon tertiary" (click)="pageChange(page + 1)">
+        <i class="si si-chevron_right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <span>There is no data for this table.</span>
+</ng-template>

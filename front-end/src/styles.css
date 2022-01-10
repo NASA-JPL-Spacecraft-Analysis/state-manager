@@ -25,6 +25,10 @@ html {
   box-sizing: inherit;
 }
 
+body {
+  background-color: var(--st-gray-10);
+}
+
 .hidden {
   display: none !important;
 }
@@ -83,19 +87,16 @@ body {
 **************/
 
 table {
+  background-color: white;;
   width: 100%;
 }
 
-.table-row {
+table tbody tr {
   cursor: pointer;
 }
 
-.history .table-row {
+.history tbody tr {
   cursor: default;
-}
-
-td.mat-cell:first-of-type{
-  font-weight: bold;
 }
 
 /**************
