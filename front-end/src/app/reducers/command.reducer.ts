@@ -138,9 +138,9 @@ const modifyCommand = (state: CommandState, command: Command): CommandState => {
       ...commandArgumentMap
     },
     commandIdentifierMap: {
-      ...currentIdentifierMap,
+      ...state.commandIdentifierMap,
       [command.identifier]: [
-        ...commandIdentifierMap[command.identifier],
+        ...currentIdentifierMap,
         {
           id: command.id,
           type: command.type

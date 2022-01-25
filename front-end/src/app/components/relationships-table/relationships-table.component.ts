@@ -86,8 +86,6 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   }
 
   public getType(id: string, type: string): string {
-    console.log(type);
-    console.log(RelationshipTypeEnum.stateEnumeration);
     switch (type) {
       case RelationshipTypeEnum.commandArgument:
         // If this is the first time we've seen a command argument, memoize them.
