@@ -5,6 +5,7 @@ tbody tr td:first-child {
 thead th {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 thead tr th:first-child {
@@ -14,7 +15,6 @@ thead tr th:first-child {
 thead tr th input {
   background-color: white;
   border-color: var(--st-gray-20);
-  flex-grow: 1;
   margin-top: 4px;
 }
 

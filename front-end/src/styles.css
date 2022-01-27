@@ -60,6 +60,7 @@ body {
 /* Global Styles */
 .content {
   flex-grow: 1;
+  max-width: 100%;
 }
 
 .content-container {
