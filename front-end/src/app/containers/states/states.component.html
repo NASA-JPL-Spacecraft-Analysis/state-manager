@@ -1,7 +1,7 @@
- <mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
+ <div class="page-toolbar">
   <span class="st-typography-header">States</span>
 
-  <div>
+  <div class="page-toolbar-buttons">
     <button class="st-button tertiary" routerLink="../state-history">
       State History
     </button>
@@ -20,11 +20,11 @@
       Upload Enumerations
     </button>
 
-    <button class="st-button tertiary" (click)="onModifyState()">
+    <button class="st-button primary" (click)="onModifyState()">
       Create New State
     </button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="content">

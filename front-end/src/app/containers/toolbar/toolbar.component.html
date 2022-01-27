@@ -1,11 +1,11 @@
-<mat-toolbar class="main-toolbar" color="accent" >
+<div class="toolbar">
   <div class="toolbar-container">
-    <h6 id="logotype">State Manager</h6>
+    <h6 class="logotype">State Manager</h6>
 
     <app-collections></app-collections>
   </div>
 
-  <div class="navigation-container">
+  <div class="toolbar-buttons">
     <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/states"
       [ngClass]="{ 'active': route === 'states' || route === 'state-history' }">
@@ -66,4 +66,4 @@
       </button>
     </mat-menu>
   </div>
-</mat-toolbar>
+</div>

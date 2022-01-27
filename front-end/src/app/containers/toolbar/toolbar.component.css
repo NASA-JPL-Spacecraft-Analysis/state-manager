@@ -1,14 +1,11 @@
-.st-button.tertiary {
-  color: var(--st-secondary-10);
-}
-
 .help-icon {
   vertical-align: middle;
 }
 
-#logotype {
+.logotype {
+  color: var(--st-gray-10);
   font-family: 'Montserrat', sans-serif;
-  font-size: .9em;
+  font-size: 16px;
   font-weight: 00;
   letter-spacing: .22em;
   text-transform: uppercase;
@@ -18,13 +15,39 @@
   color: black;
 }
 
-.navigation-container {
+.st-button.tertiary {
+  color: var(--st-secondary-10);
+}
+
+.st-button.tertiary:hover {
+  background-color: var(--st-secondary-80);
+}
+
+.st-button.tertiary.active {
+  color: var(--st-primary-10);
+}
+
+.toolbar {
+  align-items: center;
+  background-color: var(--st-secondary-70);
+  display: flex;
+  height: 48px;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.toolbar-buttons {
   display: flex;
   justify-content: center;
 }
 
+.toolbar-buttons button:not(:last-child) {
+  margin-right: 12px;
+}
+
 .toolbar-container {
   display: flex;
+  height: 100%;
   align-items: center;
 }
 

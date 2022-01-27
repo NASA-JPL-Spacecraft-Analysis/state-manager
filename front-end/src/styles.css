@@ -172,8 +172,28 @@ table tbody tr {
   padding-bottom: 0;
 }
 
-.mat-toolbar .mat-form-field-infix {
-  border-top-width: 0px;
+.page-toolbar {
+  align-items: center;
+  background-color: var(--st-gray-10);
+  border-bottom: 1px solid var(--st-gray-20);
+  box-shadow: 0px 1px 0px #E8ECF0;
+  display: flex;
+  height: 48px;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.page-toolbar-buttons button.icon {
+  padding: 8px;
+}
+
+.page-toolbar-buttons button:not(:last-child) {
+  margin-right: 24px;
+}
+
+.page-toolbar-buttons i {
+  font-size: 16px;
+  margin-right: 6px;
 }
 
 /**************
@@ -194,7 +214,7 @@ table tbody tr {
 }
 
 /**************
-7. Global
+8. Global
 **************/
 
 button > i {

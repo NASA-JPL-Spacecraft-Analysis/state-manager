@@ -3,15 +3,19 @@
     <thead>
       <tr>
         <th *ngFor="let column of columns">
-          {{formatColumnName(column)}}
+          <span class="column-header-content">
+            {{formatColumnName(column)}}
 
-          <button class="st-button icon tertiary" (click)="sortColumn(column, true)">
-            <i class="si si-chevron_up"></i>
-          </button>
+            <span class="sort-icons">
+              <button class="st-button icon tertiary" (click)="sortColumn(column, true)">
+                <i class="si si-chevron_up"></i>
+              </button>
 
-          <button class="st-button icon tertiary" (click)="sortColumn(column, false)">
-            <i class="si si-chevron_down"></i>
-          </button>
+              <button class="st-button icon tertiary" (click)="sortColumn(column, false)">
+                <i class="si si-chevron_down"></i>
+              </button>
+            </span>
+          </span>
 
           <input class="st-input"
             [placeholder]="formatColumnName(column)" 
@@ -37,12 +41,20 @@
     <span>{{page}} of {{maxPages}}</span>
 
     <div class="pagination-navigation">
+      <button class="st-button icon tertiary" (click)="pageChange(1)">
+        <i class="si si-collapse reverse"></i>
+      </button>
+
       <button class="st-button icon tertiary" (click)="pageChange(page - 1)">
         <i class="si si-chevron_left"></i>
       </button>
 
       <button class="st-button icon tertiary" (click)="pageChange(page + 1)">
         <i class="si si-chevron_right"></i>
+      </button>
+
+      <button class="st-button icon tertiary" (click)="pageChange(maxPages)">
+        <i class="si si-collapse"></i>
       </button>
     </div>
   </div>
