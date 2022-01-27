@@ -1,6 +1,14 @@
+tbody tr td:first-child {
+  padding-left: 16px;
+}
+
 thead th {
   display: flex;
   flex-direction: column;
+}
+
+thead tr th:first-child {
+  padding-left: 16px;
 }
 
 thead tr th input {
