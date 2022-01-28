@@ -48,6 +48,10 @@ body {
 
 /* Angular Material Global Overwrites */
 
+.mat-form-field-infix {
+  border: none;
+}
+
 .mat-form-field {
   display: flex;
   width: 100%;
