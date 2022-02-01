@@ -1,20 +1,21 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Events
+<div class="page-toolbar">
+  <span class="st-typography-header">Events</span>
 
-  <div>
-    <button class="st-button" routerLink="../event-history">
-      History
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" routerLink="../event-history">
+      Event History
     </button>
 
-    <button class="st-button" (click)="onEventFileUpload()">
+    <button class="st-button icon tertiary" (click)="onEventFileUpload()">
+      <i class="si-upload"></i>
       Upload Events
     </button>
 
-    <button class="st-button tertiary" (click)="onModifyEvent()">
+    <button class="st-button primary" (click)="onModifyEvent()">
       Create New Event
     </button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="content">
