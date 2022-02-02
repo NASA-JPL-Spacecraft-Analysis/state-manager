@@ -6,17 +6,15 @@ import { StellarTableComponent } from '../../stellar-table/stellar-table.compone
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-state-table',
-  styleUrls: [ './../../stellar-table/stellar-table.component.css' ],
-  templateUrl: './../../stellar-table/stellar-table.component.html'
+  selector: 'sm-state-table',
+  styleUrls: [ '../../stellar-table/stellar-table.component.css' ],
+  templateUrl: '../../stellar-table/stellar-table.component.html'
 })
 export class StateTableComponent extends StellarTableComponent<State> implements OnChanges, OnInit {
   @Input() public stateMap: StateMap;
   @Input() public history: boolean;
 
   @Output() public stateSelected: EventEmitter<State>;
-
-  public stateMapSize: number;
 
   constructor() {
     super();
@@ -48,18 +46,7 @@ export class StateTableComponent extends StellarTableComponent<State> implements
   }
 
   public ngOnChanges(): void {
-    // Get all our states from our map so the table can display them.
-    if (this.stateMap) {
-      const keys = Object.keys(this.stateMap);
-      const states: State[] = [];
-      this.stateMapSize = keys.length;
-
-      for (const key of keys) {
-        states.push(this.stateMap[key]);
-      }
-
-      this.rows = states;
-    }
+    this.convertMappedData(this.stateMap);
 
     super.ngOnChanges();
   }

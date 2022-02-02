@@ -1,4 +1,3 @@
-import { R } from '@angular/cdk/keycodes';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule, OnChanges } from '@angular/core';
 import { startCase } from 'lodash';
@@ -20,9 +19,13 @@ export class StellarTableComponent<T> implements OnChanges {
   public paginatedRows: T[] = [];
   public maxPages: number;
   // The unedited list of data.
-  public rows: T[] = [];
+  public rows: T[];
 
   public ngOnChanges(): void {
+    if (!this.rows) {
+      this.rows = [];
+    }
+
     this.columnFilters = new Map();
 
     if (this.rows.length > this.MAX_ENTRIES_PER_PAGE) {
@@ -34,6 +37,18 @@ export class StellarTableComponent<T> implements OnChanges {
     }
 
     this.maxPages = Math.ceil(this.rows.length / this.MAX_ENTRIES_PER_PAGE);
+  }
+
+  /**
+   * Takes the incoming map of data and converts it to a list so we can
+   * use it in the table.
+   *
+   * @param dataMap The map of IDs -> data
+   */
+  public convertMappedData(dataMap: Record<string, T>): void {
+    if (dataMap) {
+      this.rows = Object.values(dataMap);
+    }
   }
 
   public filterData(event: KeyboardEvent, column: string): void {

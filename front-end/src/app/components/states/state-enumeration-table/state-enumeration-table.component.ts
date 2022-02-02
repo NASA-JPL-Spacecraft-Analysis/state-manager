@@ -1,25 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit } from '@angular/core';
 
-import { MaterialModule } from 'src/app/material';
 import { StateEnumerationHistory } from 'src/app/models';
-import { TableComponent } from '../../table/table.component';
+import { StellarTableComponent} from '../../stellar-table/stellar-table.component';
 
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'state-enumeration-table',
-  styleUrls: [ 'state-enumeration-table.component.css' ],
-  templateUrl: 'state-enumeration-table.component.html'
+  selector: 'sm-state-enumeration-table',
+  styleUrls: [ '../../stellar-table/stellar-table.component.css' ],
+  templateUrl: '../../stellar-table/stellar-table.component.html'
 })
-export class StateEnumerationTableComponent extends TableComponent<StateEnumerationHistory> implements OnInit, OnChanges {
+export class StateEnumerationTableComponent extends StellarTableComponent<StateEnumerationHistory> implements OnInit, OnChanges {
   @Input() public stateEnumerationHistory: StateEnumerationHistory[];
 
-  public showTable: boolean;
+  constructor() {
+    super();
+  }
 
   public ngOnInit(): void {
-    this.displayedColumns.push(
+    this.columns.push(
       'id',
       'label',
       'stateId',
@@ -30,16 +30,9 @@ export class StateEnumerationTableComponent extends TableComponent<StateEnumerat
   }
 
   public ngOnChanges(): void {
-    if (this.stateEnumerationHistory && this.displayedColumns) {
-      this.dataSource = new MatTableDataSource(this.stateEnumerationHistory);
-    }
+    this.rows = this.stateEnumerationHistory;
 
-    this.showTable = this.stateEnumerationHistory && this.stateEnumerationHistory.length > 0;
-  }
-
-  public filter(stateEnumerationHistory: StateEnumerationHistory, filterValue: string): boolean {
-    return stateEnumerationHistory.label?.toLowerCase().includes(filterValue)
-      || stateEnumerationHistory.value?.toString().includes(filterValue);
+    super.ngOnChanges();
   }
 }
 
@@ -51,8 +44,7 @@ export class StateEnumerationTableComponent extends TableComponent<StateEnumerat
     StateEnumerationTableComponent
   ],
   imports: [
-    CommonModule,
-    MaterialModule
+    CommonModule
   ]
 })
 export class StateEnumerationTableModule{}

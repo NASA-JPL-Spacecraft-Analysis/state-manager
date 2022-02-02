@@ -18,7 +18,6 @@ import {
 import { MaterialModule } from 'src/app/material';
 
 import { TableComponent } from '../table/table.component';
-import { TouchSequence } from 'selenium-webdriver';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

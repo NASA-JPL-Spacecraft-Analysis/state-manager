@@ -28,10 +28,10 @@
 
 <div class="content-container">
   <div class="content">
-    <app-state-table
+    <sm-state-table
       [stateMap]="stateMap"
       (stateSelected)="onModifyState($event)">
-    </app-state-table>
+    </sm-state-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && collectionId">
