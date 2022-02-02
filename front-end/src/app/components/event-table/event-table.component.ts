@@ -5,9 +5,9 @@ import { EventMap, Event } from 'src/app/models';
 import { StellarTableComponent } from '../stellar-table/stellar-table.component';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-event-table',
-  styleUrls: [ './../stellar-table/stellar-table.component.css' ],
-  templateUrl: './../stellar-table/stellar-table.component.html'
+  selector: 'sm-event-table',
+  styleUrls: [ '../stellar-table/stellar-table.component.css' ],
+  templateUrl: '../stellar-table/stellar-table.component.html'
 })
 export class EventTableComponent extends StellarTableComponent<Event> implements OnChanges, OnInit {
   @Input() public eventMap: EventMap;
@@ -37,6 +37,8 @@ export class EventTableComponent extends StellarTableComponent<Event> implements
         'eventId',
         'updated'
       );
+
+      this.historyTable = true;
     }
   }
 

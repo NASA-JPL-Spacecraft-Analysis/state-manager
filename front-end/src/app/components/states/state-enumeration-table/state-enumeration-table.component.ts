@@ -27,6 +27,8 @@ export class StateEnumerationTableComponent extends StellarTableComponent<StateE
       'updated',
       'value'
     );
+
+    this.historyTable = true;
   }
 
   public ngOnChanges(): void {
@@ -47,4 +49,4 @@ export class StateEnumerationTableComponent extends StellarTableComponent<StateE
     CommonModule
   ]
 })
-export class StateEnumerationTableModule{}
+export class StateEnumerationTableModule {}

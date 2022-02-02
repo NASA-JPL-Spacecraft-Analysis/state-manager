@@ -1,6 +1,5 @@
 import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource } from '@angular/material/table';
 
 import {
   RelationshipMap,
@@ -17,15 +16,15 @@ import {
 } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
-import { TableComponent } from '../table/table.component';
+import { StellarTableComponent } from '../stellar-table/stellar-table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-relationships-table',
-  styleUrls: [ 'relationships-table.component.css' ],
-  templateUrl: 'relationships-table.component.html'
+  selector: 'sm-relationships-table',
+  styleUrls: [ '../stellar-table/stellar-table.component.css' ],
+  templateUrl: '../stellar-table/stellar-table.component.html'
 })
-export class RelationshipsTableComponent extends TableComponent<Relationship> implements OnInit, OnChanges {
+export class RelationshipsTableComponent extends StellarTableComponent<Relationship> implements OnInit, OnChanges {
   @Input() public commandArgumentMap: CommandArgumentMap;
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
@@ -51,20 +50,22 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   }
 
   public ngOnInit(): void {
-    this.displayedColumns.push(
+    this.columns.push(
       'displayName',
       'description',
+      'subjectIdentifier',
       'subjectType',
-      'targetType',
-      'subject',
-      'target'
+      'targetIdentifier',
+      'targetType'
     );
 
     if (this.history) {
-      this.displayedColumns.push(
+      this.columns.push(
         'relationshipId',
         'updated'
       );
+
+      this.historyTable = true;
     }
   }
 
@@ -73,20 +74,34 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
     this.commandArguments = {};
     this.stateEnumerations = {};
 
-    if (this.relationshipMap && this.displayedColumns) {
+    if (this.relationshipMap) {
       for (const key of Object.keys(this.relationshipMap)) {
         this.relationshipsList.push(this.relationshipMap[key]);
       }
 
-      this.dataSource = new MatTableDataSource(this.relationshipsList);
+      let index = 0;
 
-      super.ngOnChanges();
+      for (const relationship of this.relationshipsList) {
+        this.relationshipsList[index] = {
+          ...relationship,
+          subjectIdentifier: this.getType(relationship.subjectTypeId, relationship.subjectType),
+          targetIdentifier: this.getType(relationship.targetTypeId, relationship.targetType)
+        };
+
+        index++;
+      }
+
+      this.rows = this.relationshipsList;
     }
+
+    super.ngOnChanges();
   }
 
-  public getType(id: string, type: string): string {
-    console.log(type);
-    console.log(RelationshipTypeEnum.stateEnumeration);
+  public onRowClick(relationship: Relationship): void {
+    this.relationshipSelected.emit(relationship);
+  }
+
+  private getType(id: string, type: string): string {
     switch (type) {
       case RelationshipTypeEnum.commandArgument:
         // If this is the first time we've seen a command argument, memoize them.
@@ -145,17 +160,6 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
     }
 
     return '';
-  }
-
-  public onRowClick(relationship: Relationship): void {
-    this.relationshipSelected.emit(relationship);
-  }
-
-  public filter(relationship: Relationship, filterValue: string): boolean {
-    return relationship.description?.toLowerCase().includes(filterValue)
-      || relationship.displayName?.toLowerCase().includes(filterValue)
-      || relationship.subjectType?.toString().toLowerCase().includes(filterValue)
-      || relationship.targetType?.toString().toLowerCase().includes(filterValue);
   }
 
   private mapCommandArguments() {

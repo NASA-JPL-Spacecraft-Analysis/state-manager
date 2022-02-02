@@ -4,8 +4,10 @@ export interface Relationship {
   displayName: string;
   description: string;
   id: string;
+  subjectIdentifier?: string;
   subjectType: string;
   subjectTypeId: string;
+  targetIdentifier?: string;
   targetType: string;
   targetTypeId: string;
 }
@@ -20,7 +22,7 @@ export interface RelationshipUpload extends Relationship {
   targetIdentifier: string;
 }
 
-export type RelationshipMap = StringTMap<Relationship>;
+export type RelationshipMap = Record<string, Relationship>;
 
 export enum RelationshipTypeEnum {
   'command' = 'command',

@@ -11,7 +11,7 @@ import { getEventHistoryMap } from 'src/app/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-event-history',
+  selector: 'sm-event-history',
   styleUrls: [ 'event-history.component.css' ],
   templateUrl: 'event-history.component.html'
 })

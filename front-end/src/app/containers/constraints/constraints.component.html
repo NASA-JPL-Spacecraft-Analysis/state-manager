@@ -18,10 +18,10 @@
 
 <div class="content-container">
   <div class="content">
-    <constraint-table
+    <sm-constraint-table
       [constraints]="constraints"
       (constraintSelected)="onModifyConstraint($event)">
-    </constraint-table>
+    </sm-constraint-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">

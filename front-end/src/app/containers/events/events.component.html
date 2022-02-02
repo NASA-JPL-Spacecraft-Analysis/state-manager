@@ -19,10 +19,10 @@
 
 <div class="content-container">
   <div class="content">
-    <app-event-table
+    <sm-event-table
       [eventMap]="eventMap"
       (eventSelected)="onModifyEvent($event)">
-    </app-event-table>
+    </sm-event-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">

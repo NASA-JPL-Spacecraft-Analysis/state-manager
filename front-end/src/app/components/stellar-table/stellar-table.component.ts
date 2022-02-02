@@ -28,6 +28,8 @@ export class StellarTableComponent<T> implements OnChanges {
 
     this.columnFilters = new Map();
 
+    this.maxPages = Math.ceil(this.rows.length / this.MAX_ENTRIES_PER_PAGE);
+
     if (this.rows.length > this.MAX_ENTRIES_PER_PAGE) {
       // If we have more entries than the max we need to paginate.
       this.pageChange(this.page);
@@ -35,8 +37,6 @@ export class StellarTableComponent<T> implements OnChanges {
       // No need to paginate.
       this.paginatedRows = this.rows;
     }
-
-    this.maxPages = Math.ceil(this.rows.length / this.MAX_ENTRIES_PER_PAGE);
   }
 
   /**

@@ -26,10 +26,10 @@
 
 <div class="content-container">
   <div class="content">
-    <command-table
+    <sm-command-table
       [commands]="commands"
       (commandSelected)="onModifyCommand($event)">
-    </command-table>
+    </sm-command-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
