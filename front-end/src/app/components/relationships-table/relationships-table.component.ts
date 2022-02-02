@@ -16,15 +16,15 @@ import {
 } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
-import { StellarTableComponent } from '../stellar-table/stellar-table.component';
+import { TableComponent } from '../table/table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-relationships-table',
-  styleUrls: [ '../stellar-table/stellar-table.component.css' ],
-  templateUrl: '../stellar-table/stellar-table.component.html'
+  styleUrls: [ '../table/table.component.css' ],
+  templateUrl: '../table/table.component.html'
 })
-export class RelationshipsTableComponent extends StellarTableComponent<Relationship> implements OnInit, OnChanges {
+export class RelationshipsTableComponent extends TableComponent<Relationship> implements OnInit, OnChanges {
   @Input() public commandArgumentMap: CommandArgumentMap;
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;

@@ -2,15 +2,15 @@ import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitt
 import { CommonModule } from '@angular/common';
 
 import { State, StateMap } from '../../../models';
-import { StellarTableComponent } from '../../stellar-table/stellar-table.component';
+import { TableComponent } from '../../table/table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-state-table',
-  styleUrls: [ '../../stellar-table/stellar-table.component.css' ],
-  templateUrl: '../../stellar-table/stellar-table.component.html'
+  styleUrls: [ '../../table/table.component.css' ],
+  templateUrl: '../../table/table.component.html'
 })
-export class StateTableComponent extends StellarTableComponent<State> implements OnChanges, OnInit {
+export class StateTableComponent extends TableComponent<State> implements OnChanges, OnInit {
   @Input() public stateMap: StateMap;
   @Input() public history: boolean;
 

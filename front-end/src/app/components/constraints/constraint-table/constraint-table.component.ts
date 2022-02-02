@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
 
 import { Constraint } from 'src/app/models';
-import { StellarTableComponent } from '../../stellar-table/stellar-table.component';
+import { TableComponent } from '../../table/table.component';
 
 @Component({
   selector: 'sm-constraint-table',
-  styleUrls: [ '../../stellar-table/stellar-table.component.css' ],
-  templateUrl: '../../stellar-table/stellar-table.component.html'
+  styleUrls: [ '../../table/table.component.css' ],
+  templateUrl: '../../table/table.component.html'
 })
-export class ConstraintTableComponent extends StellarTableComponent<Constraint> implements OnInit, OnChanges {
+export class ConstraintTableComponent extends TableComponent<Constraint> implements OnInit, OnChanges {
   @Input() public constraints: Constraint[];
   @Input() public history: boolean;
 
