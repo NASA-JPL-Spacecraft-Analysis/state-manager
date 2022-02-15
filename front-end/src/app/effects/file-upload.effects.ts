@@ -4,7 +4,17 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { CommandService, ConstraintService, EventService, GroupService, InformationTypeService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
+import {
+  CommandService,
+  ConstraintService,
+  EventService,
+  GroupService,
+  InformationTypeService,
+  ParseService,
+  RelationshipService,
+  StateService,
+  ValidationService
+} from '../services';
 import { CommandActions, FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
@@ -577,7 +587,7 @@ export class FileUploadEffects {
               states
             ).pipe(
               switchMap((createStates: StatesResponse) => [
-                StateActions.createStatesSuccess({
+                FileUploadActions.uploadStatesSuccess({
                   states: createStates.states
                 }),
                 ToastActions.showToast({
