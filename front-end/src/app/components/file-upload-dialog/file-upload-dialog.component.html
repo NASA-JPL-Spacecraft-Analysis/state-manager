@@ -2,6 +2,14 @@
   {{data.dialogType}} Upload
 </h1>
 
+<div *ngIf="data.types">
+  <p>Valid {{data.dialogType}} types are:</p>
+
+  <code>
+    {{data.types}}
+  </code>
+</div>
+
 <div mat-dialog-content *ngIf="data.csvFormat || data.jsonFormat">
   <p>{{data.dialogType}} uploading supports the following upload type(s):</p>
 

@@ -7,6 +7,7 @@ export const openFileUploadDialog = createAction(
     csvFormat: string[];
     dialogType: string;
     jsonFormat: string;
+    types?: string[];
   }>()
 );
 

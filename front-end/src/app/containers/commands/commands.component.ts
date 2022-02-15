@@ -6,8 +6,15 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
-import { getCommandArguments, getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
+import { Command, CommandArgument, commandTypes, IdentifierMap } from 'src/app/models';
+import {
+  getCommandArguments,
+  getCommandIdentifierMap,
+  getCommands,
+  getSelectedCollectionId,
+  getSelectedCommand,
+  getShowSidenav
+} from 'src/app/selectors';
 import { CommandActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { CommandSidenavModule, CommandTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
@@ -80,7 +87,8 @@ export class CommandsComponent implements OnDestroy {
       collectionId: this.selectedCollectionId,
       csvFormat: [ UploadConstants.commandCsvUploadFormat ],
       dialogType: 'Command',
-      jsonFormat: UploadConstants.commandJsonUploadFormat
+      jsonFormat: UploadConstants.commandJsonUploadFormat,
+      types: commandTypes
     }));
   }
 

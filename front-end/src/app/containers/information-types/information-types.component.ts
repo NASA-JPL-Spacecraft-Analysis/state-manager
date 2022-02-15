@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 
 import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
-import { InformationTypeMap, InformationType } from 'src/app/models';
+import { InformationTypeMap, InformationType, informationTypes } from 'src/app/models';
 import { getInformationTypes, getSelectedCollectionId } from 'src/app/selectors';
 import { FileUploadActions, LayoutActions } from 'src/app/actions';
 import { InformationTypeTableModule } from 'src/app/components';
@@ -49,7 +49,8 @@ export class InformationTypesComponent implements OnDestroy {
       collectionId: this.collectionId,
       csvFormat: [ UploadConstants.informationTypeCsvUploadFormat ],
       dialogType: 'Information Type',
-      jsonFormat: UploadConstants.informationTypeJsonUploadFormat
+      jsonFormat: UploadConstants.informationTypeJsonUploadFormat,
+      types: informationTypes
     }));
   }
 }

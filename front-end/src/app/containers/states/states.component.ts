@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { State, StateMap, StateEnumeration, IdentifierMap } from '../../models';
+import { State, StateMap, StateEnumeration, IdentifierMap, stateTypes } from '../../models';
 import {
   getStates,
   getSelectedState,
@@ -132,7 +132,8 @@ export class StatesComponent implements OnDestroy {
       collectionId: this.collectionId,
       csvFormat: [ UploadConstants.stateCsvUploadFormat ],
       dialogType: 'State',
-      jsonFormat: UploadConstants.stateJsonUploadFormat
+      jsonFormat: UploadConstants.stateJsonUploadFormat,
+      types: stateTypes
     }));
   }
 }
