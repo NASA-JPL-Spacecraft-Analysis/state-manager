@@ -104,6 +104,21 @@ export class UploadConstants {
     ]
   `;
 
+  public static informationTypeCsvUploadFormat = `
+    identifier,displayName,type,description,externalLink
+    GOAL_UPLOAD_TEST,Goal Upload Test,goal,,
+  `;
+
+  public static informationTypeJsonUploadFormat = `
+    [
+      {
+        "identifier": "GOAL_UPLOAD_TEST",
+        "displayName": "Goal Upload Test",
+        "type": "goal"
+      }
+    ]
+  `;
+
   public static stateCsvUploadFormat = `
     identifier,displayName,dataType,type,units,source,subsystem,description,externalLink
     STATE_IDENTIFIER_1,State Identifier 1,subsystem,state,test units,test source,identifier 1,https://google.com

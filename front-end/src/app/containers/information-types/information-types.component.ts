@@ -7,8 +7,9 @@ import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
 import { InformationTypeMap, InformationType } from 'src/app/models';
 import { getInformationTypes, getSelectedCollectionId } from 'src/app/selectors';
-import { FileUploadActions } from 'src/app/actions';
+import { FileUploadActions, LayoutActions } from 'src/app/actions';
 import { InformationTypeTableModule } from 'src/app/components';
+import { UploadConstants } from 'src/app/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,15 +44,13 @@ export class InformationTypesComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public onFileUpload(fileEvent: Event): void {
-    const file = (fileEvent.target as HTMLInputElement).files[0];
-
-    if (file) {
-      this.store.dispatch(FileUploadActions.uploadInformationTypes({
-        file,
-        collectionId: this.collectionId
-      }));
-    }
+  public onFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.collectionId,
+      csvFormat: [ UploadConstants.informationTypeCsvUploadFormat ],
+      dialogType: 'Information Type',
+      jsonFormat: UploadConstants.informationTypeJsonUploadFormat
+    }));
   }
 }
 

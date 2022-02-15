@@ -2,7 +2,12 @@ import { createAction, props } from '@ngrx/store';
 
 export const openFileUploadDialog = createAction(
   '[layout] openFileUploadDialog',
-  props<{ collectionId: string, csvFormat: string[], dialogType: string, jsonFormat: string }>()
+  props<{
+    collectionId: string;
+    csvFormat: string[];
+    dialogType: string;
+    jsonFormat: string;
+  }>()
 );
 
 export const toggleGroupsSidemenu = createAction(
