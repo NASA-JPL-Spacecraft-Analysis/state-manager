@@ -22,11 +22,6 @@ export const createStateSuccess = createAction(
   props<{ state: State }>()
 );
 
-export const createStatesSuccess = createAction(
-  '[state] createStatesSuccess',
-  props<{ states: State[] }>()
-);
-
 export const deleteEnumerations = createAction(
   '[state] deleteEnumerations',
   props<{ deletedEnumerationIds: string[]; stateId: string }>()

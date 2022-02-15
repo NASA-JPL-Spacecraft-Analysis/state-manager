@@ -32,15 +32,6 @@ export const initialState: StateState = {
 export const reducer = createReducer(
   initialState,
   on(StateActions.createStateSuccess, (stateState, { state }) => modifyState(stateState, state)),
-  on(StateActions.createStatesSuccess, (stateState, { states }) => ({
-    ...stateState,
-    stateIdentifierMap: {
-      ...mapIdentifiers(states)
-    },
-    stateMap: {
-      ...mapItems(states) as StateMap
-    }
-  })),
   on(StateActions.deleteEnumerationsSuccess, (state, { deletedEnumerationIds }) => {
     const stateEnumerationMap = {
       ...state.stateEnumerationMap
