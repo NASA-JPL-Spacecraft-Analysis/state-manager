@@ -87,7 +87,7 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
 
   public getType(id: string, type: string): string {
     switch (type) {
-      case RelationshipTypeEnum.commandArgument:
+      case RelationshipTypeEnum.CommandArgument:
         // If this is the first time we've seen a command argument, memoize them.
         if (Object.keys(this.commandArguments).length === 0) {
           this.mapCommandArguments();
@@ -98,31 +98,31 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
         }
 
         break;
-      case RelationshipTypeEnum.command:
+      case RelationshipTypeEnum.Command:
         if (this.commandMap && this.commandMap[id]) {
           return this.commandMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.constraint:
+      case RelationshipTypeEnum.Constraint:
         if (this.constraintMap && this.constraintMap[id]) {
           return this.constraintMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.event:
+      case RelationshipTypeEnum.Event:
         if (this.eventMap && this.eventMap[id]) {
           return this.eventMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.informationType:
+      case RelationshipTypeEnum.InformationType:
         if (this.informationTypeMap && this.informationTypeMap[id]) {
           return this.informationTypeMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.stateEnumeration:
+      case RelationshipTypeEnum.StateEnumeration:
         // If this is the first time we've seen a state enumeration, memoize them.
         if (Object.keys(this.stateEnumerations).length === 0) {
           this.mapStateEnumerations();
@@ -133,7 +133,7 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
         }
 
         break;
-      case RelationshipTypeEnum.state:
+      case RelationshipTypeEnum.State:
         if (this.stateMap && this.stateMap[id]) {
           return this.stateMap[id].identifier;
         }

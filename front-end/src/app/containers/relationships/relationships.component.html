@@ -6,11 +6,9 @@
       History
     </button>
 
-    <button mat-button (click)="relationshipsFileUpload.click()">
+    <button mat-button (click)="onFileUpload()">
       Upload Relationships
     </button>
-
-    <input #relationshipsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
 
     <button mat-raised-button color="primary" (click)="onModifyRelationship()">
       Create New Relationship
