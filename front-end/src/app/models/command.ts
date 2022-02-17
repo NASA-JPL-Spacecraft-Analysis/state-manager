@@ -32,3 +32,7 @@ export interface CommandHistory extends Command {
 }
 
 export type CommandMap = StringTMap<Command>;
+
+export const commandTypes: string[] = [
+  'command'
+];

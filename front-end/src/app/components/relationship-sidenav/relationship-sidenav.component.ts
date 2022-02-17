@@ -52,7 +52,7 @@ export class RelationshipSidenavComponent implements OnChanges {
     this.formError = new EventEmitter<string>();
     this.modifyRelationship = new EventEmitter<Relationship>();
 
-    this.types = Object.values(RelationshipTypeEnum);
+    this.types = Object.values(RelationshipTypeEnum).filter(value => typeof value === 'string');
   }
 
   public ngOnChanges(): void {

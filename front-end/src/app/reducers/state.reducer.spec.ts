@@ -48,6 +48,7 @@ describe('StateReducer', () => {
     });
   });
 
+  /*
   describe('createStatesSuccess', () => {
     it('should set stateMap when we create a batch of new states', () => {
       const stateState: StateState = reducer(
@@ -65,6 +66,7 @@ describe('StateReducer', () => {
       });
     });
   });
+  */
 
   describe('deleteEnumerationsSuccess', () => {
     it('should', () => {

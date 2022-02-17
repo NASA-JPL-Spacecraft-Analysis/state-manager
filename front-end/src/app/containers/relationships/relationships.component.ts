@@ -25,6 +25,7 @@ import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
 import { StateMap, InformationTypeMap, EventMap, ConstraintMap, CommandMap, CommandArgumentMap, StateEnumerationMap } from 'src/app/models';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
+import { UploadConstants } from 'src/app/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,20 +104,13 @@ export class RelationshipsComponent implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  public onFileUpload(fileEvent: Event): void {
-    const file = (fileEvent.target as HTMLInputElement).files[0];
-
-    if (file) {
-      this.store.dispatch(FileUploadActions.uploadRelationships({
-        file,
-        collectionId: this.collectionId
-      }));
-    } else {
-      this.store.dispatch(ToastActions.showToast({
-        message: StateManagementConstants.wrongFiletypeUploadMessage,
-        toastType: 'error'
-      }));
-    }
+  public onFileUpload(): void {
+    this.store.dispatch(LayoutActions.openFileUploadDialog({
+      collectionId: this.collectionId,
+      csvFormat: [ UploadConstants.relationshipCsvUploadFormat ],
+      dialogType: 'Relationship',
+      jsonFormat: UploadConstants.relationshipJsonUploadFormat
+    }));
   }
 
   public onFormErrorOutput(error: string): void {

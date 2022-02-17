@@ -8,7 +8,7 @@ import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
 import { EventActions, LayoutActions, ToastActions } from 'src/app/actions';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
-import { Event as StateEvent, EventMap, IdentifierMap } from 'src/app/models';
+import { Event as StateEvent, EventMap, eventTypes, IdentifierMap } from 'src/app/models';
 import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId, getEventIdentifierMap } from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
@@ -88,7 +88,8 @@ export class EventsComponent implements OnDestroy {
       collectionId: this.selectedCollectionId,
       csvFormat: [ UploadConstants.eventCsvUploadFormat ],
       dialogType: 'Event',
-      jsonFormat: UploadConstants.eventJsonUploadFormat
+      jsonFormat: UploadConstants.eventJsonUploadFormat,
+      types: eventTypes
     }));
   }
 

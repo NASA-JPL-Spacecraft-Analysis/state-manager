@@ -263,15 +263,15 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         };
       }
 
-      if (relationshipType === 'command') {
-        const command = await Command.findOne(query);
+      if (relationshipType.toLowerCase() === 'command') {
+        const command = await Command.findOne({ ...query });
 
         if (command) {
           return command;
         }
       }
 
-      if (relationshipType === 'commandArgument') {
+      if (relationshipType.toLowerCase() === 'commandargument') {
         const commandArgument = await CommandArgument.findOne({ id });
 
         if (commandArgument) {
@@ -279,7 +279,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'constraint') {
+      if (relationshipType.toLowerCase() === 'constraint') {
         const constraint = await Constraint.findOne(query);
 
         if (constraint) {
@@ -287,7 +287,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'event') {
+      if (relationshipType.toLowerCase() === 'event') {
         const event = await Event.findOne(query);
 
         if (event) {
@@ -295,7 +295,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'informationType') {
+      if (relationshipType.toLowerCase() === 'informationtype') {
         const informationType = await InformationType.findOne(query);
 
         if (informationType) {
@@ -303,7 +303,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'state') {
+      if (relationshipType.toLowerCase() === 'state') {
         const state = await State.findOne(query);
 
         if (state) {
@@ -311,7 +311,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'stateEnumeration') {
+      if (relationshipType.toLowerCase() === 'stateenumeration') {
         const stateEnumeration = await StateEnumeration.findOne({ id });
 
         if (stateEnumeration) {

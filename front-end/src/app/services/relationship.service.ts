@@ -34,7 +34,7 @@ export class RelationshipService {
       if (!createRelationship.success) {
         throw new Error(createRelationship.message);
       }
-      
+
       return createRelationship;
     }));
   }

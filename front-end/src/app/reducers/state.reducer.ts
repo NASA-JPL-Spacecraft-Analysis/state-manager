@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { cloneDeep } from 'lodash';
 
-import { StateActions } from '../actions';
+import { FileUploadActions, StateActions } from '../actions';
 import {
   IdentifierMap,
   State,
@@ -32,15 +32,6 @@ export const initialState: StateState = {
 export const reducer = createReducer(
   initialState,
   on(StateActions.createStateSuccess, (stateState, { state }) => modifyState(stateState, state)),
-  on(StateActions.createStatesSuccess, (stateState, { states }) => ({
-    ...stateState,
-    stateIdentifierMap: {
-      ...mapIdentifiers(states)
-    },
-    stateMap: {
-      ...mapItems(states) as StateMap
-    }
-  })),
   on(StateActions.deleteEnumerationsSuccess, (state, { deletedEnumerationIds }) => {
     const stateEnumerationMap = {
       ...state.stateEnumerationMap
@@ -56,6 +47,17 @@ export const reducer = createReducer(
       stateEnumerationMap
     };
   }),
+  on(FileUploadActions.uploadStatesSuccess, (stateState, { states }) => ({
+    ...stateState,
+    stateMap: {
+      ...stateState.stateMap,
+      ...mapItems(states) as StateMap
+    },
+    stateIdentifierMap: {
+      ...stateState.stateIdentifierMap,
+      ...mapIdentifiers(states)
+    }
+  })),
   on(StateActions.saveEnumerationsSuccess, (stateState, { stateEnumerations }) => {
     const stateEnumerationMap = {};
 

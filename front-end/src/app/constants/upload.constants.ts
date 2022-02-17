@@ -104,6 +104,39 @@ export class UploadConstants {
     ]
   `;
 
+  public static informationTypeCsvUploadFormat = `
+    identifier,displayName,type,description,externalLink
+    GOAL_UPLOAD_TEST,Goal Upload Test,goal,,
+  `;
+
+  public static informationTypeJsonUploadFormat = `
+    [
+      {
+        "identifier": "GOAL_UPLOAD_TEST",
+        "displayName": "Goal Upload Test",
+        "type": "goal"
+      }
+    ]
+  `;
+
+  public static relationshipCsvUploadFormat = `
+    displayName,description,subjectType,subjectIdentifier,targetType,targetIdentifier
+    Test upload relationship 1,test json relationship 1,Command,TEST_COMMAND,State,STATE_IDENTIFIER_1
+  `;
+
+  public static relationshipJsonUploadFormat = `
+    [
+      {
+        "displayName": "Test upload relationship 1",
+        "description": "test json relationship 1",
+        "subjectType": "Command",
+        "subjectIdentifier": "TEST_COMMAND",
+        "targetType": "State",
+        "targetIdentifier": "STATE_IDENTIFIER_1"
+      }
+    ]
+  `;
+
   public static stateCsvUploadFormat = `
     identifier,displayName,dataType,type,units,source,subsystem,description,externalLink
     STATE_IDENTIFIER_1,State Identifier 1,subsystem,state,test units,test source,identifier 1,https://google.com

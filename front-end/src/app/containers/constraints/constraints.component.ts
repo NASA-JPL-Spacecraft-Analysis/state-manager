@@ -7,7 +7,7 @@ import { SubSink } from 'subsink';
 
 import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
 import { MaterialModule } from 'src/app/material';
-import { Constraint, IdentifierMap } from 'src/app/models';
+import { Constraint, constraintTypes, IdentifierMap } from 'src/app/models';
 import { getConstraintIdentifierMap, getConstraints, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
@@ -77,7 +77,8 @@ export class ConstraintsComponent implements OnDestroy {
       collectionId: this.selectedCollectionId,
       csvFormat: [ UploadConstants.constraintCsvUploadFormat ],
       dialogType: 'Constraint',
-      jsonFormat: UploadConstants.constraintJsonUploadFormat
+      jsonFormat: UploadConstants.constraintJsonUploadFormat,
+      types: constraintTypes
     }));
   }
 
