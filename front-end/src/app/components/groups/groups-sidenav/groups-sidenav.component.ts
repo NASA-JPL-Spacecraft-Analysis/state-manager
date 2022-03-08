@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 import { MaterialModule } from 'src/app/material';
 import { EventMap, Group, GroupMap, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
@@ -76,6 +75,9 @@ export class GroupsSidenavComponent implements OnChanges {
         this.selectedItems.push(groupMapping.item);
         this.filterItemList(groupMapping);
       }
+
+      // Don't allow the user to add the group they're looking at to itself.
+      this.filterItemList({ id: undefined, item: this.newGroup, itemId: this.newGroup.id });
     } else {
       this.newGroup = {
         collectionId: this.selectedCollectionId,
@@ -84,7 +86,6 @@ export class GroupsSidenavComponent implements OnChanges {
         identifier: ''
       };
     }
-
 
     // If we're updating a group, remove it from the map so the user can't add it as a group item.
     if (this.newGroup.id) {
@@ -113,8 +114,9 @@ export class GroupsSidenavComponent implements OnChanges {
   }
 
   /**
-   * When an item is selected, add it to the groupItemMap and remove it 
+   * When an item is selected, add it to the groupItemMap and remove it
    * from the collectionItems list.
+   *
    * @param groupItemList The list of items that the user has selected.
    */
   public onItemSelect(groupItemList: GroupItemType[]): void {
@@ -166,6 +168,7 @@ export class GroupsSidenavComponent implements OnChanges {
   /**
    * Populate a list of all of the valid items that can be added to a group.
    * This list contains events, information types, and states.
+   *
    * @param itemMap The map of items for a given type.
    */
   private addToCollectionItems(itemMap: StringTMap<GroupItemType>): void {
