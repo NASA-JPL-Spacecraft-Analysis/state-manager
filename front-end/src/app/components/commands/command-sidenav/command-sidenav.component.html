@@ -51,6 +51,14 @@
           formControlName="externalLink"
         />
       </mat-form-field>
+      
+      <mat-form-field>
+        <mat-select placeholder="Command Type" [(value)]="type">
+          <mat-option *ngFor="let commandType of commandTypes" [value]="commandType">
+            {{commandType}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
       <app-command-argument-form
         [arguments]="newCommand.arguments"

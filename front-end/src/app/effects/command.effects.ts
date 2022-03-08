@@ -189,6 +189,18 @@ export class CommandEffects {
               })
             ]
           )
+        ),
+        this.commandService.getCommandTypes().pipe(
+          map(commandTypes => CommandActions.setCommandTypes({
+            commandTypes
+          })),
+          catchError(
+            (error: Error) => [
+              CommandActions.fetchCommandTypesFailure({
+                error
+              })
+            ]
+          )
         )
       );
     } else {

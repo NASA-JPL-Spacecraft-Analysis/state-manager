@@ -99,9 +99,6 @@ export class CommandResolver implements ResolverInterface<Command> {
     try {
       const command = Command.create(data);
 
-      // TODO: For now hardcore this value, there aren't any other options for commands.
-      command.type = 'command';
-
       this.validationService.isDuplicateIdentifier(await this.commands({ collectionId: data.collectionId }), data.identifier, command.type);
 
       await command.save();
@@ -168,16 +165,14 @@ export class CommandResolver implements ResolverInterface<Command> {
       const existingCommands = await this.commands({ collectionId: data.collectionId });
 
       for (const command of data.commands) {
-        // TODO: For now hardcore this value, there aren't any other options for commands.
-        this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, 'command');
+        this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, command.type);
       }
 
       const commands = Command.create(data.commands);
 
-      for (const command of commands) {
-        // TODO: For now hardcore this value, there aren't any other options for commands.
-        command.type = 'command';
+      this.validationService.hasValidType(commands, await this.dataTypesService.getDataType('command'));
 
+      for (const command of commands) {
         await command.save();
 
         this.createCommandHistory(command);
@@ -259,9 +254,6 @@ export class CommandResolver implements ResolverInterface<Command> {
       if (!command) {
         throw new UserInputError(CommandConstants.commandNotFoundIdError(data.id));
       }
-
-      // TODO: For now hardcore this value, there aren't any other options for commands.
-      command.type = 'command';
 
       // Remove the command we're updating from the list so we don't mark it as a duplicate identifier.
       let commands = await this.commands({ collectionId: command.collectionId });

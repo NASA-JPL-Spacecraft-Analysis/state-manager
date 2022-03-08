@@ -20,6 +20,7 @@ export class CommandSidenavComponent implements OnChanges {
   @Input() public command: Command;
   @Input() public commandArguments: CommandArgument[];
   @Input() public commandIdentifierMap: IdentifierMap;
+  @Input() public commandTypes: string[];
 
   @Output() public errorEmitter: EventEmitter<string>;
   @Output() public modifyCommand: EventEmitter<{ command: Command; deletedArgumentIds: string[] }>;
@@ -57,7 +58,7 @@ export class CommandSidenavComponent implements OnChanges {
         externalLink: '',
         id: undefined,
         identifier: '',
-        type: 'command'
+        type: ''
       };
     } else {
       this.newCommand = {
@@ -100,6 +101,8 @@ export class CommandSidenavComponent implements OnChanges {
   public onSubmit(): void {
     if (this.processArguments()) {
       if (!this.isDuplicateIdentifier) {
+        this.form.value.type = this.type;
+
         this.modifyCommand.emit({
           command: {
             ...this.form.value,
