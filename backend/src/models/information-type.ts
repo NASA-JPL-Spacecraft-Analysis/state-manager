@@ -11,8 +11,3 @@ import { IdentifierType } from './identifier-type';
 })
 @ObjectType()
 export class InformationType extends IdentifierType {}
-
-export const informationTypes: Set<string> = new Set([
-  'goal',
-  'model'
-]);

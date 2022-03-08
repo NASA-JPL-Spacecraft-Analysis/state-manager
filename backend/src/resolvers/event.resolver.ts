@@ -31,7 +31,7 @@ export class EventResolver {
 
       const event = Event.create(data);
 
-      this.validationService.hasValidType([ event ], await this.getEventTypes());
+      this.validationService.hasValidType([ event ], await this.dataTypesService.getDataType('event'));
 
       await event.save();
 
@@ -63,7 +63,7 @@ export class EventResolver {
 
       const events = Event.create(data.events);
 
-      this.validationService.hasValidType(events, await this.getEventTypes());
+      this.validationService.hasValidType(events, await this.dataTypesService.getDataType('event'));
 
       for (const event of events) {
         await event.save();
@@ -96,7 +96,7 @@ export class EventResolver {
 
   @Mutation(() => DeleteItemsResponse)
   public async deleteEventsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
-    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, await this.getEventTypes());
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, await this.dataTypesService.getDataType('event'));
   }
 
   @Query(() => Event)
@@ -124,7 +124,7 @@ export class EventResolver {
 
   @Query(() => [ String ])
   public async eventTypes(): Promise<string[]> {
-    return [ ...(await this.getEventTypes()) ] as string[];
+    return [ ...(await this.dataTypesService.getDataType('event')) ] as string[];
   }
 
   @Mutation(() => EventResponse)
@@ -144,7 +144,7 @@ export class EventResolver {
 
       Object.assign(event, data);
 
-      this.validationService.hasValidType([ event ], await this.getEventTypes());
+      this.validationService.hasValidType([ event ], await this.dataTypesService.getDataType('event'));
 
       await event.save();
 
@@ -176,9 +176,5 @@ export class EventResolver {
     });
 
     void eventHistory.save();
-  }
-
-  private async getEventTypes(): Promise<Set<string>> {
-    return await this.dataTypesService.getDataType('event');
   }
 }

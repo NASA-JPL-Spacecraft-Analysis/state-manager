@@ -5,16 +5,18 @@ import { getConnection } from 'typeorm';
 import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { ConstraintConstants } from '../constants';
 import { CreateConstraintInput, CreateConstraintsInput, UpdateConstraintInput } from '../inputs';
-import { Constraint, ConstraintHistory, constraintTypes } from '../models';
+import { Constraint, ConstraintHistory } from '../models';
 import { SharedRepository } from '../repositories';
 import { ConstraintResponse, ConstraintsResponse, DeleteItemResponse, DeleteItemsResponse } from '../responses';
 import { ValidationService } from '../service';
+import { DataTypesService } from '../service/data-types.service';
 
 @Resolver()
 export class ConstraintResolver {
   private sharedRepository: SharedRepository<Constraint>;
 
   constructor(
+    private readonly dataTypesService: DataTypesService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<Constraint>(getConnection(), Constraint, validationService);
@@ -51,7 +53,7 @@ export class ConstraintResolver {
 
       const constraint = Constraint.create(data);
 
-      this.validationService.hasValidType([ constraint ], constraintTypes);
+      this.validationService.hasValidType([ constraint ], await this.dataTypesService.getDataType('constraint'));
 
       await constraint.save();
 
@@ -83,7 +85,7 @@ export class ConstraintResolver {
       const constraints = Constraint.create(data.constraints);
 
       // Check to make sure each constraint has a valid type.
-      this.validationService.hasValidType(constraints, constraintTypes);
+      this.validationService.hasValidType(constraints, await this.dataTypesService.getDataType('constraint'));
 
       for (const constraint of constraints) {
         await constraint.save();
@@ -104,6 +106,11 @@ export class ConstraintResolver {
     }
   }
 
+  @Query(() => [ String ])
+  public async constraintTypes(): Promise<string[]> {
+    return [ ...(await this.dataTypesService.getDataType('constraint')) ] as string[];
+  }
+
   @Mutation(() => DeleteItemsResponse)
   public async deleteAllConstraints(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
     return this.sharedRepository.deleteAll(collectionId);
@@ -115,8 +122,8 @@ export class ConstraintResolver {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public deleteConstraintsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
-    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, constraintTypes);
+  public async deleteConstraintsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, await this.dataTypesService.getDataType('constraint'));
   }
 
   @Mutation(() => ConstraintResponse)
@@ -136,7 +143,7 @@ export class ConstraintResolver {
 
       Object.assign(constraint, data);
 
-      this.validationService.hasValidType([ constraint ], constraintTypes);
+      this.validationService.hasValidType([ constraint ], await this.dataTypesService.getDataType('constraint'));
 
       await constraint.save();
 

@@ -12,7 +12,7 @@ import {
   ModifyCommandArgument,
   UpdateCommandInput
 } from '../inputs';
-import { Command, CommandArgument, CommandArgumentHistory, CommandHistory, commandTypes } from '../models';
+import { Command, CommandArgument, CommandArgumentHistory, CommandHistory } from '../models';
 import { SharedRepository } from '../repositories';
 import {
   CommandArgumentResponse,
@@ -23,12 +23,14 @@ import {
   DeleteItemsResponse
 } from '../responses';
 import { ValidationService } from '../service';
+import { DataTypesService } from '../service/data-types.service';
 
 @Resolver(() => Command)
 export class CommandResolver implements ResolverInterface<Command> {
   private sharedRepository: SharedRepository<Command>;
 
   constructor(
+    private readonly dataTypesService: DataTypesService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<Command>(getConnection(), Command, validationService);
@@ -85,6 +87,11 @@ export class CommandResolver implements ResolverInterface<Command> {
         collectionId
       }
     });
+  }
+
+  @Query(() => [ String ])
+  public async commandTypes(): Promise<string[]> {
+    return [ ...(await this.dataTypesService.getDataType('command')) ] as string[];
   }
 
   @Mutation(() => CommandResponse)
@@ -240,8 +247,8 @@ export class CommandResolver implements ResolverInterface<Command> {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public deleteCommandsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
-    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, commandTypes);
+  public async deleteCommandsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, await this.dataTypesService.getDataType('command'));
   }
 
   @Mutation(() => CommandResponse)
@@ -264,7 +271,7 @@ export class CommandResolver implements ResolverInterface<Command> {
 
       Object.assign(command, data);
 
-      this.validationService.hasValidType([ command ], commandTypes);
+      this.validationService.hasValidType([ command ], await this.dataTypesService.getDataType('command'));
 
       await command.save();
 

@@ -23,9 +23,3 @@ export class ConstraintHistory extends Constraint {
   @Field(() => Date)
   public updated!: Date;
 }
-
-export const constraintTypes: Set<string> = new Set([
-  'channel_alarm',
-  'downlink_rule_check',
-  'flight_rule_check'
-]);
