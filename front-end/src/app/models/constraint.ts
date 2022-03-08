@@ -9,9 +9,3 @@ export interface ConstraintHistory extends Constraint {
 }
 
 export type ConstraintMap = StringTMap<Constraint>;
-
-export const constraintTypes: string[] = [
-  'flight_rule_check',
-  'downlink_rule_check',
-  'channel_alarm'
-];

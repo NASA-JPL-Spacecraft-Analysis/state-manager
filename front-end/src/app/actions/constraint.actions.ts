@@ -27,6 +27,11 @@ export const fetchConstraintsFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchConstraintTypesFailure = createAction(
+  '[constraint] fetchConstraintTypesFailure',
+  props<{ error: Error }>()
+);
+
 export const setConstraintHistory = createAction(
   '[constraint] setConstraintHistory',
   props<{ constraintHistory: Constraint[] }>()
@@ -35,6 +40,11 @@ export const setConstraintHistory = createAction(
 export const setConstraints = createAction(
   '[constraint] setConstraints',
   props<{ constraints: Constraint[] }>()
+);
+
+export const setConstraintTypes = createAction(
+  '[constraint] setConstraintTypes',
+  props<{ constraintTypes: string[] }>()
 );
 
 export const setSelectedConstraint = createAction(

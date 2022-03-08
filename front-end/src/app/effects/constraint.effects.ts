@@ -104,20 +104,34 @@ export class ConstraintEffects {
 
   public getConstraints(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return this.constraintService.getConstraints(
-        collectionId
-      ).pipe(
-        map(constraints => ConstraintActions.setConstraints({
-          constraints
-        })),
-        catchError(
-          (error: Error) => [
-            ConstraintActions.fetchConstraintsFailure({
-              error
-            })
-          ]
+      return merge(
+        this.constraintService.getConstraints(
+          collectionId
+        ).pipe(
+          map(constraints => ConstraintActions.setConstraints({
+            constraints
+          })),
+          catchError(
+            (error: Error) => [
+              ConstraintActions.fetchConstraintsFailure({
+                error
+              })
+            ]
+          )
+        ),
+        this.constraintService.getConstraintTypes().pipe(
+          map(constraintTypes => ConstraintActions.setConstraintTypes({
+            constraintTypes
+          })),
+          catchError(
+            (error: Error) => [
+              ConstraintActions.fetchConstraintTypesFailure({
+                error
+              })
+            ]
+          )
         )
-      );
+      )
     } else {
       return this.constraintService.getConstraintHistory(
         collectionId
