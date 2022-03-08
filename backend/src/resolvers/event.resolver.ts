@@ -3,12 +3,13 @@ import { UserInputError } from 'apollo-server';
 import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
-import { Event, EventHistory, eventTypes } from './../models';
+import { Event, EventHistory } from './../models';
 import { CreateEventInput, CreateEventsInput, UpdateEventInput } from '../inputs/event';
 import { ValidationService } from '../service';
 import { SharedRepository } from '../repositories';
 import { DeleteItemResponse, DeleteItemsResponse, EventResponse, EventsResponse } from '../responses';
 import { EventConstants } from '../constants';
+import { DataTypesService } from '../service/data-types.service';
 
 
 @Resolver()
@@ -16,6 +17,7 @@ export class EventResolver {
   private sharedRepository: SharedRepository<Event>;
 
   constructor(
+    private readonly dataTypesService: DataTypesService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<Event>(getConnection(), Event, validationService);
@@ -29,7 +31,7 @@ export class EventResolver {
 
       const event = Event.create(data);
 
-      this.validationService.hasValidType([ event ], eventTypes);
+      this.validationService.hasValidType([ event ], await this.getEventTypes());
 
       await event.save();
 
@@ -61,7 +63,7 @@ export class EventResolver {
 
       const events = Event.create(data.events);
 
-      this.validationService.hasValidType(events, eventTypes);
+      this.validationService.hasValidType(events, await this.getEventTypes());
 
       for (const event of events) {
         await event.save();
@@ -93,8 +95,8 @@ export class EventResolver {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public deleteEventsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
-    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, eventTypes);
+  public async deleteEventsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, await this.getEventTypes());
   }
 
   @Query(() => Event)
@@ -120,6 +122,11 @@ export class EventResolver {
     });
   }
 
+  @Query(() => [ String ])
+  public async eventTypes(): Promise<string[]> {
+    return [ ...(await this.getEventTypes()) ] as string[];
+  }
+
   @Mutation(() => EventResponse)
   public async updateEvent(@Arg('data') data: UpdateEventInput): Promise<EventResponse> {
     try {
@@ -137,7 +144,7 @@ export class EventResolver {
 
       Object.assign(event, data);
 
-      this.validationService.hasValidType([ event ], eventTypes);
+      this.validationService.hasValidType([ event ], await this.getEventTypes());
 
       await event.save();
 
@@ -169,5 +176,9 @@ export class EventResolver {
     });
 
     void eventHistory.save();
+  }
+
+  private async getEventTypes(): Promise<Set<string>> {
+    return await this.dataTypesService.getDataType('event');
   }
 }
