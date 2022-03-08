@@ -40,3 +40,8 @@ export const getStates = createSelector(
   getStatesState,
   (stateState: StateState) => stateState.stateMap
 );
+
+export const getStateTypes = createSelector(
+  getStatesState,
+  (stateState: StateState) => stateState.stateTypes
+);

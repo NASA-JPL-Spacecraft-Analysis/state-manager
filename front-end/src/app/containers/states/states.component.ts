@@ -4,14 +4,15 @@ import { RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { State, StateMap, StateEnumeration, IdentifierMap, stateTypes } from '../../models';
+import { State, StateMap, StateEnumeration, IdentifierMap } from '../../models';
 import {
   getStates,
   getSelectedState,
   getShowSidenav,
   getSelectedCollectionId,
   getStateIdentifierMap,
-  getStateEnumerations
+  getStateEnumerations,
+  getStateTypes
 } from '../../selectors';
 import { StateActions, LayoutActions, ToastActions } from '../../actions';
 import { StateSidenavModule, StateTableModule } from 'src/app/components';
@@ -32,6 +33,7 @@ export class StatesComponent implements OnDestroy {
   public state: State;
   public stateEnumerations: StateEnumeration[];
   public stateIdentifierMap: IdentifierMap;
+  public stateTypes: string[];
 
   private subscriptions = new SubSink();
 
@@ -64,6 +66,10 @@ export class StatesComponent implements OnDestroy {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getStateTypes)).subscribe(stateTypes => {
+        this.stateTypes = stateTypes;
+        this.changeDetectorRef.markForCheck();
+      })
     );
   }
 
@@ -133,7 +139,7 @@ export class StatesComponent implements OnDestroy {
       csvFormat: [ UploadConstants.stateCsvUploadFormat ],
       dialogType: 'State',
       jsonFormat: UploadConstants.stateJsonUploadFormat,
-      types: stateTypes
+      types: this.stateTypes
     }));
   }
 }

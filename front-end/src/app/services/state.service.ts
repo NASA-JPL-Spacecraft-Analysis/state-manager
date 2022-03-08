@@ -146,6 +146,15 @@ export class StateService {
       .pipe(map(({ data: { states } }) => states));
   }
 
+  public getStateTypes(): Observable<string[]> {
+    return this.apollo
+      .query<{ stateTypes: string[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_STATE_TYPES
+      })
+      .pipe(map(({ data: { stateTypes } }) => stateTypes));
+  }
+
   public getStateHistory(collectionId: string): Observable<StateHistory[]> {
     return this.apollo
       .query<{ stateHistory: StateHistory[] }>({

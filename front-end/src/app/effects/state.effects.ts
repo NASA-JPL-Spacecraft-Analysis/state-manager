@@ -172,6 +172,18 @@ export class StateEffects {
               })
             ]
           )
+        ),
+        this.stateService.getStateTypes().pipe(
+          map(stateTypes => StateActions.setStateTypes({
+            stateTypes
+          })),
+          catchError(
+            (error: Error) => [
+              StateActions.fetchStateTypesFailure({
+                error
+              })
+            ]
+          )
         )
       );
     } else {

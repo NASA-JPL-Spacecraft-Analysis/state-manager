@@ -57,6 +57,11 @@ export const fetchStatesFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchStateTypesFailure = createAction(
+  '[state] fetchStatesTypesFailure',
+  props<{ error: Error }>()
+);
+
 export const saveEnumerationsSuccess = createAction(
   '[state] saveEnumerationsSuccess',
   props<{ stateEnumerations: StateEnumeration[] }>()
@@ -85,6 +90,11 @@ export const setStateHistory = createAction(
 export const setStates = createAction(
   '[state] setStates',
   props<{ states: State[] }>()
+);
+
+export const setStateTypes = createAction(
+  '[state] setStatesTypes',
+  props<{ stateTypes: string[] }>()
 );
 
 export const setSelectedState = createAction(
