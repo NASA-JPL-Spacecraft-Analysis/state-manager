@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
 import { MaterialModule } from 'src/app/material';
-import { Event, eventTypes, IdentifierMap } from 'src/app/models';
+import { Event, IdentifierMap } from 'src/app/models';
 import { IdentifierFormModule } from '../identifier-form/identifier-form.component';
 
 @Component({
@@ -17,13 +17,13 @@ import { IdentifierFormModule } from '../identifier-form/identifier-form.compone
 export class EventSidenavComponent implements OnChanges {
   @Input() public event: Event;
   @Input() public eventIdentifierMap: IdentifierMap;
+  @Input() public eventTypes: string[];
   @Input() public selectedCollectionId: string;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public modifyEvent: EventEmitter<Event>;
 
   public form: FormGroup;
-  public eventTypes = eventTypes;
   public newEvent: Event;
   public originalIdentifier: string;
   public type: string;

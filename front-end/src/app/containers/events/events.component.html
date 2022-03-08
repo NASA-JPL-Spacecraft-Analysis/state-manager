@@ -28,6 +28,7 @@
     <app-event-sidenav
       [eventIdentifierMap]="eventIdentifierMap"
       [event]="event"
+      [eventTypes]="eventTypes"
       [selectedCollectionId]="selectedCollectionId"
       (duplicateIdentifier)="onDuplicateIdentifier($event)"
       (modifyEvent)="onSidenavOutput($event)">

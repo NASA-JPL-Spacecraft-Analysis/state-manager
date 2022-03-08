@@ -9,11 +9,3 @@ export interface EventHistory extends Event {
 }
 
 export type EventMap = StringTMap<Event>;
-
-export const eventTypes: string[] = [
-  'evr',
-  'predict_event',
-  'command_instance',
-  'activity_instance',
-  'user'
-];
