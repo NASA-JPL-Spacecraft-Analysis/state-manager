@@ -5,7 +5,16 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MaterialModule } from 'src/app/material';
-import { EventMap, Group, GroupMap, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
+import {
+  EventMap,
+  Group,
+  GroupMap,
+  GroupItemType,
+  GroupMapping,
+  IdentifierMap,
+  InformationTypeMap,
+  StateMap
+} from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { GroupItemSelectorModule } from '../group-item-selector/group-item-selector.component';
@@ -75,9 +84,6 @@ export class GroupsSidenavComponent implements OnChanges {
         this.selectedItems.push(groupMapping.item);
         this.filterItemList(groupMapping);
       }
-
-      // Don't allow the user to add the group they're looking at to itself.
-      this.filterItemList({ id: undefined, item: this.newGroup, itemId: this.newGroup.id });
     } else {
       this.newGroup = {
         collectionId: this.selectedCollectionId,
@@ -85,11 +91,6 @@ export class GroupsSidenavComponent implements OnChanges {
         id: undefined,
         identifier: ''
       };
-    }
-
-    // If we're updating a group, remove it from the map so the user can't add it as a group item.
-    if (this.newGroup.id) {
-      delete this.groupMap[this.newGroup.id];
     }
 
     this.originalGroupIdentifier = this.newGroup.identifier;
@@ -138,6 +139,9 @@ export class GroupsSidenavComponent implements OnChanges {
 
       this.filterItemList(groupMapping);
     }
+
+    // Do one last filter to remove the current group from the selectable list.
+    this.filterItemList();
   }
 
   public onSubmit(): void {
@@ -171,7 +175,7 @@ export class GroupsSidenavComponent implements OnChanges {
    *
    * @param itemMap The map of items for a given type.
    */
-  private addToCollectionItems(itemMap: StringTMap<GroupItemType>): void {
+  private addToCollectionItems(itemMap: Record<string, GroupItemType>): void {
     if (itemMap) {
       for (const item of Object.keys(itemMap)) {
         this.collectionItems.push(itemMap[item]);
@@ -179,8 +183,8 @@ export class GroupsSidenavComponent implements OnChanges {
     }
   }
 
-  private filterItemList(groupMapping: GroupMapping): void {
-    this.itemList = this.itemList.filter(item => item.id !== groupMapping.item.id);
+  private filterItemList(groupMapping?: GroupMapping): void {
+    this.itemList = this.itemList.filter(item => item.id !== groupMapping?.item.id && this.group.id !== item.id);
   }
 
   private validateGroupIdentifier(identifier: string): boolean {

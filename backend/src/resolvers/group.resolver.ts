@@ -21,7 +21,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     try {
       const group = Group.create(data);
 
-      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
+      await this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
 
       await group.save();
 
@@ -199,7 +199,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       Object.assign(group, data);
 
-      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
+      await this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
 
       await group.save();
 
