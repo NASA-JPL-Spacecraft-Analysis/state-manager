@@ -20,11 +20,10 @@ import {
   getStateEnumerationMap,
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
-import { LayoutActions, ToastActions, FileUploadActions, RelationshipActions } from 'src/app/actions';
+import { LayoutActions, ToastActions, RelationshipActions } from 'src/app/actions';
 import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
 import { StateMap, InformationTypeMap, EventMap, ConstraintMap, CommandMap, CommandArgumentMap, StateEnumerationMap } from 'src/app/models';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { UploadConstants } from 'src/app/constants';
 
 @Component({

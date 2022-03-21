@@ -69,9 +69,11 @@ export class RelationshipEffects {
           })),
           this.constraintEffects.getConstraints(collectionId, false),
           this.commandEffects.getCommands(collectionId, false),
+          this.commandEffects.getCommandArgumentHistory(collectionId),
           this.eventEffects.getEvents(collectionId, false),
           this.informationTypeEffects.getInformationTypes(collectionId),
           this.stateEffects.getStates(collectionId, false),
+          this.stateEffects.getStateEnumerationHistory(collectionId),
           this.getRelationships(collectionId, history)
         );
       })
@@ -136,7 +138,7 @@ export class RelationshipEffects {
         )
       );
     } else {
-      this.relationshipService.getRelationshipHistory(
+      return this.relationshipService.getRelationshipHistory(
         collectionId
       ).pipe(
         map(relationshipHistory => RelationshipActions.setRelationshipHistory({
