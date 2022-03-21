@@ -1,4 +1,4 @@
-import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
+import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -26,7 +26,7 @@ import { UploadConstants } from 'src/app/constants';
   styleUrls: [ 'states.component.css' ],
   templateUrl: 'states.component.html'
 })
-export class StatesComponent implements OnDestroy, OnInit {
+export class StatesComponent implements OnDestroy {
   public collectionId: string;
   public showSidenav: boolean;
   public stateMap: StateMap;
@@ -69,17 +69,18 @@ export class StatesComponent implements OnDestroy, OnInit {
       this.store.pipe(select(getStates)).subscribe(stateMap => {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
+
+        this.stateId = this.activatedRoute.snapshot.paramMap.get('id');
+
+        if (this.stateId && this.stateMap) {
+          this.onModifyState(this.stateMap[this.stateId]);
+        }
       }),
       this.store.pipe(select(getStateTypes)).subscribe(stateTypes => {
         this.stateTypes = stateTypes;
         this.changeDetectorRef.markForCheck();
       })
     );
-  }
-
-  public ngOnInit(): void {
-    this.stateId = this.activatedRoute.snapshot.paramMap.get('id');
-    console.log(this.stateId);
   }
 
   public ngOnDestroy(): void {
@@ -103,8 +104,11 @@ export class StatesComponent implements OnDestroy, OnInit {
           // If the user hasn't selected an item, append the item ID to the URL.
           this.location.replaceState(this.router.url + state.id);
         } else {
+          const splitUrl = this.router.url.split('/');
+          splitUrl.pop();
+
           // If the user already has an item selected, replace that part of the URL with the new ID.
-          this.location.replaceState(this.router.url.slice(0, this.router.url.lastIndexOf('/')) + '/' + state.id);
+          this.location.replaceState(splitUrl.join('/') + '/' + state.id);
         }
 
         this.stateId = state.id;
@@ -125,8 +129,11 @@ export class StatesComponent implements OnDestroy, OnInit {
 
   public onSidenavOutput(result: { state: State; deletedEnumerationIds: string[] }): void {
     if (!result) {
+      const splitUrl = this.router.url.split('/');
+      splitUrl.pop();
+
       // If the user is closing the sidenav intentionally, remove the ID from the URL.
-      this.location.replaceState(this.router.url + '../');
+      this.location.replaceState(splitUrl.join('/'));
       this.stateId = '';
 
       this.store.dispatch(LayoutActions.toggleSidenav({
