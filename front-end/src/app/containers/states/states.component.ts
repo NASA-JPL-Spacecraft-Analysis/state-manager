@@ -1,6 +1,6 @@
-import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
@@ -26,7 +26,7 @@ import { UploadConstants } from 'src/app/constants';
   styleUrls: [ 'states.component.css' ],
   templateUrl: 'states.component.html'
 })
-export class StatesComponent implements OnDestroy {
+export class StatesComponent implements OnDestroy, OnInit {
   public collectionId: string;
   public showSidenav: boolean;
   public stateMap: StateMap;
@@ -35,11 +35,15 @@ export class StatesComponent implements OnDestroy {
   public stateIdentifierMap: IdentifierMap;
   public stateTypes: string[];
 
+  private stateId: string;
   private subscriptions = new SubSink();
 
   constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private router: Router,
+    private store: Store<AppState>
   ) {
     this.subscriptions.add(
       this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
@@ -73,6 +77,11 @@ export class StatesComponent implements OnDestroy {
     );
   }
 
+  public ngOnInit(): void {
+    this.stateId = this.activatedRoute.snapshot.paramMap.get('id');
+    console.log(this.stateId);
+  }
+
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
@@ -83,9 +92,24 @@ export class StatesComponent implements OnDestroy {
    * @param state The state that we're creating or modifing. Can be undefined if the user is creating a new state.
    */
   public onModifyState(state?: State): void {
-    this.store.dispatch(StateActions.setSelectedState({
-      id: state?.id
-    }));
+    if (state?.id) {
+      this.store.dispatch(StateActions.setSelectedState({
+        id: state.id
+      }));
+
+      // Only change the URL if the user selects a different item then the one already selected.
+      if (this.stateId !== state.id) {
+        if (this.stateId === '') {
+          // If the user hasn't selected an item, append the item ID to the URL.
+          this.location.replaceState(this.router.url + state.id);
+        } else {
+          // If the user already has an item selected, replace that part of the URL with the new ID.
+          this.location.replaceState(this.router.url.slice(0, this.router.url.lastIndexOf('/')) + '/' + state.id);
+        }
+
+        this.stateId = state.id;
+      }
+    }
 
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
@@ -101,6 +125,10 @@ export class StatesComponent implements OnDestroy {
 
   public onSidenavOutput(result: { state: State; deletedEnumerationIds: string[] }): void {
     if (!result) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.location.replaceState(this.router.url + '../');
+      this.stateId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));

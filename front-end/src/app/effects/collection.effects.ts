@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
 import { CollectionActions, ToastActions } from '../actions';
-import { CollectionService } from '../services';
+import { CollectionService, NavigationService } from '../services';
 import { CollectionResponse } from '../models';
 import { of, forkJoin, concat } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components';
@@ -198,14 +198,20 @@ export class CollectionEffects {
           id = Object.keys(state.collection.collectionMap)[0];
         }
 
-        const route = this.router.url.split('/').pop();
+        const splitUrl = this.router.url.split('/');
+        const page = this.navigationService.getCurrentPageFromURL(this.router.url);
 
-        // If the user is going directly to a URL, take them there.  Otherwise take them to the default page (states).
-        if (route) {
-          this.router.navigate([ 'collection/' + id + '/' + route ]);
-        } else {
-          this.router.navigate([ 'collection/' + id ]);
+        // If the user is changing collections, we remove the item ID from the url.
+        if (splitUrl[2] !== id) {
+          // Keep the current page the user is on when changing collections.
+          if (page) {
+            this.router.navigate([ 'collection/' + id + '/' + page ]);
+          } else {
+            this.router.navigate([ 'collection/' + id ]);
+          }
         }
+
+        this.router.navigate([ this.router.url ]);
 
         return [];
       })
@@ -216,6 +222,7 @@ export class CollectionEffects {
     private actions: Actions,
     private collectionService: CollectionService,
     private dialog: MatDialog,
+    private navigationService: NavigationService,
     private router: Router,
     private store: Store<AppState>
   ) {}

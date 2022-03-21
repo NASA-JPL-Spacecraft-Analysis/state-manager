@@ -32,7 +32,7 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'states'
+        redirectTo: 'states/'
       },
       {
         component: CommandArgumentHistoryComponent,
@@ -83,8 +83,13 @@ export const routes: Routes = [
         path: 'state-enumeration-history'
       },
       {
+        path: 'states',
+        redirectTo: 'states/',
+        pathMatch: 'full',
+      },
+      {
         component: StatesComponent,
-        path: 'states'
+        path: 'states/:id'
       },
       {
         component: StateHistoryComponent,

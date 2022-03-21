@@ -78,6 +78,8 @@ export class StateEffects {
       ofRoute([
         'collection/:collectionId/state-enumeration-history',
         'collection/:collectionId/states',
+        'collection/:collectionId/states/',
+        'collection/:collectionId/states/:id',
         'collection/:collectionId/state-history'
       ]),
       mapToParam<string>('collectionId'),
@@ -92,7 +94,7 @@ export class StateEffects {
             })),
             this.getStateEnumerationHistory(collectionId)
           );
-        } else if (url === 'states') {
+        } else {
           history = false;
         }
 

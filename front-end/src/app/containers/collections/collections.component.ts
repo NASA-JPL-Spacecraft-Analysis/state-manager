@@ -12,6 +12,7 @@ import { CollectionActions } from 'src/app/actions';
 import { CollectionMap } from 'src/app/models';
 import { getCollectionMap, getSelectedCollectionId } from 'src/app/selectors';
 import { CollectionInputModule } from 'src/app/components';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +33,7 @@ export class CollectionComponent implements OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private domSanitizer: DomSanitizer,
     private matIconRegistry: MatIconRegistry,
+    private navigationService: NavigationService,
     private router: Router,
     private store: Store<AppState>
   ) {
@@ -75,7 +77,13 @@ export class CollectionComponent implements OnDestroy {
         id: collectionId
       }));
 
-      this.router.navigate([ 'collection/' + collectionId + '/' + this.router.url.split('/').pop() ]);
+      const page = this.navigationService.getCurrentPageFromURL(this.router.url);
+
+      if (page) {
+        this.router.navigate([ 'collection/' + collectionId + '/' + page ]);
+      } else {
+        this.router.navigate([ 'collection/' + collectionId ]);
+      }
     }
   }
 
