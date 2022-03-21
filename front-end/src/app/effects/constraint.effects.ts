@@ -46,14 +46,17 @@ export class ConstraintEffects {
     this.actions.pipe(
       ofRoute([
         'collection/:collectionId/constraints',
+        'collection/:collectionId/constraints/',
+        'collection/:collectionId/constraints/:id',
         'collection/:collectionId/constraint-history'
       ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
-        let history = true;
+        const url = this.router.routerState.snapshot.url.split('/').pop();
+        let history = false;
 
-        if (this.router.routerState.snapshot.url.split('/').pop() === 'constraints') {
-          history = false;
+        if (url === 'constraint-history') {
+          history = true;
         }
 
         return merge(

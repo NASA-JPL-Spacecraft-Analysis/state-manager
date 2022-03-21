@@ -19,6 +19,7 @@ import { StateSidenavModule, StateTableModule } from 'src/app/components';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +43,7 @@ export class StatesComponent implements OnDestroy {
     private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private location: Location,
+    private navigationService: NavigationService,
     private router: Router,
     private store: Store<AppState>
   ) {
@@ -93,27 +95,14 @@ export class StatesComponent implements OnDestroy {
    * @param state The state that we're creating or modifing. Can be undefined if the user is creating a new state.
    */
   public onModifyState(state?: State): void {
-    if (state?.id) {
-      this.store.dispatch(StateActions.setSelectedState({
-        id: state.id
-      }));
+    this.store.dispatch(StateActions.setSelectedState({
+      id: state?.id
+    }));
 
-      // Only change the URL if the user selects a different item then the one already selected.
-      if (this.stateId !== state.id) {
-        if (this.stateId === '') {
-          // If the user hasn't selected an item, append the item ID to the URL.
-          this.location.replaceState(this.router.url + state.id);
-        } else {
-          const splitUrl = this.router.url.split('/');
-          splitUrl.pop();
+    const newStateId = state?.id ?? '';
 
-          // If the user already has an item selected, replace that part of the URL with the new ID.
-          this.location.replaceState(splitUrl.join('/') + '/' + state.id);
-        }
-
-        this.stateId = state.id;
-      }
-    }
+    this.navigationService.addItemIDToURL(this.stateId, newStateId, this.location, this.router.url);
+    this.stateId = newStateId;
 
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
@@ -129,11 +118,8 @@ export class StatesComponent implements OnDestroy {
 
   public onSidenavOutput(result: { state: State; deletedEnumerationIds: string[] }): void {
     if (!result) {
-      const splitUrl = this.router.url.split('/');
-      splitUrl.pop();
-
       // If the user is closing the sidenav intentionally, remove the ID from the URL.
-      this.location.replaceState(splitUrl.join('/'));
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
       this.stateId = '';
 
       this.store.dispatch(LayoutActions.toggleSidenav({

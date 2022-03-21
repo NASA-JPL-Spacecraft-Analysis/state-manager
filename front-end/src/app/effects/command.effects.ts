@@ -78,12 +78,16 @@ export class CommandEffects {
       ofRoute([
         'collection/:collectionId/command-argument-history',
         'collection/:collectionId/commands',
+        'collection/:collectionId/commands/',
+        'collection/:collectionId/commands/:id',
         'collection/:collectionId/command-history'
       ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = true;
+        let history = false;
+
+        console.log(url);
 
         if (url === 'command-argument-history') {
           return merge(
@@ -92,8 +96,10 @@ export class CommandEffects {
             })),
             this.getCommandArgumentHistory(collectionId)
           );
-        } else if (url === 'commands') {
-          history = false;
+        }
+
+        if (url === 'command-history') {
+          history = true;
         }
 
         return merge(

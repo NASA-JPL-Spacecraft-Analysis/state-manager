@@ -85,7 +85,7 @@ export class StateEffects {
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = true;
+        let history = false;
 
         if (url === 'state-enumeration-history') {
           return merge(
@@ -94,8 +94,10 @@ export class StateEffects {
             })),
             this.getStateEnumerationHistory(collectionId)
           );
-        } else {
-          history = false;
+        }
+
+        if (url === 'state-history') {
+          history = true;
         }
 
         return merge(

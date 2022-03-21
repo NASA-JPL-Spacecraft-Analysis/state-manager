@@ -1,16 +1,16 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AppState } from 'src/app/app-store';
 import { SubSink } from 'subsink';
 
 import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
 import { MaterialModule } from 'src/app/material';
-import { Constraint, IdentifierMap } from 'src/app/models';
+import { Constraint, ConstraintMap, IdentifierMap } from 'src/app/models';
 import {
   getConstraintIdentifierMap,
-  getConstraints,
+  getConstraintMap,
   getConstraintTypes,
   getSelectedCollectionId,
   getSelectedConstraint,
@@ -18,6 +18,8 @@ import {
 } from 'src/app/selectors';
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
+import { O } from '@angular/cdk/keycodes';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,16 +30,21 @@ import { UploadConstants } from 'src/app/constants';
 export class ConstraintsComponent implements OnDestroy {
   public constraint: Constraint;
   public constraintIdentifierMap: IdentifierMap;
-  public constraints: Constraint[];
+  public constraintMap: ConstraintMap;
   public constraintTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
 
+  private constraintId: string;
   private subscriptions: SubSink;
 
   constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private navigationService: NavigationService,
+    private router: Router,
+    private store: Store<AppState>
   ) {
     this.subscriptions = new SubSink();
 
@@ -46,9 +53,15 @@ export class ConstraintsComponent implements OnDestroy {
         this.constraintIdentifierMap = constraintIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getConstraints)).subscribe(constraints => {
-        this.constraints = constraints;
+      this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {
+        this.constraintMap = constraintMap;
         this.changeDetectorRef.markForCheck();
+
+        this.constraintId = this.activatedRoute.snapshot.paramMap.get('id');
+
+        if (this.constraintId && this.constraintMap) {
+          this.onModifyConstraint(this.constraintMap[this.constraintId]);
+        }
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
@@ -99,6 +112,11 @@ export class ConstraintsComponent implements OnDestroy {
       id: constraint?.id
     }));
 
+    const newConstraintId = constraint?.id ?? '';
+
+    this.navigationService.addItemIDToURL(this.constraintId, newConstraintId, this.location, this.router.url);
+    this.constraintId = newConstraintId;
+
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
@@ -106,6 +124,10 @@ export class ConstraintsComponent implements OnDestroy {
 
   public onSidenavOutput(constraint: Constraint): void {
     if (!constraint) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
+      this.constraintId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));

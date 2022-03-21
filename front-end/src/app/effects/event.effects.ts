@@ -50,14 +50,17 @@ export class EventEffects {
     this.actions.pipe(
       ofRoute([
         'collection/:collectionId/events',
+        'collection/:collectionId/events/',
+        'collection/:collectionId/events/:id',
         'collection/:collectionId/event-history'
       ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
-        let history = true;
+        const url = this.router.routerState.snapshot.url.split('/').pop();
+        let history = false;
 
-        if (this.router.routerState.snapshot.url.split('/').pop() === 'events') {
-          history = false;
+        if (url === 'event-history') {
+          history = true;
         }
 
         return merge(

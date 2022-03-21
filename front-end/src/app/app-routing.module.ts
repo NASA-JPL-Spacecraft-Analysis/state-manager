@@ -43,20 +43,32 @@ export const routes: Routes = [
         path: 'command-history'
       },
       {
+        path: 'commands',
+        redirectTo: 'commands/'
+      },
+      {
         component: CommandsComponent,
-        path: 'commands'
+        path: 'commands/:id'
       },
       {
         component: ConstraintHistoryComponent,
         path: 'constraint-history'
       },
       {
+        path: 'constraints',
+        redirectTo: 'constraints/'
+      },
+      {
         component: ConstraintsComponent,
-        path: 'constraints'
+        path: 'constraints/:id'
+      },
+      {
+        path: 'events',
+        redirectTo: 'events/'
       },
       {
         component: EventsComponent,
-        path: 'events'
+        path: 'events/:id'
       },
       {
         component: EventHistoryComponent,
@@ -84,8 +96,7 @@ export const routes: Routes = [
       },
       {
         path: 'states',
-        redirectTo: 'states/',
-        pathMatch: 'full',
+        redirectTo: 'states/'
       },
       {
         component: StatesComponent,

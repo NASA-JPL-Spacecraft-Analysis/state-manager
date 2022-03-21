@@ -49,7 +49,7 @@ export const setEventTypes = createAction(
 
 export const setSelectedEvent = createAction(
   '[event] setSelectedEvent',
-  props<{ event: Event}>()
+  props<{ event: Event }>()
 );
 
 export const updateEvent = createAction(
