@@ -27,6 +27,11 @@ export const fetchEventHistoryMapFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchEventTypesFailure = createAction(
+  '[event] fetchEventTypesFailure',
+  props<{ error: Error }>()
+);
+
 export const setEvents = createAction(
   '[event] setEvents',
   props<{ events: Event[] }>()
@@ -35,6 +40,11 @@ export const setEvents = createAction(
 export const setEventHistory = createAction(
   '[event] setEventHistory',
   props<{ eventHistory: Event[] }>()
+);
+
+export const setEventTypes = createAction(
+  '[event] setEventTypes',
+  props<{ eventTypes: string[] }>()
 );
 
 export const setSelectedEvent = createAction(

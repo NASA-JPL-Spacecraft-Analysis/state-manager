@@ -108,18 +108,32 @@ export class EventEffects {
 
   public getEvents(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return this.eventService.getEvents(
-        collectionId
-      ).pipe(
-        map(events => EventActions.setEvents({
-          events
-        })),
-        catchError(
-          (error: Error) => [
-            EventActions.fetchEventsFailure({
-              error
-            })
-          ]
+      return merge(
+        this.eventService.getEvents(
+          collectionId
+        ).pipe(
+          map(events => EventActions.setEvents({
+            events
+          })),
+          catchError(
+            (error: Error) => [
+              EventActions.fetchEventsFailure({
+                error
+              })
+            ]
+          )
+        ),
+        this.eventService.getEventTypes().pipe(
+          map(eventTypes => EventActions.setEventTypes({
+            eventTypes
+          })),
+          catchError(
+            (error: Error) => [
+              EventActions.fetchEventTypesFailure({
+                error
+              })
+            ]
+          )
         )
       );
     } else {

@@ -9,6 +9,7 @@ export interface ConstraintState {
   constraintHistory: Constraint[];
   constraintIdentifierMap: IdentifierMap;
   constraintMap: ConstraintMap;
+  constraintTypes: string[];
   selectedConstraintId: string;
 }
 
@@ -16,6 +17,7 @@ export const initialState: ConstraintState = {
   constraintHistory: undefined,
   constraintIdentifierMap: undefined,
   constraintMap: undefined,
+  constraintTypes: undefined,
   selectedConstraintId: undefined
 };
 
@@ -34,6 +36,12 @@ export const reducer = createReducer(
     constraintMap: {
       ...mapItems(constraints) as ConstraintMap
     }
+  })),
+  on(ConstraintActions.setConstraintTypes, (state, { constraintTypes }) => ({
+    ...state,
+    constraintTypes: [
+      ...constraintTypes
+    ]
   })),
   on(ConstraintActions.setSelectedConstraint, (state, { id }) => ({
     ...state,

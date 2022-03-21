@@ -3,16 +3,18 @@ import { getConnection } from 'typeorm';
 
 import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { CreateInformationTypesInput } from '../inputs';
-import { InformationType, informationTypes } from '../models';
+import { InformationType } from '../models';
 import { SharedRepository } from '../repositories';
 import { DeleteItemResponse, DeleteItemsResponse, InformationTypeResponse } from '../responses';
 import { ValidationService } from '../service';
+import { DataTypesService } from '../service/data-types.service';
 
 @Resolver()
 export class InformationTypeResolver {
   private sharedRepository: SharedRepository<InformationType>;
 
   constructor(
+    private readonly dataTypesService: DataTypesService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<InformationType>(getConnection(), InformationType, validationService);
@@ -27,7 +29,7 @@ export class InformationTypeResolver {
 
       const informationTypeList = InformationType.create(data.informationTypes);
 
-      this.validationService.hasValidType(informationTypeList, informationTypes);
+      this.validationService.hasValidType(informationTypeList, await this.dataTypesService.getDataType('informationType'));
 
       for (const informationType of informationTypeList) {
         await informationType.save();
@@ -57,8 +59,11 @@ export class InformationTypeResolver {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public deleteInformationTypesByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
-    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, informationTypes);
+  public async deleteInformationTypesByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(
+      collectionId,
+      type,
+      await this.dataTypesService.getDataType('informationType'));
   }
 
   @Query(() => InformationType)
@@ -73,5 +78,10 @@ export class InformationTypeResolver {
         collectionId
       }
     });
+  }
+
+  @Query(() => [ String ])
+  public async informatonTypeTypes(): Promise<string[]> {
+    return [ ...(await this.dataTypesService.getDataType('informationType')) ] as string[];
   }
 }

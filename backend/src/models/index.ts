@@ -1,6 +1,7 @@
 export * from './collection';
 export * from './command';
 export * from './constraint';
+export * from './data-type';
 export * from './event';
 export * from './group-mapping';
 export * from './group';

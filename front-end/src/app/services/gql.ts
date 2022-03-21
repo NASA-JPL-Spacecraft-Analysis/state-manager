@@ -108,6 +108,12 @@ export const GET_EVENT_HISTORY = gql(`
   }
 `);
 
+export const GET_EVENT_TYPES = gql(`
+  query eventTypes {
+    eventTypes
+  }
+`);
+
 export const UPDATE_EVENT = gql(`
   mutation UpdateEvent(
     $description: String

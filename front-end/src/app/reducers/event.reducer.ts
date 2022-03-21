@@ -9,6 +9,7 @@ export interface EventState {
   eventIdentifierMap: IdentifierMap;
   eventMap: EventMap;
   eventHistoryMap: EventMap;
+  eventTypes: string[];
   selectedEvent: Event;
 }
 
@@ -16,6 +17,7 @@ export const initialState: EventState = {
   eventIdentifierMap: null,
   eventMap: null,
   eventHistoryMap: null,
+  eventTypes: null,
   selectedEvent: null
 };
 
@@ -57,6 +59,12 @@ export const reducer = createReducer(
       }
     };
   }),
+  on(EventActions.setEventTypes, (state, { eventTypes }) => ({
+    ...state,
+    eventTypes: [
+      ...eventTypes
+    ]
+  })),
   on(EventActions.setSelectedEvent, (state, { event }) => ({
     ...state,
     selectedEvent: event

@@ -8,8 +8,15 @@ import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
 import { EventActions, LayoutActions, ToastActions } from 'src/app/actions';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
-import { Event as StateEvent, EventMap, eventTypes, IdentifierMap } from 'src/app/models';
-import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId, getEventIdentifierMap } from 'src/app/selectors';
+import { Event as StateEvent, EventMap, IdentifierMap } from 'src/app/models';
+import {
+  getShowSidenav,
+  getEventTypes,
+  getEventMap,
+  getSelectedEvent,
+  getSelectedCollectionId,
+  getEventIdentifierMap
+} from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
 
@@ -23,6 +30,7 @@ export class EventsComponent implements OnDestroy {
   public event: StateEvent;
   public eventIdentifierMap: IdentifierMap;
   public eventMap: EventMap;
+  public eventTypes: string[];
   public selectedCollectionId: string;
   public showSidenav: boolean;
 
@@ -53,6 +61,10 @@ export class EventsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getSelectedEvent)).subscribe(event => {
         this.event = event;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getEventTypes)).subscribe(eventTypes => {
+        this.eventTypes = eventTypes;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -89,7 +101,7 @@ export class EventsComponent implements OnDestroy {
       csvFormat: [ UploadConstants.eventCsvUploadFormat ],
       dialogType: 'Event',
       jsonFormat: UploadConstants.eventJsonUploadFormat,
-      types: eventTypes
+      types: this.eventTypes
     }));
   }
 

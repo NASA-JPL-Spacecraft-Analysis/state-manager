@@ -49,13 +49,3 @@ export class StateHistory extends State {
   @Field(() => Date)
   public updated!: Date;
 }
-
-export const stateTypes: Set<string> = new Set([
-  'alarm_limit',
-  'channel',
-  'fsw_parameter',
-  'model_input',
-  'predict',
-  'trend',
-  'user'
-]);

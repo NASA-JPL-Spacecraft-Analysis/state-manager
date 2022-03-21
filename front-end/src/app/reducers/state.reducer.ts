@@ -18,6 +18,7 @@ export interface StateState {
   stateHistoryMap: StateMap;
   stateIdentifierMap: IdentifierMap;
   stateMap: StateMap;
+  stateTypes: string[];
 }
 
 export const initialState: StateState = {
@@ -26,7 +27,8 @@ export const initialState: StateState = {
   stateEnumerationMap: undefined,
   stateHistoryMap: undefined,
   stateIdentifierMap: undefined,
-  stateMap: undefined
+  stateMap: undefined,
+  stateTypes: undefined
 };
 
 export const reducer = createReducer(
@@ -121,6 +123,12 @@ export const reducer = createReducer(
     stateMap: {
       ...mapItems(states) as StateMap
     }
+  })),
+  on(StateActions.setStateTypes, (stateState, { stateTypes }) => ({
+    ...stateState,
+    stateTypes: [
+      ...stateTypes
+    ]
   })),
   on(StateActions.updateStateSuccess, (stateState, { state }) => modifyState(stateState, state))
 );

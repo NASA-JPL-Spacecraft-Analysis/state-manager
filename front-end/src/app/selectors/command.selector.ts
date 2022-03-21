@@ -41,6 +41,11 @@ export const getCommands = createSelector(
     state.commandMap ? Object.values(state.commandMap) : undefined
 );
 
+export const getCommandTypes = createSelector(
+  getCommandState,
+  (state: CommandState) => state.commandTypes
+);
+
 export const getSelectedCommand = createSelector(
   getCommandState,
   (state: CommandState) =>

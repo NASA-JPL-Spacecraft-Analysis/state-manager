@@ -7,8 +7,15 @@ import { SubSink } from 'subsink';
 
 import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
 import { MaterialModule } from 'src/app/material';
-import { Constraint, constraintTypes, IdentifierMap } from 'src/app/models';
-import { getConstraintIdentifierMap, getConstraints, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
+import { Constraint, IdentifierMap } from 'src/app/models';
+import {
+  getConstraintIdentifierMap,
+  getConstraints,
+  getConstraintTypes,
+  getSelectedCollectionId,
+  getSelectedConstraint,
+  getShowSidenav
+} from 'src/app/selectors';
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
 
@@ -22,6 +29,7 @@ export class ConstraintsComponent implements OnDestroy {
   public constraint: Constraint;
   public constraintIdentifierMap: IdentifierMap;
   public constraints: Constraint[];
+  public constraintTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
 
@@ -51,9 +59,13 @@ export class ConstraintsComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedConstraint)).subscribe(selectedConstraint => {
-        this.constraint = selectedConstraint
+        this.constraint = selectedConstraint;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getConstraintTypes)).subscribe(constraintTypes => {
+        this.constraintTypes = constraintTypes;
+        this.changeDetectorRef.markForCheck();
+      })
     );
   }
 
@@ -78,7 +90,7 @@ export class ConstraintsComponent implements OnDestroy {
       csvFormat: [ UploadConstants.constraintCsvUploadFormat ],
       dialogType: 'Constraint',
       jsonFormat: UploadConstants.constraintJsonUploadFormat,
-      types: constraintTypes
+      types: this.constraintTypes
     }));
   }
 

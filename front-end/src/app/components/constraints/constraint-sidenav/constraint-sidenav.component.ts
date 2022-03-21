@@ -5,7 +5,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { MaterialModule } from 'src/app/material';
-import { Constraint, constraintTypes, IdentifierMap } from 'src/app/models';
+import { Constraint, IdentifierMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 
 @Component({
@@ -17,11 +17,11 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
 export class ConstraintSidenavComponent implements OnChanges {
   @Input() public constraint: Constraint;
   @Input() public constraintIdentifierMap: IdentifierMap;
+  @Input() public constraintTypes: string[];
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public modifyConstraint: EventEmitter<Constraint>;
 
-  public constraintTypes = constraintTypes;
   public form: FormGroup;
   public newConstraint: Constraint;
   public originalIdentifier: string;

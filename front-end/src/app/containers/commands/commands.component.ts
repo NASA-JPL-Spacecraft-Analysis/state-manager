@@ -6,11 +6,12 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { Command, CommandArgument, commandTypes, IdentifierMap } from 'src/app/models';
+import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
 import {
   getCommandArguments,
   getCommandIdentifierMap,
   getCommands,
+  getCommandTypes,
   getSelectedCollectionId,
   getSelectedCommand,
   getShowSidenav
@@ -30,6 +31,7 @@ export class CommandsComponent implements OnDestroy {
   public commandArguments: CommandArgument[];
   public commandIdentifierMap: IdentifierMap;
   public commands: Command[];
+  public commandTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
 
@@ -62,6 +64,10 @@ export class CommandsComponent implements OnDestroy {
         this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getCommandTypes)).subscribe(commandTypes => {
+        this.commandTypes = commandTypes;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getSelectedCommand)).subscribe(selectedCommand => {
         this.command = selectedCommand;
         this.changeDetectorRef.markForCheck();
@@ -88,7 +94,7 @@ export class CommandsComponent implements OnDestroy {
       csvFormat: [ UploadConstants.commandCsvUploadFormat ],
       dialogType: 'Command',
       jsonFormat: UploadConstants.commandJsonUploadFormat,
-      types: commandTypes
+      types: this.commandTypes
     }));
   }
 
@@ -120,7 +126,7 @@ export class CommandsComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { command: Command, deletedArgumentIds: string[] }): void {
+  public onSidenavOutput(result: { command: Command; deletedArgumentIds: string[] }): void {
     if (!result) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
