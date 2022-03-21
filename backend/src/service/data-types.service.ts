@@ -40,7 +40,5 @@ export class DataTypesService {
       currentSet.add(dataType.name);
       this.dataTypeMap.set(dataType.type, currentSet);
     }
-
-    console.log(this.dataTypeMap);
   }
 }
