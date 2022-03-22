@@ -8,16 +8,11 @@ export class NavigationService {
   public addItemIDToURL(currentId: string, newId: string, location: Location, url: string): void {
     // Only change the URL if the user selects a different item then the one already selected.
     if (currentId !== newId) {
-      if (currentId === '') {
-        // If the user hasn't selected an item, append the item ID to the URL.
-        location.replaceState(url + newId);
-      } else {
-        const splitUrl = url.split('/');
-        splitUrl.pop();
+      const splitUrl = url.split('/');
+      splitUrl.pop();
 
-        // If the user already has an item selected, replace that part of the URL with the new ID.
-        location.replaceState(splitUrl.join('/') + '/' + newId);
-      }
+      // If the user already has an item selected, replace that part of the URL with the new ID.
+      location.replaceState(splitUrl.join('/') + '/' + newId);
     }
   }
   /**

@@ -87,8 +87,6 @@ export class CommandEffects {
         const url = this.router.routerState.snapshot.url.split('/').pop();
         let history = false;
 
-        console.log(url);
-
         if (url === 'command-argument-history') {
           return merge(
             of(LayoutActions.toggleSidenav({

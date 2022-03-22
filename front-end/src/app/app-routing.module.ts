@@ -83,8 +83,12 @@ export const routes: Routes = [
         path: 'information-types'
       },
       {
+        path: 'relationships',
+        redirectTo: 'relationships/'
+      },
+      {
         component: RelationshipsComponent,
-        path: 'relationships'
+        path: 'relationships/:id'
       },
       {
         component: RelationshipHistoryComponent,
