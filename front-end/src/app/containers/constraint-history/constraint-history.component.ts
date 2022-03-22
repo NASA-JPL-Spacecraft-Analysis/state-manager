@@ -17,6 +17,7 @@ import { ConstraintTableModule } from 'src/app/components/constraints';
 })
 export class ConstraintHistoryComponent implements OnDestroy {
   public constraintHistory: Constraint[];
+  public constraintMap: Record<string, Constraint>;
 
   private subscriptions: SubSink;
 
@@ -29,6 +30,14 @@ export class ConstraintHistoryComponent implements OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(getConstraintHistory)).subscribe(constraintHistory => {
         this.constraintHistory = constraintHistory;
+        this.constraintMap = {};
+
+        if (this.constraintHistory) {
+          for (const constraint of this.constraintHistory) {
+            this.constraintMap[constraint.id] = constraint;
+          }
+        }
+
         this.changeDetectorRef.markForCheck();
       })
     );

@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
-import { Command } from 'src/app/models';
+import { Command, CommandMap } from 'src/app/models';
 import { TableComponent } from '../../table/table.component';
 
 @Component({
@@ -14,7 +13,7 @@ import { TableComponent } from '../../table/table.component';
   templateUrl: 'command-table.component.html'
 })
 export class CommandTableComponent extends TableComponent<Command> implements OnInit, OnChanges {
-  @Input() public commands: Command[];
+  @Input() public commandMap: CommandMap;
   @Input() public history: boolean;
 
   @Output() public commandSelected: EventEmitter<Command>;
@@ -45,13 +44,21 @@ export class CommandTableComponent extends TableComponent<Command> implements On
   }
 
   public ngOnChanges(): void {
-    if (this.commands && this.displayedColumns) {
-      this.dataSource = new MatTableDataSource(this.commands);
+    const commands: Command[] = [];
+
+    if (this.commandMap && this.displayedColumns) {
+      const keys = Object.keys(this.commandMap);
+
+      for (const key of keys) {
+        commands.push(this.commandMap[key]);
+      }
+
+      this.dataSource = new MatTableDataSource(commands);
 
       super.ngOnChanges();
     }
 
-    this.showCommandTable = this.commands && this.commands.length > 0;
+    this.showCommandTable = this.commandMap && commands.length > 0;
   }
 
   public onRowClick(command: Command) {

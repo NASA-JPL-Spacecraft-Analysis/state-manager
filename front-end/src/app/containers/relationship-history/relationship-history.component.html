@@ -4,10 +4,14 @@
 
 <div class="relationship-history-content">
   <app-relationships-table
+    [commandArgumentMap]="commandArgumentMap"
+    [commandMap]="commandMap"
+    [constraintMap]="constraintMap"
     [eventMap]="eventMap"
     [history]="true"
     [informationTypeMap]="informationTypeMap"
     [relationshipMap]="relationshipHistoryMap"
+    [stateEnumerationMap]="stateEnumerationMap"
     [stateMap]="stateMap">
   </app-relationships-table>
 </div>

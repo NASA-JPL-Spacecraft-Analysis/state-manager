@@ -1,6 +1,6 @@
 import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
@@ -19,6 +19,7 @@ import {
 } from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,11 +35,16 @@ export class EventsComponent implements OnDestroy {
   public selectedCollectionId: string;
   public showSidenav: boolean;
 
+  private eventId: string;
   private subscriptions: SubSink;
 
   constructor(
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private navigationService: NavigationService,
+    private router: Router,
     private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions = new SubSink();
 
@@ -50,6 +56,12 @@ export class EventsComponent implements OnDestroy {
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
+
+        this.eventId = this.activatedRoute.snapshot.paramMap.get('id');
+ 
+        if (this.eventId && this.eventMap) {
+          this.onModifyEvent(this.eventMap[this.eventId]);
+        }
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
@@ -90,6 +102,11 @@ export class EventsComponent implements OnDestroy {
       event
     }));
 
+    const newEventId = event?.id ?? '';
+
+    this.navigationService.addItemIDToURL(this.eventId, newEventId, this.location, this.router.url);
+    this.eventId = newEventId;
+
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
@@ -107,6 +124,10 @@ export class EventsComponent implements OnDestroy {
 
   public onSidenavOutput(event: StateEvent): void {
     if (event === undefined) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
+      this.eventId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));

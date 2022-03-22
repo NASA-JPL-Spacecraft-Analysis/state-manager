@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, NgModule, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
@@ -20,12 +20,12 @@ import {
   getStateEnumerationMap,
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
-import { LayoutActions, ToastActions, FileUploadActions, RelationshipActions } from 'src/app/actions';
+import { LayoutActions, ToastActions, RelationshipActions } from 'src/app/actions';
 import { RelationshipSidenavModule } from 'src/app/components';
 import { MaterialModule } from 'src/app/material';
 import { StateMap, InformationTypeMap, EventMap, ConstraintMap, CommandMap, CommandArgumentMap, StateEnumerationMap } from 'src/app/models';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,11 +46,16 @@ export class RelationshipsComponent implements OnDestroy {
   public stateMap: StateMap;
 
   private collectionId: string;
+  private relationshipId: string;
   private subscriptions = new SubSink();
 
   constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private navigationService: NavigationService,
+    private router: Router,
+    private store: Store<AppState>
   ) {
     this.subscriptions.add(
       this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
@@ -80,6 +85,12 @@ export class RelationshipsComponent implements OnDestroy {
       this.store.pipe(select(getRelationships)).subscribe(relationshipMap => {
         this.relationshipMap = relationshipMap;
         this.changeDetectorRef.markForCheck();
+
+        this.relationshipId = this.activatedRoute.snapshot.paramMap.get('id');
+
+        if (this.relationshipId && this.relationshipMap) {
+          this.onModifyRelationship(this.relationshipMap[this.relationshipId]);
+        }
       }),
       this.store.pipe(select(getSelectedRelationship)).subscribe(selectedRelationship => {
         this.relationship = selectedRelationship;
@@ -120,31 +131,27 @@ export class RelationshipsComponent implements OnDestroy {
     }));
   }
 
-  /**
-   * Only dispatch our actions if we have states, otherwise tell the user they need state
-   * before they can create relationships.
-   *
-   * @param relationship The relationship that is being modified.
-   */
   public onModifyRelationship(relationship?: Relationship): void {
-    if (this.stateMap || this.eventMap || this.informationTypeMap) {
-      this.store.dispatch(RelationshipActions.setSelectedRelationship({
-        relationship
-      }));
+    this.store.dispatch(RelationshipActions.setSelectedRelationship({
+      relationship
+    }));
 
-      this.store.dispatch(LayoutActions.toggleSidenav({
-        showSidenav: true
-      }));
-    } else {
-      this.store.dispatch(ToastActions.showToast({
-        message: 'You must create states, events, or information types before creating relationships',
-        toastType: 'error'
-      }));
-    }
+    const newRelationshipId = relationship?.id ?? '';
+
+    this.navigationService.addItemIDToURL(this.relationshipId, newRelationshipId, this.location, this.router.url);
+    this.relationshipId = newRelationshipId;
+
+    this.store.dispatch(LayoutActions.toggleSidenav({
+      showSidenav: true
+    }));
   }
 
   public onRelationshipOutput(relationship: Relationship): void {
     if (relationship === undefined) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
+      this.relationshipId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));

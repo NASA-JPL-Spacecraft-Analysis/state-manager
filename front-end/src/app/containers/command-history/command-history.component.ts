@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
-import { CommandHistory } from 'src/app/models';
+import { Command, CommandHistory } from 'src/app/models';
 import { getCommandHistory } from 'src/app/selectors';
 import { CommandTableModule } from 'src/app/components/commands';
 
@@ -17,6 +17,7 @@ import { CommandTableModule } from 'src/app/components/commands';
 })
 export class CommandHistoryComponent implements OnDestroy {
   public commandHistory: CommandHistory[];
+  public commandMap: Record<string, Command>;
 
   private subscriptions: SubSink;
 
@@ -29,6 +30,14 @@ export class CommandHistoryComponent implements OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(getCommandHistory)).subscribe(commandHistory => {
         this.commandHistory = commandHistory;
+        this.commandMap = {};
+
+        if (this.commandHistory) {
+          for (const command of this.commandHistory) {
+            this.commandMap[command.id] = command;
+          }
+        }
+
         this.changeDetectorRef.markForCheck();
       })
     );

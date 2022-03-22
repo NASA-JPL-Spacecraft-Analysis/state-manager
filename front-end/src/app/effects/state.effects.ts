@@ -78,12 +78,14 @@ export class StateEffects {
       ofRoute([
         'collection/:collectionId/state-enumeration-history',
         'collection/:collectionId/states',
+        'collection/:collectionId/states/',
+        'collection/:collectionId/states/:id',
         'collection/:collectionId/state-history'
       ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = true;
+        let history = false;
 
         if (url === 'state-enumeration-history') {
           return merge(
@@ -92,8 +94,10 @@ export class StateEffects {
             })),
             this.getStateEnumerationHistory(collectionId)
           );
-        } else if (url === 'states') {
-          history = false;
+        }
+
+        if (url === 'state-history') {
+          history = true;
         }
 
         return merge(

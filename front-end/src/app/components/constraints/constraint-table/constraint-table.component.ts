@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } f
 import { MatTableDataSource } from '@angular/material/table';
 
 import { MaterialModule } from 'src/app/material';
-import { Constraint } from 'src/app/models';
+import { Constraint, ConstraintMap } from 'src/app/models';
 import { TableComponent } from '../../table/table.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { TableComponent } from '../../table/table.component';
   templateUrl: 'constraint-table.component.html'
 })
 export class ConstraintTableComponent extends TableComponent<Constraint> implements OnInit, OnChanges {
-  @Input() public constraints: Constraint[];
+  @Input() public constraintMap: ConstraintMap;
   @Input() public history: boolean;
 
   @Output() public constraintSelected: EventEmitter<Constraint>;
@@ -43,13 +43,21 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
   }
 
   public ngOnChanges(): void {
-    if (this.constraints && this.displayedColumns) {
-      this.dataSource = new MatTableDataSource(this.constraints);
+    const constraints: Constraint[] = [];
+
+    if (this.constraintMap && this.displayedColumns) {
+      const keys = Object.keys(this.constraintMap);
+
+      for (const key of keys) {
+        constraints.push(this.constraintMap[key]);
+      }
+
+      this.dataSource = new MatTableDataSource(constraints);
 
       super.ngOnChanges();
     }
 
-    this.showConstraintTable = this.constraints && this.constraints.length > 0;
+    this.showConstraintTable = this.constraintMap && constraints.length > 0;
   }
 
   public onRowClick(constraint: Constraint) {

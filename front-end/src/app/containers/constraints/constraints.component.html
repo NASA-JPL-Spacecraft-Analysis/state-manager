@@ -2,7 +2,7 @@
   Constraints
 
   <div>
-    <button mat-button routerLink="../constraint-history">
+    <button mat-button routerLink="../../constraint-history">
       History 
     </button>
 
@@ -19,7 +19,7 @@
 <div class="content-container">
   <div class="content">
     <constraint-table
-      [constraints]="constraints"
+      [constraintMap]="constraintMap"
       (constraintSelected)="onModifyConstraint($event)">
     </constraint-table>
   </div>
