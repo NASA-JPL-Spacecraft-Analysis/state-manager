@@ -10,7 +10,7 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div *ngIf="eventIdentifierMap !== null">
       <app-identifier-form
-        [originalIdentifier]="originalIdentifier"
+        [originalIdentifier]="newEvent.identifier"
         [identifierMap]="eventIdentifierMap"
         [id]="newEvent.id"
         [type]="type"

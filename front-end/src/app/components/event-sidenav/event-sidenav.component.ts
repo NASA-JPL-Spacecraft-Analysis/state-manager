@@ -1,6 +1,6 @@
 import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
@@ -25,7 +25,6 @@ export class EventSidenavComponent implements OnChanges {
 
   public form: FormGroup;
   public newEvent: Event;
-  public originalIdentifier: string;
   public type: string;
 
   private isDuplicateIdentifier: boolean;
@@ -58,17 +57,16 @@ export class EventSidenavComponent implements OnChanges {
       };
     }
 
-    this.originalIdentifier = this.newEvent.identifier;
     this.type = this.newEvent.type;
 
     this.form = new FormGroup({
       id: new FormControl(this.newEvent.id),
       collectionId: new FormControl(this.newEvent.collectionId),
-      identifier: new FormControl(this.newEvent.identifier),
-      displayName: new FormControl(this.newEvent.displayName),
+      identifier: new FormControl(this.newEvent.identifier, [ Validators.required ]),
+      displayName: new FormControl(this.newEvent.displayName, [ Validators.required ]),
       description: new FormControl(this.newEvent.description),
       externalLink: new FormControl(this.newEvent.externalLink),
-      type: new FormControl(this.type)
+      type: new FormControl(this.type, [ Validators.required ])
     });
   }
 
