@@ -43,11 +43,10 @@ export class RelationshipSidenavComponent implements OnChanges {
   constructor() {
     this.formError = new EventEmitter<string>();
     this.modifyRelationship = new EventEmitter<Relationship>();
-
-    this.types = Object.values(RelationshipTypeEnum).filter(type => typeof type === 'string') as string[];
   }
 
   public ngOnChanges(): void {
+    this.filterTypes();
     if (this.relationship === undefined || this.relationship === null) {
       this.newRelationship = {
         id: null,
@@ -97,6 +96,53 @@ export class RelationshipSidenavComponent implements OnChanges {
 
   public onTargetTypeChange(newTargetType: string) {
     this.targetType = newTargetType;
+  }
+
+  /**
+   * Looks at each map and removes the ones that don't have any data.
+   */
+  private filterTypes(): void {
+    this.types = Object.values(RelationshipTypeEnum).filter(type => {
+      if (typeof type === 'string') {
+        switch (type) {
+          case RelationshipTypeEnum.Command:
+            if (Object.keys(this.commandMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum['Command Argument']:
+            if (Object.keys(this.commandArgumentMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum.Constraint:
+            if (Object.keys(this.constraintMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum.Event:
+            if (Object.keys(this.eventMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum['Information Type']:
+            if (Object.keys(this.informationTypeMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum['State Enumeration']:
+            if (Object.keys(this.stateEnumerationMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum.State:
+            if (Object.keys(this.stateMap).length > 0) {
+              return true;
+            }
+            break;
+        }
+      }
+    });
   }
 }
 

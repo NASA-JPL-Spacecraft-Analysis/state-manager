@@ -4,21 +4,14 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } 
 import { MatSelectChange } from '@angular/material/select';
 
 import {
-  Command,
   CommandMap,
-  CommandArgument,
   CommandArgumentMap,
-  Constraint,
   ConstraintMap,
-  Event,
   EventMap,
-  InformationType,
   InformationTypeMap,
   Relationship,
   RelationshipTypeEnum,
-  State,
   StateMap,
-  StateEnumeration,
   StateEnumerationMap
 } from '../../models';
 
@@ -42,11 +35,11 @@ export class RelationshipTypePickerComponent implements OnChanges {
   @Input() public type: string;
 
   public formProperty: string;
+  public isCommandArgument: boolean;
   public isList: boolean;
   public title: string;
-  public listMap: Record<string, CommandArgument[] | StateEnumeration[]>;
-  public selectedTypeMap: Record<string, Command | Constraint | Event | InformationType | State>;
-  public supplementalMap: Record<string, Command | State>;
+  public selectedTypeMap: CommandMap | ConstraintMap | EventMap | InformationTypeMap | StateMap;
+  public supplementalMap: CommandMap | StateMap;
 
   public ngOnChanges(): void {
     this.isList = false;
@@ -68,8 +61,8 @@ export class RelationshipTypePickerComponent implements OnChanges {
         this.selectedTypeMap = this.commandMap;
         break;
       case RelationshipTypeEnum['Command Argument']:
-        this.listMap = this.commandArgumentMap;
         this.supplementalMap = this.commandMap;
+        this.isCommandArgument = true;
         this.isList = true;
         break;
       case RelationshipTypeEnum.Constraint:
@@ -82,8 +75,8 @@ export class RelationshipTypePickerComponent implements OnChanges {
         this.selectedTypeMap = this.informationTypeMap;
         break;
       case RelationshipTypeEnum['State Enumeration']:
-        this.listMap = this.stateEnumerationMap;
         this.supplementalMap = this.stateMap;
+        this.isCommandArgument = false;
         this.isList = true;
         break;
       case RelationshipTypeEnum.State:
@@ -97,6 +90,12 @@ export class RelationshipTypePickerComponent implements OnChanges {
   public onValueChange(event: MatSelectChange): void {
     this.parentFormGroup.controls[this.formProperty].setValue(event);
   }
+/*
+        <option *ngFor="let item of value.value"
+          [value]="item.id">
+          {{supplementalMap[value.key].identifier}} - {{item.name}}
+        </option>
+        */
 }
 
 @NgModule({
