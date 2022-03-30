@@ -63,8 +63,9 @@ body {
 
 /* Global Styles */
 .content {
-  flex-grow: 1;
-  max-width: 100%;
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: 80%;
 }
 
 .content-container {
@@ -109,10 +110,12 @@ table tbody tr {
 **************/
 
 .sidenav {
-  max-width: 400px;
+  flex-basis: 20%; 
+  flex-grow: 1;
 }
 
 .sidenav-container {
+  background: white;
   border: 1px solid var(--st-gray-20);
 }
 
