@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 
 import { Relationship } from '../../models/relationship';
 import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
-import { MaterialModule } from 'src/app/material';
 import {
   StateMap,
   InformationTypeMap,
@@ -45,7 +44,7 @@ export class RelationshipSidenavComponent implements OnChanges {
     this.formError = new EventEmitter<string>();
     this.modifyRelationship = new EventEmitter<Relationship>();
 
-    this.types = Object.values(RelationshipTypeEnum);
+    this.types = Object.values(RelationshipTypeEnum).filter(type => typeof type === 'string') as string[];
   }
 
   public ngOnChanges(): void {
@@ -64,8 +63,8 @@ export class RelationshipSidenavComponent implements OnChanges {
         ...this.relationship
       };
 
-      this.subjectType = this.newRelationship.subjectType.toString();
-      this.targetType = this.newRelationship.targetType.toString();
+      this.subjectType = this.newRelationship.subjectType;
+      this.targetType = this.newRelationship.targetType;
     }
 
     this.form = new FormGroup({
@@ -91,6 +90,14 @@ export class RelationshipSidenavComponent implements OnChanges {
       this.formError.emit('Please fill in required form fields, including selecting a subject and a target');
     }
   }
+
+  public onSubjectTypeChange(newSubjectType: string) {
+    this.subjectType = newSubjectType;
+  }
+
+  public onTargetTypeChange(newTargetType: string) {
+    this.targetType = newTargetType;
+  }
 }
 
 @NgModule({
@@ -104,7 +111,6 @@ export class RelationshipSidenavComponent implements OnChanges {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule,
     RelationshipTypePickerModule
   ]
 })

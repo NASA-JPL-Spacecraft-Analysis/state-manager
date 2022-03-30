@@ -25,11 +25,11 @@ export interface RelationshipUpload extends Relationship {
 export type RelationshipMap = Record<string, Relationship>;
 
 export enum RelationshipTypeEnum {
-  'command' = 'command',
-  'commandArgument' = 'commandArgument',
-  'constraint' = 'constraint',
-  'event' = 'event',
-  'informationType' = 'informationType',
-  'stateEnumeration' = 'stateEnumeration',
-  'state' = 'state'
+  'Command' = 'Command',
+  'Command Argument' = 'Command Argument',
+  'Constraint' = 'Constraint',
+  'Event' = 'Event',
+  'Information Type' = 'Information Type',
+  'State Enumeration' = 'State Enumeration',
+  'State' = 'State'
 };
