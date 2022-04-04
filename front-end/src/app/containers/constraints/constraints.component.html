@@ -25,11 +25,11 @@
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <constraint-sidenav
+    <sm-constraint-sidenav
       [constraint]="constraint"
       [constraintIdentifierMap]="constraintIdentifierMap"
       (duplicateIdentifier)="onDuplicateIdentifier($event)"
       (modifyConstraint)="onSidenavOutput($event)">
-    </constraint-sidenav>
+    </sm-constraint-sidenav>
   </div>
 </div>
