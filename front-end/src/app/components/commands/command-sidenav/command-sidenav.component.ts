@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { MaterialModule } from 'src/app/material';
 import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
 import { CommandArgumentFormModule } from '../../command-argument-form/command-argument-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
@@ -132,7 +131,6 @@ export class CommandSidenavComponent implements OnChanges {
     CommonModule,
     FormsModule,
     IdentifierFormModule,
-    MaterialModule,
     ReactiveFormsModule
   ]
 })

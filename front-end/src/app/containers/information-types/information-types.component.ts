@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { MaterialModule } from 'src/app/material';
 import { AppState } from 'src/app/app-store';
 import { InformationTypeMap, InformationType } from 'src/app/models';
 import { getInformationTypes, getSelectedCollectionId } from 'src/app/selectors';
@@ -64,8 +63,7 @@ export class InformationTypesComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
-    InformationTypeTableModule,
-    MaterialModule
+    InformationTypeTableModule
   ]
 })
 export class InformationTypesModule {}

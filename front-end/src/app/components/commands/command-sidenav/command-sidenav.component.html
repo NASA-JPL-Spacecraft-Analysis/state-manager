@@ -1,66 +1,73 @@
 <div class="sidenav-container">
   <div class="sidenav-header">
-    <span>Command</span>
+    <span class="st-typography-header">Command Details</span>
 
     <button class="st-button icon tertiary" (click)="onCancel()">
       <i class="si si-close"></i>
     </button>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div *ngIf="commandIdentifierMap">
-      <app-identifier-form
-        [originalIdentifier]="originalIdentifier"
-        [identifierMap]="commandIdentifierMap"
-        [id]="newCommand.id"
-        [type]="type"
-        (duplicateIdentifier)="onDuplicateIdentifier($event)"
-        (identifierEmitter)="onIdentifierChange($event)">
-      </app-identifier-form>
+  <div class="sidenav-content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngIf="commandIdentifierMap">
+        <app-identifier-form
+          [originalIdentifier]="originalIdentifier"
+          [identifierMap]="commandIdentifierMap"
+          [id]="newCommand.id"
+          [type]="type"
+          (duplicateIdentifier)="onDuplicateIdentifier($event)"
+          (identifierEmitter)="onIdentifierChange($event)">
+        </app-identifier-form>
 
-      <mat-form-field class="hidden">
-        <input matInput
+        <input
+          class="hidden"
           type="number"
           formControlName="collectionId"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Display Name</mat-label>
-        <input matInput
+        <label for="Display Name">Display Name</label>
+        <input class="st-input"
           placeholder="Display Name"
+          name="Display Name"
           type="text"
           formControlName="displayName"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <textarea matInput
+        <label for="Description">Description</label>
+        <textarea class="st-input"
           placeholder="Description"
-          formControlName="description"></textarea>
-      </mat-form-field>
+          formControlName="description">
+        </textarea>
 
-      <mat-form-field appearance="outline">
-        <mat-label>External Link</mat-label>
-        <input matInput
+        <label for="External Link">External Link</label>
+        <input class="st-input"
           placeholder="External Link"
+          name="External Link"
           type="text"
           formControlName="externalLink"
         />
-      </mat-form-field>
 
-      <app-command-argument-form
-        [arguments]="newCommand.arguments"
-        [collectionId]="collectionId"
-        [deletedArgumentIds]="deletedArgumentIds">
-      </app-command-argument-form>
-    </div>
+        <label for="Command Type">Command Type</label>
+        <select class="st-select" placeholder="Command Type" formControlName="type">
+          <option *ngFor="let commandType of commandTypes" [value]="commandType">
+            {{commandType}}
+          </option>
+        </select>
 
-    <div class="sidenav-actions">
-      <button class="st-button large" type="submit">Save</button>
-    </div>
-  </form>
+        <app-command-argument-form
+          [arguments]="newCommand.arguments"
+          [collectionId]="collectionId"
+          [deletedArgumentIds]="deletedArgumentIds">
+        </app-command-argument-form>
+      </div>
+    </form>
+  </div>
+
+  <div class="sidenav-footer">
+    <button class="st-button secondary" (click)="onCancel()">Cancel</button>
+
+    <button class="st-button" (click)="onSubmit()">Save Command</button>
+  </div>
 </div>

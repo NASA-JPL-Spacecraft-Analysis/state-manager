@@ -12,14 +12,14 @@
 
     <tr *ngFor="let argument of arguments">
       <td>
-        <input matInput 
+        <input class="st-input"
           [(ngModel)]="argument.sortOrder"
           type="number"
           placeholder="Sort Order" />
       </td>
 
       <td>
-        <input matInput 
+        <input class="st-input"
           [(ngModel)]="argument.name"
           type="text"
           placeholder="Name" />

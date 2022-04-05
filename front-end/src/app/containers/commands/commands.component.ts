@@ -5,7 +5,6 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { MaterialModule } from 'src/app/material';
 import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
 import { getCommandArguments, getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
 import { CommandActions, LayoutActions, ToastActions } from 'src/app/actions';
@@ -149,7 +148,6 @@ export class CommandsComponent implements OnDestroy {
     CommandSidenavModule,
     CommandTableModule,
     CommonModule,
-    MaterialModule,
     RouterModule
   ]
 })
