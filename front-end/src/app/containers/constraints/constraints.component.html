@@ -1,20 +1,21 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Constraints
+<div class="page-toolbar">
+  <span class="st-typography-header">Constraints</span>
 
-  <div>
-    <button class="st-button" routerLink="../constraint-history">
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" routerLink="../constraint-history">
       History 
     </button>
 
-    <button class="st-button" (click)="onFileUpload()">
+    <button class="st-button icon tertiary" (click)="onFileUpload()">
+      <i class="si-upload"></i>
       Upload Constraints
     </button>
 
-    <button class="st-button tertiary" (click)="onModifyConstraint()">
+    <button class="st-button primary" (click)="onModifyConstraint()">
       Create New Constraint 
     </button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="content">

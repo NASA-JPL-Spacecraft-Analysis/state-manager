@@ -65,7 +65,7 @@ body {
 .content {
   flex-basis: 0;
   flex-grow: 999;
-  min-inline-size: 80%;
+  min-inline-size: 78%;
 }
 
 .content-container {
@@ -189,6 +189,10 @@ table tbody tr {
   height: 48px;
   justify-content: space-between;
   padding: 0 16px;
+}
+
+.page-toolbar-buttons {
+  display: flex;
 }
 
 .page-toolbar-buttons button.icon {
