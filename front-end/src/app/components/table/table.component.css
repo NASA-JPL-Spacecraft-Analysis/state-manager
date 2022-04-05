@@ -1,5 +1,16 @@
+table {
+  table-layout: fixed;
+}
+
 tbody tr td:first-child {
   padding-left: 16px;
+}
+
+th, td {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 thead th {
