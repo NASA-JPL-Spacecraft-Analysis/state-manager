@@ -6,7 +6,6 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { MaterialModule } from 'src/app/material';
 import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
 import { getEventMap, getGroupIdentifierMap, getShowGroupsSidemenu, getGroupMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
 import { EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
@@ -169,8 +168,7 @@ export class GroupsComponent implements OnDestroy {
   imports: [
     CommonModule,
     GroupsMenuModule,
-    GroupsSidenavModule,
-    MaterialModule
+    GroupsSidenavModule
   ]
 })
 export class GroupsModule {}

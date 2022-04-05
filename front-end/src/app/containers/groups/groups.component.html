@@ -1,22 +1,21 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  <span class="groups-toggle-text" (click)="onCloseSidemenu()">
-    Groups
-  </span>
+<div class="page-toolbar">
+  <span class="st-typography-header" (click)="onCloseSidemenu()">Groups</span>
 
-  <div class="group-buttons">
-    <button class="st-button" (click)="onFileUpload()">
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" (click)="onFileUpload()">
+      <i class="si-upload"></i>
       Upload Groups
     </button>
 
     <button class="st-button icon" (click)="onDeleteGroup()">
-      <mat-icon svgIcon="delete"></mat-icon>
+      <i class="si-trash"></i>
     </button>
 
-    <button class="st-button tertiary" (click)="onGroupSelected()">
+    <button class="st-button primary" (click)="onGroupSelected()">
       New Group
     </button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="sidenav" *ngIf="showGroupsSidemenu">

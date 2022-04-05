@@ -1,15 +1,17 @@
-<mat-toolbar  class="mat-toolbar-page secondary-toolbar" color="primary">
-  Information Types
+<div class="page-toolbar">
+  <span class="st-typography-header">Information Types</span>
 
-  <div class="actions-container">
-    <button class="st-button" (click)="informationTypesUpload.click()">
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" (click)="informationTypesUpload.click()">
+      <i class="si-upload"></i>
       Upload Information Types
     </button>
+
     <input #informationTypesUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
   </div>
-</mat-toolbar>
+</div>
 
-<div class="information-types-content-container">
+<div class="content-container">
   <app-information-type-table
     [informationTypes]="informationTypes">
   </app-information-type-table>
