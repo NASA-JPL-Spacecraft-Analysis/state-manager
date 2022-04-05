@@ -6,3 +6,12 @@
 .groups-toggle-text {
   cursor: pointer;
 }
+
+.group-content {
+  margin: 16px;
+  min-inline-size: 58%;
+}
+
+.group-container:not(:first-of-type) {
+  margin-top: 16px;
+}

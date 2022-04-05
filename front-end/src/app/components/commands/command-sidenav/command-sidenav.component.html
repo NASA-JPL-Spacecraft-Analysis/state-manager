@@ -49,12 +49,12 @@
           formControlName="externalLink"
         />
 
-        <label for="Command Type">Command Type</label>
+        <!-- <label for="Command Type">Command Type</label>
         <select class="st-select" placeholder="Command Type" formControlName="type">
           <option *ngFor="let commandType of commandTypes" [value]="commandType">
             {{commandType}}
           </option>
-        </select>
+        </select> -->
 
         <app-command-argument-form
           [arguments]="newCommand.arguments"
