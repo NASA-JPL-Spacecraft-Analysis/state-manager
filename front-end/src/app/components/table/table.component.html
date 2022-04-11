@@ -28,7 +28,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let row of paginatedRows" (click)="onRowClick(row)">
-        <td *ngFor="let column of columns">
+        <td *ngFor="let column of columns" title="{{row[column]}}">
           {{row[column]}}
         </td>
       </tr>
