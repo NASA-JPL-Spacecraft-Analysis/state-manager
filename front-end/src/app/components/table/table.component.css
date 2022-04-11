@@ -83,3 +83,12 @@ tr:hover {
 .sort-icons i {
   font-size: 12px;
 }
+
+/** Custom column width overrides **/
+th.subsystem, td.subsystem, th.units, td.units {
+  max-width: 105px;
+}
+
+th.type, td.type {
+  max-width: 120px;
+}

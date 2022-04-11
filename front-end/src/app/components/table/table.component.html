@@ -2,7 +2,7 @@
   <table class="st-table" [ngClass]="{ 'history': historyTable }">
     <thead>
       <tr>
-        <th *ngFor="let column of columns">
+        <th *ngFor="let column of columns" [class]="column">
           <span class="column-header-content">
             {{formatColumnName(column)}}
 
@@ -28,7 +28,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let row of paginatedRows" (click)="onRowClick(row)">
-        <td *ngFor="let column of columns" title="{{row[column]}}">
+        <td *ngFor="let column of columns" title="{{row[column]}}" [class]="column">
           {{row[column]}}
         </td>
       </tr>
