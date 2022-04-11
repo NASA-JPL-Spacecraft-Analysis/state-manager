@@ -11,6 +11,10 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { GroupItemSelectorModule } from '../group-item-selector/group-item-selector.component';
 
+/**
+ * TODO: This should support Commands and Constraints, possibly other types.
+ * Make sure to update group-union-type as well, and check usages for errors as well.
+ */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'groups-sidenav',

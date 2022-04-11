@@ -1,9 +1,58 @@
+import { UserInputError } from 'apollo-server';
 import { Service } from 'typedi';
 
-import { Event, Group, GroupMapping, GroupMappingItemUnion, InformationType, State } from '../models';
+import { ErrorConstants } from '../constants';
+import { Event, Group, GroupMapping, GroupMappingUnion, GroupType, InformationType, State } from '../models';
 
 @Service()
 export class GroupService {
+  // TODO: See if we can add memoization so that we cache results without each class handling that.
+  public async findGroupItem(collectionId: string, identifier: string, type: string): Promise<GroupType> {
+    let item: GroupType | undefined;
+
+    switch (type) {
+    case Event.name:
+      item = await Event.findOne({
+        where: {
+          collectionId,
+          identifier
+        }
+      });
+      break;
+    case Group.name:
+      item = await Group.findOne({
+        where: {
+          collectionId,
+          identifier
+        }
+      });
+      break;
+    case InformationType.name:
+      item = await InformationType.findOne({
+        where: {
+          collectionId,
+          identifier
+        }
+      });
+      break;
+    case State.name:
+      item = await State.findOne({
+        where: {
+          collectionId,
+          identifier
+        }
+      });
+      break;
+    }
+
+
+    if (!item) {
+      throw new UserInputError(ErrorConstants.itemNotFoundError(identifier, type));
+    }
+
+    return item;
+  }
+
   /**
    * Gets a list of group mappings, sorted ASC by their sortOrder.
    *
@@ -35,7 +84,7 @@ export class GroupService {
       .getMany();
   }
 
-  public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof GroupMappingItemUnion | undefined> {
+  public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof GroupMappingUnion | undefined> {
     const event = await Event.findOne({ where: { id: groupMapping.itemId }});
 
     if (event) {
