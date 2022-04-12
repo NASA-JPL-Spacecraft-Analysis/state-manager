@@ -53,6 +53,15 @@
           formControlName="externalLink"
         />
 
+        <label for="Version">Version</label>
+        <input class="st-input"
+          placeholder="Version"
+          name="Version"
+          type="text"
+          formControlName="version"
+          required
+        />
+
         <label for="Constraint Type">Constraint Type</label>
         <select class="st-select" placeholder="Constraint Type" formControlName="type">
           <option *ngFor="let constraintType of constraintTypes" [value]="constraintType">

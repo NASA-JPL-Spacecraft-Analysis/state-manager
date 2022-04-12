@@ -28,7 +28,8 @@ export class CommandTableComponent extends TableComponent<Command> implements On
       'displayName',
       'description',
       'externalLink',
-      'type'
+      'type',
+      'version'
     );
 
     if (this.history) {

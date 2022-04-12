@@ -101,6 +101,15 @@
           required
         />
 
+        <label for="Version">Version</label>
+        <input class="st-input"
+          placeholder="Version"
+          name="Version"
+          type="text"
+          formControlName="version"
+          required
+        />
+
         <app-enum-form
           [collectionId]="collectionId"
           [enumerations]="newState.enumerations"

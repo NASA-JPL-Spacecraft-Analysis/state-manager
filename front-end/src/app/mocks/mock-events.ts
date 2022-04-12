@@ -8,7 +8,8 @@ export const mockEvent1: Event = {
   description: 'Test event description',
   externalLink: 'https://test.com',
   editable: true,
-  type: 'evr'
+  type: 'evr',
+  version: ''
 };
 
 export const mockEvent1History: EventHistory = {
@@ -21,7 +22,8 @@ export const mockEvent1History: EventHistory = {
   editable: true,
   eventId: '1',
   type: 'predict_event',
-  updated: new Date()
+  updated: new Date(),
+  version: ''
 };
 
 export const mockEventIdentifierMap: IdentifierMap = {

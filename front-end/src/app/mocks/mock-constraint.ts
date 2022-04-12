@@ -8,7 +8,8 @@ export const mockConstraint: Constraint = {
   externalLink: 'http://mock-constraint.com',
   id: '1',
   identifier: 'MOCK_CONSTRAINT',
-  type: 'flight_rule_check'
+  type: 'flight_rule_check',
+  version: ''
 };
 
 export const mockConstraintHistory: ConstraintHistory[] = [

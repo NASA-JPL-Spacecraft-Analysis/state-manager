@@ -49,7 +49,8 @@ export class CommandSidenavComponent implements OnChanges {
         externalLink: '',
         id: undefined,
         identifier: '',
-        type: 'command'
+        type: 'command',
+        version: ''
       };
     } else {
       this.newCommand = {
@@ -72,7 +73,8 @@ export class CommandSidenavComponent implements OnChanges {
       externalLink: new FormControl(this.newCommand.externalLink),
       id: new FormControl(this.newCommand.id),
       identifier: new FormControl(this.newCommand.identifier),
-      type: new FormControl(this.type, [ Validators.required ])
+      type: new FormControl(this.type, [ Validators.required ]),
+      version: new FormControl(this.newCommand.version)
     });
   }
 

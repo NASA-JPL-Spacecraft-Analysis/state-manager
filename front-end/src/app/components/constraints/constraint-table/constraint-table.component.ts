@@ -29,7 +29,8 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
       'displayName',
       'description',
       'externalLink',
-      'type'
+      'type',
+      'version'
     );
 
     if (this.history) {

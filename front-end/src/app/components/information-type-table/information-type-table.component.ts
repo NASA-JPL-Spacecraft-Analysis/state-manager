@@ -24,7 +24,8 @@ export class InformationTypeTableComponent extends TableComponent<InformationTyp
       'identifier',
       'displayName',
       'description',
-      'externalLink'
+      'externalLink',
+      'version'
     );
   }
 

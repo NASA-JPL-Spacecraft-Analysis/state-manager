@@ -21,4 +21,7 @@ export class CreateInformationTypeInput implements Partial<InformationType> {
 
   @Field()
   public type!: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }

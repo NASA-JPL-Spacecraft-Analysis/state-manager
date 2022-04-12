@@ -34,7 +34,8 @@ export class StateTableComponent extends TableComponent<State> implements OnChan
       'description',
       'externalLink',
       'channelId',
-      'restricted'
+      'restricted',
+      'version'
     );
 
     if (this.history) {

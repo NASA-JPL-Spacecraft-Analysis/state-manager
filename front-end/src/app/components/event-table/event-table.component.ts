@@ -29,7 +29,8 @@ export class EventTableComponent extends TableComponent<Event> implements OnChan
       'displayName',
       'description',
       'externalLink',
-      'type'
+      'type',
+      'version'
     );
 
     if (this.history) {

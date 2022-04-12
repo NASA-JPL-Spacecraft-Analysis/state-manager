@@ -36,4 +36,8 @@ export class IdentifierType extends Node {
   @Column()
   @Field()
   public type!: string;
+
+  @Field(() => String, { nullable: true })
+  @Column({ default: null, nullable: true })
+  public version?: string;
 }

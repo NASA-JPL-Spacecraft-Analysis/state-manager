@@ -27,7 +27,8 @@ export class EventService {
           editable: event.editable,
           externalLink: event.externalLink,
           identifier: event.identifier,
-          type: event.type
+          type: event.type,
+          version: event.version
         }
       })
       .pipe(map(({ data: { createEvent }}) => {
@@ -94,7 +95,8 @@ export class EventService {
           externalLink: event.externalLink,
           id: event.id,
           identifier: event.identifier,
-          type: event.type
+          type: event.type,
+          version: event.version
         }
       })
       .pipe(map(({ data: { updateEvent }}) => {

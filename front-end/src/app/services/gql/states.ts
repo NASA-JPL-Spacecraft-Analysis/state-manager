@@ -15,6 +15,7 @@ export const CREATE_STATE = gql(`
     $subsystem: String!
     $type: String!
     $units: String!
+    $version: String
   ) {
     createState(
       data: {
@@ -31,6 +32,7 @@ export const CREATE_STATE = gql(`
         subsystem: $subsystem
         type: $type
         units: $units
+        version: $version
       }
     ) {
       message
@@ -55,6 +57,7 @@ export const CREATE_STATE = gql(`
         subsystem
         type
         units
+        version
       }
       success
     }
@@ -111,6 +114,7 @@ export const CREATE_STATES = gql(`
         subsystem
         type
         units
+        version
       }
       success
     }
@@ -159,6 +163,7 @@ export const GET_STATES = gql(`
       subsystem
       type
       units
+      version
     }
   }
 `);
@@ -199,6 +204,7 @@ export const GET_STATE_HISTORY = gql(`
       type
       units
       updated
+      version
     }
   }
 `);
@@ -242,6 +248,7 @@ export const UPDATE_STATE = gql(`
     $subsystem: String!
     $type: String!
     $units: String!
+    $version: String
   ) {
     updateState(
       data: {
@@ -258,6 +265,7 @@ export const UPDATE_STATE = gql(`
         subsystem: $subsystem
         type: $type
         units: $units
+        version: $version
       }
     ) {
       message
@@ -282,6 +290,7 @@ export const UPDATE_STATE = gql(`
         subsystem
         type
         units
+        version
       }
       success
     }

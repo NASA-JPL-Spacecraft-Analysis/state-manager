@@ -43,7 +43,8 @@ export class EventSidenavComponent implements OnChanges {
         description: '',
         externalLink: '',
         editable: true,
-        type: ''
+        type: '',
+        version: ''
       };
     } else {
       this.newEvent = {
@@ -61,7 +62,8 @@ export class EventSidenavComponent implements OnChanges {
       displayName: new FormControl(this.newEvent.displayName),
       description: new FormControl(this.newEvent.description),
       externalLink: new FormControl(this.newEvent.externalLink),
-      type: new FormControl(this.type)
+      type: new FormControl(this.type),
+      version: new FormControl(this.newEvent.version)
     });
   }
 

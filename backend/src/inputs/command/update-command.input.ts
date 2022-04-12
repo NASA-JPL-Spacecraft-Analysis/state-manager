@@ -24,4 +24,7 @@ export class UpdateCommandInput {
 
   @Field()
   public identifier!: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }

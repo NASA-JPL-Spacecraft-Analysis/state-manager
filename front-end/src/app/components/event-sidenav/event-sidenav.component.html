@@ -49,6 +49,15 @@
           formControlName="externalLink"
         />
 
+        <label for="Version">Version</label>
+        <input class="st-input"
+          placeholder="Version"
+          name="Version"
+          type="text"
+          formControlName="version"
+          required
+        />
+
         <label for="Event Type">Event Type</label>
         <select class="st-select" placeholder="Event Type" formControlName="type">
           <option *ngFor="let eventType of eventTypes" [value]="eventType">

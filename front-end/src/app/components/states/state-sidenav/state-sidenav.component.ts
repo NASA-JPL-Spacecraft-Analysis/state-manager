@@ -56,7 +56,8 @@ export class StateSidenavComponent implements OnChanges {
         source: '',
         subsystem: '',
         type: '',
-        units: ''
+        units: '',
+        version: ''
       };
     } else {
       this.newState = {
@@ -84,6 +85,7 @@ export class StateSidenavComponent implements OnChanges {
       subsystem: new FormControl(this.newState.subsystem, [ Validators.required ]),
       type: new FormControl(this.newState.type, [ Validators.required ]),
       units: new FormControl(this.newState.units, [ Validators.required ]),
+      version: new FormControl(this.newState.version)
     });
   }
 

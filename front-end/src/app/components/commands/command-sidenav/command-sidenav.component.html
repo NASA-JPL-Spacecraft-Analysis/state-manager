@@ -56,6 +56,15 @@
           </option>
         </select> -->
 
+        <label for="Version">Version</label>
+        <input class="st-input"
+          placeholder="Version"
+          name="Version"
+          type="text"
+          formControlName="version"
+          required
+        />
+
         <app-command-argument-form
           [arguments]="newCommand.arguments"
           [collectionId]="collectionId"

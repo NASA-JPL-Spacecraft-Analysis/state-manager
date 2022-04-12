@@ -41,7 +41,8 @@ export class ConstraintSidenavComponent implements OnChanges {
         externalLink: '',
         id: undefined,
         identifier: '',
-        type: ''
+        type: '',
+        version: '',
       };
     } else {
       this.newConstraint = {
@@ -60,7 +61,8 @@ export class ConstraintSidenavComponent implements OnChanges {
       externalLink: new FormControl(this.newConstraint.externalLink),
       id: new FormControl(this.newConstraint.id),
       identifier: new FormControl(this.newConstraint.identifier),
-      type: new FormControl(this.type, [ Validators.required ])
+      type: new FormControl(this.type, [ Validators.required ]),
+      version: new FormControl(this.newConstraint.version)
     });
   }
 

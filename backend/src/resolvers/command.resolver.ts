@@ -308,7 +308,8 @@ export class CommandResolver implements ResolverInterface<Command> {
       externalLink: command.externalLink,
       identifier: command.identifier,
       type: command.type,
-      updated: new Date()
+      updated: new Date(),
+      version: command.version
     });
 
     void commandHistory.save();

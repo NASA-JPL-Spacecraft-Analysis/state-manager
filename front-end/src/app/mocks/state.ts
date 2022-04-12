@@ -15,7 +15,8 @@ export const mockStateOne: State = {
   source: 'na',
   subsystem: 'na',
   type: 'test string',
-  units: 'na'
+  units: 'na',
+  version: ''
 };
 
 export const mockStateTwo: State = {
@@ -33,7 +34,8 @@ export const mockStateTwo: State = {
   source: 'na',
   subsystem: 'na',
   type: 'test string 1',
-  units: 'na'
+  units: 'na',
+  version: ''
 };
 
 export const mockStateIdentifierMap: IdentifierMap = {
