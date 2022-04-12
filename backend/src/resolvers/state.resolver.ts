@@ -316,7 +316,8 @@ export class StateResolver implements ResolverInterface<State> {
     const stateHistoryList = [];
 
     for (const state of states) {
-      const stateHistory = StateHistory.create({
+      stateHistoryList.push(StateHistory.create({
+        channelId: state.channelId,
         collectionId: state.collectionId,
         dataType: state.dataType,
         description: state.description,
@@ -324,15 +325,14 @@ export class StateResolver implements ResolverInterface<State> {
         editable: state.editable,
         externalLink: state.externalLink,
         identifier: state.identifier,
+        restricted: state.restricted,
         source: state.source,
         stateId: state.id,
         subsystem: state.subsystem,
         type: state.type,
         units: state.units,
         updated: new Date()
-      });
-
-      stateHistoryList.push(stateHistory);
+      }));
     }
 
     void getConnection().createQueryBuilder().insert().into(StateHistory).values(stateHistoryList).execute();

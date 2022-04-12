@@ -84,6 +84,23 @@
           formControlName="externalLink"
         />
 
+        <label for="Channel ID">Channel ID</label>
+        <input class="st-input"
+          placeholder="Channel ID"
+          name="Channel ID"
+          type="text"
+          formControlName="channelId"
+          required
+        />
+
+        <label for="restricted">Restricted</label>
+        <input class="st-input"
+          name="restricted"
+          type="checkbox"
+          formControlName="restricted"
+          required
+        />
+
         <app-enum-form
           [collectionId]="collectionId"
           [enumerations]="newState.enumerations"

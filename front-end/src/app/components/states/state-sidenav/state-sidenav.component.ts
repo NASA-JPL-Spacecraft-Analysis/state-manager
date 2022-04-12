@@ -42,6 +42,7 @@ export class StateSidenavComponent implements OnChanges {
 
     if (!this.state) {
       this.newState = {
+        channelId: '',
         collectionId: this.collectionId,
         dataType: '',
         description: '',
@@ -51,6 +52,7 @@ export class StateSidenavComponent implements OnChanges {
         externalLink: '',
         id: undefined,
         identifier: '',
+        restricted: false,
         source: '',
         subsystem: '',
         type: '',
@@ -69,6 +71,7 @@ export class StateSidenavComponent implements OnChanges {
     this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({
+      channelId: new FormControl(this.newState.channelId),
       collectionId: new FormControl(this.newState.collectionId),
       dataType: new FormControl(this.newState.dataType),
       displayName: new FormControl(this.newState.displayName, [ Validators.required ]),
@@ -76,6 +79,7 @@ export class StateSidenavComponent implements OnChanges {
       externalLink: new FormControl(this.newState.externalLink),
       id: new FormControl(this.newState.id),
       identifier: new FormControl(this.newState.identifier, [ Validators.required ]),
+      restricted: new FormControl(this.newState.restricted, [ Validators.required ]),
       source: new FormControl(this.newState.source, [ Validators.required ]),
       subsystem: new FormControl(this.newState.subsystem, [ Validators.required ]),
       type: new FormControl(this.newState.type, [ Validators.required ]),

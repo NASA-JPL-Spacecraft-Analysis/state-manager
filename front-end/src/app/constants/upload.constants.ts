@@ -140,6 +140,8 @@ export class UploadConstants {
         "units": "asd",
         "source": "asd",
         "subsystem": "asd",
+        "channelId": "",
+        "restricted": false,
         "description": "",
         "externalLink": ""
       },
