@@ -2,9 +2,9 @@
   /* Emphasis Colors. */
   --st-black: #000;
   --st-blue: #4fa1ff;
-  --st-green: #1aff66;
+  --st-green: #00CAC3;
   --st-orange: #fdb462;
-  --st-red: #ff7760;
+  --st-red: #E55166;
   --st-white: #fff;
   --st-yellow: #ffdd5c;
   --st-yellow-light: #ffc93e;
@@ -151,7 +151,7 @@
   --st-button-tertiary-color: rgba(var(--st-gray-90-RGB), 0.96);
   --st-button-tertiary-hover-background-color: var(--st-gray-15);
   /* Input. */
-  --st-input-background-color: var(--st-gray-20);
+  --st-input-background-color: var(--st-gray-10);
   --st-input-color: var(--st-gray-80);
   --st-input-disabled-background-color: var(--st-gray-10);
   --st-input-disabled-color: var(--st-gray-50);
@@ -166,9 +166,10 @@
   --st-input-padding: 3px 6px;
   --st-input-placeholder-color: var(--st-gray-50);
   --st-input-warning-background-color: rgb(253 180 98 / 20%);
+  --st-input-border: 1px solid var(--st-gray-20);
   /* Select. */
-  --st-select-background: var(--st-gray-20);
-  --st-select-border: 1px solid var(--st-gray-30);
+  --st-select-background: var(--st-gray-10);
+  --st-select-border: 1px solid var(--st-gray-20);
   --st-select-color: var(--st-gray-80);
   --st-select-disabled-background: var(--st-gray-20);
   --st-select-disabled-color: var(--st-gray-50);
