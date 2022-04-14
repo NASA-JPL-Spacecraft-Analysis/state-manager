@@ -28,7 +28,7 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
       'identifier',
       'displayName',
       'description',
-      'externalLink',
+      //'externalLink',
       'type',
       'version'
     );

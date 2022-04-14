@@ -28,7 +28,7 @@ export class EventTableComponent extends TableComponent<Event> implements OnChan
       'identifier',
       'displayName',
       'description',
-      'externalLink',
+      //'externalLink',
       'type',
       'version'
     );

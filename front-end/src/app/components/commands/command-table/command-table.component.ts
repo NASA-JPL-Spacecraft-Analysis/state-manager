@@ -27,7 +27,7 @@ export class CommandTableComponent extends TableComponent<Command> implements On
       'identifier',
       'displayName',
       'description',
-      'externalLink',
+      //'externalLink',
       'type',
       'version'
     );
