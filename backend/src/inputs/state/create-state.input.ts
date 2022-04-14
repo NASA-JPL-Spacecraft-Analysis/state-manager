@@ -42,4 +42,7 @@ export class CreateStateInput {
 
   @Field({ nullable: true })
   public units?: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }
