@@ -108,6 +108,7 @@ export class StateSidenavComponent implements OnChanges {
    * 1) That our identifier is unique (when trimmed)
    */
   public onSubmit(): void {
+    console.log('submit');
     // Process our enumerations and make sure the form is valid before trying to save our state.
     if (this.processEnumerations()) {
       if (!this.duplicateIdentifier) {
