@@ -73,6 +73,10 @@ tr:hover {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  color: var(--st-gray-40);
+}
+.sort-icons:hover {
+  color: var(--st-gray-100);
 }
 
 .sort-icons button {
