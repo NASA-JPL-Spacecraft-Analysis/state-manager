@@ -4,17 +4,11 @@
       <select class="st-select"
         [(ngModel)]="selectedCollectionId"
         (ngModelChange)="onCollectionChange($event)">
-        <option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
-          {{collection.value.name}}
-        </option>
 
-        <hr>
 
         <option value="create" class="action-text">
           Create a new collection
         </option>
-
-        <hr>
 
         <option value="edit" class="action-text">
           Edit name
@@ -23,6 +17,13 @@
         <option value="delete" class="action-text">
           Delete collection
         </option>
+
+        <option disabled>──────────</option>
+        
+        <option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
+          {{collection.value.name}}
+        </option>
+
       </select>
     </div>
   </div>
