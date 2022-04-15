@@ -25,7 +25,6 @@ export class CommandSidenavComponent implements OnChanges {
   public form: FormGroup;
   public newCommand: Command;
   public originalIdentifier: string;
-  public type: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -61,7 +60,6 @@ export class CommandSidenavComponent implements OnChanges {
       };
     }
 
-    this.type = this.newCommand.type;
     this.originalIdentifier = this.newCommand.identifier;
     this.deletedArgumentIds = [];
 
@@ -73,7 +71,7 @@ export class CommandSidenavComponent implements OnChanges {
       externalLink: new FormControl(this.newCommand.externalLink),
       id: new FormControl(this.newCommand.id),
       identifier: new FormControl(this.newCommand.identifier),
-      type: new FormControl(this.type, [ Validators.required ]),
+      type: new FormControl(this.newCommand.type, [ Validators.required ]),
       version: new FormControl(this.newCommand.version)
     });
   }

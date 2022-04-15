@@ -26,7 +26,6 @@ export class StateSidenavComponent implements OnChanges {
   public form: FormGroup;
   public newState: State;
   public stateTypes = stateTypes;
-  public type: string;
 
   private duplicateIdentifier: boolean;
 
@@ -68,7 +67,6 @@ export class StateSidenavComponent implements OnChanges {
       };
     }
 
-    this.type = this.newState.type;
     this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({
@@ -108,15 +106,13 @@ export class StateSidenavComponent implements OnChanges {
    * 1) That our identifier is unique (when trimmed)
    */
   public onSubmit(): void {
-    console.log('submit');
     // Process our enumerations and make sure the form is valid before trying to save our state.
     if (this.processEnumerations()) {
       if (!this.duplicateIdentifier) {
         this.modifyState.emit({
           state: {
             ...this.form.value,
-            enumerations: this.newState.enumerations,
-            type: this.type
+            enumerations: this.newState.enumerations
           },
           deletedEnumerationIds: this.deletedEnumerationIds
         });

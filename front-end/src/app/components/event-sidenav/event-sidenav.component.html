@@ -14,7 +14,7 @@
           [originalIdentifier]="originalIdentifier"
           [identifierMap]="eventIdentifierMap"
           [id]="newEvent.id"
-          [type]="type"
+          [type]="form.value.type"
           (duplicateIdentifier)="onDuplicateIdentifier($event)"
           (identifierEmitter)="onIdentifierChange($event)">
         </app-identifier-form>

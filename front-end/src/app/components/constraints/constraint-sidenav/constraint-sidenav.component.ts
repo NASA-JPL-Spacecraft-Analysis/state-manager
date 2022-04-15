@@ -22,7 +22,6 @@ export class ConstraintSidenavComponent implements OnChanges {
   public form: FormGroup;
   public newConstraint: Constraint;
   public originalIdentifier: string;
-  public type: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -51,7 +50,6 @@ export class ConstraintSidenavComponent implements OnChanges {
     }
 
     this.originalIdentifier = this.newConstraint.identifier;
-    this.type = this.newConstraint.type;
 
     this.form = new FormGroup({
       collectionId: new FormControl(this.newConstraint.collectionId),
@@ -61,7 +59,7 @@ export class ConstraintSidenavComponent implements OnChanges {
       externalLink: new FormControl(this.newConstraint.externalLink),
       id: new FormControl(this.newConstraint.id),
       identifier: new FormControl(this.newConstraint.identifier),
-      type: new FormControl(this.type, [ Validators.required ]),
+      type: new FormControl(this.newConstraint.type, [ Validators.required ]),
       version: new FormControl(this.newConstraint.version)
     });
   }
@@ -81,8 +79,6 @@ export class ConstraintSidenavComponent implements OnChanges {
 
   public onSubmit(): void {
     if (!this.isDuplicateIdentifier) {
-      this.form.value.type = this.type;
-
       this.modifyConstraint.emit(this.form.value);
     } else {
       this.duplicateIdentifier.emit(true);

@@ -14,7 +14,7 @@
           [originalIdentifier]="newState.identifier"
           [identifierMap]="stateIdentifierMap"
           [id]="newState.id"
-          [type]="type"
+          [type]="form.value.type"
           (duplicateIdentifier)="onDuplicateIdentifier($event)"
           (identifierEmitter)="onIdentifierChange($event)">
         </app-identifier-form>
