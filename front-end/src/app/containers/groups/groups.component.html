@@ -52,7 +52,9 @@
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <groups-sidenav
+    <sm-groups-sidenav
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [informationTypeMap]="informationTypeMap"
       [eventMap]="eventMap"
       [group]="group"
@@ -62,6 +64,6 @@
       [stateMap]="stateMap"
       (modifyGroup)="onSidenavOutput($event)"
       (showError)=onShowError($event)>
-    </groups-sidenav>
+    </sm-groups-sidenav>
   </div>
 </div>
