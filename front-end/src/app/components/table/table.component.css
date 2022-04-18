@@ -6,7 +6,8 @@ tbody tr td:first-child {
   padding-left: 16px;
 }
 
-th, td {
+th,
+td {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -16,7 +17,6 @@ th, td {
 thead th {
   display: flex;
   flex-direction: column;
-  min-width: 0;
 }
 
 thead tr th:first-child {
@@ -90,10 +90,25 @@ tr:hover {
 }
 
 /** Custom column width overrides **/
-th.subsystem, td.subsystem, th.units, td.units {
+th.identifier,
+td.identifier {
+  min-width: 300px;
+}
+
+th.dataType,
+td.dataType,
+th.restricted,
+td.restricted,
+th.subsystem,
+td.subsystem,
+th.units,
+td.units {
   max-width: 105px;
 }
 
-th.type, td.type {
+th.source,
+td.source,
+th.type,
+td.type {
   max-width: 120px;
 }
