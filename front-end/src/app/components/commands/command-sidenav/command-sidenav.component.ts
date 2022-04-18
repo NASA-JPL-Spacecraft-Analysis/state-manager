@@ -9,7 +9,7 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'command-sidenav',
-  styleUrls: [ 'command-sidenav.component.css' ],
+  styleUrls: ['command-sidenav.component.css'],
   templateUrl: 'command-sidenav.component.html'
 })
 export class CommandSidenavComponent implements OnChanges {
@@ -24,7 +24,6 @@ export class CommandSidenavComponent implements OnChanges {
   public deletedArgumentIds: string[];
   public form: FormGroup;
   public newCommand: Command;
-  public originalIdentifier: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -60,7 +59,6 @@ export class CommandSidenavComponent implements OnChanges {
       };
     }
 
-    this.originalIdentifier = this.newCommand.identifier;
     this.deletedArgumentIds = [];
 
     this.form = new FormGroup({
@@ -70,8 +68,8 @@ export class CommandSidenavComponent implements OnChanges {
       editable: new FormControl(this.newCommand.editable),
       externalLink: new FormControl(this.newCommand.externalLink),
       id: new FormControl(this.newCommand.id),
-      identifier: new FormControl(this.newCommand.identifier),
-      type: new FormControl(this.newCommand.type, [ Validators.required ]),
+      identifier: new FormControl(this.newCommand.identifier, [Validators.required]),
+      type: new FormControl(this.newCommand.type, [Validators.required]),
       version: new FormControl(this.newCommand.version)
     });
   }
@@ -124,7 +122,7 @@ export class CommandSidenavComponent implements OnChanges {
     CommandSidenavComponent
   ],
   exports: [
-    CommandSidenavComponent 
+    CommandSidenavComponent
   ],
   imports: [
     CommandArgumentFormModule,
@@ -134,4 +132,4 @@ export class CommandSidenavComponent implements OnChanges {
     ReactiveFormsModule
   ]
 })
-export class CommandSidenavModule {}
+export class CommandSidenavModule { }

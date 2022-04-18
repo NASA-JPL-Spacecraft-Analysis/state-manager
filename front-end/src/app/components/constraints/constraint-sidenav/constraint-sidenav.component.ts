@@ -8,7 +8,7 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-constraint-sidenav',
-  styleUrls: [ 'constraint-sidenav.component.css' ],
+  styleUrls: ['constraint-sidenav.component.css'],
   templateUrl: 'constraint-sidenav.component.html'
 })
 export class ConstraintSidenavComponent implements OnChanges {
@@ -21,7 +21,6 @@ export class ConstraintSidenavComponent implements OnChanges {
   public constraintTypes = constraintTypes;
   public form: FormGroup;
   public newConstraint: Constraint;
-  public originalIdentifier: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -49,8 +48,6 @@ export class ConstraintSidenavComponent implements OnChanges {
       };
     }
 
-    this.originalIdentifier = this.newConstraint.identifier;
-
     this.form = new FormGroup({
       collectionId: new FormControl(this.newConstraint.collectionId),
       description: new FormControl(this.newConstraint.description),
@@ -58,8 +55,8 @@ export class ConstraintSidenavComponent implements OnChanges {
       editable: new FormControl(this.newConstraint.editable),
       externalLink: new FormControl(this.newConstraint.externalLink),
       id: new FormControl(this.newConstraint.id),
-      identifier: new FormControl(this.newConstraint.identifier),
-      type: new FormControl(this.newConstraint.type, [ Validators.required ]),
+      identifier: new FormControl(this.newConstraint.identifier, [Validators.required]),
+      type: new FormControl(this.newConstraint.type, [Validators.required]),
       version: new FormControl(this.newConstraint.version)
     });
   }
@@ -100,4 +97,4 @@ export class ConstraintSidenavComponent implements OnChanges {
     ReactiveFormsModule
   ]
 })
-export class ConstraintSidenavModule {}
+export class ConstraintSidenavModule { }

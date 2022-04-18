@@ -11,20 +11,16 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div *ngIf="constraintIdentifierMap !== null">
         <app-identifier-form
-          [originalIdentifier]="originalIdentifier"
+          [originalIdentifier]="newConstraint.identifier"
           [identifierMap]="constraintIdentifierMap"
           [id]="newConstraint.id"
           [type]="form.value.type"
           (duplicateIdentifier)="onDuplicateIdentifier($event)"
-          (identifierEmitter)="onIdentifierChange($event)">
+          (identifierEmitter)="onIdentifierChange($event)"
+        >
         </app-identifier-form>
 
-        <input matInput
-          class="hidden"
-          type="number"
-          formControlName="collectionId"
-          required
-        />
+        <input matInput class="hidden" type="number" formControlName="collectionId" required />
 
         <label for="Display Name">Display Name</label>
         <input
@@ -41,7 +37,8 @@
           class="st-input"
           name="Description"
           placeholder="Description"
-          formControlName="description">
+          formControlName="description"
+        >
         </textarea>
 
         <!--<label for="External Link">External Link</label>
@@ -54,7 +51,8 @@
         />-->
 
         <label for="Version">Version</label>
-        <input class="st-input"
+        <input
+          class="st-input"
           placeholder="Version"
           name="Version"
           type="text"
@@ -65,7 +63,7 @@
         <label for="Constraint Type">Constraint Type</label>
         <select class="st-select" placeholder="Constraint Type" formControlName="type">
           <option *ngFor="let constraintType of constraintTypes" [value]="constraintType">
-            {{constraintType}}
+            {{ constraintType }}
           </option>
         </select>
       </div>

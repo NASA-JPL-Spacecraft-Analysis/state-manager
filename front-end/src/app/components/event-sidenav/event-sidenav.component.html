@@ -11,23 +11,20 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div *ngIf="eventIdentifierMap !== null">
         <app-identifier-form
-          [originalIdentifier]="originalIdentifier"
+          [originalIdentifier]="newEvent.identifier"
           [identifierMap]="eventIdentifierMap"
           [id]="newEvent.id"
           [type]="form.value.type"
           (duplicateIdentifier)="onDuplicateIdentifier($event)"
-          (identifierEmitter)="onIdentifierChange($event)">
+          (identifierEmitter)="onIdentifierChange($event)"
+        >
         </app-identifier-form>
 
-        <input
-          class="hidden"
-          type="number"
-          formControlName="collectionId"
-          required
-        />
+        <input class="hidden" type="number" formControlName="collectionId" required />
 
         <label for="Display Name">Display Name</label>
-        <input class="st-input"
+        <input
+          class="st-input"
           placeholder="Display Name"
           name="Display Name"
           type="text"
@@ -36,9 +33,7 @@
         />
 
         <label for="Description">Description</label>
-        <textarea class="st-input"
-          placeholder="Description"
-          formControlName="description">
+        <textarea class="st-input" placeholder="Description" formControlName="description">
         </textarea>
 
         <!--<label for="External Link">External Link</label>
@@ -50,7 +45,8 @@
         />-->
 
         <label for="Version">Version</label>
-        <input class="st-input"
+        <input
+          class="st-input"
           placeholder="Version"
           name="Version"
           type="text"
@@ -61,7 +57,7 @@
         <label for="Event Type">Event Type</label>
         <select class="st-select" placeholder="Event Type" formControlName="type">
           <option *ngFor="let eventType of eventTypes" [value]="eventType">
-            {{eventType}}
+            {{ eventType }}
           </option>
         </select>
       </div>

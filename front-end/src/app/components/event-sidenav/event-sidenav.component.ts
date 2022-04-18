@@ -1,6 +1,6 @@
 import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MaterialModule } from 'src/app/material';
 import { Event, eventTypes, IdentifierMap } from 'src/app/models';
@@ -9,7 +9,7 @@ import { IdentifierFormModule } from '../identifier-form/identifier-form.compone
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-event-sidenav',
-  styleUrls: [ 'event-sidenav.component.css' ],
+  styleUrls: ['event-sidenav.component.css'],
   templateUrl: 'event-sidenav.component.html'
 })
 export class EventSidenavComponent implements OnChanges {
@@ -23,7 +23,6 @@ export class EventSidenavComponent implements OnChanges {
   public form: FormGroup;
   public eventTypes = eventTypes;
   public newEvent: Event;
-  public originalIdentifier: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -51,16 +50,14 @@ export class EventSidenavComponent implements OnChanges {
       };
     }
 
-    this.originalIdentifier = this.newEvent.identifier;
-
     this.form = new FormGroup({
       id: new FormControl(this.newEvent.id),
       collectionId: new FormControl(this.newEvent.collectionId),
-      identifier: new FormControl(this.newEvent.identifier),
-      displayName: new FormControl(this.newEvent.displayName),
+      identifier: new FormControl(this.newEvent.identifier, [Validators.required]),
+      displayName: new FormControl(this.newEvent.displayName, [Validators.required]),
       description: new FormControl(this.newEvent.description),
       externalLink: new FormControl(this.newEvent.externalLink),
-      type: new FormControl(this.newEvent.type),
+      type: new FormControl(this.newEvent.type, [Validators.required]),
       version: new FormControl(this.newEvent.version)
     });
   }
@@ -102,4 +99,4 @@ export class EventSidenavComponent implements OnChanges {
     ReactiveFormsModule
   ]
 })
-export class EventSidenavModule {}
+export class EventSidenavModule { }
