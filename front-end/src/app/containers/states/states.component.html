@@ -1,10 +1,8 @@
- <div class="page-toolbar">
+<div class="page-toolbar">
   <span class="st-typography-header">States</span>
 
   <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../state-history">
-      State History
-    </button>
+    <button class="st-button tertiary" routerLink="../state-history">State History</button>
 
     <button class="st-button tertiary" routerLink="../state-enumeration-history">
       State Enumeration History
@@ -20,18 +18,13 @@
       Upload Enumerations
     </button>
 
-    <button class="st-button primary" (click)="onModifyState()">
-      Create New State
-    </button>
+    <button class="st-button primary" (click)="onModifyState()">Create New State</button>
   </div>
 </div>
 
 <div class="content-container">
   <div class="content">
-    <sm-state-table
-      [stateMap]="stateMap"
-      (stateSelected)="onModifyState($event)">
-    </sm-state-table>
+    <sm-state-table [stateMap]="stateMap" (stateSelected)="onModifyState($event)"> </sm-state-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && collectionId">
@@ -40,8 +33,10 @@
       [state]="state"
       [stateEnumerations]="stateEnumerations"
       [stateIdentifierMap]="stateIdentifierMap"
+      [stateTypes]="stateTypes"
       (errorEmitter)="onSidenavError($event)"
-      (modifyState)="onSidenavOutput($event)">
+      (modifyState)="onSidenavOutput($event)"
+    >
     </app-state-sidenav>
   </div>
 </div>

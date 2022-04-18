@@ -32,7 +32,7 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'states'
+        redirectTo: 'states/'
       },
       {
         component: CommandArgumentHistoryComponent,
@@ -43,20 +43,32 @@ export const routes: Routes = [
         path: 'command-history'
       },
       {
+        path: 'commands',
+        redirectTo: 'commands/'
+      },
+      {
         component: CommandsComponent,
-        path: 'commands'
+        path: 'commands/:id'
       },
       {
         component: ConstraintHistoryComponent,
         path: 'constraint-history'
       },
       {
+        path: 'constraints',
+        redirectTo: 'constraints/'
+      },
+      {
         component: ConstraintsComponent,
-        path: 'constraints'
+        path: 'constraints/:id'
+      },
+      {
+        path: 'events',
+        redirectTo: 'events/'
       },
       {
         component: EventsComponent,
-        path: 'events'
+        path: 'events/:id'
       },
       {
         component: EventHistoryComponent,
@@ -71,8 +83,12 @@ export const routes: Routes = [
         path: 'information-types'
       },
       {
+        path: 'relationships',
+        redirectTo: 'relationships/'
+      },
+      {
         component: RelationshipsComponent,
-        path: 'relationships'
+        path: 'relationships/:id'
       },
       {
         component: RelationshipHistoryComponent,
@@ -83,8 +99,12 @@ export const routes: Routes = [
         path: 'state-enumeration-history'
       },
       {
+        path: 'states',
+        redirectTo: 'states/'
+      },
+      {
         component: StatesComponent,
-        path: 'states'
+        path: 'states/:id'
       },
       {
         component: StateHistoryComponent,

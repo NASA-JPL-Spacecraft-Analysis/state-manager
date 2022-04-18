@@ -2,18 +2,14 @@
   <span class="st-typography-header">Constraints</span>
 
   <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../constraint-history">
-      History 
-    </button>
+    <button class="st-button tertiary" routerLink="../constraint-history">History</button>
 
     <button class="st-button icon tertiary" (click)="onFileUpload()">
       <i class="si-upload"></i>
       Upload Constraints
     </button>
 
-    <button class="st-button primary" (click)="onModifyConstraint()">
-      Create New Constraint 
-    </button>
+    <button class="st-button primary" (click)="onModifyConstraint()">Create New Constraint</button>
   </div>
 </div>
 
@@ -21,7 +17,8 @@
   <div class="content">
     <sm-constraint-table
       [constraints]="constraints"
-      (constraintSelected)="onModifyConstraint($event)">
+      (constraintSelected)="onModifyConstraint($event)"
+    >
     </sm-constraint-table>
   </div>
 
@@ -29,8 +26,10 @@
     <sm-constraint-sidenav
       [constraint]="constraint"
       [constraintIdentifierMap]="constraintIdentifierMap"
+      [constraintTypes]="constraintTypes"
       (duplicateIdentifier)="onDuplicateIdentifier($event)"
-      (modifyConstraint)="onSidenavOutput($event)">
+      (modifyConstraint)="onSidenavOutput($event)"
+    >
     </sm-constraint-sidenav>
   </div>
 </div>

@@ -13,9 +13,9 @@ import {
   GroupMapping,
   IdentifierMap,
   InformationTypeMap,
-  StateMap,
   CommandMap,
-  ConstraintMap
+  ConstraintMap,
+  StateMap
 } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
@@ -99,12 +99,6 @@ export class GroupsSidenavComponent implements OnChanges {
       };
     }
 
-
-    // If we're updating a group, remove it from the map so the user can't add it as a group item.
-    if (this.newGroup.id) {
-      delete this.groupMap[this.newGroup.id];
-    }
-
     this.originalGroupIdentifier = this.newGroup.identifier;
 
     this.formGroup = new FormGroup({
@@ -151,6 +145,9 @@ export class GroupsSidenavComponent implements OnChanges {
 
       this.filterItemList(groupMapping);
     }
+
+    // Do one last filter to remove the current group from the selectable list.
+    this.filterItemList();
   }
 
   public onSubmit(): void {
@@ -192,8 +189,8 @@ export class GroupsSidenavComponent implements OnChanges {
     }
   }
 
-  private filterItemList(groupMapping: GroupMapping): void {
-    this.itemList = this.itemList.filter(item => item.id !== groupMapping.item.id);
+  private filterItemList(groupMapping?: GroupMapping): void {
+    this.itemList = this.itemList.filter(item => item.id !== groupMapping?.item.id && this.group.id !== item.id);
   }
 
   private validateGroupIdentifier(identifier: string): boolean {

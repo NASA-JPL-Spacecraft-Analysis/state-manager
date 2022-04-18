@@ -17,6 +17,7 @@ export class CommandSidenavComponent implements OnChanges {
   @Input() public command: Command;
   @Input() public commandArguments: CommandArgument[];
   @Input() public commandIdentifierMap: IdentifierMap;
+  @Input() public commandTypes: string[];
 
   @Output() public errorEmitter: EventEmitter<string>;
   @Output() public modifyCommand: EventEmitter<{ command: Command; deletedArgumentIds: string[] }>;
@@ -47,7 +48,7 @@ export class CommandSidenavComponent implements OnChanges {
         externalLink: '',
         id: undefined,
         identifier: '',
-        type: 'command',
+        type: '',
         version: ''
       };
     } else {

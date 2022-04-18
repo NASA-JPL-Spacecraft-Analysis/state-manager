@@ -1,5 +1,3 @@
-import { StringTMap } from './string-t-map';
-
 export interface Relationship {
   displayName: string;
   description: string;

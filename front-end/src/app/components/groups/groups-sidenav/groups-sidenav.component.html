@@ -1,4 +1,4 @@
-<div class ="sidenav-container">
+<div class="sidenav-container">
   <div class="sidenav-header">
     <span class="st-typography-header">Group Details</span>
 
@@ -13,22 +13,22 @@
         [originalIdentifier]="originalGroupIdentifier"
         [identifierMap]="groupIdentifierMap"
         (duplicateIdentifier)="onDuplicateGroupIdentifier($event)"
-        (identifierEmitter)="onGroupIdentifierChange($event)">
+        (identifierEmitter)="onGroupIdentifierChange($event)"
+      >
       </app-identifier-form>
 
-      <div class="group-item-selector">
-        <group-item-selector
-          [itemList]="itemList"
-          [selectedItems]="selectedItems"
-          (selectionChange)="onItemSelect($event)">
-        </group-item-selector>
-      </div>
+      <sm-group-item-selector
+        [itemList]="itemList"
+        [selectedItems]="selectedItems"
+        (selectionChange)="onItemSelect($event)"
+      >
+      </sm-group-item-selector>
     </form>
   </div>
 
   <div class="sidenav-footer">
     <button class="st-button secondary" (click)="onCancel()">Cancel</button>
 
-    <button class="st-button" (click)="onSubmit()">Save Event</button>
+    <button class="st-button" (click)="onSubmit()">Save Group</button>
   </div>
 </div>

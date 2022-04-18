@@ -46,14 +46,17 @@ export class ConstraintEffects {
     this.actions.pipe(
       ofRoute([
         'collection/:collectionId/constraints',
+        'collection/:collectionId/constraints/',
+        'collection/:collectionId/constraints/:id',
         'collection/:collectionId/constraint-history'
       ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
-        let history = true;
+        const url = this.router.routerState.snapshot.url.split('/').pop();
+        let history = false;
 
-        if (this.router.routerState.snapshot.url.split('/').pop() === 'constraints') {
-          history = false;
+        if (url === 'constraint-history') {
+          history = true;
         }
 
         return merge(
@@ -104,20 +107,34 @@ export class ConstraintEffects {
 
   public getConstraints(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return this.constraintService.getConstraints(
-        collectionId
-      ).pipe(
-        map(constraints => ConstraintActions.setConstraints({
-          constraints
-        })),
-        catchError(
-          (error: Error) => [
-            ConstraintActions.fetchConstraintsFailure({
-              error
-            })
-          ]
+      return merge(
+        this.constraintService.getConstraints(
+          collectionId
+        ).pipe(
+          map(constraints => ConstraintActions.setConstraints({
+            constraints
+          })),
+          catchError(
+            (error: Error) => [
+              ConstraintActions.fetchConstraintsFailure({
+                error
+              })
+            ]
+          )
+        ),
+        this.constraintService.getConstraintTypes().pipe(
+          map(constraintTypes => ConstraintActions.setConstraintTypes({
+            constraintTypes
+          })),
+          catchError(
+            (error: Error) => [
+              ConstraintActions.fetchConstraintTypesFailure({
+                error
+              })
+            ]
+          )
         )
-      );
+      )
     } else {
       return this.constraintService.getConstraintHistory(
         collectionId

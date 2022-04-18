@@ -12,7 +12,7 @@ import {
   ModifyCommandArgument,
   UpdateCommandInput
 } from '../inputs';
-import { Command, CommandArgument, CommandArgumentHistory, CommandHistory, commandTypes } from '../models';
+import { Command, CommandArgument, CommandArgumentHistory, CommandHistory } from '../models';
 import { SharedRepository } from '../repositories';
 import {
   CommandArgumentResponse,
@@ -23,12 +23,14 @@ import {
   DeleteItemsResponse
 } from '../responses';
 import { ValidationService } from '../service';
+import { DataTypesService } from '../service/data-types.service';
 
 @Resolver(() => Command)
 export class CommandResolver implements ResolverInterface<Command> {
   private sharedRepository: SharedRepository<Command>;
 
   constructor(
+    private readonly dataTypesService: DataTypesService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<Command>(getConnection(), Command, validationService);
@@ -87,13 +89,15 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
+  @Query(() => [ String ])
+  public async commandTypes(): Promise<string[]> {
+    return [ ...(await this.dataTypesService.getDataType('command')) ] as string[];
+  }
+
   @Mutation(() => CommandResponse)
   public async createCommand(@Arg('data') data: CreateCommandInput): Promise<CommandResponse> {
     try {
       const command = Command.create(data);
-
-      // TODO: For now hardcore this value, there aren't any other options for commands.
-      command.type = 'command';
 
       this.validationService.isDuplicateIdentifier(await this.commands({ collectionId: data.collectionId }), data.identifier, command.type);
 
@@ -161,16 +165,14 @@ export class CommandResolver implements ResolverInterface<Command> {
       const existingCommands = await this.commands({ collectionId: data.collectionId });
 
       for (const command of data.commands) {
-        // TODO: For now hardcore this value, there aren't any other options for commands.
-        this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, 'command');
+        this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, command.type);
       }
 
       const commands = Command.create(data.commands);
 
-      for (const command of commands) {
-        // TODO: For now hardcore this value, there aren't any other options for commands.
-        command.type = 'command';
+      this.validationService.hasValidType(commands, await this.dataTypesService.getDataType('command'));
 
+      for (const command of commands) {
         await command.save();
 
         this.createCommandHistory(command);
@@ -240,8 +242,8 @@ export class CommandResolver implements ResolverInterface<Command> {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public deleteCommandsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
-    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, commandTypes);
+  public async deleteCommandsByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, await this.dataTypesService.getDataType('command'));
   }
 
   @Mutation(() => CommandResponse)
@@ -253,9 +255,6 @@ export class CommandResolver implements ResolverInterface<Command> {
         throw new UserInputError(CommandConstants.commandNotFoundIdError(data.id));
       }
 
-      // TODO: For now hardcore this value, there aren't any other options for commands.
-      command.type = 'command';
-
       // Remove the command we're updating from the list so we don't mark it as a duplicate identifier.
       let commands = await this.commands({ collectionId: command.collectionId });
       commands = commands.filter((c) => c.id !== command.id);
@@ -264,7 +263,7 @@ export class CommandResolver implements ResolverInterface<Command> {
 
       Object.assign(command, data);
 
-      this.validationService.hasValidType([ command ], commandTypes);
+      this.validationService.hasValidType([ command ], await this.dataTypesService.getDataType('command'));
 
       await command.save();
 

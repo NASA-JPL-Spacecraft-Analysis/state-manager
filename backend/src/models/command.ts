@@ -61,7 +61,3 @@ export class CommandHistory extends Command {
   @Field(() => Date)
   public updated!: Date;
 }
-
-export const commandTypes: Set<string> = new Set([
-  'command'
-]);

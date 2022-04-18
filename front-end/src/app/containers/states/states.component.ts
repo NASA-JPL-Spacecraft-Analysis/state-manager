@@ -1,6 +1,6 @@
 import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
@@ -11,13 +11,15 @@ import {
   getShowSidenav,
   getSelectedCollectionId,
   getStateIdentifierMap,
-  getStateEnumerations
+  getStateEnumerations,
+  getStateTypes
 } from '../../selectors';
 import { StateActions, LayoutActions, ToastActions } from '../../actions';
 import { StateSidenavModule, StateTableModule } from 'src/app/components';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,12 +34,18 @@ export class StatesComponent implements OnDestroy {
   public state: State;
   public stateEnumerations: StateEnumeration[];
   public stateIdentifierMap: IdentifierMap;
+  public stateTypes: string[];
 
+  private stateId: string;
   private subscriptions = new SubSink();
 
   constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private navigationService: NavigationService,
+    private router: Router,
+    private store: Store<AppState>
   ) {
     this.subscriptions.add(
       this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
@@ -63,7 +71,17 @@ export class StatesComponent implements OnDestroy {
       this.store.pipe(select(getStates)).subscribe(stateMap => {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
+
+        this.stateId = this.activatedRoute.snapshot.paramMap.get('id');
+
+        if (this.stateId && this.stateMap) {
+          this.onModifyState(this.stateMap[this.stateId]);
+        }
       }),
+      this.store.pipe(select(getStateTypes)).subscribe(stateTypes => {
+        this.stateTypes = stateTypes;
+        this.changeDetectorRef.markForCheck();
+      })
     );
   }
 
@@ -81,6 +99,11 @@ export class StatesComponent implements OnDestroy {
       id: state?.id
     }));
 
+    const newStateId = state?.id ?? '';
+
+    this.navigationService.addItemIDToURL(this.stateId, newStateId, this.location, this.router.url);
+    this.stateId = newStateId;
+
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
@@ -95,6 +118,10 @@ export class StatesComponent implements OnDestroy {
 
   public onSidenavOutput(result: { state: State; deletedEnumerationIds: string[] }): void {
     if (!result) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
+      this.stateId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
@@ -132,7 +159,8 @@ export class StatesComponent implements OnDestroy {
       collectionId: this.collectionId,
       csvFormat: [ UploadConstants.stateCsvUploadFormat ],
       dialogType: 'State',
-      jsonFormat: UploadConstants.stateJsonUploadFormat
+      jsonFormat: UploadConstants.stateJsonUploadFormat,
+      types: this.stateTypes
     }));
   }
 }

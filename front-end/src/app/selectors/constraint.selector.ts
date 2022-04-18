@@ -1,4 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { ConstraintActions } from '../actions';
 
 import { ConstraintState } from '../reducers/constraint.reducer';
 
@@ -21,12 +22,17 @@ export const getConstraintMap = createSelector(
 
 export const getConstraints = createSelector(
   getConstraintState,
-  (state: ConstraintState) => 
+  (state: ConstraintState) =>
     state.constraintMap ? Object.values(state.constraintMap) : undefined
+);
+
+export const getConstraintTypes = createSelector(
+  getConstraintState,
+  (state: ConstraintState) => state.constraintTypes
 );
 
 export const getSelectedConstraint = createSelector(
   getConstraintState,
-  (state: ConstraintState) => 
+  (state: ConstraintState) =>
     state.selectedConstraintId ? state.constraintMap[state.selectedConstraintId] : undefined
 );

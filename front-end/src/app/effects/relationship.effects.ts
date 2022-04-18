@@ -53,25 +53,30 @@ export class RelationshipEffects {
     this.actions.pipe(
       ofRoute([
         'collection/:collectionId/relationships',
+        'collection/:collectionId/relationships/',
+        'collection/:collectionId/relationships/:id',
         'collection/:collectionId/relationship-history'
       ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
-        let history = true;
+        const url = this.router.routerState.snapshot.url.split('/').pop();
+        let history = false;
 
-        if (this.router.routerState.snapshot.url.split('/').pop() === 'relationships') {
-          history = false;
+        if (url === 'relationship-history') {
+          history = true;
         }
 
         return merge(
           of(LayoutActions.toggleSidenav({
             showSidenav: false
           })),
-          this.constraintEffects.getConstraints(collectionId, false),
-          this.commandEffects.getCommands(collectionId, false),
-          this.eventEffects.getEvents(collectionId, false),
+          this.constraintEffects.getConstraints(collectionId, history),
+          this.commandEffects.getCommands(collectionId, history),
+          this.commandEffects.getCommandArgumentHistory(collectionId),
+          this.eventEffects.getEvents(collectionId, history),
           this.informationTypeEffects.getInformationTypes(collectionId),
-          this.stateEffects.getStates(collectionId, false),
+          this.stateEffects.getStates(collectionId, history),
+          this.stateEffects.getStateEnumerationHistory(collectionId),
           this.getRelationships(collectionId, history)
         );
       })

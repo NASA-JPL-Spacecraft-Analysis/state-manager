@@ -19,6 +19,11 @@ export const getEventHistoryMap = createSelector(
   (state: EventState) => state.eventHistoryMap
 );
 
+export const getEventTypes = createSelector(
+  getEventState,
+  (state: EventState) => state.eventTypes
+);
+
 export const getSelectedEvent = createSelector(
   getEventState,
   (state: EventState) => state.selectedEvent

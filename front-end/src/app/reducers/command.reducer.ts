@@ -11,6 +11,7 @@ export interface CommandState {
   commandHistory: CommandHistory[];
   commandIdentifierMap: IdentifierMap;
   commandMap: CommandMap;
+  commandTypes: string[];
   selectedCommandId: string;
 }
 
@@ -20,6 +21,7 @@ export const initialState: CommandState = {
   commandHistory: undefined,
   commandIdentifierMap: undefined,
   commandMap: undefined,
+  commandTypes: undefined,
   selectedCommandId: undefined
 };
 
@@ -93,6 +95,12 @@ export const reducer = createReducer(
       ...mapIdentifiers(commands)
     }
   })),
+  on(CommandActions.setCommandTypes, (state, { commandTypes }) => ({
+    ...state,
+    commandTypes: [
+      ...commandTypes
+    ]
+  })),
   on(CommandActions.setSelectedCommand, (state, { id }) => ({
     ...state,
     selectedCommandId: id
@@ -138,9 +146,9 @@ const modifyCommand = (state: CommandState, command: Command): CommandState => {
       ...commandArgumentMap
     },
     commandIdentifierMap: {
-      ...currentIdentifierMap,
+      ...state.commandIdentifierMap,
       [command.identifier]: [
-        ...commandIdentifierMap[command.identifier],
+        ...currentIdentifierMap,
         {
           id: command.id,
           type: command.type

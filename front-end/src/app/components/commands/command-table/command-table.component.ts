@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
 
 import { Command } from 'src/app/models';
 import { TableComponent } from '../../table/table.component';
@@ -7,7 +7,7 @@ import { TableComponent } from '../../table/table.component';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-command-table',
-  styleUrls: [ '../../table/table.component.css' ],
+  styleUrls: ['../../table/table.component.css'],
   templateUrl: '../../table/table.component.html'
 })
 export class CommandTableComponent extends TableComponent<Command> implements OnInit, OnChanges {
@@ -64,4 +64,4 @@ export class CommandTableComponent extends TableComponent<Command> implements On
     CommonModule
   ]
 })
-export class CommandTableModule {}
+export class CommandTableModule { }

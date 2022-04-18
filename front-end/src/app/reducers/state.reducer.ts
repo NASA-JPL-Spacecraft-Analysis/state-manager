@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { cloneDeep } from 'lodash';
 
-import { StateActions } from '../actions';
+import { FileUploadActions, StateActions } from '../actions';
 import {
   IdentifierMap,
   State,
@@ -18,6 +18,7 @@ export interface StateState {
   stateHistoryMap: StateMap;
   stateIdentifierMap: IdentifierMap;
   stateMap: StateMap;
+  stateTypes: string[];
 }
 
 export const initialState: StateState = {
@@ -26,21 +27,13 @@ export const initialState: StateState = {
   stateEnumerationMap: undefined,
   stateHistoryMap: undefined,
   stateIdentifierMap: undefined,
-  stateMap: undefined
+  stateMap: undefined,
+  stateTypes: undefined
 };
 
 export const reducer = createReducer(
   initialState,
   on(StateActions.createStateSuccess, (stateState, { state }) => modifyState(stateState, state)),
-  on(StateActions.createStatesSuccess, (stateState, { states }) => ({
-    ...stateState,
-    stateIdentifierMap: {
-      ...mapIdentifiers(states)
-    },
-    stateMap: {
-      ...mapItems(states) as StateMap
-    }
-  })),
   on(StateActions.deleteEnumerationsSuccess, (state, { deletedEnumerationIds }) => {
     const stateEnumerationMap = {
       ...state.stateEnumerationMap
@@ -56,6 +49,17 @@ export const reducer = createReducer(
       stateEnumerationMap
     };
   }),
+  on(FileUploadActions.uploadStatesSuccess, (stateState, { states }) => ({
+    ...stateState,
+    stateMap: {
+      ...stateState.stateMap,
+      ...mapItems(states) as StateMap
+    },
+    stateIdentifierMap: {
+      ...stateState.stateIdentifierMap,
+      ...mapIdentifiers(states)
+    }
+  })),
   on(StateActions.saveEnumerationsSuccess, (stateState, { stateEnumerations }) => {
     const stateEnumerationMap = {};
 
@@ -119,6 +123,12 @@ export const reducer = createReducer(
     stateMap: {
       ...mapItems(states) as StateMap
     }
+  })),
+  on(StateActions.setStateTypes, (stateState, { stateTypes }) => ({
+    ...stateState,
+    stateTypes: [
+      ...stateTypes
+    ]
   })),
   on(StateActions.updateStateSuccess, (stateState, { state }) => modifyState(stateState, state))
 );

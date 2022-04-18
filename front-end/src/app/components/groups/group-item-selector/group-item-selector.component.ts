@@ -14,7 +14,7 @@ import { ChipModule } from '../../chip/chip.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'group-item-selector',
+  selector: 'sm-group-item-selector',
   styleUrls: [ 'group-item-selector.component.css' ],
   templateUrl: 'group-item-selector.component.html'
 })
@@ -56,7 +56,7 @@ export class GroupItemSelectorComponent implements OnChanges {
     );
   }
 
-  public onRemove(item: { id: string, text: string }): void {
+  public onRemove(item: { id: string; text: string }): void {
     let index: number;
 
     for (const groupItem of this.selectedItems) {

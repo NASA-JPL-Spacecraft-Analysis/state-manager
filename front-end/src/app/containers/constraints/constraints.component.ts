@@ -1,34 +1,47 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AppState } from 'src/app/app-store';
 import { SubSink } from 'subsink';
 
 import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
 import { Constraint, IdentifierMap } from 'src/app/models';
-import { getConstraintIdentifierMap, getConstraints, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
+import {
+  getConstraintIdentifierMap,
+  getConstraints,
+  getConstraintTypes,
+  getSelectedCollectionId,
+  getSelectedConstraint,
+  getShowSidenav
+} from 'src/app/selectors';
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-constraints',
-  styleUrls: [ 'constraints.component.css' ],
+  styleUrls: ['constraints.component.css'],
   templateUrl: 'constraints.component.html'
 })
 export class ConstraintsComponent implements OnDestroy {
   public constraint: Constraint;
   public constraintIdentifierMap: IdentifierMap;
   public constraints: Constraint[];
+  public constraintTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
 
+  private constraintId: string;
   private subscriptions: SubSink;
 
   constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private navigationService: NavigationService,
+    private router: Router,
+    private store: Store<AppState>
   ) {
     this.subscriptions = new SubSink();
 
@@ -50,9 +63,13 @@ export class ConstraintsComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getSelectedConstraint)).subscribe(selectedConstraint => {
-        this.constraint = selectedConstraint
+        this.constraint = selectedConstraint;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getConstraintTypes)).subscribe(constraintTypes => {
+        this.constraintTypes = constraintTypes;
+        this.changeDetectorRef.markForCheck();
+      })
     );
   }
 
@@ -74,9 +91,10 @@ export class ConstraintsComponent implements OnDestroy {
   public onFileUpload(): void {
     this.store.dispatch(LayoutActions.openFileUploadDialog({
       collectionId: this.selectedCollectionId,
-      csvFormat: [ UploadConstants.constraintCsvUploadFormat ],
+      csvFormat: [UploadConstants.constraintCsvUploadFormat],
       dialogType: 'Constraint',
-      jsonFormat: UploadConstants.constraintJsonUploadFormat
+      jsonFormat: UploadConstants.constraintJsonUploadFormat,
+      types: this.constraintTypes
     }));
   }
 
@@ -85,6 +103,11 @@ export class ConstraintsComponent implements OnDestroy {
       id: constraint?.id
     }));
 
+    const newConstraintId = constraint?.id ?? '';
+
+    this.navigationService.addItemIDToURL(this.constraintId, newConstraintId, this.location, this.router.url);
+    this.constraintId = newConstraintId;
+
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
@@ -92,6 +115,10 @@ export class ConstraintsComponent implements OnDestroy {
 
   public onSidenavOutput(constraint: Constraint): void {
     if (!constraint) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
+      this.constraintId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
@@ -125,4 +152,4 @@ export class ConstraintsComponent implements OnDestroy {
     RouterModule
   ]
 })
-export class ConstraintsModule {}
+export class ConstraintsModule { }

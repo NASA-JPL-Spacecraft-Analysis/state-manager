@@ -2,12 +2,10 @@
   <span class="st-typography-header">Commands</span>
 
   <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../command-history">
-      Command History 
-    </button>
+    <button class="st-button tertiary" routerLink="../../command-history">Command History</button>
 
-    <button class="st-button tertiary" routerLink="../command-argument-history">
-      Command Argument History 
+    <button class="st-button tertiary" routerLink="../../command-argument-history">
+      Command Argument History
     </button>
 
     <button class="st-button icon tertiary" (click)="onCommandFileUpload()">
@@ -20,17 +18,13 @@
       Upload Command Arguments
     </button>
 
-    <button class="st-button primary" (click)="onModifyCommand()">
-      Create New Command 
-    </button>
+    <button class="st-button primary" (click)="onModifyCommand()">Create New Command</button>
   </div>
 </div>
 
 <div class="content-container">
   <div class="content">
-    <sm-command-table
-      [commands]="commands"
-      (commandSelected)="onModifyCommand($event)">
+    <sm-command-table [commands]="commands" (commandSelected)="onModifyCommand($event)">
     </sm-command-table>
   </div>
 
@@ -40,8 +34,10 @@
       [command]="command"
       [commandArguments]="commandArguments"
       [commandIdentifierMap]="commandIdentifierMap"
+      [commandTypes]="commandTypes"
       (errorEmitter)="onSidenavError($event)"
-      (modifyCommand)="onSidenavOutput($event)">
+      (modifyCommand)="onSidenavOutput($event)"
+    >
     </command-sidenav>
   </div>
 </div>

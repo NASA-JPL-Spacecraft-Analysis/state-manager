@@ -2,7 +2,7 @@ import { Resolver, Query, Arg, Mutation, ResolverInterface, FieldResolver, Root,
 import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
-import { State, StateEnumeration, StateEnumerationHistory, StateHistory, stateTypes } from './../models';
+import { State, StateEnumeration, StateEnumerationHistory, StateHistory } from './../models';
 import {
   CreateStateEnumerationsInput,
   CreateStateInput,
@@ -23,12 +23,14 @@ import {
 import { CollectionIdArgs, CollectionIdTypeArgs, IdentifierArgs, TypeArgs } from '../args';
 import { SharedRepository } from '../repositories';
 import { StateConstants } from '../constants';
+import { DataTypesService } from '../service/data-types.service';
 
 @Resolver(() => State)
 export class StateResolver implements ResolverInterface<State> {
   private sharedRepository: SharedRepository<State>;
 
   constructor(
+    private readonly dataTypesService: DataTypesService,
     private readonly validationService: ValidationService
   ) {
     this.sharedRepository = new SharedRepository<State>(getConnection(), State, this.validationService);
@@ -39,7 +41,7 @@ export class StateResolver implements ResolverInterface<State> {
     try {
       const state = State.create(data);
 
-      this.validationService.hasValidType([state], stateTypes);
+      this.validationService.hasValidType([state], await this.dataTypesService.getDataType('state'));
 
       this.validationService.isDuplicateIdentifier(
         await this.states({ collectionId: data.collectionId }), data.identifier, data.type);
@@ -120,7 +122,7 @@ export class StateResolver implements ResolverInterface<State> {
 
       const states = State.create(data.states);
 
-      this.validationService.hasValidType(states, stateTypes);
+      this.validationService.hasValidType(states, await this.dataTypesService.getDataType('state'));
 
       await getConnection().createQueryBuilder().insert().into(State).values(states).execute();
 
@@ -204,8 +206,8 @@ export class StateResolver implements ResolverInterface<State> {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public deleteStatesByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
-    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, stateTypes);
+  public async deleteStatesByType(@Args() { collectionId, type }: CollectionIdTypeArgs): Promise<DeleteItemsResponse> {
+    return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, await this.dataTypesService.getDataType('state'));
   }
 
   @FieldResolver(() => [StateEnumeration])
@@ -261,6 +263,11 @@ export class StateResolver implements ResolverInterface<State> {
     });
   }
 
+  @Query(() => [String])
+  public async stateTypes(): Promise<string[]> {
+    return [...(await this.dataTypesService.getDataType('state'))] as string[];
+  }
+
   @Mutation(() => StateResponse)
   public async updateState(@Arg('data') data: UpdateStateInput): Promise<StateResponse> {
     try {
@@ -270,7 +277,7 @@ export class StateResolver implements ResolverInterface<State> {
         throw new UserInputError(StateConstants.stateNotFoundIdError(data.id));
       }
 
-      this.validationService.hasValidType([state], stateTypes);
+      this.validationService.hasValidType([state], await this.dataTypesService.getDataType('state'));
 
       // Remove the state we're updating from the list so we don't mark it as a duplicate identifier.
       let states = await this.states({ collectionId: state.collectionId });

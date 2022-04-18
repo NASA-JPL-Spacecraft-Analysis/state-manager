@@ -4,18 +4,18 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { CommandHistory } from 'src/app/models';
+import { Command } from 'src/app/models';
 import { getCommandHistory } from 'src/app/selectors';
 import { CommandTableModule } from 'src/app/components/commands';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-command-history',
-  styleUrls: [ 'command-history.component.css' ],
+  styleUrls: ['command-history.component.css'],
   templateUrl: 'command-history.component.html'
 })
 export class CommandHistoryComponent implements OnDestroy {
-  public commandHistory: CommandHistory[];
+  public commandHistory: Command[];
 
   private subscriptions: SubSink;
 
@@ -50,4 +50,4 @@ export class CommandHistoryComponent implements OnDestroy {
     CommandTableModule
   ]
 })
-export class CommandHistoryModule {}
+export class CommandHistoryModule { }

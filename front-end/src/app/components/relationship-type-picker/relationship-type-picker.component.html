@@ -1,40 +1,46 @@
 <ng-container *ngIf="type">
   <ng-container *ngIf="!isList; else list">
-    <label>{{title}}</label>
-    <select class="st-select"
+    <label>{{ title }}</label>
+    <select
+      class="st-select"
       [(ngModel)]="relationship[formProperty]"
-      (ngModelChange)="onValueChange($event)">
-      <option *ngFor="let value of selectedTypeMap | keyvalue"
-        [value]="selectedTypeMap[value.key].id">
-        {{selectedTypeMap[value.key].identifier}}
+      (ngModelChange)="onValueChange($event)"
+    >
+      <option
+        *ngFor="let value of selectedTypeMap | keyvalue"
+        [value]="selectedTypeMap[value.key].id"
+      >
+        {{ selectedTypeMap[value.key].identifier }}
       </option>
     </select>
   </ng-container>
 
   <ng-template #list>
     <ng-container *ngIf="isCommandArgument; else isStateEnumeration">
-      <label>{{title}}</label>
-      <select class="st-select"
+      <label>{{ title }}</label>
+      <select
+        class="st-select"
         [(ngModel)]="relationship[formProperty]"
-        (ngModelChange)="onValueChange($event)">
+        (ngModelChange)="onValueChange($event)"
+      >
         <ng-container *ngFor="let value of commandArgumentMap | keyvalue">
-          <option *ngFor="let item of value.value"
-            [value]="item.id">
-            {{supplementalMap[value.key].identifier}} - {{item.name}}
+          <option *ngFor="let item of value.value" [value]="item.id">
+            {{ supplementalMap[value.key].identifier }} - {{ item.name }}
           </option>
         </ng-container>
       </select>
     </ng-container>
 
     <ng-template #isStateEnumeration>
-      <label>{{title}}</label>
-      <select class="st-select"
+      <label>{{ title }}</label>
+      <select
+        class="st-select"
         [(ngModel)]="relationship[formProperty]"
-        (ngModelChange)="onValueChange($event)">
+        (ngModelChange)="onValueChange($event)"
+      >
         <ng-container *ngFor="let value of stateEnumerationMap | keyvalue">
-          <option *ngFor="let item of value.value"
-            [value]="item.id">
-            {{supplementalMap[value.key].identifier}} - {{item.label}}
+          <option *ngFor="let item of value.value" [value]="item.id">
+            {{ supplementalMap[value.key].identifier }} - {{ item.label }}
           </option>
         </ng-container>
       </select>
