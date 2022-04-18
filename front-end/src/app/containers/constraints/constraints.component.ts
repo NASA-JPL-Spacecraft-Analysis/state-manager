@@ -6,7 +6,6 @@ import { AppState } from 'src/app/app-store';
 import { SubSink } from 'subsink';
 
 import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
-import { MaterialModule } from 'src/app/material';
 import { Constraint, IdentifierMap } from 'src/app/models';
 import { getConstraintIdentifierMap, getConstraints, getSelectedCollectionId, getSelectedConstraint, getShowSidenav } from 'src/app/selectors';
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
@@ -123,7 +122,6 @@ export class ConstraintsComponent implements OnDestroy {
     CommonModule,
     ConstraintSidenavModule,
     ConstraintTableModule,
-    MaterialModule,
     RouterModule
   ]
 })

@@ -1,6 +1,7 @@
 import { IdentifierMap, State, StateMap } from '../models';
 
 export const mockStateOne: State = {
+  channelId: '',
   collectionId: '1',
   dataType: 'data type',
   description: 'This is a test string.',
@@ -10,13 +11,16 @@ export const mockStateOne: State = {
   externalLink: '',
   id: '1',
   identifier: 'TEST',
+  restricted: false,
   source: 'na',
   subsystem: 'na',
   type: 'test string',
-  units: 'na'
+  units: 'na',
+  version: ''
 };
 
 export const mockStateTwo: State = {
+  channelId: '',
   collectionId: '1',
   dataType: 'data type',
   description: 'This is test string 1.',
@@ -26,10 +30,12 @@ export const mockStateTwo: State = {
   externalLink: '',
   id: '2',
   identifier: 'TEST_1',
+  restricted: false,
   source: 'na',
   subsystem: 'na',
   type: 'test string 1',
-  units: 'na'
+  units: 'na',
+  version: ''
 };
 
 export const mockStateIdentifierMap: IdentifierMap = {

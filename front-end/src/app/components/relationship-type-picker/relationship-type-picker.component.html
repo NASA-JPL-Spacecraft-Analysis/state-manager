@@ -1,89 +1,43 @@
 <ng-container *ngIf="type">
-  <mat-form-field *ngIf="type === 'command'" appearance="outline">
-    <mat-label>{{type}}</mat-label>
-    <mat-select
-      [(value)]="relationship[formProperty]"
-      (selectionChange)="onValueChange($event)">
-      <mat-option *ngFor="let value of commandMap | keyvalue"
-        [value]="commandMap[value.key].id">
-        {{commandMap[value.key].identifier}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <ng-container *ngIf="!isList; else list">
+    <label>{{title}}</label>
+    <select class="st-select"
+      [(ngModel)]="relationship[formProperty]"
+      (ngModelChange)="onValueChange($event)">
+      <option *ngFor="let value of selectedTypeMap | keyvalue"
+        [value]="selectedTypeMap[value.key].id">
+        {{selectedTypeMap[value.key].identifier}}
+      </option>
+    </select>
+  </ng-container>
 
-  <mat-form-field *ngIf="type === 'commandArgument'" appearance="outline">
-    <mat-label>{{type}}</mat-label>
-    <mat-select
-      [(value)]="relationship[formProperty]"
-      (selectionChange)="onValueChange($event)">
-      <ng-container *ngFor="let value of commandArgumentMap | keyvalue">
-        <mat-option *ngFor="let commandArgument of commandArgumentMap[value.key]"
-          [value]="commandArgument.id">
-          {{commandArgument.name}}
-        </mat-option>
-      </ng-container>
-    </mat-select>
-  </mat-form-field>
+  <ng-template #list>
+    <ng-container *ngIf="isCommandArgument; else isStateEnumeration">
+      <label>{{title}}</label>
+      <select class="st-select"
+        [(ngModel)]="relationship[formProperty]"
+        (ngModelChange)="onValueChange($event)">
+        <ng-container *ngFor="let value of commandArgumentMap | keyvalue">
+          <option *ngFor="let item of value.value"
+            [value]="item.id">
+            {{supplementalMap[value.key].identifier}} - {{item.name}}
+          </option>
+        </ng-container>
+      </select>
+    </ng-container>
 
-  <mat-form-field *ngIf="type === 'constraint'" appearance="outline">
-    <mat-label>{{type}}</mat-label>
-    <mat-select
-      [(value)]="relationship[formProperty]"
-      (selectionChange)="onValueChange($event)">
-      <mat-option *ngFor="let value of constraintMap | keyvalue"
-        [value]="constraintMap[value.key].id">
-        {{constraintMap[value.key].identifier}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field *ngIf="type === 'event'" appearance="outline">
-    <mat-label>{{type}}</mat-label>
-    <mat-select
-      [(value)]="relationship[formProperty]"
-      (selectionChange)="onValueChange($event)">
-      <mat-option *ngFor="let value of eventMap | keyvalue"
-        [value]="eventMap[value.key].id">
-        {{eventMap[value.key].identifier}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field *ngIf="type === 'informationType'" appearance="outline">
-    <mat-label>{{type}}</mat-label>
-    <mat-select
-      [(value)]="relationship[formProperty]"
-      (selectionChange)="onValueChange($event)">
-      <mat-option *ngFor="let value of informationTypeMap | keyvalue"
-        [value]="informationTypeMap[value.key].id">
-        {{informationTypeMap[value.key].identifier}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field *ngIf="type === 'stateEnumeration'" appearance="outline">
-    <mat-label>{{type}}</mat-label>
-    <mat-select
-      [(value)]="relationship[formProperty]"
-      (selectionChange)="onValueChange($event)">
-      <ng-container *ngFor="let value of stateEnumerationMap | keyvalue">
-        <mat-option *ngFor="let stateEnumeration of stateEnumerationMap[value.key]"
-          [value]="stateEnumeration.id">
-          {{stateEnumeration.label}}
-        </mat-option>
-      </ng-container>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field *ngIf="type === 'state'" appearance="outline">
-    <mat-label>{{type}}</mat-label>
-    <mat-select
-      [(value)]="relationship[formProperty]"
-      (selectionChange)="onValueChange($event)">
-      <mat-option *ngFor="let value of stateMap | keyvalue"
-        [value]="stateMap[value.key].id">
-        {{stateMap[value.key].identifier}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+    <ng-template #isStateEnumeration>
+      <label>{{title}}</label>
+      <select class="st-select"
+        [(ngModel)]="relationship[formProperty]"
+        (ngModelChange)="onValueChange($event)">
+        <ng-container *ngFor="let value of stateEnumerationMap | keyvalue">
+          <option *ngFor="let item of value.value"
+            [value]="item.id">
+            {{supplementalMap[value.key].identifier}} - {{item.label}}
+          </option>
+        </ng-container>
+      </select>
+    </ng-template>
+  </ng-template>
 </ng-container>

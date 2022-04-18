@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 
 import { Relationship } from '../../models/relationship';
 import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
-import { MaterialModule } from 'src/app/material';
 import {
   StateMap,
   InformationTypeMap,
@@ -44,11 +43,10 @@ export class RelationshipSidenavComponent implements OnChanges {
   constructor() {
     this.formError = new EventEmitter<string>();
     this.modifyRelationship = new EventEmitter<Relationship>();
-
-    this.types = Object.values(RelationshipTypeEnum);
   }
 
   public ngOnChanges(): void {
+    this.filterTypes();
     if (this.relationship === undefined || this.relationship === null) {
       this.newRelationship = {
         id: null,
@@ -64,8 +62,8 @@ export class RelationshipSidenavComponent implements OnChanges {
         ...this.relationship
       };
 
-      this.subjectType = this.newRelationship.subjectType.toString();
-      this.targetType = this.newRelationship.targetType.toString();
+      this.subjectType = this.newRelationship.subjectType;
+      this.targetType = this.newRelationship.targetType;
     }
 
     this.form = new FormGroup({
@@ -91,6 +89,61 @@ export class RelationshipSidenavComponent implements OnChanges {
       this.formError.emit('Please fill in required form fields, including selecting a subject and a target');
     }
   }
+
+  public onSubjectTypeChange(newSubjectType: string) {
+    this.subjectType = newSubjectType;
+  }
+
+  public onTargetTypeChange(newTargetType: string) {
+    this.targetType = newTargetType;
+  }
+
+  /**
+   * Looks at each map and removes the ones that don't have any data.
+   */
+  private filterTypes(): void {
+    this.types = Object.values(RelationshipTypeEnum).filter(type => {
+      if (typeof type === 'string') {
+        switch (type) {
+          case RelationshipTypeEnum.Command:
+            if (Object.keys(this.commandMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum['Command Argument']:
+            if (Object.keys(this.commandArgumentMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum.Constraint:
+            if (Object.keys(this.constraintMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum.Event:
+            if (Object.keys(this.eventMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum['Information Type']:
+            if (Object.keys(this.informationTypeMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum['State Enumeration']:
+            if (Object.keys(this.stateEnumerationMap).length > 0) {
+              return true;
+            }
+            break;
+          case RelationshipTypeEnum.State:
+            if (Object.keys(this.stateMap).length > 0) {
+              return true;
+            }
+            break;
+        }
+      }
+    });
+  }
 }
 
 @NgModule({
@@ -104,7 +157,6 @@ export class RelationshipSidenavComponent implements OnChanges {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule,
     RelationshipTypePickerModule
   ]
 })

@@ -1,18 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, NgModule, OnChanges, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
 
-import { MaterialModule } from 'src/app/material';
 import { CommandArgument, CommandArgumentHistory } from 'src/app/models';
-import { TableComponent } from '../..';
+import { TableComponent } from '../../table/table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'command-argument-table',
-  styleUrls: [ 'command-argument-table.component.css' ],
-  templateUrl: 'command-argument-table.component.html'
+  selector: 'sm-command-argument-history-table',
+  styleUrls: [ '../../table/table.component.css' ],
+  templateUrl: '../../table/table.component.html'
 })
-export class CommandArgumentTableComponent extends TableComponent<CommandArgument> implements OnInit, OnChanges {
+export class CommandArgumentHistoryTableComponent extends TableComponent<CommandArgument> implements OnInit, OnChanges {
   @Input() public commandArgumentHistory: CommandArgumentHistory[];
 
   constructor() {
@@ -20,7 +18,7 @@ export class CommandArgumentTableComponent extends TableComponent<CommandArgumen
   }
 
   public ngOnInit(): void {
-    this.displayedColumns.push(
+    this.columns.push(
       'commandId',
       'commandArgumentId',
       'id',
@@ -31,11 +29,9 @@ export class CommandArgumentTableComponent extends TableComponent<CommandArgumen
   }
 
   public ngOnChanges(): void {
-    if (this.commandArgumentHistory && this.displayedColumns) {
-      this.dataSource = new MatTableDataSource(this.commandArgumentHistory);
+    this.rows = this.commandArgumentHistory;
 
-      super.ngOnChanges();
-    }
+    super.ngOnChanges();
   }
 
   public filter(commandArgumentHistory: CommandArgumentHistory, filterValue: string): boolean {
@@ -45,14 +41,13 @@ export class CommandArgumentTableComponent extends TableComponent<CommandArgumen
 
 @NgModule({
   declarations: [
-    CommandArgumentTableComponent
+    CommandArgumentHistoryTableComponent
   ],
   exports: [
-    CommandArgumentTableComponent
+    CommandArgumentHistoryTableComponent
   ],
   imports: [
-    CommonModule,
-    MaterialModule
+    CommonModule
   ]
 })
-export class CommandArgumentTableModule {}
+export class CommandArgumentHistoryTableModule {}

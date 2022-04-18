@@ -18,6 +18,7 @@ export const CREATE_INFORMATION_TYPES = gql(`
         displayName
         externalLink
         type
+        version
       }
       message
       success
@@ -34,6 +35,7 @@ export const GET_INFORMATION_TYPES = gql(`
       id
       identifier
       type 
+      version
     }
   }
 `);

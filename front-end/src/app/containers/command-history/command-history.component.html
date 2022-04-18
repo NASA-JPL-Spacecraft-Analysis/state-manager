@@ -1,10 +1,12 @@
-<mat-toolbar>
-  Command History
-</mat-toolbar>
+<div class="page-toolbar">
+  <span class="st-typography-header">Command History</span>
+</div>
 
-<div class="content">
-  <command-table
-    [commands]="commandHistory"
-    [history]="true">
-  </command-table>
+<div class="content-container">
+  <div class="content">
+    <sm-command-table
+      [commands]="commandHistory"
+      [history]="true">
+    </sm-command-table>
+  </div>
 </div>

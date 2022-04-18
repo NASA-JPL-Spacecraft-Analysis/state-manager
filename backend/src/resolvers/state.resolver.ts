@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg, Mutation, ResolverInterface , FieldResolver, Root, Args } from 'type-graphql';
+import { Resolver, Query, Arg, Mutation, ResolverInterface, FieldResolver, Root, Args } from 'type-graphql';
 import { getConnection } from 'typeorm';
 import { UserInputError } from 'apollo-server';
 
@@ -39,13 +39,13 @@ export class StateResolver implements ResolverInterface<State> {
     try {
       const state = State.create(data);
 
-      this.validationService.hasValidType([ state ], stateTypes);
+      this.validationService.hasValidType([state], stateTypes);
 
       this.validationService.isDuplicateIdentifier(
         await this.states({ collectionId: data.collectionId }), data.identifier, data.type);
 
       await state.save();
-      this.createStateHistory([ state ]);
+      this.createStateHistory([state]);
 
       state.enumerations = await this.saveStateEnumerations(data.enumerations, state.id);
 
@@ -208,7 +208,7 @@ export class StateResolver implements ResolverInterface<State> {
     return this.sharedRepository.deleteByCollectionIdAndType(collectionId, type, stateTypes);
   }
 
-  @FieldResolver(() => [ StateEnumeration ])
+  @FieldResolver(() => [StateEnumeration])
   public async enumerations(@Root() state: State): Promise<StateEnumeration[]> {
     return StateEnumeration.find({
       where: {
@@ -222,7 +222,7 @@ export class StateResolver implements ResolverInterface<State> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
-  @Query(() => [ StateEnumerationHistory ])
+  @Query(() => [StateEnumerationHistory])
   public stateEnumerationHistory(@Args() { collectionId }: CollectionIdArgs): Promise<StateEnumerationHistory[]> {
     return StateEnumerationHistory.find({
       where: {
@@ -234,7 +234,7 @@ export class StateResolver implements ResolverInterface<State> {
     });
   }
 
-  @Query(() => [ StateEnumeration ])
+  @Query(() => [StateEnumeration])
   public stateEnumerations(@Args() { collectionId }: CollectionIdArgs): Promise<StateEnumeration[]> {
     return StateEnumeration.find({
       where: {
@@ -243,7 +243,7 @@ export class StateResolver implements ResolverInterface<State> {
     });
   }
 
-  @Query(() => [ StateHistory ])
+  @Query(() => [StateHistory])
   public stateHistory(@Args() { collectionId }: CollectionIdArgs): Promise<StateHistory[]> {
     return StateHistory.find({
       where: {
@@ -252,7 +252,7 @@ export class StateResolver implements ResolverInterface<State> {
     });
   }
 
-  @Query(() => [ State ])
+  @Query(() => [State])
   public states(@Args() { collectionId }: CollectionIdArgs): Promise<State[]> {
     return State.find({
       where: {
@@ -270,7 +270,7 @@ export class StateResolver implements ResolverInterface<State> {
         throw new UserInputError(StateConstants.stateNotFoundIdError(data.id));
       }
 
-      this.validationService.hasValidType([ state ], stateTypes);
+      this.validationService.hasValidType([state], stateTypes);
 
       // Remove the state we're updating from the list so we don't mark it as a duplicate identifier.
       let states = await this.states({ collectionId: state.collectionId });
@@ -282,7 +282,7 @@ export class StateResolver implements ResolverInterface<State> {
 
       await state.save();
 
-      this.createStateHistory([ state ]);
+      this.createStateHistory([state]);
 
       state.enumerations = await this.saveStateEnumerations(data.enumerations, state.id);
 
@@ -316,7 +316,8 @@ export class StateResolver implements ResolverInterface<State> {
     const stateHistoryList = [];
 
     for (const state of states) {
-      const stateHistory = StateHistory.create({
+      stateHistoryList.push(StateHistory.create({
+        channelId: state.channelId,
         collectionId: state.collectionId,
         dataType: state.dataType,
         description: state.description,
@@ -324,15 +325,14 @@ export class StateResolver implements ResolverInterface<State> {
         editable: state.editable,
         externalLink: state.externalLink,
         identifier: state.identifier,
+        restricted: state.restricted,
         source: state.source,
         stateId: state.id,
         subsystem: state.subsystem,
         type: state.type,
         units: state.units,
         updated: new Date()
-      });
-
-      stateHistoryList.push(stateHistory);
+      }));
     }
 
     void getConnection().createQueryBuilder().insert().into(StateHistory).values(stateHistoryList).execute();

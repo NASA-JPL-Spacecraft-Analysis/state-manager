@@ -1,54 +1,54 @@
-<mat-toolbar class="main-toolbar" color="accent" >
+<div class="toolbar">
   <div class="toolbar-container">
-    <h6 id="logotype">State Manager</h6>
+    <h6 class="logotype">State Manager</h6>
 
-    <app-collections></app-collections>
+    <sm-collections></sm-collections>
   </div>
 
-  <div class="navigation-container">
-    <button class="st-button"
+  <div class="toolbar-buttons">
+    <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/states"
       [ngClass]="{ 'active': route === 'states' || route === 'state-history' }">
       States
     </button>
 
-    <button class="st-button"
+    <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/relationships"
       [ngClass]="{ 'active': route === 'relationships' || route === 'relationship-history' }">
       Relationships
     </button>
 
-    <button class="st-button"
+    <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/events"
       [ngClass]="{ 'active': route === 'events' || route === 'event-history' }">
       Events
     </button>
 
-    <button class="st-button"
+    <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/constraints"
       [ngClass]="{ 'active': route === 'constraints' || route === 'constraint-history' }">
       Constraints
     </button>
 
-    <button class="st-button"
+    <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/commands"
       [ngClass]="{ 'active': route === 'commands' || route === 'command-history' }">
       Commands
     </button>
 
-    <button class="st-button"
+    <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/information-types"
       [ngClass]="{ 'active': route === 'information-types' }">
       Information Types 
     </button>
 
-    <button class="st-button"
+    <button class="st-button tertiary"
       routerLink="/collection/{{selectedCollectionId}}/groups"
       [ngClass]="{ 'active': route === 'groups' }">
       Groups
     </button>
 
-    <button class="st-button" [matMenuTriggerFor]="versionMenu">
+    <button class="st-button tertiary" [matMenuTriggerFor]="versionMenu">
       <mat-icon class="help-icon" svgIcon="help"></mat-icon>
     </button>
 
@@ -56,7 +56,7 @@
       <span class="version-text">State Manager V3.0</span>
     </mat-menu>
 
-    <button class="st-button" [matMenuTriggerFor]="menu">
+    <button class="st-button tertiary" [matMenuTriggerFor]="menu">
       <mat-icon svgIcon="more_vert"></mat-icon>
     </button>
 
@@ -66,4 +66,4 @@
       </button>
     </mat-menu>
   </div>
-</mat-toolbar>
+</div>

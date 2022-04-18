@@ -1,6 +1,5 @@
 import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource } from '@angular/material/table';
 
 import {
   RelationshipMap,
@@ -18,13 +17,12 @@ import {
 import { MaterialModule } from 'src/app/material';
 
 import { TableComponent } from '../table/table.component';
-import { TouchSequence } from 'selenium-webdriver';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-relationships-table',
-  styleUrls: [ 'relationships-table.component.css' ],
-  templateUrl: 'relationships-table.component.html'
+  selector: 'sm-relationships-table',
+  styleUrls: [ '../table/table.component.css' ],
+  templateUrl: '../table/table.component.html'
 })
 export class RelationshipsTableComponent extends TableComponent<Relationship> implements OnInit, OnChanges {
   @Input() public commandArgumentMap: CommandArgumentMap;
@@ -52,20 +50,22 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   }
 
   public ngOnInit(): void {
-    this.displayedColumns.push(
+    this.columns.push(
       'displayName',
       'description',
+      'subjectIdentifier',
       'subjectType',
-      'targetType',
-      'subject',
-      'target'
+      'targetIdentifier',
+      'targetType'
     );
 
     if (this.history) {
-      this.displayedColumns.push(
+      this.columns.push(
         'relationshipId',
         'updated'
       );
+
+      this.historyTable = true;
     }
   }
 
@@ -74,22 +74,36 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
     this.commandArguments = {};
     this.stateEnumerations = {};
 
-    if (this.relationshipMap && this.displayedColumns) {
+    if (this.relationshipMap) {
       for (const key of Object.keys(this.relationshipMap)) {
         this.relationshipsList.push(this.relationshipMap[key]);
       }
 
-      this.dataSource = new MatTableDataSource(this.relationshipsList);
+      let index = 0;
 
-      super.ngOnChanges();
+      for (const relationship of this.relationshipsList) {
+        this.relationshipsList[index] = {
+          ...relationship,
+          subjectIdentifier: this.getType(relationship.subjectTypeId, relationship.subjectType),
+          targetIdentifier: this.getType(relationship.targetTypeId, relationship.targetType)
+        };
+
+        index++;
+      }
+
+      this.rows = this.relationshipsList;
     }
+
+    super.ngOnChanges();
   }
 
-  public getType(id: string, type: string): string {
-    console.log(type);
-    console.log(RelationshipTypeEnum.stateEnumeration);
+  public onRowClick(relationship: Relationship): void {
+    this.relationshipSelected.emit(relationship);
+  }
+
+  private getType(id: string, type: string): string {
     switch (type) {
-      case RelationshipTypeEnum.commandArgument:
+      case RelationshipTypeEnum['Command Argument']:
         // If this is the first time we've seen a command argument, memoize them.
         if (Object.keys(this.commandArguments).length === 0) {
           this.mapCommandArguments();
@@ -100,31 +114,31 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
         }
 
         break;
-      case RelationshipTypeEnum.command:
+      case RelationshipTypeEnum.Command:
         if (this.commandMap && this.commandMap[id]) {
           return this.commandMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.constraint:
+      case RelationshipTypeEnum.Constraint:
         if (this.constraintMap && this.constraintMap[id]) {
           return this.constraintMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.event:
+      case RelationshipTypeEnum.Event:
         if (this.eventMap && this.eventMap[id]) {
           return this.eventMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.informationType:
+      case RelationshipTypeEnum['Information Type']:
         if (this.informationTypeMap && this.informationTypeMap[id]) {
           return this.informationTypeMap[id].identifier;
         }
 
         break;
-      case RelationshipTypeEnum.stateEnumeration:
+      case RelationshipTypeEnum['State Enumeration']:
         // If this is the first time we've seen a state enumeration, memoize them.
         if (Object.keys(this.stateEnumerations).length === 0) {
           this.mapStateEnumerations();
@@ -135,7 +149,7 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
         }
 
         break;
-      case RelationshipTypeEnum.state:
+      case RelationshipTypeEnum.State:
         if (this.stateMap && this.stateMap[id]) {
           return this.stateMap[id].identifier;
         }
@@ -146,17 +160,6 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
     }
 
     return '';
-  }
-
-  public onRowClick(relationship: Relationship): void {
-    this.relationshipSelected.emit(relationship);
-  }
-
-  public filter(relationship: Relationship, filterValue: string): boolean {
-    return relationship.description?.toLowerCase().includes(filterValue)
-      || relationship.displayName?.toLowerCase().includes(filterValue)
-      || relationship.subjectType?.toString().toLowerCase().includes(filterValue)
-      || relationship.targetType?.toString().toLowerCase().includes(filterValue);
   }
 
   private mapCommandArguments() {

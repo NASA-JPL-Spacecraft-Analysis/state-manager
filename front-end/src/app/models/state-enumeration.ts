@@ -1,5 +1,3 @@
-import { StringTMap } from './string-t-map';
-
 export interface StateEnumeration {
   collectionId: string;
   label: string;
@@ -19,4 +17,4 @@ export interface StateEnumerationUpload {
   value: string;
 }
 
-export type StateEnumerationMap = StringTMap<StateEnumeration[]>;
+export type StateEnumerationMap = Record<string, StateEnumeration[]>;

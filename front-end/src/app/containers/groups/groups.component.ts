@@ -6,20 +6,34 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { MaterialModule } from 'src/app/material';
 import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
-import { getEventMap, getGroupIdentifierMap, getShowGroupsSidemenu, getGroupMap, getGroups, getInformationTypeMap, getSelectedCollectionId, getSelectedGroup, getShowSidenav, getStates } from 'src/app/selectors';
-import { EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
+import {
+  getCommandMap,
+  getConstraintMap,
+  getEventMap,
+  getGroupIdentifierMap,
+  getShowGroupsSidemenu,
+  getGroupMap,
+  getGroups,
+  getInformationTypeMap,
+  getSelectedCollectionId,
+  getSelectedGroup,
+  getShowSidenav,
+  getStates
+} from 'src/app/selectors';
+import { CommandMap, ConstraintMap, EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'groups',
-  styleUrls: [ 'groups.component.css' ],
+  selector: 'sm-groups',
+  styleUrls: ['groups.component.css'],
   templateUrl: 'groups.component.html'
 })
 export class GroupsComponent implements OnDestroy {
+  public commandMap: CommandMap;
+  public constraintMap: ConstraintMap;
   public eventMap: EventMap;
   public group: Group;
   public groupIdentifierMap: IdentifierMap;
@@ -45,6 +59,14 @@ export class GroupsComponent implements OnDestroy {
     this.groupIdentifierMap = {};
 
     this.subscriptions.add(
+      this.store.pipe(select(getCommandMap)).subscribe(commandMap => {
+        this.commandMap = commandMap;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {
+        this.constraintMap = constraintMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
@@ -122,7 +144,7 @@ export class GroupsComponent implements OnDestroy {
   public onFileUpload(): void {
     this.store.dispatch(LayoutActions.openFileUploadDialog({
       collectionId: this.selectedCollectionId,
-      csvFormat: [ UploadConstants.groupCsvUploadFormat, UploadConstants.groupMappingCsvUploadFormat ],
+      csvFormat: [UploadConstants.groupCsvUploadFormat, UploadConstants.groupMappingCsvUploadFormat],
       dialogType: 'Group',
       jsonFormat: UploadConstants.groupJsonUploadFormat
     }));
@@ -131,7 +153,7 @@ export class GroupsComponent implements OnDestroy {
   public onGroupSelected(group?: Group): void {
     this.store.dispatch(GroupActions.setSelectedGroup({
       group
-    }))
+    }));
 
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
@@ -169,8 +191,7 @@ export class GroupsComponent implements OnDestroy {
   imports: [
     CommonModule,
     GroupsMenuModule,
-    GroupsSidenavModule,
-    MaterialModule
+    GroupsSidenavModule
   ]
 })
-export class GroupsModule {}
+export class GroupsModule { }

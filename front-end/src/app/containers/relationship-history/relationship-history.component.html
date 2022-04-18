@@ -1,13 +1,19 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Relationship History
-</mat-toolbar>
+<div class="page-toolbar">
+  <span class="st-typography-header">Relationship History</span>
+</div>
 
-<div class="relationship-history-content">
-  <app-relationships-table
-    [eventMap]="eventMap"
-    [history]="true"
-    [informationTypeMap]="informationTypeMap"
-    [relationshipMap]="relationshipHistoryMap"
-    [stateMap]="stateMap">
-  </app-relationships-table>
+<div class="content-container">
+  <div class="content">
+    <sm-relationships-table
+      [commandArgumentMap]="commandArgumentMap"
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
+      [eventMap]="eventMap"
+      [history]="true"
+      [informationTypeMap]="informationTypeMap"
+      [relationshipMap]="relationshipHistoryMap"
+      [stateEnumerationMap]="stateEnumerationMap"
+      [stateMap]="stateMap">
+    </sm-relationships-table>
+  </div>
 </div>

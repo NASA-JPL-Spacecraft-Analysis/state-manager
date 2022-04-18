@@ -3,7 +3,17 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Command, CommandArgument, CommandArgumentHistory, CommandArgumentResponse, CommandArgumentUpload, CommandHistory, CommandResponse, CommandsResponse, DeleteArgumentResponse } from './../models';
+import {
+  Command,
+  CommandArgument,
+  CommandArgumentHistory,
+  CommandArgumentResponse,
+  CommandArgumentUpload,
+  CommandHistory,
+  CommandResponse,
+  CommandsResponse,
+  DeleteArgumentResponse
+} from './../models';
 
 import * as gql from './gql/commands';
 
@@ -28,7 +38,8 @@ export class CommandService {
           editable: command.editable,
           externalLink: command.externalLink,
           identifier: command.identifier,
-          type: command.type
+          type: command.type,
+          version: command.version
         }
       })
       .pipe(map(({ data: { createCommand }}) => {
@@ -159,7 +170,8 @@ export class CommandService {
           externalLink: command.externalLink,
           id: command.id,
           identifier: command.identifier,
-          type: command.type
+          type: command.type,
+          version: command.version
         }
       })
       .pipe(map(({ data: { updateCommand }}) => {

@@ -1,35 +1,37 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Commands
+<div class="page-toolbar">
+  <span class="st-typography-header">Commands</span>
 
-  <div>
-    <button class="st-button" routerLink="../command-history">
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" routerLink="../command-history">
       Command History 
     </button>
 
-    <button class="st-button" routerLink="../command-argument-history">
+    <button class="st-button tertiary" routerLink="../command-argument-history">
       Command Argument History 
     </button>
 
-    <button class="st-button" (click)="onCommandFileUpload()">
+    <button class="st-button icon tertiary" (click)="onCommandFileUpload()">
+      <i class="si-upload"></i>
       Upload Commands
     </button>
 
-    <button class="st-button" (click)="onCommandArgumentFileUpload()">
+    <button class="st-button icon tertiary" (click)="onCommandArgumentFileUpload()">
+      <i class="si-upload"></i>
       Upload Command Arguments
     </button>
 
-    <button class="st-button tertiary" (click)="onModifyCommand()">
+    <button class="st-button primary" (click)="onModifyCommand()">
       Create New Command 
     </button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="content">
-    <command-table
+    <sm-command-table
       [commands]="commands"
       (commandSelected)="onModifyCommand($event)">
-    </command-table>
+    </sm-command-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">

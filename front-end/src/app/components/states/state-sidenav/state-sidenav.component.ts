@@ -26,7 +26,6 @@ export class StateSidenavComponent implements OnChanges {
   public form: FormGroup;
   public newState: State;
   public stateTypes = stateTypes;
-  public type: string;
 
   private duplicateIdentifier: boolean;
 
@@ -42,6 +41,7 @@ export class StateSidenavComponent implements OnChanges {
 
     if (!this.state) {
       this.newState = {
+        channelId: '',
         collectionId: this.collectionId,
         dataType: '',
         description: '',
@@ -51,10 +51,12 @@ export class StateSidenavComponent implements OnChanges {
         externalLink: '',
         id: undefined,
         identifier: '',
+        restricted: false,
         source: '',
         subsystem: '',
         type: '',
-        units: ''
+        units: '',
+        version: ''
       };
     } else {
       this.newState = {
@@ -65,10 +67,10 @@ export class StateSidenavComponent implements OnChanges {
       };
     }
 
-    this.type = this.newState.type;
     this.deletedEnumerationIds = [];
 
     this.form = new FormGroup({
+      channelId: new FormControl(this.newState.channelId),
       collectionId: new FormControl(this.newState.collectionId),
       dataType: new FormControl(this.newState.dataType),
       displayName: new FormControl(this.newState.displayName, [ Validators.required ]),
@@ -76,10 +78,12 @@ export class StateSidenavComponent implements OnChanges {
       externalLink: new FormControl(this.newState.externalLink),
       id: new FormControl(this.newState.id),
       identifier: new FormControl(this.newState.identifier, [ Validators.required ]),
+      restricted: new FormControl(this.newState.restricted, [ Validators.required ]),
       source: new FormControl(this.newState.source, [ Validators.required ]),
       subsystem: new FormControl(this.newState.subsystem, [ Validators.required ]),
       type: new FormControl(this.newState.type, [ Validators.required ]),
       units: new FormControl(this.newState.units, [ Validators.required ]),
+      version: new FormControl(this.newState.version)
     });
   }
 
@@ -108,8 +112,7 @@ export class StateSidenavComponent implements OnChanges {
         this.modifyState.emit({
           state: {
             ...this.form.value,
-            enumerations: this.newState.enumerations,
-            type: this.type
+            enumerations: this.newState.enumerations
           },
           deletedEnumerationIds: this.deletedEnumerationIds
         });

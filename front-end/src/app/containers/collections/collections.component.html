@@ -1,48 +1,37 @@
 <div class="collection-container">
   <div *ngIf="!editing">
-    <mat-form-field *ngIf="!deleting" class="collection-dropdown">
-      <mat-select [value]="selectedCollectionId" (selectionChange)="onCollectionChange($event.value)">
-        <mat-option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
-          <span *ngIf="collection.value.id == selectedCollectionId; else margin">
-            <mat-icon svgIcon="done"></mat-icon>
-          </span>
+    <div *ngIf="!deleting" class="collection-dropdown">
+      <select class="st-select"
+        [(ngModel)]="selectedCollectionId"
+        (ngModelChange)="onCollectionChange($event)">
 
-          <ng-template #margin>
-            <div class="margin"></div>
-          </ng-template>
 
-          {{collection.value.name}}
-        </mat-option>
-
-        <hr>
-
-        <mat-option class="action-text" (click)="onCreateNewCollection()">
-          <mat-icon svgIcon="add"></mat-icon>
-
+        <option value="create" class="action-text">
           Create a new collection
-        </mat-option>
+        </option>
 
-        <hr>
-
-        <mat-option class="action-text" (click)="onEditCollection()">
-          <mat-icon svgIcon="edit"></mat-icon>
-
+        <option value="edit" class="action-text">
           Edit name
-        </mat-option>
+        </option>
 
-        <mat-option class="action-text" (click)="onDeleteCollection()">
-          <mat-icon svgIcon="delete"></mat-icon>
-
+        <option value="delete" class="action-text">
           Delete collection
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </option>
+
+        <option disabled>──────────</option>
+        
+        <option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
+          {{collection.value.name}}
+        </option>
+
+      </select>
+    </div>
   </div>
 
   <div *ngIf="editing">
-    <app-collection-input
+    <sm-collection-input
       [focus]="editing"
       (collectionNameOutput)="onCollectionInputOutput($event)">
-    </app-collection-input>
+    </sm-collection-input>
   </div>
 </div>

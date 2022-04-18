@@ -1,68 +1,72 @@
 <div class="sidenav-container">
   <div class="sidenav-header">
-    <span>Event</span>
+    <span class="st-typography-header">Event Details</span>
 
     <button class="st-button icon tertiary" (click)="onCancel()">
       <i class="si si-close"></i>
     </button>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div *ngIf="eventIdentifierMap !== null">
-      <app-identifier-form
-        [originalIdentifier]="originalIdentifier"
-        [identifierMap]="eventIdentifierMap"
-        [id]="newEvent.id"
-        [type]="type"
-        (duplicateIdentifier)="onDuplicateIdentifier($event)"
-        (identifierEmitter)="onIdentifierChange($event)">
-      </app-identifier-form>
+  <div class="sidenav-content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngIf="eventIdentifierMap !== null">
+        <app-identifier-form
+          [originalIdentifier]="newEvent.identifier"
+          [identifierMap]="eventIdentifierMap"
+          [id]="newEvent.id"
+          [type]="form.value.type"
+          (duplicateIdentifier)="onDuplicateIdentifier($event)"
+          (identifierEmitter)="onIdentifierChange($event)"
+        >
+        </app-identifier-form>
 
-      <mat-form-field class="hidden">
-        <input matInput
-          type="number"
-          formControlName="collectionId"
-          required
-        />
-      </mat-form-field>
+        <input class="hidden" type="number" formControlName="collectionId" required />
 
-      <mat-form-field appearance="outline">
-        <mat-label>Display Name</mat-label>
-        <input matInput
+        <label for="Display Name">Display Name</label>
+        <input
+          class="st-input"
           placeholder="Display Name"
+          name="Display Name"
           type="text"
           formControlName="displayName"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <textarea matInput
-          placeholder="Description"
-          formControlName="description"></textarea>
-      </mat-form-field>
+        <label for="Description">Description</label>
+        <textarea class="st-input" placeholder="Description" formControlName="description">
+        </textarea>
 
-      <mat-form-field appearance="outline">
-        <mat-label>External Link</mat-label>
-        <input matInput
+        <!--<label for="External Link">External Link</label>
+        <input class="st-input"
           placeholder="External Link"
+          name="External Link"
           type="text"
           formControlName="externalLink"
+        />-->
+
+        <label for="Version">Version</label>
+        <input
+          class="st-input"
+          placeholder="Version"
+          name="Version"
+          type="text"
+          formControlName="version"
+          required
         />
-      </mat-form-field>
 
-      <mat-form-field>
-        <mat-select placeholder="Event Type" [(value)]="type">
-          <mat-option *ngFor="let eventType of eventTypes" [value]="eventType">
-            {{eventType}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+        <label for="Event Type">Event Type</label>
+        <select class="st-select" placeholder="Event Type" formControlName="type">
+          <option *ngFor="let eventType of eventTypes" [value]="eventType">
+            {{ eventType }}
+          </option>
+        </select>
+      </div>
+    </form>
+  </div>
 
-    <div class="sidenav-actions">
-      <button class="st-button large" type="submit">Save</button>
-    </div>
-  </form>
+  <div class="sidenav-footer">
+    <button class="st-button secondary" (click)="onCancel()">Cancel</button>
+
+    <button class="st-button" (click)="onSubmit()">Save Event</button>
+  </div>
 </div>

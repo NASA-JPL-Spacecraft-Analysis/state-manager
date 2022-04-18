@@ -42,7 +42,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedCommandArguments ]) => ({
+      map(([collectionId, parsedCommandArguments]) => ({
         collectionId,
         parsedCommandArguments
       })),
@@ -105,7 +105,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedCommands ]) => ({
+      map(([collectionId, parsedCommands]) => ({
         collectionId,
         parsedCommands
       })),
@@ -168,7 +168,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedConstraints ]) => ({
+      map(([collectionId, parsedConstraints]) => ({
         collectionId,
         parsedConstraints
       })),
@@ -191,7 +191,7 @@ export class FileUploadEffects {
           return concat(
             this.constraintService.createConstraints(
               collectionId,
-              constraints 
+              constraints
             ).pipe(
               switchMap((createConstraints: ConstraintsResponse) => [
                 FileUploadActions.uploadConstraintsSuccess({
@@ -231,7 +231,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedInformationTypes ]) => ({
+      map(([collectionId, parsedInformationTypes]) => ({
         collectionId,
         parsedInformationTypes
       })),
@@ -290,7 +290,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedEvents ]) => ({
+      map(([collectionId, parsedEvents]) => ({
         collectionId,
         parsedEvents
       })),
@@ -340,8 +340,8 @@ export class FileUploadEffects {
     )
   );
 
-  public uploadGroups = createEffect(() => {
-    return this.actions.pipe(
+  public uploadGroups = createEffect(() =>
+    this.actions.pipe(
       ofType(FileUploadActions.uploadGroups),
       switchMap(({ file, collectionId }) =>
         forkJoin([
@@ -349,7 +349,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedGroups ]) => ({
+      map(([collectionId, parsedGroups]) => ({
         collectionId,
         parsedGroups
       })),
@@ -374,7 +374,7 @@ export class FileUploadEffects {
             if (this.validationService.isMappingsUpload(mappingsUpload)) {
               return this.groupMappingsCsvUpload(collectionId, parsedGroups as MappingsUpload[]);
             }
-            
+
             if (this.validationService.isGroupUpload(groupUpload)) {
               groups.push({
                 identifier: groupUpload.identifier,
@@ -422,8 +422,8 @@ export class FileUploadEffects {
           this.throwFileParseError(parsedGroups)
         ];
       })
-    );
-  });
+    )
+  );
 
   public uploadRelationship = createEffect(() =>
     this.actions.pipe(
@@ -434,7 +434,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedRelationships ]) => ({
+      map(([collectionId, parsedRelationships]) => ({
         collectionId,
         parsedRelationships
       })),
@@ -493,7 +493,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedStateEnumerations ]) => ({
+      map(([collectionId, parsedStateEnumerations]) => ({
         collectionId,
         parsedStateEnumerations
       })),
@@ -552,7 +552,7 @@ export class FileUploadEffects {
           this.parseService.parseFile(file)
         ])
       ),
-      map(([ collectionId, parsedStates  ]) => ({
+      map(([collectionId, parsedStates]) => ({
         collectionId,
         parsedStates
       })),
@@ -561,6 +561,12 @@ export class FileUploadEffects {
 
         if (Array.isArray(states) && states.length > 0) {
           for (const state of states) {
+            if (String(state.restricted).toUpperCase() === 'TRUE') {
+              state.restricted = true;
+            } else {
+              state.restricted = false;
+            }
+
             // Validate each parsed state, if we come across anything invalid return null so we can error.
             if (!this.validationService.validateState(state)) {
               return [
@@ -617,7 +623,7 @@ export class FileUploadEffects {
     private stateService: StateService,
     private relationshipService: RelationshipService,
     private validationService: ValidationService
-  ) {}
+  ) { }
 
   private groupMappingsCsvUpload(collectionId: string, mappingsUpload: MappingsUpload[]): Observable<Action> {
     for (const mapping of mappingsUpload) {

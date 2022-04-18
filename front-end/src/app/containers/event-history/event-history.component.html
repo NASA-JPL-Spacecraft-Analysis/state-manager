@@ -1,10 +1,12 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Event History
-</mat-toolbar>
+<div class="page-toolbar">
+  <span class="st-typography-header">Event History</span>
+</div>
 
-<div class="event-history-content">
-  <app-event-table
-    [eventMap]="eventHistoryMap"
-    [history]="true">
-  </app-event-table>
+<div class="content-container">
+  <div class="content">
+    <sm-event-table
+      [eventMap]="eventHistoryMap"
+      [history]="true">
+    </sm-event-table>
+  </div>
 </div>

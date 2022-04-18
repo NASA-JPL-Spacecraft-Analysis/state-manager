@@ -9,6 +9,7 @@ export const CREATE_CONSTRAINT = gql(`
     $externalLink: String
     $identifier: String!
     $type: String!
+    $version: String
   ) {
     createConstraint(
       data: {
@@ -19,6 +20,7 @@ export const CREATE_CONSTRAINT = gql(`
         externalLink: $externalLink
         identifier: $identifier
         type: $type
+        version: $version
       }
     ) {
       constraint {
@@ -30,6 +32,7 @@ export const CREATE_CONSTRAINT = gql(`
         id
         identifier
         type
+        version
       }
       message
       success
@@ -57,6 +60,7 @@ export const CREATE_CONSTRAINTS = gql(`
         id
         identifier
         type
+        version
       }
       message
       success
@@ -77,6 +81,7 @@ export const GET_CONSTRAINT_HISTORY = gql(`
       identifier
       type
       updated
+      version
     }
   }
 `);
@@ -92,6 +97,7 @@ export const GET_CONSTRAINTS = gql(`
       id
       identifier
       type
+      version
     }
   }
 `);
@@ -105,6 +111,7 @@ export const UPDATE_CONSTRAINT = gql(`
     $id: ID!
     $identifier: String!
     $type: String!
+    $version: String
   ) {
     updateConstraint(
       data: {
@@ -115,6 +122,7 @@ export const UPDATE_CONSTRAINT = gql(`
         id: $id
         identifier: $identifier
         type: $type
+        version: $version
       }
     ) {
       constraint {
@@ -126,6 +134,7 @@ export const UPDATE_CONSTRAINT = gql(`
         id
         identifier
         type
+        version
       }
       message
       success

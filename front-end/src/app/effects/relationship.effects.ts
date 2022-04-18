@@ -136,7 +136,7 @@ export class RelationshipEffects {
         )
       );
     } else {
-      this.relationshipService.getRelationshipHistory(
+      return this.relationshipService.getRelationshipHistory(
         collectionId
       ).pipe(
         map(relationshipHistory => RelationshipActions.setRelationshipHistory({

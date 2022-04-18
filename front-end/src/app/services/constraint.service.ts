@@ -27,7 +27,8 @@ export class ConstraintService {
           editable: constraint.editable,
           externalLink: constraint.externalLink,
           identifier: constraint.identifier,
-          type: constraint.type
+          type: constraint.type,
+          version: constraint.version
         }
       })
       .pipe(map(({ data: { createConstraint }}) => {
@@ -95,7 +96,8 @@ export class ConstraintService {
           externalLink: constraint.externalLink,
           id: constraint.id,
           identifier: constraint.identifier,
-          type: constraint.type
+          type: constraint.type,
+          version: constraint.version
         }
       })
       .pipe(map(({ data: { updateConstraint }}) => {

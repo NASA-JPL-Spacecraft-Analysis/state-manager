@@ -24,4 +24,7 @@ export class CreateEventInput implements Partial<Event> {
 
   @Field()
   public type!: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }

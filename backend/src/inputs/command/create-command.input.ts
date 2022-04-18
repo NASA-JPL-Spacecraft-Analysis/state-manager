@@ -24,4 +24,7 @@ export class CreateCommandInput {
 
   @Field()
   public identifier!: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }

@@ -9,7 +9,8 @@ export const mockCommand: Command = {
   externalLink: 'http://mock-command.com',
   id: '1',
   identifier: 'MOCK_COMMAND',
-  type: 'command'
+  type: 'command',
+  version: ''
 };
 
 export const mockCommandArgument: CommandArgument = {
@@ -29,7 +30,8 @@ export const mockCommandWithArgument: Command = {
   externalLink: 'http://mock-command.com',
   id: '2',
   identifier: 'MOCK_COMMAND_WITH_ARGUMENT',
-  type: 'command'
+  type: 'command',
+  version: ''
 };
 
 export const mockCommandHistory: CommandHistory[] = [

@@ -9,6 +9,7 @@ export const CREATE_EVENT = gql(`
     $externalLink: String
     $identifier: String!
     $type: String!
+    $version: String
   ) {
     createEvent(
       data: {
@@ -19,6 +20,7 @@ export const CREATE_EVENT = gql(`
         externalLink: $externalLink
         identifier: $identifier
         type: $type
+        version: $version
       }
     ) {
       event {
@@ -30,6 +32,7 @@ export const CREATE_EVENT = gql(`
         id
         identifier
         type
+        version
       }
       message
       success
@@ -56,6 +59,7 @@ export const CREATE_EVENTS = gql(`
         id
         identifier
         type
+        version
       }
       message
       success
@@ -87,6 +91,7 @@ export const GET_EVENTS = gql(`
       id
       identifier
       type
+      version
     }
   }
 `);
@@ -104,6 +109,7 @@ export const GET_EVENT_HISTORY = gql(`
       identifier
       type
       updated
+      version
     }
   }
 `);
@@ -117,6 +123,7 @@ export const UPDATE_EVENT = gql(`
     $id: ID!
     $identifier: String!
     $type: String!
+    $version: String
   ) {
     updateEvent(
       data: {
@@ -127,6 +134,7 @@ export const UPDATE_EVENT = gql(`
         id: $id
         identifier: $identifier
         type: $type
+        version: $version
       }
     ) {
       event {
@@ -138,6 +146,7 @@ export const UPDATE_EVENT = gql(`
         id
         identifier
         type
+        version
       }
       message
       success

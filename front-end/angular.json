@@ -8,7 +8,7 @@
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "sm",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -35,8 +35,13 @@
               "src/styles.css",
               "node_modules/ngx-toastr/toastr.css",
               "src/clipper-stellar.css",
-              "node_modules/@gov.nasa.jpl.stellar/icons/font/stellar-icons.css",
-              "node_modules/@gov.nasa.jpl.stellar/stellar/css/button.css"
+              "node_modules/@nasa-jpl/stellar/icons/stellar-icons.css",
+              "node_modules/@nasa-jpl/stellar/css/button.css",
+              "node_modules/@nasa-jpl/stellar/css/input.css",
+              "node_modules/@nasa-jpl/stellar/css/select.css",
+              "node_modules/@nasa-jpl/stellar/css/table.css",
+              "node_modules/@nasa-jpl/stellar/css/typography.css",
+              "node_modules/@nasa-jpl/stellar/font/inter/inter.css"
             ],
             "scripts": []
           },

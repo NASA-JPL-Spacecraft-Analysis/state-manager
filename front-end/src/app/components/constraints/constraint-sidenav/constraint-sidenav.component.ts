@@ -2,14 +2,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { MaterialModule } from 'src/app/material';
 import { Constraint, constraintTypes, IdentifierMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'constraint-sidenav',
-  styleUrls: [ 'constraint-sidenav.component.css' ],
+  selector: 'sm-constraint-sidenav',
+  styleUrls: ['constraint-sidenav.component.css'],
   templateUrl: 'constraint-sidenav.component.html'
 })
 export class ConstraintSidenavComponent implements OnChanges {
@@ -22,8 +21,6 @@ export class ConstraintSidenavComponent implements OnChanges {
   public constraintTypes = constraintTypes;
   public form: FormGroup;
   public newConstraint: Constraint;
-  public originalIdentifier: string;
-  public selectedType: string;
 
   private isDuplicateIdentifier: boolean;
 
@@ -42,16 +39,14 @@ export class ConstraintSidenavComponent implements OnChanges {
         externalLink: '',
         id: undefined,
         identifier: '',
-        type: ''
+        type: '',
+        version: '',
       };
     } else {
       this.newConstraint = {
         ...this.constraint
       };
     }
-
-    this.originalIdentifier = this.newConstraint.identifier;
-    this.selectedType = this.newConstraint.type;
 
     this.form = new FormGroup({
       collectionId: new FormControl(this.newConstraint.collectionId),
@@ -60,8 +55,9 @@ export class ConstraintSidenavComponent implements OnChanges {
       editable: new FormControl(this.newConstraint.editable),
       externalLink: new FormControl(this.newConstraint.externalLink),
       id: new FormControl(this.newConstraint.id),
-      identifier: new FormControl(this.newConstraint.identifier),
-      type: new FormControl(this.selectedType, [ Validators.required ])
+      identifier: new FormControl(this.newConstraint.identifier, [Validators.required]),
+      type: new FormControl(this.newConstraint.type, [Validators.required]),
+      version: new FormControl(this.newConstraint.version)
     });
   }
 
@@ -80,8 +76,6 @@ export class ConstraintSidenavComponent implements OnChanges {
 
   public onSubmit(): void {
     if (!this.isDuplicateIdentifier) {
-      this.form.value.type = this.selectedType;
-
       this.modifyConstraint.emit(this.form.value);
     } else {
       this.duplicateIdentifier.emit(true);
@@ -100,8 +94,7 @@ export class ConstraintSidenavComponent implements OnChanges {
     CommonModule,
     FormsModule,
     IdentifierFormModule,
-    MaterialModule,
     ReactiveFormsModule
   ]
 })
-export class ConstraintSidenavModule {}
+export class ConstraintSidenavModule { }

@@ -6,6 +6,7 @@ Table of Contents
 4. Tables
 5. Sidenav
 6. Toolbar
+7. Global
 **************/
 
 /**************
@@ -14,6 +15,18 @@ Table of Contents
 
 html, body, main {
   height: 100%;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: var(--st-gray-10);
 }
 
 .hidden {
@@ -35,6 +48,10 @@ body {
 
 /* Angular Material Global Overwrites */
 
+.mat-form-field-infix {
+  border: none;
+}
+
 .mat-form-field {
   display: flex;
   width: 100%;
@@ -46,7 +63,9 @@ body {
 
 /* Global Styles */
 .content {
-  flex-grow: 1;
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: 78%;
 }
 
 .content-container {
@@ -74,19 +93,16 @@ body {
 **************/
 
 table {
+  background-color: white;;
   width: 100%;
 }
 
-.table-row {
+table tbody tr {
   cursor: pointer;
 }
 
-.history .table-row {
+.history tbody tr {
   cursor: default;
-}
-
-td.mat-cell:first-of-type{
-  font-weight: bold;
 }
 
 /**************
@@ -94,14 +110,54 @@ td.mat-cell:first-of-type{
 **************/
 
 .sidenav {
-  width: 25%;
+  flex-basis: 20%; 
+  flex-grow: 1;
 }
 
-.sidenav-header {
+.sidenav-container {
+  background: white;
+  border: 1px solid var(--st-gray-20);
+}
+
+.sidenav-container input, .sidenav-container select, .sidenav-container textarea {
+  min-width: 100% !important;
+}
+
+.sidenav-container label {
+  color: var(--st-gray-60);
+  display: inline-block;
+  font-size: .75em;
+  margin-bottom: .75em;
+  margin-top: 3em;
+}
+
+.sidenav-content {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.sidenav-footer {
+  border-bottom: 0 !important;
+  margin-top: 3em;
+  justify-content: flex-end !important;
+}
+
+.sidenav-footer button {
+  margin-left: .5em;
+}
+
+.sidenav-header, .sidenav-footer {
+  align-items: center;
+  background-color: var(--st-gray-10);
+  border-bottom: 1px solid var(--st-gray-20);
   display: flex;
-  font-size: 1.5em;
+  height: 2.75em;
   justify-content: space-between;
-  padding-bottom: 1em;
+  padding: 0em 1em;
+}
+
+.sidenav-header button {
+  font-size: 2em;
 }
 
 .sidenav-actions {
@@ -124,8 +180,32 @@ td.mat-cell:first-of-type{
   padding-bottom: 0;
 }
 
-.mat-toolbar .mat-form-field-infix {
-  border-top-width: 0px;
+.page-toolbar {
+  align-items: center;
+  background-color: var(--st-gray-10);
+  border-bottom: 1px solid var(--st-gray-20);
+  box-shadow: 0px 1px 0px #E8ECF0;
+  display: flex;
+  height: 48px;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.page-toolbar-buttons {
+  display: flex;
+}
+
+.page-toolbar-buttons button.icon {
+  padding: 8px;
+}
+
+.page-toolbar-buttons button:not(:last-child) {
+  margin-right: 24px;
+}
+
+.page-toolbar-buttons i {
+  font-size: 16px;
+  margin-right: 6px;
 }
 
 /**************
@@ -143,4 +223,20 @@ td.mat-cell:first-of-type{
   letter-spacing: 0.04em;
   line-height: 16px;
   padding: 15px;
+}
+
+/**************
+8. Global
+**************/
+
+button > i {
+  font-size: 24px;
+}
+
+.error {
+  color: var(--st-red);
+}
+
+.success {
+  color: var(--st-green);
 }

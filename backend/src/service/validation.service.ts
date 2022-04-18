@@ -9,7 +9,7 @@ import { IdentifierType, Relationship } from '../models';
 export class ValidationService {
   constructor(
     private readonly groupService: GroupService
-  ) {}
+  ) { }
 
   /**
    * Checks all of a collections groups and relationships to see if the items can be deleted.

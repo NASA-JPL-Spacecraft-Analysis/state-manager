@@ -3,21 +3,33 @@ import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 import { MaterialModule } from 'src/app/material';
-import { EventMap, Group, GroupMap, GroupItemType, GroupMapping, IdentifierMap, InformationTypeMap, StateMap, StringTMap } from 'src/app/models';
+import {
+  EventMap,
+  Group,
+  GroupMap,
+  GroupItemType,
+  GroupMapping,
+  IdentifierMap,
+  InformationTypeMap,
+  StateMap,
+  CommandMap,
+  ConstraintMap
+} from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { GroupItemSelectorModule } from '../group-item-selector/group-item-selector.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'groups-sidenav',
-  styleUrls: [ 'groups-sidenav.component.css' ],
+  selector: 'sm-groups-sidenav',
+  styleUrls: ['groups-sidenav.component.css'],
   templateUrl: 'groups-sidenav.component.html'
 })
 export class GroupsSidenavComponent implements OnChanges {
+  @Input() public commandMap: CommandMap;
+  @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public group: Group;
   @Input() public groupMap: GroupMap;
@@ -54,6 +66,8 @@ export class GroupsSidenavComponent implements OnChanges {
     this.collectionItems = [];
     this.selectedItems = [];
 
+    this.addToCollectionItems(this.commandMap);
+    this.addToCollectionItems(this.constraintMap);
     this.addToCollectionItems(this.eventMap);
     this.addToCollectionItems(this.groupMap);
     this.addToCollectionItems(this.informationTypeMap);
@@ -94,8 +108,8 @@ export class GroupsSidenavComponent implements OnChanges {
     this.originalGroupIdentifier = this.newGroup.identifier;
 
     this.formGroup = new FormGroup({
-      identifier: new FormControl(this.newGroup.identifier, [ Validators.required ]),
-      groupMappings: new FormControl(this.newGroup.groupMappings, [ Validators.required ])
+      identifier: new FormControl(this.newGroup.identifier, [Validators.required]),
+      groupMappings: new FormControl(this.newGroup.groupMappings, [Validators.required])
     });
   }
 
@@ -113,8 +127,9 @@ export class GroupsSidenavComponent implements OnChanges {
   }
 
   /**
-   * When an item is selected, add it to the groupItemMap and remove it 
+   * When an item is selected, add it to the groupItemMap and remove it
    * from the collectionItems list.
+   *
    * @param groupItemList The list of items that the user has selected.
    */
   public onItemSelect(groupItemList: GroupItemType[]): void {
@@ -166,9 +181,10 @@ export class GroupsSidenavComponent implements OnChanges {
   /**
    * Populate a list of all of the valid items that can be added to a group.
    * This list contains events, information types, and states.
+   *
    * @param itemMap The map of items for a given type.
    */
-  private addToCollectionItems(itemMap: StringTMap<GroupItemType>): void {
+  private addToCollectionItems(itemMap: Record<string, GroupItemType>): void {
     if (itemMap) {
       for (const item of Object.keys(itemMap)) {
         this.collectionItems.push(itemMap[item]);
@@ -201,4 +217,4 @@ export class GroupsSidenavComponent implements OnChanges {
     ReactiveFormsModule
   ]
 })
-export class GroupsSidenavModule {}
+export class GroupsSidenavModule { }

@@ -4,6 +4,9 @@ import { ModifyStateEnumeration } from './modify-state-enumeration.input';
 
 @InputType()
 export class CreateStateInput {
+  @Field({ nullable: true })
+  public channelId?: string;
+
   @Field(() => ID, { nullable: true })
   public collectionId: string;
 
@@ -25,6 +28,9 @@ export class CreateStateInput {
   @Field()
   public identifier!: string;
 
+  @Field()
+  public restricted!: boolean;
+
   @Field({ nullable: true })
   public source?: string;
 
@@ -36,4 +42,7 @@ export class CreateStateInput {
 
   @Field({ nullable: true })
   public units?: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }
