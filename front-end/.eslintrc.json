@@ -20,6 +20,10 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
+        "indent": "off",
+        "@typescript-eslint/indent": [
+          "off"
+        ],
         "@angular-eslint/component-selector": [
           "error",
           {
@@ -46,7 +50,9 @@
           "error",
           {
             "selector": "enumMember",
-            "format": [ "PascalCase" ]
+            "format": [
+              "PascalCase"
+            ]
           }
         ],
         "@typescript-eslint/no-shadow": "error",

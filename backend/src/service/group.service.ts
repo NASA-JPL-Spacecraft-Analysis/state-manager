@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server';
 import { Service } from 'typedi';
 
 import { ErrorConstants } from '../constants';
-import { Event, Group, GroupMapping, GroupMappingUnion, GroupType, InformationType, State } from '../models';
+import { Command, Constraint, Event, Group, GroupMapping, GroupMappingUnion, GroupType, InformationType, State } from '../models';
 
 @Service()
 export class GroupService {
@@ -11,38 +11,54 @@ export class GroupService {
     let item: GroupType | undefined;
 
     switch (type) {
-    case Event.name:
-      item = await Event.findOne({
-        where: {
-          collectionId,
-          identifier
-        }
-      });
-      break;
-    case Group.name:
-      item = await Group.findOne({
-        where: {
-          collectionId,
-          identifier
-        }
-      });
-      break;
-    case InformationType.name:
-      item = await InformationType.findOne({
-        where: {
-          collectionId,
-          identifier
-        }
-      });
-      break;
-    case State.name:
-      item = await State.findOne({
-        where: {
-          collectionId,
-          identifier
-        }
-      });
-      break;
+      case Command.name:
+        item = await Command.findOne({
+          where: {
+            collectionId,
+            identifier
+          }
+        });
+        break;
+      case Constraint.name:
+        item = await Constraint.findOne({
+          where: {
+            collectionId,
+            identifier
+          }
+        });
+        break;
+      case Event.name:
+        item = await Event.findOne({
+          where: {
+            collectionId,
+            identifier
+          }
+        });
+        break;
+      case Group.name:
+        item = await Group.findOne({
+          where: {
+            collectionId,
+            identifier
+          }
+        });
+        break;
+      case InformationType.name:
+        item = await InformationType.findOne({
+          where: {
+            collectionId,
+            identifier
+          }
+        });
+        break;
+      case State.name:
+        item = await State.findOne({
+          where: {
+            collectionId,
+            identifier
+          }
+        });
+        break;
     }
 
 
@@ -85,25 +101,37 @@ export class GroupService {
   }
 
   public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof GroupMappingUnion | undefined> {
-    const event = await Event.findOne({ where: { id: groupMapping.itemId }});
+    const command = await Command.findOne({ where: { id: groupMapping.itemId } });
+
+    if (command) {
+      return command;
+    }
+
+    const constraint = await Constraint.findOne({ where: { id: groupMapping.itemId } });
+
+    if (constraint) {
+      return constraint;
+    }
+
+    const event = await Event.findOne({ where: { id: groupMapping.itemId } });
 
     if (event) {
       return event;
     }
 
-    const group = await Group.findOne({ where: { id: groupMapping.itemId }});
+    const group = await Group.findOne({ where: { id: groupMapping.itemId } });
 
     if (group) {
       return group;
     }
 
-    const informationType = await InformationType.findOne({ where: { id: groupMapping.itemId }});
+    const informationType = await InformationType.findOne({ where: { id: groupMapping.itemId } });
 
     if (informationType) {
       return informationType;
     }
 
-    const state = await State.findOne({ where: { id: groupMapping.itemId }});
+    const state = await State.findOne({ where: { id: groupMapping.itemId } });
 
     if (state) {
       return state;

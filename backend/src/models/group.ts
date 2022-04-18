@@ -1,5 +1,7 @@
 import { createUnionType, Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
+import { Command } from './command';
+import { Constraint } from './constraint';
 
 import { Event } from './event';
 import { GroupMapping } from './group-mapping';
@@ -22,15 +24,13 @@ export class Group extends Node {
   @Field()
   public identifier!: string;
 
-  @Field(() => [ GroupMapping ])
+  @Field(() => [GroupMapping])
   public groupMappings: GroupMapping[];
 }
 
-/**
- * TODO: This type should support Commands and Constraints as well. The
- * front-end should be updated as well to reflect that.
- */
 export type GroupType =
+  Command |
+  Constraint |
   Event |
   Group |
   InformationType |
@@ -38,8 +38,16 @@ export type GroupType =
 
 export const GroupMappingUnion = createUnionType({
   name: 'GroupMappingUnion',
-  types: () => [ Event, Group, InformationType, State ] as const,
+  types: () => [Command, Constraint, Event, Group, InformationType, State] as const,
   resolveType: value => {
+    if (value instanceof Command) {
+      return Command;
+    }
+
+    if (value instanceof Constraint) {
+      return Constraint;
+    }
+
     if (value instanceof Event) {
       return Event;
     }

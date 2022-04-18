@@ -5,7 +5,7 @@ import { CollectionIdArgs, IdArgs } from '../args';
 import { CollectionConstants, GroupConstants } from '../constants';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
-import { Collection, Group, GroupMapping, GroupMappingUnion } from '../models';
+import { Collection, Group, GroupMapping } from '../models';
 import { DeleteItemsResponse, GroupResponse, GroupsResponse, Response } from '../responses';
 import { GroupService } from '../service';
 
@@ -13,14 +13,14 @@ import { GroupService } from '../service';
 export class GroupResolver implements ResolverInterface<Group> {
   constructor(
     private readonly groupService: GroupService
-  ) {}
+  ) { }
 
   @Mutation(() => GroupResponse)
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<GroupResponse> {
     try {
       const group = Group.create(data);
 
-      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
+      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [group.identifier]);
 
       await group.save();
 
@@ -169,7 +169,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     return this.groupService.getGroupMappings(group.id);
   }
 
-  @Query(() => [ Group ])
+  @Query(() => [Group])
   public groups(@Args() { collectionId }: CollectionIdArgs): Promise<Group[]> {
     return this.findGroupsByCollectionId(collectionId);
   }
@@ -190,7 +190,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       Object.assign(group, data);
 
-      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
+      void this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [group.identifier]);
 
       await group.save();
 

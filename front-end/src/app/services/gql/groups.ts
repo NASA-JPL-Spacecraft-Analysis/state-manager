@@ -16,6 +16,20 @@ export const CREATE_GROUP = gql(`
       group {
         groupMappings {
           item {
+            ... on Command {
+              description
+              displayName
+              externalLink
+              id
+              identifier
+            }
+            ... on Constraint {
+              description
+              displayName
+              externalLink
+              id
+              identifier
+            }
             ... on Event {
               description
               displayName
@@ -75,6 +89,20 @@ export const CREATE_GROUP_MAPPINGS = gql(`
       groupMappings {
         groupId
         item {
+          ... on Command {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
+          ... on Constraint {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
           ... on Event {
             description
             displayName
@@ -131,6 +159,20 @@ export const CREATE_GROUPS = gql(`
       groups {
         groupMappings {
           item {
+            ... on Command {
+              description
+              displayName
+              externalLink
+              id
+              identifier
+            }
+            ... on Constraint {
+              description
+              displayName
+              externalLink
+              id
+              identifier
+            }
             ... on Event {
               description
               displayName
@@ -197,6 +239,20 @@ export const GET_GROUPS_AND_MAPPINGS = gql(`
       identifier
       groupMappings {
         item {
+          ... on Command {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
+          ... on Constraint {
+            description
+            displayName
+            externalLink
+            id
+            identifier
+          }
           ... on Event {
             description
             displayName
@@ -255,6 +311,20 @@ export const UPDATE_GROUP = gql(`
       group {
         groupMappings {
           item {
+            ... on Command {
+              description
+              displayName
+              externalLink
+              id
+              identifier
+            }
+            ... on Constraint {
+              description
+              displayName
+              externalLink
+              id
+              identifier
+            }
             ... on Event {
               description
               displayName
