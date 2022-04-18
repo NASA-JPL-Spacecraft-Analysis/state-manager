@@ -95,9 +95,13 @@ export class GroupService {
 
     const groupIds = groups.map((group) => group.id);
 
-    return GroupMapping.createQueryBuilder('groupMapping')
-      .where('groupMapping.groupId in (:...groupIds)', { groupIds })
-      .getMany();
+    if (groupIds.length > 0) {
+      return GroupMapping.createQueryBuilder('groupMapping')
+        .where('groupMapping.groupId in (:...groupIds)', { groupIds })
+        .getMany();
+    }
+
+    return [];
   }
 
   public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof GroupMappingUnion | undefined> {

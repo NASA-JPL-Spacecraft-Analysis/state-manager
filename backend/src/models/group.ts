@@ -1,8 +1,8 @@
 import { createUnionType, Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
+
 import { Command } from './command';
 import { Constraint } from './constraint';
-
 import { Event } from './event';
 import { GroupMapping } from './group-mapping';
 import { InformationType } from './information-type';

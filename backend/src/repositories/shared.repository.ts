@@ -175,9 +175,12 @@ export class SharedRepository<T extends IdentifierType> extends Repository<T> {
 
     for (const item of items) {
       deletedIds.push(item.id);
-
-      await item.remove();
     }
+
+    void this.createQueryBuilder()
+      .delete()
+      .where('id IN (:...ids)', { ids: deletedIds })
+      .execute();
 
     return deletedIds;
   }
