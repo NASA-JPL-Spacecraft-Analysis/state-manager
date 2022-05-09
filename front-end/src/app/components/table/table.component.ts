@@ -4,7 +4,7 @@ import { startCase } from 'lodash';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: [ 'table.component.css' ],
+  styleUrls: ['table.component.css'],
   templateUrl: 'table.component.html'
 })
 export class TableComponent<T> implements OnChanges {
@@ -14,6 +14,7 @@ export class TableComponent<T> implements OnChanges {
   // Column names that match the type's property names.
   public columns: string[] = [];
   public historyTable: boolean;
+  public filteredRows: T[] = [];
   public page = 1;
   // The paginated data.
   public paginatedRows: T[] = [];
@@ -26,13 +27,14 @@ export class TableComponent<T> implements OnChanges {
       this.rows = [];
     }
 
+    this.filteredRows = this.rows;
     this.columnFilters = new Map();
 
-    this.maxPages = Math.ceil(this.rows.length / this.MAX_ENTRIES_PER_PAGE);
+    this.calculateMaxPages(this.rows);
 
     if (this.rows.length > this.MAX_ENTRIES_PER_PAGE) {
       // If we have more entries than the max we need to paginate.
-      this.pageChange(this.page);
+      this.pageChange(this.page, this.rows);
     } else {
       // No need to paginate.
       this.paginatedRows = this.rows;
@@ -51,7 +53,7 @@ export class TableComponent<T> implements OnChanges {
     }
   }
 
-  public filterData(event: KeyboardEvent, column: string): void {
+  public async filterData(event: KeyboardEvent, column: string): Promise<void> {
     const filterValue = (event.target as HTMLInputElement).value;
 
     // The user has deleted the filter, so remove it from the map.
@@ -64,17 +66,29 @@ export class TableComponent<T> implements OnChanges {
     // Only try and filter if the user has defined them / hasn't deleted them all.
     if (this.columnFilters.size !== 0) {
       // Keep track of the current filter value for each column.
-      const filteredItems = [];
+      this.filteredRows = [];
 
       for (const item of this.rows) {
         if (this.matchFilters(item)) {
-          filteredItems.push(item);
+          this.filteredRows.push(item);
         }
       }
 
-      this.paginatedRows = filteredItems;
+      if (this.filteredRows.length === 0) {
+        // If we filtered out all our results, display things accordingly.
+        this.paginatedRows = [];
+        this.maxPages = 0;
+        this.page = 0;
+      } else {
+        this.calculateMaxPages(this.filteredRows);
+
+        // When we filter, always move back to the first page.
+        this.pageChange(1, this.filteredRows);
+      }
     } else {
-      this.pageChange(this.page);
+      this.calculateMaxPages(this.rows);
+
+      this.pageChange(this.page, this.rows);
     }
   }
 
@@ -93,13 +107,13 @@ export class TableComponent<T> implements OnChanges {
    *
    * @param row The item that was clicked on.
    */
-  public onRowClick(row: T) {}
+  public onRowClick(row: T) { }
 
-  public pageChange(newPage: number): void {
+  public pageChange(newPage: number, rows: T[]): void {
     if (newPage > 0 && newPage <= this.maxPages) {
       this.page = newPage;
 
-      this.paginatedRows = this.rows.slice(
+      this.paginatedRows = rows.slice(
         (this.page - 1) * this.MAX_ENTRIES_PER_PAGE, this.page * this.MAX_ENTRIES_PER_PAGE);
     }
   }
@@ -120,10 +134,21 @@ export class TableComponent<T> implements OnChanges {
     }
   }
 
+  private calculateMaxPages(rows: T[]): void {
+    this.maxPages = Math.ceil(rows.length / this.MAX_ENTRIES_PER_PAGE);
+  }
+
+  /**
+   * Looks at all of the current column filters and applies them to the passed item.
+   *
+   * @param item The row that is being filtered.
+   * @returns A boolean if the row should show or hide.
+   */
   private matchFilters(item: T): boolean {
     for (const col of this.columnFilters.keys()) {
-      if (typeof item[col] === 'number' && item[col] !== this.columnFilters.get(col)
-          || item[col].indexOf(this.columnFilters.get(col)) === -1) {
+      // If we're looking at a number, just do an equality check. On strings check for indexOf.
+      if ((typeof item[col] === 'number' && item[col] !== this.columnFilters.get(col))
+        || item[col].indexOf(this.columnFilters.get(col)) === -1) {
         return false;
       }
     }
@@ -143,4 +168,4 @@ export class TableComponent<T> implements OnChanges {
     CommonModule
   ]
 })
-export class TableModule {}
+export class TableModule { }
