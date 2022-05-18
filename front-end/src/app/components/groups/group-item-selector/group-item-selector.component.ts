@@ -15,10 +15,11 @@ import { ChipModule } from '../../chip/chip.component';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'group-item-selector',
-  styleUrls: [ 'group-item-selector.component.css' ],
+  styleUrls: ['group-item-selector.component.css'],
   templateUrl: 'group-item-selector.component.html'
 })
 export class GroupItemSelectorComponent implements OnChanges {
+  @Input() public selectedType: string | undefined;
   @Input() public itemList: GroupItemType[];
   @Input() public selectedItems: GroupItemType[] | undefined;
 
@@ -28,7 +29,7 @@ export class GroupItemSelectorComponent implements OnChanges {
 
   public filteredItems: Observable<GroupItemType[]>;
   public formControl: FormControl;
-  public separatorKeysCodes: number[] = [ COMMA, ENTER ];
+  public separatorKeysCodes: number[] = [COMMA, ENTER];
 
   constructor(
     private iconRegistry: MatIconRegistry,
@@ -41,6 +42,12 @@ export class GroupItemSelectorComponent implements OnChanges {
 
   public ngOnChanges(): void {
     this.formControl = new FormControl();
+
+    if (this.selectedType) {
+      this.formControl.enable();
+    } else {
+      this.formControl.disable();
+    }
 
     // Setup the filter to run whenever the input changes.
     this.filteredItems = this.formControl.valueChanges.pipe(
@@ -110,4 +117,4 @@ export class GroupItemSelectorComponent implements OnChanges {
     ReactiveFormsModule
   ]
 })
-export class GroupItemSelectorModule {}
+export class GroupItemSelectorModule { }

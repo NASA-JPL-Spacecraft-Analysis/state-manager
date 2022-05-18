@@ -1,21 +1,26 @@
 <mat-form-field appearance="outline">
   <mat-label>Data</mat-label>
 
-  <input matInput
+  <input
+    matInput
+    class="test-class-please"
     placeholder="Search for data..."
     #itemInput
     [formControl]="formControl"
-    [matAutocomplete]="auto" />
-
-  <chip *ngFor="let item of selectedItems"
-    [id]="item.id"
-    [text]="item.identifier"
-    (removed)="onRemove($event)">
-  </chip>
+    [matAutocomplete]="auto"
+  />
 
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelected($event)">
     <mat-option *ngFor="let item of filteredItems | async" [value]="item">
-      {{item.identifier}}
+      {{ item.identifier }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
+
+<chip
+  *ngFor="let item of selectedItems"
+  [id]="item.id"
+  [text]="item.identifier"
+  (removed)="onRemove($event)"
+>
+</chip>

@@ -20,6 +20,7 @@ import {
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { StateManagementConstants } from 'src/app/constants/state-management.constants';
 import { GroupItemSelectorModule } from '../group-item-selector/group-item-selector.component';
+import { RelationshipTypeEnum } from '../../../models/relationship';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +50,8 @@ export class GroupsSidenavComponent implements OnChanges {
   public originalGroupIdentifier: string;
   public selectedItem: GroupItemType;
   public selectedItems: GroupItemType[];
+  public selectedType: string;
+  public types: string[];
 
   private isDuplicateGroupIdentifier: boolean;
 
@@ -66,12 +69,15 @@ export class GroupsSidenavComponent implements OnChanges {
     this.collectionItems = [];
     this.selectedItems = [];
 
-    this.addToCollectionItems(this.commandMap);
-    this.addToCollectionItems(this.constraintMap);
-    this.addToCollectionItems(this.eventMap);
-    this.addToCollectionItems(this.groupMap);
-    this.addToCollectionItems(this.informationTypeMap);
-    this.addToCollectionItems(this.stateMap);
+    this.types = Object.values(RelationshipTypeEnum).filter((type) =>
+      type !== RelationshipTypeEnum['State Enumeration'] && type !== RelationshipTypeEnum['Command Argument']
+    );
+    // Manually add groups so it's an option in the dropdown
+    this.types.push('Group');
+    // Sort the types alphabetically
+    this.types.sort();
+    // Add an undefined option so we can default to it
+    this.types.splice(0, 0, undefined);
 
     // Copy our collectionItems so we can remove items that are already selected later.
     this.itemList = [
@@ -88,7 +94,6 @@ export class GroupsSidenavComponent implements OnChanges {
 
       for (const groupMapping of this.group.groupMappings) {
         this.selectedItems.push(groupMapping.item);
-        this.filterItemList(groupMapping);
       }
     } else {
       this.newGroup = {
@@ -98,7 +103,6 @@ export class GroupsSidenavComponent implements OnChanges {
         identifier: ''
       };
     }
-
 
     // If we're updating a group, remove it from the map so the user can't add it as a group item.
     if (this.newGroup.id) {
@@ -175,6 +179,52 @@ export class GroupsSidenavComponent implements OnChanges {
       }
     } else {
       this.showError.emit('Please provide a unique group identifier');
+    }
+  }
+
+  public onTypeChange(event: Event): void {
+    const type = (event.target as HTMLSelectElement).value;
+
+    // Reset the list of selectable items whenever the type changes
+    this.collectionItems = [];
+
+    switch (type) {
+      case RelationshipTypeEnum.Command:
+        this.addToCollectionItems(this.commandMap);
+        break;
+
+      case RelationshipTypeEnum.Constraint:
+        this.addToCollectionItems(this.constraintMap);
+        break;
+
+      case RelationshipTypeEnum.Event:
+        this.addToCollectionItems(this.eventMap);
+        break;
+
+      case 'Group':
+        this.addToCollectionItems(this.groupMap);
+        break;
+
+      case RelationshipTypeEnum['Information Type']:
+        this.addToCollectionItems(this.informationTypeMap);
+        break;
+
+      case RelationshipTypeEnum.State:
+        this.addToCollectionItems(this.stateMap);
+        break;
+
+      default:
+        // Do nothing if the user selected the empty option.
+        break;
+    }
+
+    this.selectedType = type;
+    this.itemList = [
+      ...this.collectionItems
+    ];
+
+    for (const groupMapping of this.newGroup.groupMappings) {
+      this.filterItemList(groupMapping);
     }
   }
 

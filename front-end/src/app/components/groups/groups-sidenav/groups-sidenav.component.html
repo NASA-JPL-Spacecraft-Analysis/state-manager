@@ -1,4 +1,4 @@
-<div class ="sidenav-container">
+<div class="sidenav-container">
   <div class="sidenav-header">
     <span class="st-typography-header">Group Details</span>
 
@@ -13,14 +13,24 @@
         [originalIdentifier]="originalGroupIdentifier"
         [identifierMap]="groupIdentifierMap"
         (duplicateIdentifier)="onDuplicateGroupIdentifier($event)"
-        (identifierEmitter)="onGroupIdentifierChange($event)">
+        (identifierEmitter)="onGroupIdentifierChange($event)"
+      >
       </app-identifier-form>
+
+      <label for="type">Type</label>
+      <select class="st-select" placeholder="Type" (change)="onTypeChange($event)">
+        <option *ngFor="let type of types" [value]="type">
+          {{ type }}
+        </option>
+      </select>
 
       <div class="group-item-selector">
         <group-item-selector
+          [selectedType]="selectedType"
           [itemList]="itemList"
           [selectedItems]="selectedItems"
-          (selectionChange)="onItemSelect($event)">
+          (selectionChange)="onItemSelect($event)"
+        >
         </group-item-selector>
       </div>
     </form>
