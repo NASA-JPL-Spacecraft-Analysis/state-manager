@@ -87,12 +87,16 @@ export class RelationshipSidenavComponent implements OnChanges {
     this.modifyRelationship.emit(undefined);
   }
 
-  public onSubjectSelected(subjectId: string): void {
+  public onSubjectSelected(subjectIds: string[] | undefined): void {
+    const subjectId = subjectIds ? subjectIds[0] : undefined;
+
     this.form.controls.subjectType.setValue(this.findType(subjectId));
     this.form.controls.subjectTypeId.setValue(subjectId);
   }
 
-  public onTargetSelected(targetId: string): void {
+  public onTargetSelected(targetIds: string[] | undefined): void {
+    const targetId = targetIds ? targetIds[0] : undefined;
+
     this.form.controls.targetType.setValue(this.findType(targetId));
     this.form.controls.targetTypeId.setValue(targetId);
   }

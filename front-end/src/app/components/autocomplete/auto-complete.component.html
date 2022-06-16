@@ -1,7 +1,7 @@
 <div *ngIf="items && items.length > 0; else noItems">
-  <span class="st-chip chip" *ngIf="selectedItem">
+  <span class="st-chip chip" *ngFor="let selectedItem of selectedItems">
     {{ getItemNameOrIdentifier(selectedItem) }}
-    <i class="si si-close" (click)="onRemoveSelected()"></i>
+    <i class="si si-close" (click)="onRemoveSelected(selectedItem.id)"></i>
   </span>
 
   <div #autocomplete>

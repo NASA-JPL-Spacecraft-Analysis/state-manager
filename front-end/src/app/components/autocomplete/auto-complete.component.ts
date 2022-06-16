@@ -22,15 +22,16 @@ import { AutoCompleteListType, AutoCompleteType } from '../../models';
 })
 export class AutoCompleteComponent implements OnChanges {
   @Input() public items: AutoCompleteListType;
+  @Input() public multiselect: boolean;
   @Input() public selectedItemId: string;
 
-  @Output() public itemSelected: EventEmitter<string>;
+  @Output() public itemSelected: EventEmitter<string[]>;
 
   @ViewChild('autocomplete') autocomplete: ElementRef;
 
   public dropdownOpen: boolean;
   public filteredItems: AutoCompleteListType;
-  public selectedItem: AutoCompleteType;
+  public selectedItems: AutoCompleteListType;
 
   // The max number of items we show inside our autocomplete.
   public readonly MAX_SHOWN_ITEMS = 15;
@@ -48,15 +49,13 @@ export class AutoCompleteComponent implements OnChanges {
 
   public ngOnChanges(): void {
     this.filteredItems = this.items.slice(0, this.MAX_SHOWN_ITEMS);
+    this.selectedItems = [];
 
     for (const item of this.items) {
       if (item.id === this.selectedItemId) {
-        this.selectedItem = item;
-        break;
+        this.selectedItems.push(item);
       }
     }
-
-    console.log(this.items.length);
   }
 
   /**
@@ -96,16 +95,21 @@ export class AutoCompleteComponent implements OnChanges {
     }).slice(0, this.MAX_SHOWN_ITEMS);
   }
 
-  onRemoveSelected(): void {
-    this.selectedItem = undefined;
+  onRemoveSelected(removedId: string): void {
+    this.selectedItems = this.selectedItems.filter((item) => item.id !== removedId);
     this.itemSelected.emit(undefined);
   }
 
   public onSelectItem(item: AutoCompleteType): void {
     this.dropdownOpen = false;
 
-    this.selectedItem = item;
-    this.itemSelected.emit(item.id);
+    if (this.multiselect) {
+      this.selectedItems.push(item);
+    } else {
+      this.selectedItems = [item];
+    }
+
+    this.itemSelected.emit(this.selectedItems.map((item) => item.id));
   }
 }
 
