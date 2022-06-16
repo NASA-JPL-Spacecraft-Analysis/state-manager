@@ -237,6 +237,8 @@ CREATE TABLE `states` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `data_types` (name, type) VALUES
+('command','command'),
+('alarm_limit','state'),
 ('channel','state'),
 ('fsw_parameter','state'),
 ('model_input','state'),
