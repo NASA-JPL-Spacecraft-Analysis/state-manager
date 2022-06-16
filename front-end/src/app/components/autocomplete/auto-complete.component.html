@@ -1,0 +1,30 @@
+<div *ngIf="items && items.length > 0; else noItems">
+  <span class="st-chip chip" *ngIf="selectedItem">
+    {{ getItemNameOrIdentifier(selectedItem) }}
+    <i class="si si-close" (click)="onRemoveSelected()"></i>
+  </span>
+
+  <div #autocomplete>
+    <input
+      class="st-input"
+      type="text"
+      placeholder="Search for an item"
+      (input)="onFilter($event)"
+      (click)="dropdownOpen = true"
+    />
+
+    <div *ngIf="dropdownOpen" class="autocomplete-dropdown">
+      <div
+        *ngFor="let item of filteredItems"
+        (click)="onSelectItem(item)"
+        class="autocomplete-item"
+      >
+        {{ getItemNameOrIdentifier(item) }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noItems>
+  <p>There are no valid items.</p>
+</ng-template>
