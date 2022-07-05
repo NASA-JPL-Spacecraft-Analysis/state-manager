@@ -15,7 +15,7 @@
 
     <div *ngIf="dropdownOpen" class="autocomplete-dropdown">
       <div
-        *ngFor="let item of filteredItems"
+        *ngFor="let item of filteredItems.slice(0, MAX_SHOWN_ITEMS)"
         (click)="onSelectItem(item)"
         class="autocomplete-item"
       >

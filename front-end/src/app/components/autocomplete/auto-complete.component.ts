@@ -34,7 +34,7 @@ export class AutoCompleteComponent implements OnChanges {
   public selectedItems: AutoCompleteListType;
 
   // The max number of items we show inside our autocomplete.
-  public readonly MAX_SHOWN_ITEMS = 15;
+  public readonly MAX_SHOWN_ITEMS = 30;
 
   constructor() {
     this.itemSelected = new EventEmitter();
@@ -48,7 +48,7 @@ export class AutoCompleteComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.filteredItems = this.items.slice(0, this.MAX_SHOWN_ITEMS);
+    this.filteredItems = [...this.items];
     this.selectedItems = [];
 
     for (const item of this.items) {
@@ -69,13 +69,13 @@ export class AutoCompleteComponent implements OnChanges {
     if (item) {
       if ('label' in item) {
         // Handle state enumerations.
-        return item.label;
+        return 'State Enumeration - ' + item.label;
       } else if ('name' in item) {
         // Handle command arguments.
-        return item.name;
+        return 'Command Argument - ' + item.name;
       } else if ('identifier' in item) {
         // Everything else has an identifier, so return that.
-        return item.identifier;
+        return item.type + ' - ' + item.identifier;
       }
     }
   }
@@ -86,16 +86,24 @@ export class AutoCompleteComponent implements OnChanges {
 
     this.filteredItems = this.items.filter(item => {
       if ('label' in item) {
+        // label is a property of a State Enumeration.
         return item.label.toLowerCase().includes(filter);
       } else if ('name' in item) {
+        // Name is a property of a Command Expansion.
         return item.name.toLowerCase().includes(filter);
       } else if ('identifier' in item) {
+        // Identifier is a property of everything else.
         return item.identifier.toLowerCase().includes(filter);
       }
-    }).slice(0, this.MAX_SHOWN_ITEMS);
+    });
   }
 
-  onRemoveSelected(removedId: string): void {
+  /**
+   * Called when a user deletes a selected item.
+   *
+   * @param removedId The ID of the selected item that is being removed.
+   */
+  public onRemoveSelected(removedId: string): void {
     this.selectedItems = this.selectedItems.filter((item) => item.id !== removedId);
     this.itemSelected.emit(undefined);
   }
@@ -109,7 +117,7 @@ export class AutoCompleteComponent implements OnChanges {
       this.selectedItems = [item];
     }
 
-    this.itemSelected.emit(this.selectedItems.map((item) => item.id));
+    this.itemSelected.emit(this.selectedItems.map((selectedItem) => selectedItem.id));
   }
 }
 
