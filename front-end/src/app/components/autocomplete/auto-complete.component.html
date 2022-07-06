@@ -1,7 +1,7 @@
-<div *ngIf="items && items.length > 0; else noItems">
-  <span class="st-chip chip" *ngFor="let selectedItem of selectedItems">
-    {{ getItemNameOrIdentifier(selectedItem) }}
-    <i class="si si-close" (click)="onRemoveSelected(selectedItem.id)"></i>
+<div>
+  <span class="st-chip chip" *ngFor="let selectedItem of selectedItems.values()">
+    {{ getItemNameOrIdentifierFunc(selectedItem) }}
+    <i class="si si-close" (click)="onRemoveSelected(selectedItem)"></i>
   </span>
 
   <div #autocomplete>
@@ -9,6 +9,7 @@
       class="st-input"
       type="text"
       placeholder="Search for an item"
+      [disabled]="itemSet.size === 0"
       (input)="onFilter($event)"
       (click)="dropdownOpen = true"
     />
@@ -19,12 +20,8 @@
         (click)="onSelectItem(item)"
         class="autocomplete-item"
       >
-        {{ getItemNameOrIdentifier(item) }}
+        {{ getItemNameOrIdentifierFunc(item) }}
       </div>
     </div>
   </div>
 </div>
-
-<ng-template #noItems>
-  <p>There are no valid items.</p>
-</ng-template>

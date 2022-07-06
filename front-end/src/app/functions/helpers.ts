@@ -1,4 +1,12 @@
-import { IdentifierMap, IdentifierType, StringTMap } from '../models';
+import {
+  AutoCompleteType,
+  IdentifierMap,
+  IdentifierType,
+  StringTMap,
+  CommandArgumentMap,
+  StateEnumerationMap,
+  AutoCompleteSetType
+} from '../models';
 
 export const mapIdentifiers = (items: IdentifierType[]): IdentifierMap => {
   const itemIdentifierMap = {};
@@ -25,4 +33,55 @@ export const mapItems = (items: IdentifierType[]): StringTMap<IdentifierType> =>
   }
 
   return itemMap;
+};
+
+
+export const populateItems = (itemList: AutoCompleteSetType, items: Record<string, AutoCompleteType>): AutoCompleteSetType => {
+  if (itemList && items) {
+    for (const item of Object.values(items)) {
+      itemList.add(item);
+    }
+  }
+
+  return itemList;
+};
+
+export const populateItemsWithList =
+  (itemList: AutoCompleteSetType, itemMap: CommandArgumentMap | StateEnumerationMap): AutoCompleteSetType => {
+    if (itemList && itemMap && Object.keys(itemMap).length > 0) {
+      for (const newItemList of Object.values(itemMap)) {
+        for (const item of newItemList) {
+          itemList.add(item);
+        }
+      }
+    }
+
+    return itemList;
+  };
+
+/**
+ * We have different types of things in our autocomplete, so make sure we know how to
+ * get the name of each differing type.
+ *
+ * @param item The item that we need the name of
+ * @returns The item's name
+ */
+export const getItemNameOrIdentifier = (item: AutoCompleteType): string => {
+  if (item) {
+    if ('label' in item) {
+      // Handle state enumerations.
+      return 'state_enumeration - ' + item.label;
+    } else if ('name' in item) {
+      // Handle command arguments.
+      return 'command_argument - ' + item.name;
+    } else if ('identifier' in item) {
+      if ('type' in item) {
+        // Everything else has an identifier, so return that.
+        return item.type + ' - ' + item.identifier;
+      } else {
+        // If there isn't a type, it's a group.
+        return 'group - ' + item.identifier;
+      }
+    }
+  }
 };

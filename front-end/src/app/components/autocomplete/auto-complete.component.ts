@@ -12,7 +12,8 @@ import {
   ViewChild
 } from '@angular/core';
 
-import { AutoCompleteListType, AutoCompleteType } from '../../models';
+import { AutoCompleteSetType, AutoCompleteType } from '../../models';
+import { getItemNameOrIdentifier } from '../../functions/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,22 +22,25 @@ import { AutoCompleteListType, AutoCompleteType } from '../../models';
   templateUrl: 'auto-complete.component.html'
 })
 export class AutoCompleteComponent implements OnChanges {
-  @Input() public items: AutoCompleteListType;
+  @Input() public itemSet: AutoCompleteSetType;
   @Input() public multiselect: boolean;
-  @Input() public selectedItemId: string;
+  @Input() public selectedItemIds: string[];
 
-  @Output() public itemSelected: EventEmitter<string[]>;
+  @Output() public itemRemoved: EventEmitter<AutoCompleteType>;
+  @Output() public itemSelected: EventEmitter<AutoCompleteType[]>;
 
   @ViewChild('autocomplete') autocomplete: ElementRef;
 
   public dropdownOpen: boolean;
-  public filteredItems: AutoCompleteListType;
-  public selectedItems: AutoCompleteListType;
+  public filteredItems: AutoCompleteType[];
+  public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
+  public selectedItems: AutoCompleteSetType;
 
   // The max number of items we show inside our autocomplete.
   public readonly MAX_SHOWN_ITEMS = 30;
 
   constructor() {
+    this.itemRemoved = new EventEmitter();
     this.itemSelected = new EventEmitter();
   }
 
@@ -48,35 +52,20 @@ export class AutoCompleteComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.filteredItems = [...this.items];
-    this.selectedItems = [];
+    if (this.itemSet) {
+      this.selectedItems = new Set();
 
-    for (const item of this.items) {
-      if (item.id === this.selectedItemId) {
-        this.selectedItems.push(item);
-      }
-    }
-  }
+      for (const item of this.itemSet.values()) {
+        if (this.selectedItemIds.indexOf(item.id) !== -1) {
+          this.selectedItems.add(item);
 
-  /**
-   * We have different types of things in our autocomplete, so make sure we know how to
-   * get the name of each differing type.
-   *
-   * @param item The item that we need the name of
-   * @returns The item's name
-   */
-  public getItemNameOrIdentifier(item: AutoCompleteType): string {
-    if (item) {
-      if ('label' in item) {
-        // Handle state enumerations.
-        return 'State Enumeration - ' + item.label;
-      } else if ('name' in item) {
-        // Handle command arguments.
-        return 'Command Argument - ' + item.name;
-      } else if ('identifier' in item) {
-        // Everything else has an identifier, so return that.
-        return item.type + ' - ' + item.identifier;
+          if (this.multiselect) {
+            this.itemSet.delete(item);
+          }
+        }
       }
+
+      this.filteredItems = [...this.itemSet];
     }
   }
 
@@ -84,40 +73,62 @@ export class AutoCompleteComponent implements OnChanges {
   public onFilter(event: any): void {
     const filter = event.target.value.toLowerCase();
 
-    this.filteredItems = this.items.filter(item => {
-      if ('label' in item) {
-        // label is a property of a State Enumeration.
-        return item.label.toLowerCase().includes(filter);
-      } else if ('name' in item) {
-        // Name is a property of a Command Expansion.
-        return item.name.toLowerCase().includes(filter);
-      } else if ('identifier' in item) {
-        // Identifier is a property of everything else.
-        return item.identifier.toLowerCase().includes(filter);
-      }
-    });
+    if (filter === '') {
+      this.filteredItems = [...this.itemSet.values()];
+    } else {
+      this.filteredItems = [...this.itemSet.values()].filter(item => {
+        let searchContext: string;
+
+        // Prepend the item's name / identifier / label with the type to improve searching.
+        if ('type' in item) {
+          searchContext = item.type + ' - ';
+        } else {
+          searchContext = 'group - ';
+        }
+
+        if ('label' in item) {
+          // label is a property of a State Enumeration.
+          searchContext += item.label.toLowerCase();
+        } else if ('name' in item) {
+          // Name is a property of a Command Expansion.
+          searchContext += item.name.toLowerCase();
+        } else if ('identifier' in item) {
+          // Identifier is a property of everything else.
+          searchContext += item.identifier.toLowerCase();
+        }
+
+        return searchContext.includes(filter);
+      });
+    }
   }
 
   /**
    * Called when a user deletes a selected item.
    *
-   * @param removedId The ID of the selected item that is being removed.
+   * @param item The item user is removing.
    */
-  public onRemoveSelected(removedId: string): void {
-    this.selectedItems = this.selectedItems.filter((item) => item.id !== removedId);
-    this.itemSelected.emit(undefined);
+  public onRemoveSelected(item: AutoCompleteType): void {
+    this.selectedItems.delete(item);
+
+    if (this.multiselect) {
+      this.itemSet.add(item);
+    }
+
+    this.itemRemoved.emit(item);
   }
 
   public onSelectItem(item: AutoCompleteType): void {
     this.dropdownOpen = false;
 
     if (this.multiselect) {
-      this.selectedItems.push(item);
+      this.selectedItems.add(item);
+
+      this.itemSet.delete(item);
     } else {
-      this.selectedItems = [item];
+      this.selectedItems = new Set([item]);
     }
 
-    this.itemSelected.emit(this.selectedItems.map((selectedItem) => selectedItem.id));
+    this.itemSelected.emit([...this.selectedItems.values()]);
   }
 }
 

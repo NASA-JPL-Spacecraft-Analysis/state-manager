@@ -24,6 +24,7 @@ import {
 import { CommandMap, ConstraintMap, EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
+import { getItemNameOrIdentifier } from '../../functions/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +36,7 @@ export class GroupsComponent implements OnDestroy {
   public commandMap: CommandMap;
   public constraintMap: ConstraintMap;
   public eventMap: EventMap;
+  public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
   public group: Group;
   public groupIdentifierMap: IdentifierMap;
   public groupMap: GroupMap;

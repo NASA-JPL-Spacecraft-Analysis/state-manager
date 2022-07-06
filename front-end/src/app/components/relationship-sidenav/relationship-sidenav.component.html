@@ -23,8 +23,9 @@
 
       <label>Subject</label>
       <sm-auto-complete
-        [items]="items"
-        [selectedItemId]="newRelationship.subjectTypeId"
+        [itemSet]="itemSet"
+        [selectedItemIds]="[newRelationship.subjectTypeId]"
+        (itemRemoved)="onSubjectRemoved($event)"
         (itemSelected)="onSubjectSelected($event)"
       >
       </sm-auto-complete>
@@ -33,8 +34,9 @@
 
       <label>Target</label>
       <sm-auto-complete
-        [items]="items"
-        [selectedItemId]="newRelationship.targetTypeId"
+        [itemSet]="itemSet"
+        [selectedItemIds]="[newRelationship.targetTypeId]"
+        (itemRemoved)="onTargetRemoved($event)"
         (itemSelected)="onTargetSelected($event)"
       >
       </sm-auto-complete>

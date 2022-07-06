@@ -12,10 +12,11 @@ import {
   ConstraintMap,
   CommandArgumentMap,
   StateEnumerationMap,
-  AutoCompleteListType,
+  AutoCompleteSetType,
   AutoCompleteType
 } from 'src/app/models';
 import { AutoCompleteModule } from '../autocomplete/auto-complete.component';
+import { populateItems, populateItemsWithList } from '../../functions/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +39,7 @@ export class RelationshipSidenavComponent implements OnChanges {
 
   public newRelationship: Relationship;
   public form: FormGroup;
-  public items: AutoCompleteListType;
+  public itemSet: AutoCompleteSetType;
 
   constructor() {
     this.formError = new EventEmitter<string>();
@@ -46,15 +47,15 @@ export class RelationshipSidenavComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.items = [];
+    this.itemSet = new Set();
 
-    this.populateItems(this.commandMap);
-    this.populateItemsWithList(this.commandArgumentMap);
-    this.populateItems(this.constraintMap);
-    this.populateItems(this.eventMap);
-    this.populateItems(this.informationTypeMap);
-    this.populateItemsWithList(this.stateEnumerationMap);
-    this.populateItems(this.stateMap);
+    this.itemSet = populateItems(this.itemSet, this.commandMap);
+    this.itemSet = populateItemsWithList(this.itemSet, this.commandArgumentMap);
+    this.itemSet = populateItems(this.itemSet, this.constraintMap);
+    this.itemSet = populateItems(this.itemSet, this.eventMap);
+    this.itemSet = populateItems(this.itemSet, this.informationTypeMap);
+    this.itemSet = populateItemsWithList(this.itemSet, this.stateEnumerationMap);
+    this.itemSet = populateItems(this.itemSet, this.stateMap);
 
     if (this.relationship === undefined || this.relationship === null) {
       this.newRelationship = {
@@ -87,15 +88,25 @@ export class RelationshipSidenavComponent implements OnChanges {
     this.modifyRelationship.emit(undefined);
   }
 
-  public onSubjectSelected(subjectIds: string[] | undefined): void {
-    const subjectId = subjectIds ? subjectIds[0] : undefined;
+  public onSubjectRemoved(removedItem: AutoCompleteType): void {
+    this.form.controls.subjectType.setValue(undefined);
+    this.form.controls.subjectTypeId.setValue(undefined);
+  }
+
+  public onSubjectSelected(selectedItems: AutoCompleteType[] | undefined): void {
+    const subjectId = selectedItems ? selectedItems[0].id : undefined;
 
     this.form.controls.subjectType.setValue(this.findType(subjectId));
     this.form.controls.subjectTypeId.setValue(subjectId);
   }
 
-  public onTargetSelected(targetIds: string[] | undefined): void {
-    const targetId = targetIds ? targetIds[0] : undefined;
+  public onTargetRemoved(removedItem: AutoCompleteType): void {
+    this.form.controls.targetType.setValue(undefined);
+    this.form.controls.targetTypeId.setValue(undefined);
+  }
+
+  public onTargetSelected(selectedItems: AutoCompleteType[] | undefined): void {
+    const targetId = selectedItems ? selectedItems[0].id : undefined;
 
     this.form.controls.targetType.setValue(this.findType(targetId));
     this.form.controls.targetTypeId.setValue(targetId);
@@ -106,24 +117,6 @@ export class RelationshipSidenavComponent implements OnChanges {
       this.modifyRelationship.emit(this.form.value);
     } else {
       this.formError.emit('Please fill in required form fields, including selecting a subject and a target');
-    }
-  }
-
-  private populateItems(items: Record<string, AutoCompleteType>): void {
-    if (items) {
-      for (const item of Object.values(items)) {
-        this.items.push(item);
-      }
-    }
-  }
-
-  private populateItemsWithList(itemMap: CommandArgumentMap | StateEnumerationMap): void {
-    if (itemMap && Object.keys(itemMap).length > 0) {
-      for (const itemList of Object.values(itemMap)) {
-        for (const item of itemList) {
-          this.items.push(item);
-        }
-      }
     }
   }
 

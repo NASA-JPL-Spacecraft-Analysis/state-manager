@@ -17,28 +17,19 @@
       >
       </app-identifier-form>
 
-      <label for="type">Type</label>
-      <select class="st-select" placeholder="Type" (change)="onTypeChange($event)">
-        <option *ngFor="let type of types" [value]="type">
-          {{ type }}
-        </option>
-      </select>
-
-      <div class="group-item-selector">
-        <group-item-selector
-          [selectedType]="selectedType"
-          [itemList]="itemList"
-          [selectedItems]="selectedItems"
-          (selectionChange)="onItemSelect($event)"
-        >
-        </group-item-selector>
-      </div>
+      <sm-auto-complete
+        [itemSet]="itemSet"
+        [multiselect]="true"
+        [selectedItemIds]="selectedItemIds"
+        (itemRemoved)="onItemRemoved($event)"
+        (itemSelected)="onItemSelected($event)"
+      ></sm-auto-complete>
     </form>
   </div>
 
   <div class="sidenav-footer">
     <button class="st-button secondary" (click)="onCancel()">Cancel</button>
 
-    <button class="st-button" (click)="onSubmit()">Save Event</button>
+    <button class="st-button" (click)="onSubmit()">Save Group</button>
   </div>
 </div>

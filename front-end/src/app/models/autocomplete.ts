@@ -1,6 +1,6 @@
-import { Command, CommandArgument, Constraint, Event, InformationType, State, StateEnumeration } from './';
+import { Command, CommandArgument, Constraint, Event, Group, InformationType, State, StateEnumeration } from './';
 
 export type AutoCompleteType =
-  Command | CommandArgument | Constraint | Event | InformationType | State | StateEnumeration;
+  Command | CommandArgument | Constraint | Event | Group | InformationType | State | StateEnumeration;
 
-export type AutoCompleteListType = AutoCompleteType[];
+export type AutoCompleteSetType = Set<AutoCompleteType>;
