@@ -19,7 +19,7 @@
               "subsink",
               "zen-observable"
             ],
-            "baseHref": "/state-management/",
+            "baseHref": "/state-manager/",
             "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
