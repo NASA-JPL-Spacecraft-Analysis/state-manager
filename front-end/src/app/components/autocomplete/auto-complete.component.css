@@ -1,0 +1,26 @@
+i {
+  cursor: pointer;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid var(--st-gray-20);
+  border-radius: 4px;
+  width: 262px;
+}
+
+.autocomplete-item {
+  font-size: 14px;
+  padding: 4px;
+}
+
+.autocomplete-item:hover {
+  background-color: var(--st-gray-20);
+  cursor: pointer;
+}
+
+.chip {
+  display: inline-flex;
+  margin-bottom: 8px;
+}

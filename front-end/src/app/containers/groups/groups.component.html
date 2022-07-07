@@ -11,31 +11,26 @@
       <i class="si-trash"></i>
     </button>
 
-    <button class="st-button primary" (click)="onGroupSelected()">
-      New Group
-    </button>
+    <button class="st-button primary" (click)="onGroupSelected()">New Group</button>
   </div>
 </div>
 
 <div class="content-container">
   <div class="sidenav" *ngIf="showGroupsSidemenu">
-    <sm-groups-menu
-      [groups]="groups"
-      (groupSelected)="onGroupSelected($event)">
-    </sm-groups-menu>
+    <sm-groups-menu [groups]="groups" (groupSelected)="onGroupSelected($event)"> </sm-groups-menu>
   </div>
 
   <div class="content group-content">
     <ng-container *ngIf="groups.length > 0; else noGroups">
       <div *ngFor="let group of groups" class="group-container">
         <span class="st-typography-header groups-toggle-text" (click)="onGroupSelected(group)">
-          {{group.identifier}}
+          {{ group.identifier }}
         </span>
 
         <br />
 
         <span *ngFor="let mapping of group.groupMappings">
-          <span>{{mapping.item.identifier}}</span>
+          <span>{{ getItemNameOrIdentifierFunc(mapping.item) }}</span>
 
           <br />
         </span>
@@ -63,7 +58,8 @@
       [selectedCollectionId]="selectedCollectionId"
       [stateMap]="stateMap"
       (modifyGroup)="onSidenavOutput($event)"
-      (showError)=onShowError($event)>
+      (showError)="onShowError($event)"
+    >
     </sm-groups-sidenav>
   </div>
 </div>

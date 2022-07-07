@@ -3,7 +3,6 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } 
 import { CommonModule } from '@angular/common';
 
 import { Relationship } from '../../models/relationship';
-import { RelationshipTypePickerModule } from '../relationship-type-picker/relationship-type-picker.component';
 import {
   StateMap,
   InformationTypeMap,
@@ -12,8 +11,12 @@ import {
   CommandMap,
   ConstraintMap,
   CommandArgumentMap,
-  StateEnumerationMap
+  StateEnumerationMap,
+  AutoCompleteSetType,
+  AutoCompleteType
 } from 'src/app/models';
+import { AutoCompleteModule } from '../autocomplete/auto-complete.component';
+import { populateItems, populateItemsWithList } from '../../functions/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,9 +39,7 @@ export class RelationshipSidenavComponent implements OnChanges {
 
   public newRelationship: Relationship;
   public form: FormGroup;
-  public types: string[];
-  public subjectType: string;
-  public targetType: string;
+  public itemSet: AutoCompleteSetType;
 
   constructor() {
     this.formError = new EventEmitter<string>();
@@ -48,7 +49,16 @@ export class RelationshipSidenavComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.filterTypes();
+    this.itemSet = new Set();
+
+    this.itemSet = populateItems(this.itemSet, this.commandMap);
+    this.itemSet = populateItemsWithList(this.itemSet, this.commandArgumentMap);
+    this.itemSet = populateItems(this.itemSet, this.constraintMap);
+    this.itemSet = populateItems(this.itemSet, this.eventMap);
+    this.itemSet = populateItems(this.itemSet, this.informationTypeMap);
+    this.itemSet = populateItemsWithList(this.itemSet, this.stateEnumerationMap);
+    this.itemSet = populateItems(this.itemSet, this.stateMap);
+
     if (this.relationship === undefined || this.relationship === null) {
       this.newRelationship = {
         id: null,
@@ -63,9 +73,6 @@ export class RelationshipSidenavComponent implements OnChanges {
       this.newRelationship = {
         ...this.relationship
       };
-
-      this.subjectType = this.newRelationship.subjectType;
-      this.targetType = this.newRelationship.targetType;
     }
 
     this.form = new FormGroup({
@@ -73,7 +80,9 @@ export class RelationshipSidenavComponent implements OnChanges {
       displayName: new FormControl(this.newRelationship.displayName, [Validators.required]),
       description: new FormControl(this.newRelationship.description),
       subjectType: new FormControl(this.newRelationship.subjectType, [Validators.required]),
-      targetType: new FormControl(this.newRelationship.targetType, [Validators.required])
+      subjectTypeId: new FormControl(this.newRelationship.subjectTypeId, [Validators.required]),
+      targetType: new FormControl(this.newRelationship.targetType, [Validators.required]),
+      targetTypeId: new FormControl(this.newRelationship.targetTypeId, [Validators.required])
     });
   }
 
@@ -81,10 +90,31 @@ export class RelationshipSidenavComponent implements OnChanges {
     this.modifyRelationship.emit(undefined);
   }
 
-  public onSubmit(): void {
-    this.form.controls.subjectType.setValue(this.subjectType);
-    this.form.controls.targetType.setValue(this.targetType);
+  public onSubjectRemoved(removedItem: AutoCompleteType): void {
+    this.form.controls.subjectType.setValue(undefined);
+    this.form.controls.subjectTypeId.setValue(undefined);
+  }
 
+  public onSubjectSelected(selectedItems: AutoCompleteType[] | undefined): void {
+    const subjectId = selectedItems ? selectedItems[0].id : undefined;
+
+    this.form.controls.subjectType.setValue(this.findType(subjectId));
+    this.form.controls.subjectTypeId.setValue(subjectId);
+  }
+
+  public onTargetRemoved(removedItem: AutoCompleteType): void {
+    this.form.controls.targetType.setValue(undefined);
+    this.form.controls.targetTypeId.setValue(undefined);
+  }
+
+  public onTargetSelected(selectedItems: AutoCompleteType[] | undefined): void {
+    const targetId = selectedItems ? selectedItems[0].id : undefined;
+
+    this.form.controls.targetType.setValue(this.findType(targetId));
+    this.form.controls.targetTypeId.setValue(targetId);
+  }
+
+  public onSubmit(): void {
     if (this.form.valid) {
       this.modifyRelationship.emit(this.form.value);
     } else {
@@ -92,59 +122,59 @@ export class RelationshipSidenavComponent implements OnChanges {
     }
   }
 
-  public onSubjectTypeChange(newSubjectType: string) {
-    this.subjectType = newSubjectType;
-  }
-
-  public onTargetTypeChange(newTargetType: string) {
-    this.targetType = newTargetType;
-  }
-
   /**
    * Looks at each map and removes the ones that don't have any data.
    */
-  private filterTypes(): void {
-    this.types = Object.values(RelationshipTypeEnum).filter(type => {
-      if (typeof type === 'string') {
-        switch (type) {
-          case RelationshipTypeEnum.Command:
-            if (Object.keys(this.commandMap).length > 0) {
-              return true;
-            }
-            break;
-          case RelationshipTypeEnum['Command Argument']:
-            if (Object.keys(this.commandArgumentMap).length > 0) {
-              return true;
-            }
-            break;
-          case RelationshipTypeEnum.Constraint:
-            if (Object.keys(this.constraintMap).length > 0) {
-              return true;
-            }
-            break;
-          case RelationshipTypeEnum.Event:
-            if (Object.keys(this.eventMap).length > 0) {
-              return true;
-            }
-            break;
-          case RelationshipTypeEnum['Information Type']:
-            if (Object.keys(this.informationTypeMap).length > 0) {
-              return true;
-            }
-            break;
-          case RelationshipTypeEnum['State Enumeration']:
-            if (Object.keys(this.stateEnumerationMap).length > 0) {
-              return true;
-            }
-            break;
-          case RelationshipTypeEnum.State:
-            if (Object.keys(this.stateMap).length > 0) {
-              return true;
-            }
-            break;
+  private findType(id: string): string | undefined {
+    if (!id) {
+      return undefined;
+    }
+
+    for (const command of Object.values(this.commandMap)) {
+      if (command.id === id) {
+        return RelationshipTypeEnum.Command;
+      }
+    }
+
+    for (const commandArgumentList of Object.values(this.commandArgumentMap)) {
+      for (const commandArgument of Object.values(commandArgumentList)) {
+        if (commandArgument.id === id) {
+          return RelationshipTypeEnum['Command Argument'];
         }
       }
-    });
+    }
+
+    for (const constraint of Object.values(this.constraintMap)) {
+      if (constraint.id === id) {
+        return RelationshipTypeEnum.Constraint;
+      }
+    }
+
+    for (const event of Object.values(this.eventMap)) {
+      if (event.id === id) {
+        return RelationshipTypeEnum.Event;
+      }
+    }
+
+    for (const informationType of Object.values(this.informationTypeMap)) {
+      if (informationType.id === id) {
+        return RelationshipTypeEnum['Information Type'];
+      }
+    }
+
+    for (const stateEnumerationList of Object.values(this.stateEnumerationMap)) {
+      for (const stateEnumeration of Object.values(stateEnumerationList)) {
+        if (stateEnumeration.id === id) {
+          return RelationshipTypeEnum['State Enumeration'];
+        }
+      }
+    }
+
+    for (const state of Object.values(this.stateMap)) {
+      if (state.id === id) {
+        return RelationshipTypeEnum.State;
+      }
+    }
   }
 }
 
@@ -156,10 +186,10 @@ export class RelationshipSidenavComponent implements OnChanges {
     RelationshipSidenavComponent
   ],
   imports: [
+    AutoCompleteModule,
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
-    RelationshipTypePickerModule
+    ReactiveFormsModule
   ]
 })
 export class RelationshipSidenavModule { }

@@ -3,23 +3,27 @@ import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { cloneDeep } from 'lodash';
 
 import { MaterialModule } from 'src/app/material';
 import {
   EventMap,
   Group,
   GroupMap,
-  GroupItemType,
-  GroupMapping,
   IdentifierMap,
   InformationTypeMap,
   CommandMap,
   ConstraintMap,
+  StateEnumerationMap,
+  CommandArgumentMap,
+  AutoCompleteType,
+  AutoCompleteSetType,
   StateMap
 } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
-import { StateManagementConstants } from 'src/app/constants/state-management.constants';
-import { GroupItemSelectorModule } from '../group-item-selector/group-item-selector.component';
+import { AutoCompleteModule } from '../../autocomplete/auto-complete.component';
+import { populateItems, populateItemsWithList } from '../../../functions/helpers';
+import { StateManagementConstants } from '../../../constants';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +32,7 @@ import { GroupItemSelectorModule } from '../group-item-selector/group-item-selec
   templateUrl: 'groups-sidenav.component.html'
 })
 export class GroupsSidenavComponent implements OnChanges {
+  @Input() public commandArgumentMap: CommandArgumentMap;
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
@@ -36,19 +41,19 @@ export class GroupsSidenavComponent implements OnChanges {
   @Input() public groupIdentifierMap: IdentifierMap;
   @Input() public informationTypeMap: InformationTypeMap;
   @Input() public selectedCollectionId: string;
+  @Input() public stateEnumerationMap: StateEnumerationMap;
   @Input() public stateMap: StateMap;
 
   @Output() public modifyGroup: EventEmitter<Group>;
   @Output() public showError: EventEmitter<string>;
 
-  public collectionItems: GroupItemType[];
   public formGroup: FormGroup;
   // Keeps track of the currently selectable items.
-  public itemList: GroupItemType[];
+  public itemSet: AutoCompleteSetType;
   public newGroup: Group;
   public originalGroupIdentifier: string;
-  public selectedItem: GroupItemType;
-  public selectedItems: GroupItemType[];
+  public selectedItem: AutoCompleteType;
+  public selectedItemIds: string[];
 
   private isDuplicateGroupIdentifier: boolean;
 
@@ -63,33 +68,24 @@ export class GroupsSidenavComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.collectionItems = [];
-    this.selectedItems = [];
+    this.itemSet = new Set();
 
-    this.addToCollectionItems(this.commandMap);
-    this.addToCollectionItems(this.constraintMap);
-    this.addToCollectionItems(this.eventMap);
-    this.addToCollectionItems(this.groupMap);
-    this.addToCollectionItems(this.informationTypeMap);
-    this.addToCollectionItems(this.stateMap);
+    // If we're updating a group, remove it from the set so the user can't add it as a group item.
+    if (this.group.id) {
+      delete this.groupMap[this.group.id];
+    }
 
-    // Copy our collectionItems so we can remove items that are already selected later.
-    this.itemList = [
-      ...this.collectionItems
-    ];
+    this.itemSet = populateItems(this.itemSet, this.commandMap);
+    this.itemSet = populateItemsWithList(this.itemSet, this.commandArgumentMap);
+    this.itemSet = populateItems(this.itemSet, this.constraintMap);
+    this.itemSet = populateItems(this.itemSet, this.eventMap);
+    this.itemSet = populateItems(this.itemSet, this.groupMap);
+    this.itemSet = populateItems(this.itemSet, this.informationTypeMap);
+    this.itemSet = populateItemsWithList(this.itemSet, this.stateEnumerationMap);
+    this.itemSet = populateItems(this.itemSet, this.stateMap);
 
     if (this.group) {
-      this.newGroup = {
-        ...this.group,
-        groupMappings: [
-          ...this.group.groupMappings.map(groupMapping => { return { ...groupMapping } })
-        ]
-      };
-
-      for (const groupMapping of this.group.groupMappings) {
-        this.selectedItems.push(groupMapping.item);
-        this.filterItemList(groupMapping);
-      }
+      this.newGroup = cloneDeep(this.group);
     } else {
       this.newGroup = {
         collectionId: this.selectedCollectionId,
@@ -98,6 +94,8 @@ export class GroupsSidenavComponent implements OnChanges {
         identifier: ''
       };
     }
+
+    this.selectedItemIds = this.newGroup.groupMappings.map((item) => item.item.id);
 
     this.originalGroupIdentifier = this.newGroup.identifier;
 
@@ -121,33 +119,32 @@ export class GroupsSidenavComponent implements OnChanges {
   }
 
   /**
+   * When the user removed an item from the autocomplete, delete the mapping for it.
+   *
+   * @param removedItem The item the user removed.
+   */
+  public onItemRemoved(removedItem: AutoCompleteType): void {
+    this.newGroup.groupMappings = this.newGroup.groupMappings.filter((groupMapping) => groupMapping.item.id !== removedItem.id);
+  }
+
+  /**
    * When an item is selected, add it to the groupItemMap and remove it
    * from the collectionItems list.
    *
    * @param groupItemList The list of items that the user has selected.
    */
-  public onItemSelect(groupItemList: GroupItemType[]): void {
-    // Reset our itemList to keep it up to date with added / removed groups.
-    this.itemList = [
-      ...this.collectionItems
-    ];
-
+  public onItemSelected(selectedItems: AutoCompleteType[] | undefined): void {
     this.newGroup.groupMappings = [];
 
-    for (const groupItem of groupItemList) {
+    for (const item of selectedItems) {
       const groupMapping = {
         id: undefined,
-        item: groupItem,
-        itemId: undefined
+        item,
+        itemId: item.id
       };
 
       this.newGroup.groupMappings.push(groupMapping);
-
-      this.filterItemList(groupMapping);
     }
-
-    // Do one last filter to remove the current group from the selectable list.
-    this.filterItemList();
   }
 
   public onSubmit(): void {
@@ -175,24 +172,6 @@ export class GroupsSidenavComponent implements OnChanges {
     }
   }
 
-  /**
-   * Populate a list of all of the valid items that can be added to a group.
-   * This list contains events, information types, and states.
-   *
-   * @param itemMap The map of items for a given type.
-   */
-  private addToCollectionItems(itemMap: Record<string, GroupItemType>): void {
-    if (itemMap) {
-      for (const item of Object.keys(itemMap)) {
-        this.collectionItems.push(itemMap[item]);
-      }
-    }
-  }
-
-  private filterItemList(groupMapping?: GroupMapping): void {
-    this.itemList = this.itemList.filter(item => item.id !== groupMapping?.item.id && this.group.id !== item.id);
-  }
-
   private validateGroupIdentifier(identifier: string): boolean {
     return new RegExp(StateManagementConstants.groupIdentifierRegex).test(identifier);
   }
@@ -206,9 +185,9 @@ export class GroupsSidenavComponent implements OnChanges {
     GroupsSidenavComponent
   ],
   imports: [
+    AutoCompleteModule,
     CommonModule,
     FormsModule,
-    GroupItemSelectorModule,
     IdentifierFormModule,
     MaterialModule,
     ReactiveFormsModule

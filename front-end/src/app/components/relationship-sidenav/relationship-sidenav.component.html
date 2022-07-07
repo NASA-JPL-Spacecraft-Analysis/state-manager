@@ -10,7 +10,8 @@
   <div class="sidenav-content">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <label for="displayName">Display Name</label>
-      <input class="st-input"
+      <input
+        class="st-input"
         placeholder="Display Name"
         type="text"
         formControlName="displayName"
@@ -18,50 +19,27 @@
       />
 
       <label for="description">Description</label>
-      <textarea class="st-input"
-        placeholder="Description"
-        formControlName="description"></textarea>
+      <textarea class="st-input" placeholder="Description" formControlName="description"></textarea>
 
-      <label for="subjectType">Subject Type</label>
-      <select class="st-select" placeholder="Subject Type" formControlName="subjectType" (ngModelChange)="onSubjectTypeChange($event)">
-        <option *ngFor="let type of types" [value]="type">
-          {{type}}
-        </option>
-      </select>
+      <label>Subject</label>
+      <sm-auto-complete
+        [itemSet]="itemSet"
+        [selectedItemIds]="[newRelationship.subjectTypeId]"
+        (itemRemoved)="onSubjectRemoved($event)"
+        (itemSelected)="onSubjectSelected($event)"
+      >
+      </sm-auto-complete>
 
-      <app-relationship-type-picker
-        [commandArgumentMap]="commandArgumentMap"
-        [commandMap]="commandMap"
-        [constraintMap]="constraintMap"
-        [eventMap]="eventMap"
-        [informationTypeMap]="informationTypeMap"
-        [isSubject]="true"
-        [parentFormGroup]="form"
-        [relationship]="newRelationship"
-        [stateEnumerationMap]="stateEnumerationMap"
-        [stateMap]="stateMap"
-        [type]="subjectType">
-      </app-relationship-type-picker>
+      <br />
 
-      <label for="targetType">Target Type</label>
-      <select class="st-select" placeholder="Target Type" formControlName="targetType" (ngModelChange)="onTargetTypeChange($event)">
-        <option *ngFor="let type of types" [value]="type">
-          {{type}}
-        </option>
-      </select>
-
-      <app-relationship-type-picker
-        [commandArgumentMap]="commandArgumentMap"
-        [commandMap]="commandMap"
-        [constraintMap]="constraintMap"
-        [eventMap]="eventMap"
-        [informationTypeMap]="informationTypeMap"
-        [parentFormGroup]="form"
-        [relationship]="newRelationship"
-        [stateEnumerationMap]="stateEnumerationMap"
-        [stateMap]="stateMap"
-        [type]="targetType">
-      </app-relationship-type-picker>
+      <label>Target</label>
+      <sm-auto-complete
+        [itemSet]="itemSet"
+        [selectedItemIds]="[newRelationship.targetTypeId]"
+        (itemRemoved)="onTargetRemoved($event)"
+        (itemSelected)="onTargetSelected($event)"
+      >
+      </sm-auto-complete>
     </form>
   </div>
 

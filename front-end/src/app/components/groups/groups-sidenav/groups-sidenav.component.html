@@ -17,12 +17,13 @@
       >
       </app-identifier-form>
 
-      <sm-group-item-selector
-        [itemList]="itemList"
-        [selectedItems]="selectedItems"
-        (selectionChange)="onItemSelect($event)"
-      >
-      </sm-group-item-selector>
+      <sm-auto-complete
+        [itemSet]="itemSet"
+        [multiselect]="true"
+        [selectedItemIds]="selectedItemIds"
+        (itemRemoved)="onItemRemoved($event)"
+        (itemSelected)="onItemSelected($event)"
+      ></sm-auto-complete>
     </form>
   </div>
 
