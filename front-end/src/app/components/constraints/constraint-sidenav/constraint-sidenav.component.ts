@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { Constraint, constraintTypes, IdentifierMap } from 'src/app/models';
+import { Constraint, IdentifierMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 
 @Component({
@@ -14,11 +14,11 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
 export class ConstraintSidenavComponent implements OnChanges {
   @Input() public constraint: Constraint;
   @Input() public constraintIdentifierMap: IdentifierMap;
+  @Input() public constraintTypes: string[];
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public modifyConstraint: EventEmitter<Constraint>;
 
-  public constraintTypes = constraintTypes;
   public form: FormGroup;
   public newConstraint: Constraint;
 

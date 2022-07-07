@@ -6,30 +6,30 @@ import { SubSink } from 'subsink';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { AppState } from 'src/app/app-store';
 import {
+  ConstraintMap,
+  CommandMap,
+  CommandArgumentMap,
   StateMap,
+  StateEnumerationMap,
   RelationshipMap,
   InformationTypeMap,
-  EventMap,
-  StateEnumerationMap,
-  ConstraintMap,
-  CommandArgumentMap,
-  CommandMap
+  EventMap
 } from 'src/app/models';
 import {
+  getCommandMap,
+  getConstraintMap,
+  getCommandArgumentMap,
+  getStateEnumerationMap,
   getStates,
   getRelationshipHistory,
   getEventMap,
-  getInformationTypeMap,
-  getCommandMap,
-  getCommandArgumentMap,
-  getConstraintMap,
-  getStateEnumerationMap
+  getInformationTypeMap
 } from 'src/app/selectors';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-relationship-history',
-  styleUrls: [ 'relationship-history.component.css' ],
+  styleUrls: ['relationship-history.component.css'],
   templateUrl: 'relationship-history.component.html'
 })
 export class RelationshipHistoryComponent implements OnDestroy {
@@ -73,6 +73,10 @@ export class RelationshipHistoryComponent implements OnDestroy {
         this.relationshipHistoryMap = relationshipHistoryMap;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getStateEnumerationMap)).subscribe(stateEnumerationMap => {
+        this.stateEnumerationMap = stateEnumerationMap;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getStates)).subscribe(stateMap => {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
@@ -101,4 +105,4 @@ export class RelationshipHistoryComponent implements OnDestroy {
     RelationshipsTableModule
   ]
 })
-export class RelationshipHistoryModule {}
+export class RelationshipHistoryModule { }

@@ -9,12 +9,15 @@ import {
   Event,
   State,
   RelationshipHistory,
-  IdentifierTypeUnion,
-  Constraint
+  Constraint,
+  Command,
+  CommandArgument,
+  StateEnumeration
 } from '../models';
 import { DeleteItemResponse, DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
 import { ErrorConstants, RelationshipConstants } from '../constants';
 import { ValidationService } from '../service';
+import { RelationshipTypeUnion } from '../models/relationship-type-union';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
@@ -176,8 +179,8 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     });
   }
 
-  @FieldResolver(() => IdentifierTypeUnion)
-  public async subject(@Root() relationship: Relationship): Promise<typeof IdentifierTypeUnion | undefined> {
+  @FieldResolver(() => RelationshipTypeUnion)
+  public async subject(@Root() relationship: Relationship): Promise<typeof RelationshipTypeUnion | undefined> {
     return this.getSubjectOrTarget(
       relationship.collectionId,
       relationship.subjectType,
@@ -185,8 +188,8 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     );
   }
 
-  @FieldResolver(() => IdentifierTypeUnion)
-  public async target(@Root() relationship: Relationship): Promise<typeof IdentifierTypeUnion | undefined> {
+  @FieldResolver(() => RelationshipTypeUnion)
+  public async target(@Root() relationship: Relationship): Promise<typeof RelationshipTypeUnion | undefined> {
     return this.getSubjectOrTarget(
       relationship.collectionId,
       relationship.targetType,
@@ -245,7 +248,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
    * @param identifier The optional identifier of the thing we're looking for.
    */
   private async getSubjectOrTarget(collectionId: string, relationshipType: string, id?: string, identifier?: string):
-    Promise<typeof IdentifierTypeUnion | undefined> {
+  Promise<typeof RelationshipTypeUnion | undefined> {
     if (id || identifier) {
       let query;
 
@@ -260,7 +263,23 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         };
       }
 
-      if (relationshipType === 'constraint') {
+      if (relationshipType.toLowerCase() === 'command') {
+        const command = await Command.findOne({ ...query });
+
+        if (command) {
+          return command;
+        }
+      }
+
+      if (relationshipType.toLowerCase() === 'commandargument') {
+        const commandArgument = await CommandArgument.findOne({ id });
+
+        if (commandArgument) {
+          return commandArgument;
+        }
+      }
+
+      if (relationshipType.toLowerCase() === 'constraint') {
         const constraint = await Constraint.findOne(query);
 
         if (constraint) {
@@ -268,7 +287,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'event') {
+      if (relationshipType.toLowerCase() === 'event') {
         const event = await Event.findOne(query);
 
         if (event) {
@@ -276,7 +295,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'informationType') {
+      if (relationshipType.toLowerCase() === 'informationtype') {
         const informationType = await InformationType.findOne(query);
 
         if (informationType) {
@@ -284,11 +303,19 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         }
       }
 
-      if (relationshipType === 'state') {
+      if (relationshipType.toLowerCase() === 'state') {
         const state = await State.findOne(query);
 
         if (state) {
           return state;
+        }
+      }
+
+      if (relationshipType.toLowerCase() === 'stateenumeration') {
+        const stateEnumeration = await StateEnumeration.findOne({ id });
+
+        if (stateEnumeration) {
+          return stateEnumeration;
         }
       }
     }

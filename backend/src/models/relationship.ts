@@ -20,8 +20,8 @@ export class Relationship extends Node {
   @Field({ nullable: true })
   public displayName?: string;
 
-  @Field(() => Models.IdentifierTypeUnion, { nullable: true })
-  public subject?: typeof Models.IdentifierTypeUnion;
+  @Field(() => Models.RelationshipTypeUnion, { nullable: true })
+  public subject?: typeof Models.RelationshipTypeUnion;
 
   @Column()
   @Field()
@@ -31,8 +31,8 @@ export class Relationship extends Node {
   @Field(() => ID)
   public subjectTypeId!: string;
 
-  @Field(() => Models.IdentifierTypeUnion, { nullable: true })
-  public target?: typeof Models.IdentifierTypeUnion;
+  @Field(() => Models.RelationshipTypeUnion, { nullable: true })
+  public target?: typeof Models.RelationshipTypeUnion;
 
   @Column()
   @Field()

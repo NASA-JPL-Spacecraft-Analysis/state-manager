@@ -12,13 +12,13 @@ import {
   GroupMap,
   IdentifierMap,
   InformationTypeMap,
-  StateMap,
   CommandMap,
   ConstraintMap,
   StateEnumerationMap,
   CommandArgumentMap,
   AutoCompleteType,
-  AutoCompleteSetType
+  AutoCompleteSetType,
+  StateMap
 } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { AutoCompleteModule } from '../../autocomplete/auto-complete.component';

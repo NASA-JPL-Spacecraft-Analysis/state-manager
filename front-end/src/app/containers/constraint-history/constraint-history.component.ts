@@ -12,7 +12,7 @@ import { ConstraintTableModule } from 'src/app/components/constraints';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'constraint-history',
-  styleUrls: [ 'constraint-history.component.css' ],
+  styleUrls: ['constraint-history.component.css'],
   templateUrl: 'constraint-history.component.html'
 })
 export class ConstraintHistoryComponent implements OnDestroy {
@@ -52,4 +52,4 @@ export class ConstraintHistoryComponent implements OnDestroy {
     MaterialModule
   ]
 })
-export class ConstraintHistoryModule {}
+export class ConstraintHistoryModule { }

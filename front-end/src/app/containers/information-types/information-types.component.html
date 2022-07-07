@@ -2,17 +2,13 @@
   <span class="st-typography-header">Information Types</span>
 
   <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" (click)="informationTypesUpload.click()">
+    <button class="st-button tertiary" (click)="onFileUpload()">
       <i class="si-upload"></i>
       Upload Information Types
     </button>
-
-    <input #informationTypesUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
   </div>
 </div>
 
 <div class="content-container">
-  <app-information-type-table
-    [informationTypes]="informationTypes">
-  </app-information-type-table>
+  <app-information-type-table [informationTypes]="informationTypes"> </app-information-type-table>
 </div>

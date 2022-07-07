@@ -1,6 +1,6 @@
 import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
@@ -9,9 +9,17 @@ import { AppState } from 'src/app/app-store';
 import { EventActions, LayoutActions, ToastActions } from 'src/app/actions';
 // TODO: Have to alias our event to support file upload. Check with Dan to see if we have a better name.
 import { Event as StateEvent, EventMap, IdentifierMap } from 'src/app/models';
-import { getShowSidenav, getEventMap, getSelectedEvent, getSelectedCollectionId, getEventIdentifierMap } from 'src/app/selectors';
+import {
+  getShowSidenav,
+  getEventTypes,
+  getEventMap,
+  getSelectedEvent,
+  getSelectedCollectionId,
+  getEventIdentifierMap
+} from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,14 +31,20 @@ export class EventsComponent implements OnDestroy {
   public event: StateEvent;
   public eventIdentifierMap: IdentifierMap;
   public eventMap: EventMap;
+  public eventTypes: string[];
   public selectedCollectionId: string;
   public showSidenav: boolean;
 
+  private eventId: string;
   private subscriptions: SubSink;
 
   constructor(
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private navigationService: NavigationService,
+    private router: Router,
     private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.subscriptions = new SubSink();
 
@@ -42,6 +56,12 @@ export class EventsComponent implements OnDestroy {
       this.store.pipe(select(getEventMap)).subscribe(eventMap => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
+
+        this.eventId = this.activatedRoute.snapshot.paramMap.get('id');
+ 
+        if (this.eventId && this.eventMap) {
+          this.onModifyEvent(this.eventMap[this.eventId]);
+        }
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
@@ -53,6 +73,10 @@ export class EventsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getSelectedEvent)).subscribe(event => {
         this.event = event;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getEventTypes)).subscribe(eventTypes => {
+        this.eventTypes = eventTypes;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -78,6 +102,11 @@ export class EventsComponent implements OnDestroy {
       event
     }));
 
+    const newEventId = event?.id ?? '';
+
+    this.navigationService.addItemIDToURL(this.eventId, newEventId, this.location, this.router.url);
+    this.eventId = newEventId;
+
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
@@ -88,12 +117,17 @@ export class EventsComponent implements OnDestroy {
       collectionId: this.selectedCollectionId,
       csvFormat: [ UploadConstants.eventCsvUploadFormat ],
       dialogType: 'Event',
-      jsonFormat: UploadConstants.eventJsonUploadFormat
+      jsonFormat: UploadConstants.eventJsonUploadFormat,
+      types: this.eventTypes
     }));
   }
 
   public onSidenavOutput(event: StateEvent): void {
     if (event === undefined) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
+      this.eventId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));

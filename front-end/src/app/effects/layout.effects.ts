@@ -12,14 +12,15 @@ export class LayoutEffects {
   public openFileUploadDialog = createEffect(() =>
     this.actions.pipe(
       ofType(LayoutActions.openFileUploadDialog),
-      switchMap(({ collectionId, csvFormat, dialogType, jsonFormat }) => {
+      switchMap(({ collectionId, csvFormat, dialogType, jsonFormat, types }) => {
         const fileUploadDialog = this.dialog.open(
           FileUploadDialogComponent,
           {
             data: {
               csvFormat,
               dialogType,
-              jsonFormat
+              jsonFormat,
+              types
             }
           }
         );

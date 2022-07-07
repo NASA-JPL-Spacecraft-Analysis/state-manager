@@ -1,35 +1,49 @@
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
-import { getCommandArguments, getCommandIdentifierMap, getCommands, getSelectedCollectionId, getSelectedCommand, getShowSidenav } from 'src/app/selectors';
+import {
+  getCommandArguments,
+  getCommandIdentifierMap,
+  getCommands,
+  getCommandTypes,
+  getSelectedCollectionId,
+  getSelectedCommand,
+  getShowSidenav
+} from 'src/app/selectors';
 import { CommandActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { CommandSidenavModule, CommandTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
+import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-commands',
-  styleUrls: [ 'commands.component.css' ],
+  styleUrls: ['commands.component.css'],
   templateUrl: 'commands.component.html'
 })
 export class CommandsComponent implements OnDestroy {
   public command: Command;
+  public commands: Command[];
   public commandArguments: CommandArgument[];
   public commandIdentifierMap: IdentifierMap;
-  public commands: Command[];
+  public commandTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
 
+  private commandId: string;
   private subscriptions: SubSink;
 
   constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private location: Location,
+    private navigationService: NavigationService,
+    private router: Router,
+    private store: Store<AppState>
   ) {
     this.subscriptions = new SubSink();
 
@@ -54,6 +68,10 @@ export class CommandsComponent implements OnDestroy {
         this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
       }),
+      this.store.pipe(select(getCommandTypes)).subscribe(commandTypes => {
+        this.commandTypes = commandTypes;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getSelectedCommand)).subscribe(selectedCommand => {
         this.command = selectedCommand;
         this.changeDetectorRef.markForCheck();
@@ -68,7 +86,7 @@ export class CommandsComponent implements OnDestroy {
   public onCommandArgumentFileUpload(): void {
     this.store.dispatch(LayoutActions.openFileUploadDialog({
       collectionId: this.selectedCollectionId,
-      csvFormat: [ UploadConstants.commandArgumentCsvUploadFormat ],
+      csvFormat: [UploadConstants.commandArgumentCsvUploadFormat],
       dialogType: 'Command Argument',
       jsonFormat: UploadConstants.commandArgumentJsonUploadFormat
     }));
@@ -77,9 +95,10 @@ export class CommandsComponent implements OnDestroy {
   public onCommandFileUpload(): void {
     this.store.dispatch(LayoutActions.openFileUploadDialog({
       collectionId: this.selectedCollectionId,
-      csvFormat: [ UploadConstants.commandCsvUploadFormat ],
+      csvFormat: [UploadConstants.commandCsvUploadFormat],
       dialogType: 'Command',
-      jsonFormat: UploadConstants.commandJsonUploadFormat
+      jsonFormat: UploadConstants.commandJsonUploadFormat,
+      types: this.commandTypes
     }));
   }
 
@@ -99,6 +118,11 @@ export class CommandsComponent implements OnDestroy {
       id: command?.id
     }));
 
+    const newCommandId = command?.id ?? '';
+
+    this.navigationService.addItemIDToURL(this.commandId, newCommandId, this.location, this.router.url);
+    this.commandId = newCommandId;
+
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
@@ -113,6 +137,10 @@ export class CommandsComponent implements OnDestroy {
 
   public onSidenavOutput(result: { command: Command; deletedArgumentIds: string[] }): void {
     if (!result) {
+      // If the user is closing the sidenav intentionally, remove the ID from the URL.
+      this.navigationService.removeIDFromURL(this.location, this.router.url);
+      this.commandId = '';
+
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
@@ -151,4 +179,4 @@ export class CommandsComponent implements OnDestroy {
     RouterModule
   ]
 })
-export class CommandsModule {}
+export class CommandsModule { }

@@ -50,14 +50,17 @@ export class EventEffects {
     this.actions.pipe(
       ofRoute([
         'collection/:collectionId/events',
+        'collection/:collectionId/events/',
+        'collection/:collectionId/events/:id',
         'collection/:collectionId/event-history'
       ]),
       mapToParam<string>('collectionId'),
       switchMap(collectionId => {
-        let history = true;
+        const url = this.router.routerState.snapshot.url.split('/').pop();
+        let history = false;
 
-        if (this.router.routerState.snapshot.url.split('/').pop() === 'events') {
-          history = false;
+        if (url === 'event-history') {
+          history = true;
         }
 
         return merge(
@@ -108,18 +111,32 @@ export class EventEffects {
 
   public getEvents(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return this.eventService.getEvents(
-        collectionId
-      ).pipe(
-        map(events => EventActions.setEvents({
-          events
-        })),
-        catchError(
-          (error: Error) => [
-            EventActions.fetchEventsFailure({
-              error
-            })
-          ]
+      return merge(
+        this.eventService.getEvents(
+          collectionId
+        ).pipe(
+          map(events => EventActions.setEvents({
+            events
+          })),
+          catchError(
+            (error: Error) => [
+              EventActions.fetchEventsFailure({
+                error
+              })
+            ]
+          )
+        ),
+        this.eventService.getEventTypes().pipe(
+          map(eventTypes => EventActions.setEventTypes({
+            eventTypes
+          })),
+          catchError(
+            (error: Error) => [
+              EventActions.fetchEventTypesFailure({
+                error
+              })
+            ]
+          )
         )
       );
     } else {

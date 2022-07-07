@@ -18,8 +18,8 @@ export class UploadConstants {
   `;
 
   public static commandCsvUploadFormat = `
-    description,displayName,externalLink,identifier,version
-    Example description.,Example Command Upload,https://js.jpl.nasa.gov/,EXAMPLE_COMMAND_UPLOAD,
+    description,displayName,externalLink,identifier,type,version
+    Example description.,Example Command Upload,https://js.jpl.nasa.gov/,EXAMPLE_COMMAND_UPLOAD,command,
   `;
 
   public static commandJsonUploadFormat = `
@@ -29,7 +29,8 @@ export class UploadConstants {
         "displayName": "Example Command Upload",
         "externalLink": "https://js.jpl.nasa.gov/",
         "identifier": "EXAMPLE_COMMAND_UPLOAD",
-        "version": ""
+        "version": "",
+        "type": "command"
       },
       {
         ...
@@ -103,6 +104,39 @@ export class UploadConstants {
             ...
           }
         ]
+      }
+    ]
+  `;
+
+  public static informationTypeCsvUploadFormat = `
+    identifier,displayName,type,description,externalLink
+    GOAL_UPLOAD_TEST,Goal Upload Test,goal,,
+  `;
+
+  public static informationTypeJsonUploadFormat = `
+    [
+      {
+        "identifier": "GOAL_UPLOAD_TEST",
+        "displayName": "Goal Upload Test",
+        "type": "goal"
+      }
+    ]
+  `;
+
+  public static relationshipCsvUploadFormat = `
+    displayName,description,subjectType,subjectIdentifier,targetType,targetIdentifier
+    Test upload relationship 1,test json relationship 1,Command,TEST_COMMAND,State,STATE_IDENTIFIER_1
+  `;
+
+  public static relationshipJsonUploadFormat = `
+    [
+      {
+        "displayName": "Test upload relationship 1",
+        "description": "test json relationship 1",
+        "subjectType": "Command",
+        "subjectIdentifier": "TEST_COMMAND",
+        "targetType": "State",
+        "targetIdentifier": "STATE_IDENTIFIER_1"
       }
     ]
   `;

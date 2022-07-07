@@ -1,4 +1,4 @@
- <div class="page-toolbar">
+<div class="page-toolbar">
   <span class="st-typography-header">Relationships</span>
 
   <div class="page-toolbar-buttons">
@@ -6,12 +6,10 @@
       Relationship History
     </button>
 
-    <button class="st-button icon tertiary" (click)="relationshipsFileUpload.click()">
+    <button class="st-button icon tertiary" (click)="onFileUpload()">
       <i class="si-upload"></i>
       Upload Relationships
     </button>
-
-    <input #relationshipsFileUpload class="file-upload-input" type="file" (input)="onFileUpload($event)" />
 
     <button class="st-button primary" (click)="onModifyRelationship()">
       Create New Relationship
@@ -30,7 +28,8 @@
       [relationshipMap]="relationshipMap"
       [stateEnumerationMap]="stateEnumerationMap"
       [stateMap]="stateMap"
-      (relationshipSelected)="onModifyRelationship($event)">
+      (relationshipSelected)="onModifyRelationship($event)"
+    >
     </sm-relationships-table>
   </div>
 
@@ -45,7 +44,8 @@
       [stateEnumerationMap]="stateEnumerationMap"
       [stateMap]="stateMap"
       (formError)="onFormErrorOutput($event)"
-      (modifyRelationship)="onRelationshipOutput($event)">
+      (modifyRelationship)="onRelationshipOutput($event)"
+    >
     </app-relationship-sidenav>
   </div>
 </div>

@@ -168,6 +168,12 @@ export const GET_STATES = gql(`
   }
 `);
 
+export const GET_STATE_TYPES = gql(`
+  query stateTypes {
+    stateTypes
+  }
+`);
+
 export const DELETE_ENUMERATIONS = gql(`
   mutation DeleteEnumerations(
     $enumerationIds: [ID!]!

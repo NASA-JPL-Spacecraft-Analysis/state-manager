@@ -83,6 +83,15 @@ export class EventService {
       .pipe(map(({ data: { eventHistory } }) => eventHistory));
   }
 
+  public getEventTypes(): Observable<string[]> {
+    return this.apollo
+      .query<{ eventTypes: string[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_EVENT_TYPES
+      })
+      .pipe(map(({ data: { eventTypes } }) => eventTypes));
+  }
+
   public updateEvent(event: Event): Observable<EventResponse> {
     return this.apollo
       .mutate<{ updateEvent: EventResponse }>({

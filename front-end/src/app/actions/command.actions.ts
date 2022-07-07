@@ -52,6 +52,11 @@ export const fetchCommandsFailure = createAction(
   props<{ error: Error }>()
 );
 
+export const fetchCommandTypesFailure = createAction(
+  '[command] fetchCommandTypesFailure',
+  props<{ error: Error }>()
+);
+
 export const saveCommandArgumentsSuccess = createAction(
   '[command] saveCommandArgumentsSuccess',
   props<{ commandArguments: CommandArgument[] }>()
@@ -75,6 +80,11 @@ export const setCommandHistory = createAction(
 export const setCommands = createAction(
   '[command] setCommands',
   props<{ commands: Command[] }>()
+);
+
+export const setCommandTypes = createAction(
+  '[command] setCommandTypes',
+  props<{ commandTypes: string[] }>()
 );
 
 export const setSelectedCommand = createAction(

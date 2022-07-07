@@ -102,6 +102,12 @@ export const GET_CONSTRAINTS = gql(`
   }
 `);
 
+export const GET_CONSTRAINT_TYPES = gql(`
+  query ConstraintTypes {
+    constraintTypes
+  }
+`);
+
 export const UPDATE_CONSTRAINT = gql(`
   mutation UpdateConstraint(
     $description: String

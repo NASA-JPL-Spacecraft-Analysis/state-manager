@@ -21,7 +21,7 @@ import { TableComponent } from '../table/table.component';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-relationships-table',
-  styleUrls: [ '../table/table.component.css' ],
+  styleUrls: ['../table/table.component.css'],
   templateUrl: '../table/table.component.html'
 })
 export class RelationshipsTableComponent extends TableComponent<Relationship> implements OnInit, OnChanges {
@@ -184,11 +184,11 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
     RelationshipsTableComponent
   ],
   exports: [
-   RelationshipsTableComponent
+    RelationshipsTableComponent
   ],
   imports: [
     CommonModule,
     MaterialModule
   ]
 })
-export class RelationshipsTableModule {}
+export class RelationshipsTableModule { }

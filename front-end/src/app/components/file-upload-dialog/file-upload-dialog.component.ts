@@ -8,6 +8,7 @@ interface FileUploadDialogData {
   csvFormat: string[];
   dialogType: string;
   jsonFormat: string;
+  types: string[];
 }
 
 @Component({

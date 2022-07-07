@@ -67,7 +67,7 @@ export class CommandService {
         }
 
         return createCommandArguments;
-      }))
+      }));
   }
 
   public createCommands(collectionId: string, commands: Command[]): Observable<CommandsResponse> {
@@ -88,7 +88,7 @@ export class CommandService {
         return createCommands;
       }));
   }
-  
+
   public deleteArguments(commandId: string, deletedArgumentIds: string[]): Observable<DeleteArgumentResponse> {
     return this.apollo
       .mutate<{ deleteArguments: DeleteArgumentResponse }>({
@@ -154,6 +154,15 @@ export class CommandService {
         }
       })
       .pipe(map(({ data: { commands } }) => commands));
+  }
+
+  public getCommandTypes(): Observable<string[]> {
+    return this.apollo
+      .query<{ commandTypes: string[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_COMMAND_TYPES
+      })
+      .pipe(map(({ data: { commandTypes } }) => commandTypes));
   }
 
   public updateCommand(command: Command): Observable<CommandResponse> {

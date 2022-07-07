@@ -58,7 +58,7 @@ export class ConstraintService {
         return createConstraints;
       }));
   }
-  
+
   public getConstraintHistory(collectionId: string): Observable<Constraint[]> {
     return this.apollo
       .query<{ constraintHistory: Constraint[] }>({
@@ -81,6 +81,15 @@ export class ConstraintService {
         }
       })
       .pipe(map(({ data: { constraints } }) => constraints));
+  }
+
+  public getConstraintTypes(): Observable<string[]> {
+    return this.apollo
+      .query<{ constraintTypes: string[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql.GET_CONSTRAINT_TYPES
+      })
+      .pipe(map(({ data: { constraintTypes } }) => constraintTypes));
   }
 
   public updateConstraint(constraint: Constraint): Observable<ConstraintResponse> {

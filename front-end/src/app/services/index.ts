@@ -13,6 +13,7 @@ export * from './mock.state.service';
 export * from './information-type.service';
 export * from './mock.validation.service';
 export * from './relationship.service';
+export * from './navigation.service';
 export * from './parse.service';
 export * from './state.service';
 export * from './validation.service';

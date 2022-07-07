@@ -4,7 +4,17 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { CommandService, ConstraintService, EventService, GroupService, InformationTypeService, ParseService, RelationshipService, StateService, ValidationService } from '../services';
+import {
+  CommandService,
+  ConstraintService,
+  EventService,
+  GroupService,
+  InformationTypeService,
+  ParseService,
+  RelationshipService,
+  StateService,
+  ValidationService
+} from '../services';
 import { CommandActions, FileUploadActions, StateActions, ToastActions } from '../actions';
 import {
   Event,
@@ -358,18 +368,17 @@ export class FileUploadEffects {
           const groups: GroupUploadMappings[] = [];
 
           for (const parsedGroup of parsedGroups) {
-            let group = parsedGroup as GroupUploadMappings;
+            const group = parsedGroup as GroupUploadMappings;
 
-            // Matches our JSON upload type, 
+            // Matches our JSON upload type
             if (this.validationService.isGroupUploadMappings(group)) {
               groups.push({ ...group });
 
               continue;
             }
 
-            let groupUpload = parsedGroup as GroupUpload;
-
-            let mappingsUpload = parsedGroup as MappingsUpload;
+            const groupUpload = parsedGroup as GroupUpload;
+            const mappingsUpload = parsedGroup as MappingsUpload;
 
             if (this.validationService.isMappingsUpload(mappingsUpload)) {
               return this.groupMappingsCsvUpload(collectionId, parsedGroups as MappingsUpload[]);
@@ -584,7 +593,7 @@ export class FileUploadEffects {
               states
             ).pipe(
               switchMap((createStates: StatesResponse) => [
-                StateActions.createStatesSuccess({
+                FileUploadActions.uploadStatesSuccess({
                   states: createStates.states
                 }),
                 ToastActions.showToast({

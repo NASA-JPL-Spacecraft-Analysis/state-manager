@@ -6,7 +6,7 @@ import { TableComponent } from '../../table/table.component';
 
 @Component({
   selector: 'sm-constraint-table',
-  styleUrls: [ '../../table/table.component.css' ],
+  styleUrls: ['../../table/table.component.css'],
   templateUrl: '../../table/table.component.html'
 })
 export class ConstraintTableComponent extends TableComponent<Constraint> implements OnInit, OnChanges {
@@ -14,8 +14,6 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
   @Input() public history: boolean;
 
   @Output() public constraintSelected: EventEmitter<Constraint>;
-
-  public showConstraintTable: boolean;
 
   constructor() {
     super();
@@ -65,4 +63,4 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
     CommonModule
   ]
 })
-export class ConstraintTableModule {}
+export class ConstraintTableModule { }

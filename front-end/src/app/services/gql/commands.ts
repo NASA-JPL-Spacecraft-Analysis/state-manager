@@ -9,6 +9,7 @@ export const CREATE_COMMAND = gql(`
     $editable: Boolean!
     $externalLink: String
     $identifier: String!
+    $type: String!
     $version: String
   ) {
     createCommand(
@@ -20,6 +21,7 @@ export const CREATE_COMMAND = gql(`
         editable: $editable
         externalLink: $externalLink
         identifier: $identifier
+        type: $type
         version: $version
       }
     ) {
@@ -184,6 +186,11 @@ export const GET_COMMANDS = gql(`
   }
 `);
 
+export const GET_COMMAND_TYPES = gql(`
+  query CommandTypes {
+    commandTypes
+  }
+`);
 
 export const UPDATE_COMMAND = gql(`
   mutation UpdateCommand(

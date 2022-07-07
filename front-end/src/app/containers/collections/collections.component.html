@@ -1,37 +1,28 @@
 <div class="collection-container">
   <div *ngIf="!editing">
     <div *ngIf="!deleting" class="collection-dropdown">
-      <select class="st-select"
+      <select
+        class="st-select"
         [(ngModel)]="selectedCollectionId"
-        (ngModelChange)="onCollectionChange($event)">
+        (ngModelChange)="onCollectionChange($event)"
+      >
+        <option value="create" class="action-text">Create a new collection</option>
 
+        <option value="edit" class="action-text">Edit name</option>
 
-        <option value="create" class="action-text">
-          Create a new collection
-        </option>
-
-        <option value="edit" class="action-text">
-          Edit name
-        </option>
-
-        <option value="delete" class="action-text">
-          Delete collection
-        </option>
+        <option value="delete" class="action-text">Delete collection</option>
 
         <option disabled>──────────</option>
-        
-        <option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
-          {{collection.value.name}}
-        </option>
 
+        <option *ngFor="let collection of collectionMap | keyvalue" [value]="collection.value.id">
+          {{ collection.value.name }}
+        </option>
       </select>
     </div>
   </div>
 
   <div *ngIf="editing">
-    <sm-collection-input
-      [focus]="editing"
-      (collectionNameOutput)="onCollectionInputOutput($event)">
+    <sm-collection-input [focus]="editing" (collectionNameOutput)="onCollectionInputOutput($event)">
     </sm-collection-input>
   </div>
 </div>

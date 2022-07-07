@@ -2,36 +2,31 @@
   <span class="st-typography-header">Events</span>
 
   <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../event-history">
-      Event History
-    </button>
+    <button class="st-button tertiary" routerLink="../event-history">Event History</button>
 
     <button class="st-button icon tertiary" (click)="onEventFileUpload()">
       <i class="si-upload"></i>
       Upload Events
     </button>
 
-    <button class="st-button primary" (click)="onModifyEvent()">
-      Create New Event
-    </button>
+    <button class="st-button primary" (click)="onModifyEvent()">Create New Event</button>
   </div>
 </div>
 
 <div class="content-container">
   <div class="content">
-    <sm-event-table
-      [eventMap]="eventMap"
-      (eventSelected)="onModifyEvent($event)">
-    </sm-event-table>
+    <sm-event-table [eventMap]="eventMap" (eventSelected)="onModifyEvent($event)"> </sm-event-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
     <app-event-sidenav
       [eventIdentifierMap]="eventIdentifierMap"
       [event]="event"
+      [eventTypes]="eventTypes"
       [selectedCollectionId]="selectedCollectionId"
       (duplicateIdentifier)="onDuplicateIdentifier($event)"
-      (modifyEvent)="onSidenavOutput($event)">
+      (modifyEvent)="onSidenavOutput($event)"
+    >
     </app-event-sidenav>
   </div>
 </div>

@@ -28,11 +28,3 @@ export class EventHistory extends Event {
   @Field(() => Date)
   public updated!: Date;
 }
-
-export const eventTypes: Set<string> = new Set([
-  'activity_instance',
-  'command_instance',
-  'evr',
-  'predict_event',
-  'user'
-]);

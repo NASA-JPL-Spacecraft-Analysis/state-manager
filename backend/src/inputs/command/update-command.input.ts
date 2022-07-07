@@ -4,7 +4,7 @@ import { ModifyCommandArgument } from './modify-command-argument.input';
 
 @InputType()
 export class UpdateCommandInput {
-  @Field(() => [ ModifyCommandArgument ], { nullable: true })
+  @Field(() => [ModifyCommandArgument], { nullable: true })
   public arguments?: ModifyCommandArgument[];
 
   @Field({ nullable: true })
@@ -24,6 +24,9 @@ export class UpdateCommandInput {
 
   @Field()
   public identifier!: string;
+
+  @Field()
+  public type!: string;
 
   @Field({ nullable: true })
   public version?: string;

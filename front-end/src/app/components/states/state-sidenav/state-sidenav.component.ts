@@ -2,7 +2,7 @@ import { Component, NgModule, ChangeDetectionStrategy, Input, Output, EventEmitt
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { stateTypes, IdentifierMap, State, StateEnumeration } from '../../../models';
+import { IdentifierMap, State, StateEnumeration } from '../../../models';
 import { MaterialModule } from 'src/app/material';
 import { EnumFormModule } from '../../enum-form/enum-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
@@ -10,7 +10,7 @@ import { IdentifierFormModule } from '../../identifier-form/identifier-form.comp
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-state-sidenav',
-  styleUrls: [ 'state-sidenav.component.css' ],
+  styleUrls: ['state-sidenav.component.css'],
   templateUrl: 'state-sidenav.component.html'
 })
 export class StateSidenavComponent implements OnChanges {
@@ -18,6 +18,7 @@ export class StateSidenavComponent implements OnChanges {
   @Input() public state: State;
   @Input() public stateEnumerations: StateEnumeration[];
   @Input() public stateIdentifierMap: IdentifierMap;
+  @Input() public stateTypes: string[];
 
   @Output() public errorEmitter: EventEmitter<string>;
   @Output() public modifyState: EventEmitter<{ state: State; deletedEnumerationIds: string[] }>;
@@ -25,7 +26,6 @@ export class StateSidenavComponent implements OnChanges {
   public deletedEnumerationIds: string[];
   public form: FormGroup;
   public newState: State;
-  public stateTypes = stateTypes;
 
   private duplicateIdentifier: boolean;
 
@@ -73,16 +73,16 @@ export class StateSidenavComponent implements OnChanges {
       channelId: new FormControl(this.newState.channelId),
       collectionId: new FormControl(this.newState.collectionId),
       dataType: new FormControl(this.newState.dataType),
-      displayName: new FormControl(this.newState.displayName, [ Validators.required ]),
+      displayName: new FormControl(this.newState.displayName, [Validators.required]),
       description: new FormControl(this.newState.description),
       externalLink: new FormControl(this.newState.externalLink),
       id: new FormControl(this.newState.id),
-      identifier: new FormControl(this.newState.identifier, [ Validators.required ]),
-      restricted: new FormControl(this.newState.restricted, [ Validators.required ]),
-      source: new FormControl(this.newState.source, [ Validators.required ]),
-      subsystem: new FormControl(this.newState.subsystem, [ Validators.required ]),
-      type: new FormControl(this.newState.type, [ Validators.required ]),
-      units: new FormControl(this.newState.units, [ Validators.required ]),
+      identifier: new FormControl(this.newState.identifier, [Validators.required]),
+      restricted: new FormControl(this.newState.restricted, [Validators.required]),
+      source: new FormControl(this.newState.source, [Validators.required]),
+      subsystem: new FormControl(this.newState.subsystem, [Validators.required]),
+      type: new FormControl(this.newState.type, [Validators.required]),
+      units: new FormControl(this.newState.units, [Validators.required]),
       version: new FormControl(this.newState.version)
     });
   }
@@ -158,4 +158,4 @@ export class StateSidenavComponent implements OnChanges {
     MaterialModule
   ]
 })
-export class StateSidenavModule {}
+export class StateSidenavModule { }
