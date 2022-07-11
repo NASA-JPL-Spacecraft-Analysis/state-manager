@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm install -g @angular/cli
-RUN ng build --baseHref=/ --configuration=production --output-path=/dist
+RUN ng build --baseHref=/state-manager/ --configuration=production --output-path=/dist
 
 # Run stage
 FROM nginx:alpine
