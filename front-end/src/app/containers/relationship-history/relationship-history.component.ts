@@ -25,12 +25,11 @@ import {
   getEventMap,
   getInformationTypeMap
 } from 'src/app/selectors';
-import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-relationship-history',
-  styleUrls: [ 'relationship-history.component.css' ],
+  selector: 'sm-relationship-history',
+  styleUrls: ['relationship-history.component.css'],
   templateUrl: 'relationship-history.component.html'
 })
 export class RelationshipHistoryComponent implements OnDestroy {
@@ -81,6 +80,10 @@ export class RelationshipHistoryComponent implements OnDestroy {
       this.store.pipe(select(getStates)).subscribe(stateMap => {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getStateEnumerationMap)).subscribe(stateEnumerationMap => {
+        this.stateEnumerationMap = stateEnumerationMap;
+        this.changeDetectorRef.markForCheck();
       })
     );
   }
@@ -98,9 +101,8 @@ export class RelationshipHistoryComponent implements OnDestroy {
     RelationshipHistoryComponent
   ],
   imports: [
-    RelationshipsTableModule,
     CommonModule,
-    MaterialModule
+    RelationshipsTableModule
   ]
 })
-export class RelationshipHistoryModule {}
+export class RelationshipHistoryModule { }

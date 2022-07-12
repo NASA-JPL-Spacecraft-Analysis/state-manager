@@ -1,4 +1,4 @@
-<div *ngIf="enumerations">
+<div *ngIf="enumerations" class="enumeration-container">
   <div class="enumerations-header">
     <span class="enumeration-label">{{enumerationsLabel}}</span>
   </div>
@@ -12,29 +12,29 @@
 
     <tr *ngFor="let enumeration of enumerations">
       <td>
-        <input matInput 
+        <input class="st-input"
           [(ngModel)]="enumeration.value"
           type="text"
           placeholder="Value" />
       </td>
 
       <td>
-        <input matInput 
+        <input class="st-input"
           [(ngModel)]="enumeration.label"
           type="text"
           placeholder="Label" />
       </td>
 
       <td>
-        <button mat-button type="button" (click)="onDeleteEnumeration(enumeration)" class="mat-icon-button">
-          <mat-icon svgIcon="clear"></mat-icon>
+        <button class="st-button icon tertiary" type="button" (click)="onDeleteEnumeration(enumeration)">
+          <i class="si si-close"></i>
         </button>
       </td>
     </tr>
     <tr>
       <td colspan="3">
-        <button id="add-enum" mat-button type="button" (click)="onAddEnumeration()"  class="text-italic text-secondary">
-          <mat-icon svgIcon="add"></mat-icon>
+        <button id="add-enum" (click)="onAddEnumeration()" type="button" class="st-button icon tertiary text-italic text-secondary">
+          <i class="si si-plus"></i>
           Add an enum...
         </button>
       </td>

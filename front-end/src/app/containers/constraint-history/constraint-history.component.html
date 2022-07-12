@@ -1,10 +1,9 @@
-<mat-toolbar>
-  CONSTRAINT HISTORY
-</mat-toolbar>
+<div class="page-toolbar">
+  <span class="st-typography-header">Constraint History</span>
+</div>
 
-<div class="content">
-  <constraint-table
-    [constraintMap]="constraintMap"
-    [history]="true">
-  </constraint-table>
+<div class="content-container">
+  <div class="content">
+    <sm-constraint-table [constraints]="constraintHistory" [history]="true"></sm-constraint-table>
+  </div>
 </div>

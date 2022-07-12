@@ -10,6 +10,7 @@ export const CREATE_COMMAND = gql(`
     $externalLink: String
     $identifier: String!
     $type: String!
+    $version: String
   ) {
     createCommand(
       data: {
@@ -21,6 +22,7 @@ export const CREATE_COMMAND = gql(`
         externalLink: $externalLink
         identifier: $identifier
         type: $type
+        version: $version
       }
     ) {
       command {
@@ -39,6 +41,7 @@ export const CREATE_COMMAND = gql(`
         id
         identifier
         type
+        version
       }
       message
       success
@@ -97,6 +100,7 @@ export const CREATE_COMMANDS = gql(`
         id
         identifier
         type
+        version
       }
       message
       success
@@ -161,6 +165,7 @@ export const GET_COMMAND_HISTORY = gql(`
       identifier
       type
       updated
+      version
     }
   }
 `);
@@ -176,6 +181,7 @@ export const GET_COMMANDS = gql(`
       id
       identifier
       type
+      version
     }
   }
 `);
@@ -195,6 +201,7 @@ export const UPDATE_COMMAND = gql(`
     $externalLink: String
     $id: ID!
     $identifier: String!
+    $version: String
   ) {
     updateCommand(
       data: {
@@ -205,6 +212,7 @@ export const UPDATE_COMMAND = gql(`
         externalLink: $externalLink
         id: $id
         identifier: $identifier
+        version: $version
       }
     ) {
       command {
@@ -223,6 +231,7 @@ export const UPDATE_COMMAND = gql(`
         id
         identifier
         type
+        version
       }
       message
       success

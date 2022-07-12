@@ -1,5 +1,5 @@
-.action-text {
-  color: #9D9D9D;
+.mat-select-value {
+  color: var(--st-gray-10) !important;
 }
 
 .collection-container {
@@ -14,7 +14,6 @@
 .collection-container .mat-form-field-wrapper{
   padding-bottom: 0;
 }
-
 
 .icon-area {
   margin-right: 1em;
@@ -36,4 +35,25 @@
 .margin {
   display: inline-block;
   width: 1.9em;
+}
+
+
+.collection-dropdown > select.st-select:not(option){
+  background: none;
+  border: none;
+  color: inherit;
+  color: var(--st-secondary-10);
+}
+
+.collection-dropdown > .st-select:hover:not([disabled], .error){
+  background-color: var(--st-secondary-80);
+}
+
+.collection-dropdown .st-select option{
+  background-color: var(--st-select-background);
+  color: var(--st-select-color);
+}
+
+.collection-dropdown .st-select option.action-text {
+  font-weight: bold;
 }

@@ -1,77 +1,51 @@
 <div class="sidenav-container">
   <div class="sidenav-header">
-    <span>Relationship Detail</span>
+    <span class="st-typography-header">Relationship Details</span>
 
-    <button mat-icon-button class="sidenav-cancel-button" (click)="onCancel()">
-      <mat-icon svgIcon="clear"></mat-icon>
+    <button class="st-button icon tertiary" (click)="onCancel()">
+      <i class="si si-close"></i>
     </button>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline">
-      <mat-label>Display Name</mat-label>
-      <input matInput
+  <div class="sidenav-content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label for="displayName">Display Name</label>
+      <input
+        class="st-input"
         placeholder="Display Name"
         type="text"
         formControlName="displayName"
         required
       />
-    </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
-      <textarea matInput
-        placeholder="Description"
-        formControlName="description"></textarea>
-    </mat-form-field>
+      <label for="description">Description</label>
+      <textarea class="st-input" placeholder="Description" formControlName="description"></textarea>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Subject Type</mat-label>
-      <mat-select placeholder="Subject Type" [(value)]="subjectType">
-        <mat-option *ngFor="let type of types" [value]="type">
-          {{type}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <label>Subject</label>
+      <sm-auto-complete
+        [itemSet]="itemSet"
+        [selectedItemIds]="[newRelationship.subjectTypeId]"
+        (itemRemoved)="onSubjectRemoved($event)"
+        (itemSelected)="onSubjectSelected($event)"
+      >
+      </sm-auto-complete>
 
-    <app-relationship-type-picker
-      [commandArgumentMap]="commandArgumentMap"
-      [commandMap]="commandMap"
-      [constraintMap]="constraintMap"
-      [eventMap]="eventMap"
-      [informationTypeMap]="informationTypeMap"
-      [isSubject]="true"
-      [parentFormGroup]="form"
-      [relationship]="newRelationship"
-      [stateEnumerationMap]="stateEnumerationMap"
-      [stateMap]="stateMap"
-      [type]="subjectType">
-    </app-relationship-type-picker>
+      <br />
 
-    <mat-form-field appearance="outline" class="target-type-picker">
-      <mat-label>Target Type</mat-label>
-      <mat-select placeholder="Target Type" [(value)]="targetType">
-        <mat-option *ngFor="let type of types" [value]="type">
-          {{type}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <label>Target</label>
+      <sm-auto-complete
+        [itemSet]="itemSet"
+        [selectedItemIds]="[newRelationship.targetTypeId]"
+        (itemRemoved)="onTargetRemoved($event)"
+        (itemSelected)="onTargetSelected($event)"
+      >
+      </sm-auto-complete>
+    </form>
+  </div>
 
-    <app-relationship-type-picker
-      [commandArgumentMap]="commandArgumentMap"
-      [commandMap]="commandMap"
-      [constraintMap]="constraintMap"
-      [eventMap]="eventMap"
-      [informationTypeMap]="informationTypeMap"
-      [parentFormGroup]="form"
-      [relationship]="newRelationship"
-      [stateEnumerationMap]="stateEnumerationMap"
-      [stateMap]="stateMap"
-      [type]="targetType">
-    </app-relationship-type-picker>
+  <div class="sidenav-footer">
+    <button class="st-button secondary" (click)="onCancel()">Cancel</button>
 
-    <div class="sidenav-actions">
-      <button mat-raised-button color="primary" type="submit">Save</button>
-    </div>
-  </form>
+    <button class="st-button" (click)="onSubmit()">Save Relationship</button>
+  </div>
 </div>

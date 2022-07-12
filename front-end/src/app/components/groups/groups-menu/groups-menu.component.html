@@ -3,11 +3,11 @@
     <span>All Groups</span>
   </div>
 
-  <div *ngIf="groups.length > 0">
-    <mat-list *ngFor="let group of groups">
-      <span class="group-name" (click)="onGroupSelected(group)">
+  <div *ngIf="groups.length > 0" class="groups-sidemenu">
+    <div *ngFor="let group of groups">
+      <span class="group-name st-typography-header" (click)="onGroupSelected(group)">
         {{group.identifier}}
       </span>
-    </mat-list>
+    </div>
   </div>
 </div>

@@ -1,3 +1,4 @@
+export * from './autocomplete';
 export * from './responses';
 export * from './collection';
 export * from './command';

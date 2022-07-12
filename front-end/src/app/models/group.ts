@@ -1,3 +1,4 @@
+import { AutoCompleteType } from './autocomplete';
 import { Event } from './event';
 import { InformationType } from './information-type';
 import { State } from './state';
@@ -15,15 +16,9 @@ export type GroupMap = StringTMap<Event>;
 export interface GroupMapping {
   groupId?: string;
   id: string;
-  item: GroupItemType;
+  item: AutoCompleteType;
   itemId: string;
 }
-
-export type GroupItemType =
-  | Event
-  | Group
-  | InformationType
-  | State;
 
 export interface GroupUpload {
   identifier: string;

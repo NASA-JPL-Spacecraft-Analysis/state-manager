@@ -24,4 +24,7 @@ export class UpdateEventInput implements Partial<Event> {
 
   @Field()
   public type!: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }

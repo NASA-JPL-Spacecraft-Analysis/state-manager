@@ -6,14 +6,31 @@ Table of Contents
 4. Tables
 5. Sidenav
 6. Toolbar
+7. Global
 **************/
 
 /**************
 1. Layout
 **************/
 
-html, body, main {
+html,
+body,
+main {
   height: 100%;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: var(--st-gray-10);
 }
 
 .hidden {
@@ -25,7 +42,7 @@ html, body, main {
 **************/
 
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   margin: 0;
 }
 
@@ -34,6 +51,10 @@ body {
 **************/
 
 /* Angular Material Global Overwrites */
+
+.mat-form-field-infix {
+  border: none;
+}
 
 .mat-form-field {
   display: flex;
@@ -45,13 +66,10 @@ body {
 }
 
 /* Global Styles */
-.cancel-button {
-  color: #333333;
-  background-color: #D5D5D5;
-}
-
 .content {
-  flex-grow: 1;
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: 78%;
 }
 
 .content-container {
@@ -61,17 +79,17 @@ body {
 }
 
 .form-input {
-  background: #FAFAFA;
-  border: 1px solid #BEBEBE;
+  background: #fafafa;
+  border: 1px solid #bebebe;
   box-sizing: border-box;
   border-radius: 3px;
   height: 3em;
-  padding-top: .75em;
-  padding-left: .5em;
+  padding-top: 0.75em;
+  padding-left: 0.5em;
 }
 
 .form-input-label {
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 
 /**************
@@ -79,19 +97,16 @@ body {
 **************/
 
 table {
+  background-color: white;
   width: 100%;
 }
 
-.table-row {
+table tbody tr {
   cursor: pointer;
 }
 
-.history .table-row {
+.history tbody tr {
   cursor: default;
-}
-
-td.mat-cell:first-of-type{
-  font-weight: bold;
 }
 
 /**************
@@ -99,18 +114,57 @@ td.mat-cell:first-of-type{
 **************/
 
 .sidenav {
-  width: 25%;
+  flex-basis: 20%;
+  flex-grow: 1;
 }
 
-.sidenav-cancel-button {
-  top: -8px;
+.sidenav-container {
+  background: white;
+  border: 1px solid var(--st-gray-20);
 }
 
-.sidenav-header {
+.sidenav-container input,
+.sidenav-container select,
+.sidenav-container textarea {
+  min-width: 100% !important;
+}
+
+.sidenav-container label {
+  color: var(--st-gray-60);
+  display: inline-block;
+  font-size: 0.75em;
+  margin-bottom: 0.75em;
+  margin-top: 3em;
+}
+
+.sidenav-content {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.sidenav-footer {
+  border-bottom: 0 !important;
+  margin-top: 3em;
+  justify-content: flex-end !important;
+}
+
+.sidenav-footer button {
+  margin-left: 0.5em;
+}
+
+.sidenav-header,
+.sidenav-footer {
+  align-items: center;
+  background-color: var(--st-gray-10);
+  border-bottom: 1px solid var(--st-gray-20);
   display: flex;
-  font-size: 1.5em;
+  height: 2.75em;
   justify-content: space-between;
-  padding-bottom: 1em;
+  padding: 0em 1em;
+}
+
+.sidenav-header button {
+  font-size: 2em;
 }
 
 .sidenav-actions {
@@ -133,8 +187,32 @@ td.mat-cell:first-of-type{
   padding-bottom: 0;
 }
 
-.mat-toolbar .mat-form-field-infix {
-  border-top-width: 0px;
+.page-toolbar {
+  align-items: center;
+  background-color: var(--st-gray-10);
+  border-bottom: 1px solid var(--st-gray-20);
+  box-shadow: 0px 1px 0px #e8ecf0;
+  display: flex;
+  height: 48px;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.page-toolbar-buttons {
+  display: flex;
+}
+
+.page-toolbar-buttons button.icon {
+  padding: 8px;
+}
+
+.page-toolbar-buttons button:not(:last-child) {
+  margin-right: 24px;
+}
+
+.page-toolbar-buttons i {
+  font-size: 16px;
+  margin-right: 6px;
 }
 
 /**************
@@ -152,4 +230,40 @@ td.mat-cell:first-of-type{
   letter-spacing: 0.04em;
   line-height: 16px;
   padding: 15px;
+}
+
+/**************
+8. Global
+**************/
+
+button > i {
+  font-size: 24px;
+}
+
+.error {
+  color: var(--st-red);
+}
+
+.success {
+  color: var(--st-green);
+}
+
+/* TODO: Remove this once Stellar has implemented their chips */
+.st-chip {
+  align-items: center;
+  background: var(--st-primary-10);
+  border-radius: 8px;
+  color: var(--st-primary-80);
+  display: flex;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  gap: 0.5rem;
+  height: 24px;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+  padding: 0.5rem;
+  white-space: nowrap;
 }

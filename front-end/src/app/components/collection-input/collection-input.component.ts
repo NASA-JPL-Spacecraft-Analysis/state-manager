@@ -11,11 +11,9 @@ import {
   HostListener
 } from '@angular/core';
 
-import { MaterialModule } from 'src/app/material';
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-collection-input',
+  selector: 'sm-collection-input',
   styleUrls: [ 'collection-input.component.css' ],
   templateUrl: 'collection-input.component.html'
 })
@@ -65,7 +63,6 @@ export class CollectionInputComponent implements OnChanges {
     CollectionInputComponent
   ],
   imports: [
-    MaterialModule
   ]
 })
 export class CollectionInputModule {}

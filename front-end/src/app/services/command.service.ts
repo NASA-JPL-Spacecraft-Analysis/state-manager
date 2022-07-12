@@ -38,7 +38,8 @@ export class CommandService {
           editable: command.editable,
           externalLink: command.externalLink,
           identifier: command.identifier,
-          type: command.type
+          type: command.type,
+          version: command.version
         }
       })
       .pipe(map(({ data: { createCommand }}) => {
@@ -178,7 +179,8 @@ export class CommandService {
           externalLink: command.externalLink,
           id: command.id,
           identifier: command.identifier,
-          type: command.type
+          type: command.type,
+          version: command.version
         }
       })
       .pipe(map(({ data: { updateCommand }}) => {

@@ -1,3 +1,4 @@
+export * from './autocomplete/auto-complete.component';
 export * from './chip/chip.component';
 export * from './collection-input/collection-input.component';
 export * from './commands';
@@ -11,6 +12,5 @@ export * from './groups';
 export * from './identifier-form/identifier-form.component';
 export * from './information-type-table/information-type-table.component';
 export * from './relationship-sidenav/relationship-sidenav.component';
-export * from './relationship-type-picker/relationship-type-picker.component';
 export * from './states';
 export * from './table/table.component';

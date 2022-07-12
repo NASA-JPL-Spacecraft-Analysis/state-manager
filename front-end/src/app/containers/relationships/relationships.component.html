@@ -1,24 +1,25 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Relationships
+<div class="page-toolbar">
+  <span class="st-typography-header">Relationships</span>
 
-  <div class="actions-container">
-    <button mat-button routerLink="../../relationship-history">
-      History
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" routerLink="../relationship-history">
+      Relationship History
     </button>
 
-    <button mat-button (click)="onFileUpload()">
+    <button class="st-button icon tertiary" (click)="onFileUpload()">
+      <i class="si-upload"></i>
       Upload Relationships
     </button>
 
-    <button mat-raised-button color="primary" (click)="onModifyRelationship()">
+    <button class="st-button primary" (click)="onModifyRelationship()">
       Create New Relationship
     </button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="content">
-    <app-relationships-table
+    <sm-relationships-table
       [commandArgumentMap]="commandArgumentMap"
       [commandMap]="commandMap"
       [constraintMap]="constraintMap"
@@ -27,8 +28,9 @@
       [relationshipMap]="relationshipMap"
       [stateEnumerationMap]="stateEnumerationMap"
       [stateMap]="stateMap"
-      (relationshipSelected)="onModifyRelationship($event)">
-    </app-relationships-table>
+      (relationshipSelected)="onModifyRelationship($event)"
+    >
+    </sm-relationships-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav">
@@ -42,7 +44,8 @@
       [stateEnumerationMap]="stateEnumerationMap"
       [stateMap]="stateMap"
       (formError)="onFormErrorOutput($event)"
-      (modifyRelationship)="onRelationshipOutput($event)">
+      (modifyRelationship)="onRelationshipOutput($event)"
+    >
     </app-relationship-sidenav>
   </div>
 </div>

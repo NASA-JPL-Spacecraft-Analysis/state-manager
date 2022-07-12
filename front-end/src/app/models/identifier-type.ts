@@ -9,6 +9,7 @@ export interface IdentifierType extends Node {
   externalLink: string;
   identifier: string;
   type: string;
+  version: string;
 }
 
 export type IdentifierMap = StringTMap<IdentifierComparison[]>;

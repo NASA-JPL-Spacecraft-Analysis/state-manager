@@ -1,15 +1,14 @@
-<mat-toolbar  class="mat-toolbar-page secondary-toolbar" color="primary">
-  Information Types
+<div class="page-toolbar">
+  <span class="st-typography-header">Information Types</span>
 
-  <div class="actions-container">
-    <button mat-button color="primary" (click)="onFileUpload()">
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" (click)="onFileUpload()">
+      <i class="si-upload"></i>
       Upload Information Types
     </button>
   </div>
-</mat-toolbar>
+</div>
 
-<div class="information-types-content-container">
-  <app-information-type-table
-    [informationTypes]="informationTypes">
-  </app-information-type-table>
+<div class="content-container">
+  <app-information-type-table [informationTypes]="informationTypes"> </app-information-type-table>
 </div>

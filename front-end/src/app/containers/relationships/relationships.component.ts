@@ -29,7 +29,7 @@ import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-relationships',
+  selector: 'sm-relationships',
   styleUrls: [ 'relationships.component.css' ],
   templateUrl: 'relationships.component.html'
 })

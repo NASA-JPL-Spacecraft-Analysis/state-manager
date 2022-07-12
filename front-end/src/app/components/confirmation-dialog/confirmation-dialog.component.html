@@ -6,13 +6,12 @@
   {{data.message}}
 </div>
 
-<div mat-dialog-actions>
-  <button mat-button class="cancel-button" (click)="onCancel()">
+<div mat-dialog-actions class="confirmation-buttons">
+  <button class="st-button tertiary" (click)="onCancel()">
     Cancel
   </button>
 
-  <button mat-button
-    class="submit-button"
+  <button class="st-button st-red"
     [ngClass]="data.delete ? 'delete-button' : 'confirm-button'"
     (click)="onSubmit()">
     {{data.confirmButtonText}}

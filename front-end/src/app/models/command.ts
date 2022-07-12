@@ -18,7 +18,7 @@ export interface CommandArgumentHistory extends CommandArgument {
   updated: Date;
 }
 
-export type CommandArgumentMap = StringTMap<CommandArgument[]>;
+export type CommandArgumentMap = Record<string, CommandArgument[]>;
 
 export interface CommandArgumentUpload {
   commandIdentifier: string;

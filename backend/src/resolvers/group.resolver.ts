@@ -5,23 +5,22 @@ import { CollectionIdArgs, IdArgs } from '../args';
 import { CollectionConstants, GroupConstants } from '../constants';
 import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs';
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
-import { Collection, Group, GroupMapping, GroupMappingItemUnion } from '../models';
+import { Collection, Group, GroupMapping } from '../models';
 import { DeleteItemsResponse, GroupResponse, GroupsResponse, Response } from '../responses';
-import { GroupService, IdentifierTypeService } from '../service';
+import { GroupService } from '../service';
 
 @Resolver(() => Group)
 export class GroupResolver implements ResolverInterface<Group> {
   constructor(
-    private readonly groupService: GroupService,
-    private readonly identifierTypeService: IdentifierTypeService
-  ) {}
+    private readonly groupService: GroupService
+  ) { }
 
   @Mutation(() => GroupResponse)
   public async createGroup(@Arg('data') data: CreateGroupInput): Promise<GroupResponse> {
     try {
       const group = Group.create(data);
 
-      await this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
+      await this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [group.identifier]);
 
       await group.save();
 
@@ -69,15 +68,7 @@ export class GroupResolver implements ResolverInterface<Group> {
             sortOrder: mapping.sortOrder
           });
 
-          let item: typeof GroupMappingItemUnion | undefined;
-
-          // Do a special lookup for a group because it's not an IdentifierType.
-          if (mapping.itemType === Group.name) {
-            item = await this.group(data.collectionId, mapping.itemIdentifier);
-          } else {
-            item =
-              await this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
-          }
+          const item = await this.groupService.findGroupItem(data.collectionId, mapping.itemIdentifier, mapping.itemType);
 
           if (item) {
             newMapping.itemId = item.id;
@@ -178,7 +169,7 @@ export class GroupResolver implements ResolverInterface<Group> {
     return this.groupService.getGroupMappings(group.id);
   }
 
-  @Query(() => [ Group ])
+  @Query(() => [Group])
   public groups(@Args() { collectionId }: CollectionIdArgs): Promise<Group[]> {
     return this.findGroupsByCollectionId(collectionId);
   }
@@ -199,7 +190,7 @@ export class GroupResolver implements ResolverInterface<Group> {
 
       Object.assign(group, data);
 
-      await this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [ group.identifier ]);
+      await this.checkForDuplicateGroupIdentifier(group.collectionId, group.id, [group.identifier]);
 
       await group.save();
 

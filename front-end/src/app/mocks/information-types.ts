@@ -8,7 +8,8 @@ export const mockInformationType: InformationType = {
   externalLink: '',
   id: '1',
   identifier: 'GOAL_TEST',
-  type: 'goal'
+  type: 'goal',
+  version: ''
 };
 
 export const mockInformationTypes: InformationType[] = [

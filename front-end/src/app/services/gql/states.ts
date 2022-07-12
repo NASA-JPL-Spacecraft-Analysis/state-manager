@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 export const CREATE_STATE = gql(`
   mutation CreateState(
+    $channelId: String
     $collectionId: ID!
     $dataType: String!
     $description: String
@@ -9,13 +10,16 @@ export const CREATE_STATE = gql(`
     $enumerations: [ModifyStateEnumeration!]
     $externalLink: String
     $identifier: String!
+    $restricted: Boolean!
     $source: String!
     $subsystem: String!
     $type: String!
     $units: String!
+    $version: String
   ) {
     createState(
       data: {
+        channelId: $channelId
         collectionId: $collectionId
         dataType: $dataType
         description: $description
@@ -23,14 +27,17 @@ export const CREATE_STATE = gql(`
         enumerations: $enumerations
         externalLink: $externalLink
         identifier: $identifier
+        restricted: $restricted
         source: $source
         subsystem: $subsystem
         type: $type
         units: $units
+        version: $version
       }
     ) {
       message
       state {
+        channelId
         collectionId
         dataType
         description
@@ -45,10 +52,12 @@ export const CREATE_STATE = gql(`
         externalLink
         id
         identifier
+        restricted
         source
         subsystem
         type
         units
+        version
       }
       success
     }
@@ -92,6 +101,7 @@ export const CREATE_STATES = gql(`
     ) {
       message
       states {
+        channelId
         collectionId
         dataType
         description
@@ -99,10 +109,12 @@ export const CREATE_STATES = gql(`
         externalLink
         id
         identifier
+        restricted
         source
         subsystem
         type
         units
+        version
       }
       success
     }
@@ -138,6 +150,7 @@ export const GET_STATE_ENUMERATIONS = gql(`
 export const GET_STATES = gql(`
   query states($collectionId: ID!) {
     states(collectionId: $collectionId) {
+      channelId
       dataType
       description
       displayName
@@ -145,10 +158,12 @@ export const GET_STATES = gql(`
       externalLink
       id
       identifier
+      restricted
       source
       subsystem
       type
       units
+      version
     }
   }
 `);
@@ -180,6 +195,7 @@ export const DELETE_ENUMERATIONS = gql(`
 export const GET_STATE_HISTORY = gql(`
   query stateHistory($collectionId: ID!) {
     stateHistory(collectionId: $collectionId) {
+      channelId
       dataType
       description
       displayName
@@ -187,12 +203,14 @@ export const GET_STATE_HISTORY = gql(`
       externalLink
       id
       identifier
+      restricted
       source
       stateId
       subsystem
       type
       units
       updated
+      version
     }
   }
 `);
@@ -223,6 +241,7 @@ export const SAVE_ENUMERATIONS = gql(`
 
 export const UPDATE_STATE = gql(`
   mutation UpdateState(
+    $channelId: String
     $dataType: String!
     $description: String
     $displayName: String!
@@ -230,13 +249,16 @@ export const UPDATE_STATE = gql(`
     $externalLink: String
     $id: ID!
     $identifier: String!
+    $restricted: Boolean!
     $source: String!
     $subsystem: String!
     $type: String!
     $units: String!
+    $version: String
   ) {
     updateState(
       data: {
+        channelId: $channelId
         dataType: $dataType
         description: $description
         displayName: $displayName
@@ -244,14 +266,17 @@ export const UPDATE_STATE = gql(`
         enumerations: $enumerations
         id: $id
         identifier: $identifier
+        restricted: $restricted
         source: $source
         subsystem: $subsystem
         type: $type
         units: $units
+        version: $version
       }
     ) {
       message
       state {
+        channelId
         collectionId
         dataType
         description
@@ -266,10 +291,12 @@ export const UPDATE_STATE = gql(`
         externalLink
         id
         identifier
+        restricted
         source
         subsystem
         type
         units
+        version
       }
       success
     }

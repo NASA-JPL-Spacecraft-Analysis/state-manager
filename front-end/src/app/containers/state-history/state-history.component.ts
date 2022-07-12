@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
-import { MaterialModule } from 'src/app/material';
 import { StateMap } from 'src/app/models';
 import { AppState } from 'src/app/app-store';
 import { getStateHistory } from 'src/app/selectors';
@@ -11,7 +10,7 @@ import { StateTableModule } from 'src/app/components';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-state-history',
+  selector: 'sm-state-history',
   styleUrls: [ 'state-history.component.css' ],
   templateUrl: 'state-history.component.html'
 })
@@ -46,7 +45,6 @@ export class StateHistoryComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
-    MaterialModule,
     StateTableModule
   ]
 })

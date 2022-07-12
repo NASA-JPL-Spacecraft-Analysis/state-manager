@@ -18,8 +18,8 @@ export class UploadConstants {
   `;
 
   public static commandCsvUploadFormat = `
-    description,displayName,externalLink,identifier,type
-    Example description.,Example Command Upload,https://js.jpl.nasa.gov/,EXAMPLE_COMMAND_UPLOAD,command
+    description,displayName,externalLink,identifier,type,version
+    Example description.,Example Command Upload,https://js.jpl.nasa.gov/,EXAMPLE_COMMAND_UPLOAD,command,
   `;
 
   public static commandJsonUploadFormat = `
@@ -29,6 +29,7 @@ export class UploadConstants {
         "displayName": "Example Command Upload",
         "externalLink": "https://js.jpl.nasa.gov/",
         "identifier": "EXAMPLE_COMMAND_UPLOAD",
+        "version": "",
         "type": "command"
       },
       {
@@ -38,8 +39,8 @@ export class UploadConstants {
   `;
 
   public static constraintCsvUploadFormat = `
-    description,displayName,externalLink,identifier,type
-    Example description.,Example Constraint Upload,https://js.jpl.nasa.gov/,EXAMPLE_CONSTRAINT_UPLOAD,flight_rule_check,
+    description,displayName,externalLink,identifier,type,version
+    Example description.,Example Constraint Upload,https://js.jpl.nasa.gov/,EXAMPLE_CONSTRAINT_UPLOAD,flight_rule_check,,
   `;
 
   public static constraintJsonUploadFormat = `
@@ -49,7 +50,8 @@ export class UploadConstants {
         "displayName": "Example Constraint Upload",
         "externalLink": "https://js.jpl.nasa.gov/",
         "identifier": "EXAMPLE_CONSTRAINT_UPLOAD",
-        "type": "flight_rule_check"
+        "type": "flight_rule_check",
+        "version": ""
       },
       {
         ...
@@ -58,8 +60,8 @@ export class UploadConstants {
   `;
 
   public static eventCsvUploadFormat = `
-    description,displayName,externalLink,identifier,type
-    Example description.,Example Event Upload,https://js.jpl.nasa.gov/,EXAMPLE_EVENT_UPLOAD,evr,
+    description,displayName,externalLink,identifier,type,version
+    Example description.,Example Event Upload,https://js.jpl.nasa.gov/,EXAMPLE_EVENT_UPLOAD,evr,,
   `;
 
   public static eventJsonUploadFormat = `
@@ -69,7 +71,8 @@ export class UploadConstants {
         "displayName": "Example Event Upload",
         "externalLink": "https://js.jpl.nasa.gov/",
         "identifier": "EXAMPLE_EVENT_UPLOAD",
-        "type": "evr"
+        "type": "evr",
+        "version": ""
       },
       {
         ...
@@ -139,8 +142,8 @@ export class UploadConstants {
   `;
 
   public static stateCsvUploadFormat = `
-    identifier,displayName,dataType,type,units,source,subsystem,description,externalLink
-    STATE_IDENTIFIER_1,State Identifier 1,subsystem,state,test units,test source,identifier 1,https://google.com
+    identifier,displayName,dataType,type,units,source,subsystem,description,externalLink,restricted,channelId,version
+    STATE_IDENTIFIER_1,State Identifier 1,subsystem,state,test units,test source,identifier 1,https://google.com,false,,
   `;
 
   public static stateEnumerationCsvUploadFormat = `
@@ -174,8 +177,11 @@ export class UploadConstants {
         "units": "asd",
         "source": "asd",
         "subsystem": "asd",
+        "channelId": "",
+        "restricted": false,
         "description": "",
-        "externalLink": ""
+        "externalLink": "",
+        "version": ""
       },
       {
         ...

@@ -31,6 +31,7 @@ export class StateService {
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_STATE,
         variables: {
+          channelid: state.channelId,
           collectionId: state.collectionId,
           dataType: state.dataType,
           description: state.description,
@@ -38,10 +39,12 @@ export class StateService {
           enumerations: state.enumerations,
           externalLink: state.externalLink,
           identifier: state.identifier,
+          restricted: state.restricted,
           source: state.source,
           subsystem: state.subsystem,
           type: state.type,
-          units: state.units
+          units: state.units,
+          version: state.version
         }
       })
       .pipe(map(({ data: { createState } }) => {
@@ -173,6 +176,7 @@ export class StateService {
         fetchPolicy: 'no-cache',
         mutation: gql.UPDATE_STATE,
         variables: {
+          channelId: state.channelId,
           dataType: state.dataType,
           description: state.description,
           displayName: state.displayName,
@@ -180,10 +184,12 @@ export class StateService {
           externalLink: state.externalLink,
           id: state.id,
           identifier: state.identifier,
+          restricted: state.restricted,
           source: state.source,
           subsystem: state.subsystem,
           type: state.type,
-          units: state.units
+          units: state.units,
+          version: state.version
         }
       })
       .pipe(map(({ data: { updateState } }) => {

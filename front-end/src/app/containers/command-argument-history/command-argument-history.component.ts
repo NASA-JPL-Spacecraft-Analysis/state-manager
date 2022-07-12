@@ -7,11 +7,13 @@ import { AppState } from 'src/app/app-store';
 import { getCommandArgumentHistory } from 'src/app/selectors';
 import { CommandArgumentHistory } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
-import { CommandArgumentTableModule } from 'src/app/components/commands/command-argument-table/command-argument-table.component';
+import {
+  CommandArgumentHistoryTableModule
+} from '../../components/commands/command-argument-history-table/command-argument-history-table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'command-argument-history',
+  selector: 'sm-command-argument-history',
   styleUrls: [ 'command-argument-history.component.css' ],
   templateUrl: 'command-argument-history.component.html'
 })
@@ -47,7 +49,7 @@ export class CommandArgumentHistoryComponent implements OnDestroy {
     CommandArgumentHistoryComponent
   ],
   imports: [
-    CommandArgumentTableModule,
+    CommandArgumentHistoryTableModule,
     CommonModule,
     MaterialModule
   ]

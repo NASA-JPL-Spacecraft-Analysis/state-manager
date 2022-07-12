@@ -1,46 +1,44 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  <span class="groups-toggle-text" (click)="onCloseSidemenu()">
-    Groups
-  </span>
+<div class="page-toolbar">
+  <span class="st-typography-header" (click)="onCloseSidemenu()">Groups</span>
 
-  <div>
-    <button mat-button (click)="onFileUpload()">
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" (click)="onFileUpload()">
+      <i class="si-upload"></i>
       Upload Groups
     </button>
 
-    <button mat-button (click)="onDeleteGroup()">
-      <mat-icon svgIcon="delete"></mat-icon>
+    <button class="st-button icon" (click)="onDeleteGroup()">
+      <i class="si-trash"></i>
     </button>
 
-    <button mat-raised-button color="primary" (click)="onGroupSelected()">
-      New Group
-    </button>
+    <button class="st-button primary" (click)="onGroupSelected()">New Group</button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="sidenav" *ngIf="showGroupsSidemenu">
-    <groups-menu
-      [groups]="groups"
-      (groupSelected)="onGroupSelected($event)">
-    </groups-menu>
+    <sm-groups-menu [groups]="groups" (groupSelected)="onGroupSelected($event)"> </sm-groups-menu>
   </div>
 
-  <div class="content">
+  <div class="content group-content">
     <ng-container *ngIf="groups.length > 0; else noGroups">
-      <mat-list *ngFor="let group of groups">
-        <div mat-subheader (click)="onGroupSelected(group)">
-          {{group.identifier}}
-        </div>
+      <div *ngFor="let group of groups" class="group-container">
+        <span class="st-typography-header groups-toggle-text" (click)="onGroupSelected(group)">
+          {{ group.identifier }}
+        </span>
 
-        <mat-list-item *ngFor="let mapping of group.groupMappings">
-          <div mat-line>{{mapping.item.identifier}}</div>
-        </mat-list-item>
+        <br />
+
+        <span *ngFor="let mapping of group.groupMappings">
+          <span>{{ getItemNameOrIdentifierFunc(mapping.item) }}</span>
+
+          <br />
+        </span>
 
         <ng-template *ngIf="groups.indexOf(group) !== groups.length - 1">
-          <mat-divider></mat-divider>
+          <hr />
         </ng-template>
-      </mat-list>
+      </div>
     </ng-container>
 
     <ng-template #noGroups>
@@ -49,7 +47,9 @@
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <groups-sidenav
+    <sm-groups-sidenav
+      [commandMap]="commandMap"
+      [constraintMap]="constraintMap"
       [informationTypeMap]="informationTypeMap"
       [eventMap]="eventMap"
       [group]="group"
@@ -58,7 +58,8 @@
       [selectedCollectionId]="selectedCollectionId"
       [stateMap]="stateMap"
       (modifyGroup)="onSidenavOutput($event)"
-      (showError)=onShowError($event)>
-    </groups-sidenav>
+      (showError)="onShowError($event)"
+    >
+    </sm-groups-sidenav>
   </div>
 </div>

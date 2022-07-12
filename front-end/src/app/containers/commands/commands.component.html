@@ -1,35 +1,31 @@
-<mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  Commands
+<div class="page-toolbar">
+  <span class="st-typography-header">Commands</span>
 
-  <div>
-    <button mat-button routerLink="../../command-history">
-      Command History 
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" routerLink="../../command-history">Command History</button>
+
+    <button class="st-button tertiary" routerLink="../../command-argument-history">
+      Command Argument History
     </button>
 
-    <button mat-button routerLink="../../command-argument-history">
-      Command Argument History 
-    </button>
-
-    <button mat-button class="gray-button" (click)="onCommandFileUpload()">
+    <button class="st-button icon tertiary" (click)="onCommandFileUpload()">
+      <i class="si-upload"></i>
       Upload Commands
     </button>
 
-    <button mat-button class="gray-button" (click)="onCommandArgumentFileUpload()">
+    <button class="st-button icon tertiary" (click)="onCommandArgumentFileUpload()">
+      <i class="si-upload"></i>
       Upload Command Arguments
     </button>
 
-    <button mat-raised-button color="primary" (click)="onModifyCommand()">
-      Create New Command 
-    </button>
+    <button class="st-button primary" (click)="onModifyCommand()">Create New Command</button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="content">
-    <command-table
-      [commandMap]="commandMap"
-      (commandSelected)="onModifyCommand($event)">
-    </command-table>
+    <sm-command-table [commands]="commands" (commandSelected)="onModifyCommand($event)">
+    </sm-command-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
@@ -40,7 +36,8 @@
       [commandIdentifierMap]="commandIdentifierMap"
       [commandTypes]="commandTypes"
       (errorEmitter)="onSidenavError($event)"
-      (modifyCommand)="onSidenavOutput($event)">
+      (modifyCommand)="onSidenavOutput($event)"
+    >
     </command-sidenav>
   </div>
 </div>

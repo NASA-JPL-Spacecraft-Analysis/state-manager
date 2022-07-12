@@ -1,8 +1,6 @@
 import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
 
 import { MaterialModule } from 'src/app/material';
 import { Event, IdentifierMap } from 'src/app/models';
@@ -11,7 +9,7 @@ import { IdentifierFormModule } from '../identifier-form/identifier-form.compone
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-event-sidenav',
-  styleUrls: [ 'event-sidenav.component.css' ],
+  styleUrls: ['event-sidenav.component.css'],
   templateUrl: 'event-sidenav.component.html'
 })
 export class EventSidenavComponent implements OnChanges {
@@ -25,16 +23,10 @@ export class EventSidenavComponent implements OnChanges {
 
   public form: FormGroup;
   public newEvent: Event;
-  public type: string;
 
   private isDuplicateIdentifier: boolean;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-
+  constructor() {
     this.duplicateIdentifier = new EventEmitter<boolean>();
     this.modifyEvent = new EventEmitter<Event>();
   }
@@ -49,7 +41,8 @@ export class EventSidenavComponent implements OnChanges {
         description: '',
         externalLink: '',
         editable: true,
-        type: ''
+        type: '',
+        version: ''
       };
     } else {
       this.newEvent = {
@@ -57,16 +50,15 @@ export class EventSidenavComponent implements OnChanges {
       };
     }
 
-    this.type = this.newEvent.type;
-
     this.form = new FormGroup({
       id: new FormControl(this.newEvent.id),
       collectionId: new FormControl(this.newEvent.collectionId),
-      identifier: new FormControl(this.newEvent.identifier, [ Validators.required ]),
-      displayName: new FormControl(this.newEvent.displayName, [ Validators.required ]),
+      identifier: new FormControl(this.newEvent.identifier, [Validators.required]),
+      displayName: new FormControl(this.newEvent.displayName, [Validators.required]),
       description: new FormControl(this.newEvent.description),
       externalLink: new FormControl(this.newEvent.externalLink),
-      type: new FormControl(this.type, [ Validators.required ])
+      type: new FormControl(this.newEvent.type, [Validators.required]),
+      version: new FormControl(this.newEvent.version)
     });
   }
 
@@ -85,8 +77,6 @@ export class EventSidenavComponent implements OnChanges {
 
   public onSubmit(): void {
     if (!this.isDuplicateIdentifier) {
-      this.form.value.type = this.type;
-
       this.modifyEvent.emit(this.form.value);
     } else {
       this.duplicateIdentifier.emit(true);
@@ -109,4 +99,4 @@ export class EventSidenavComponent implements OnChanges {
     ReactiveFormsModule
   ]
 })
-export class EventSidenavModule {}
+export class EventSidenavModule { }

@@ -4,20 +4,18 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { MaterialModule } from 'src/app/material';
-import { Command, CommandHistory } from 'src/app/models';
+import { Command } from 'src/app/models';
 import { getCommandHistory } from 'src/app/selectors';
 import { CommandTableModule } from 'src/app/components/commands';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'command-history',
-  styleUrls: [ 'command-history.component.css' ],
+  selector: 'sm-command-history',
+  styleUrls: ['command-history.component.css'],
   templateUrl: 'command-history.component.html'
 })
 export class CommandHistoryComponent implements OnDestroy {
-  public commandHistory: CommandHistory[];
-  public commandMap: Record<string, Command>;
+  public commandHistory: Command[];
 
   private subscriptions: SubSink;
 
@@ -30,14 +28,6 @@ export class CommandHistoryComponent implements OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(getCommandHistory)).subscribe(commandHistory => {
         this.commandHistory = commandHistory;
-        this.commandMap = {};
-
-        if (this.commandHistory) {
-          for (const command of this.commandHistory) {
-            this.commandMap[command.id] = command;
-          }
-        }
-
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -57,8 +47,7 @@ export class CommandHistoryComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
-    CommandTableModule,
-    MaterialModule
+    CommandTableModule
   ]
 })
-export class CommandHistoryModule {}
+export class CommandHistoryModule { }

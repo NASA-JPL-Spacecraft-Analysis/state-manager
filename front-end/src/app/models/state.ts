@@ -1,10 +1,11 @@
 import { IdentifierType } from './identifier-type';
 import { StateEnumeration } from './state-enumeration';
-import { StringTMap } from './string-t-map';
 
 export interface State extends IdentifierType {
+  channelId: string;
   dataType: string;
   enumerations: StateEnumeration[];
+  restricted: boolean;
   source: string;
   subsystem: string;
   units: string;
@@ -15,4 +16,4 @@ export interface StateHistory extends State {
   updated: Date;
 }
 
-export type StateMap = StringTMap<State>;
+export type StateMap = Record<string, State>;

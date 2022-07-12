@@ -1,106 +1,127 @@
 <div class="sidenav-container">
   <div class="sidenav-header">
-    <span>State Detail</span>
+    <span class="st-typography-header">State Details</span>
 
-    <button mat-icon-button class="sidenav-cancel-button" (click)="onCancel()">
-      <mat-icon svgIcon="clear"></mat-icon>
+    <button class="st-button icon tertiary" (click)="onCancel()">
+      <i class="si si-close"></i>
     </button>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div *ngIf="stateIdentifierMap">
-      <app-identifier-form
-        [originalIdentifier]="newState.identifier"
-        [identifierMap]="stateIdentifierMap"
-        [id]="newState.id"
-        [type]="type"
-        (duplicateIdentifier)="onDuplicateIdentifier($event)"
-        (identifierEmitter)="onIdentifierChange($event)">
-      </app-identifier-form>
+  <div class="sidenav-content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div *ngIf="stateIdentifierMap">
+        <app-identifier-form
+          [originalIdentifier]="newState.identifier"
+          [identifierMap]="stateIdentifierMap"
+          [id]="newState.id"
+          [type]="form.value.type"
+          (duplicateIdentifier)="onDuplicateIdentifier($event)"
+          (identifierEmitter)="onIdentifierChange($event)">
+        </app-identifier-form>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Display Name</mat-label>
-        <input matInput
+        <label for="Display Name">Display Name</label>
+        <input class="st-input"
           placeholder="Display Name"
+          name="Display Name"
           type="text"
           formControlName="displayName"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Type</mat-label>
-        <input matInput
+        <label for="Data Type">Data Type</label>
+        <input class="st-input"
           placeholder="Data Type"
+          name="Data Type"
           type="text"
           formControlName="dataType"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Units</mat-label>
-        <input matInput
+        <label for="Units">Units</label>
+        <input class="st-input"
           placeholder="Units"
           type="text"
           formControlName="units"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Source</mat-label>
-        <input matInput
+        <label for="Source">Source</label>
+        <input class="st-input"
           placeholder="Source"
+          name="Source"
           type="text"
           formControlName="source"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Subsystem</mat-label>
-        <input matInput
+        <label for="Subsystem">Subsystem</label>
+        <input class="st-input"
           placeholder="Subsystem"
+          name="Subsystem"
           type="text"
           formControlName="subsystem"
           required
         />
-      </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>State Type</mat-label>
-        <mat-select placeholder="State Type" [(value)]="type">
-          <mat-option *ngFor="let stateType of stateTypes" [value]="stateType">
+        <label for="State Type">State Type</label>
+        <select class="st-select" placeholder="State Type" formControlName="type">
+          <option *ngFor="let stateType of stateTypes" [value]="stateType">
             {{stateType}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </option>
+        </select>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <textarea matInput
+        <label for="Description">Description</label>
+        <textarea class="st-input"
           placeholder="Description"
-          formControlName="description"></textarea>
-      </mat-form-field>
+          formControlName="description">
+        </textarea>
 
-      <mat-form-field>
-        <input matInput
+        <!--<label for="External Link">External Link</label>
+        <input class="st-input"
           placeholder="External Link"
+          name="External Link"
           type="text"
           formControlName="externalLink"
+        />-->
+
+        <label for="Channel ID">Channel ID</label>
+        <input class="st-input"
+          placeholder="Channel ID"
+          name="Channel ID"
+          type="text"
+          formControlName="channelId"
+          required
         />
-      </mat-form-field>
 
-      <app-enum-form
-        [collectionId]="collectionId"
-        [enumerations]="newState.enumerations"
-        [deletedEnumerationIds]="deletedEnumerationIds">
-      </app-enum-form>
-    </div>
+        <label for="restricted">Restricted</label>
+        <input class="st-input"
+          name="restricted"
+          type="checkbox"
+          formControlName="restricted"
+          required
+        />
 
-    <div class="sidenav-actions">
-      <button mat-raised-button color="primary" type="submit">Save</button>
-    </div>
-  </form>
+        <label for="Version">Version</label>
+        <input class="st-input"
+          placeholder="Version"
+          name="Version"
+          type="text"
+          formControlName="version"
+          required
+        />
+
+        <app-enum-form
+          [collectionId]="collectionId"
+          [enumerations]="newState.enumerations"
+          [deletedEnumerationIds]="deletedEnumerationIds">
+        </app-enum-form>
+      </div>
+    </form>
+  </div>
+
+  <div class="sidenav-footer">
+    <button class="st-button secondary" (click)="onCancel()">Cancel</button>
+
+    <button class="st-button" (click)="onSubmit()">Save State</button>
+  </div>
 </div>

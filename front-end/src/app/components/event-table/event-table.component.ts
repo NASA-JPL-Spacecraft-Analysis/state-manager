@@ -1,16 +1,13 @@
 import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource } from '@angular/material/table';
 
-import { MaterialModule } from 'src/app/material';
 import { EventMap, Event } from 'src/app/models';
 import { TableComponent } from '../table/table.component';
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-event-table',
-  styleUrls: [ 'event-table.component.css' ],
-  templateUrl: 'event-table.component.html'
+  selector: 'sm-event-table',
+  styleUrls: [ '../table/table.component.css' ],
+  templateUrl: '../table/table.component.html'
 })
 export class EventTableComponent extends TableComponent<Event> implements OnChanges, OnInit {
   @Input() public eventMap: EventMap;
@@ -18,47 +15,54 @@ export class EventTableComponent extends TableComponent<Event> implements OnChan
 
   @Output() public eventSelected: EventEmitter<Event>;
 
+  public eventMapSize: number;
+
   constructor() {
     super();
 
     this.eventSelected = new EventEmitter<Event>();
   }
 
-  public ngOnChanges(): void {
-    if (this.eventMap && this.displayedColumns) {
-      this.dataSource = new MatTableDataSource([ ...Object.values(this.eventMap) ]);
-
-      super.ngOnChanges();
-    }
-  }
-
   public ngOnInit(): void {
-    this.displayedColumns.push(
+    this.columns.push(
       'identifier',
       'displayName',
       'description',
-      'externalLink',
-      'type'
+      //'externalLink',
+      'type',
+      'version'
     );
 
     if (this.history) {
-      this.displayedColumns.push(
+      this.columns.push(
         'eventId',
         'updated'
       );
+
+      this.historyTable = true;
     }
+  }
+
+  public ngOnChanges(): void {
+    if (this.eventMap) {
+      const keys = Object.keys(this.eventMap);
+      const events: Event[] = [];
+      this.eventMapSize = keys.length;
+
+      for (const key of keys) {
+        events.push(this.eventMap[key]);
+      }
+
+      this.rows = events;
+
+      super.ngOnChanges();
+    }
+
+    super.ngOnChanges();
   }
 
   public onRowClick(event: Event): void {
     this.eventSelected.emit(event);
-  }
-
-  // Check each field for the filter value, this will eventually change to search by field.
-  public filter(event: Event, filterValue: string): boolean {
-    return event.description?.toLowerCase().includes(filterValue)
-      || event.displayName?.toLowerCase().includes(filterValue)
-      || event.externalLink?.toLowerCase().includes(filterValue)
-      || event.identifier?.toLowerCase().includes(filterValue);
   }
 }
 
@@ -70,8 +74,7 @@ export class EventTableComponent extends TableComponent<Event> implements OnChan
     EventTableComponent
   ],
   imports: [
-    CommonModule,
-    MaterialModule
+    CommonModule
   ]
 })
 export class EventTableModule {}

@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
 
-import { MaterialModule } from 'src/app/material';
 import { Group } from 'src/app/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'groups-menu',
+  selector: 'sm-groups-menu',
   styleUrls: [ 'groups-menu.component.css' ],
   templateUrl: 'groups-menu.component.html'
 })
@@ -33,7 +32,6 @@ export class GroupsMenuComponent {
   ],
   imports: [
     CommonModule,
-    MaterialModule
   ]
 })
 export class GroupsMenuModule {}

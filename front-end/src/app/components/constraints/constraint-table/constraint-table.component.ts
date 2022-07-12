@@ -1,23 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
 
-import { MaterialModule } from 'src/app/material';
-import { Constraint, ConstraintMap } from 'src/app/models';
+import { Constraint } from 'src/app/models';
 import { TableComponent } from '../../table/table.component';
 
 @Component({
-  selector: 'constraint-table',
-  styleUrls: [ 'constraint-table.component.css' ],
-  templateUrl: 'constraint-table.component.html'
+  selector: 'sm-constraint-table',
+  styleUrls: ['../../table/table.component.css'],
+  templateUrl: '../../table/table.component.html'
 })
 export class ConstraintTableComponent extends TableComponent<Constraint> implements OnInit, OnChanges {
-  @Input() public constraintMap: ConstraintMap;
+  @Input() public constraints: Constraint[];
   @Input() public history: boolean;
 
   @Output() public constraintSelected: EventEmitter<Constraint>;
-
-  public showConstraintTable: boolean;
 
   constructor() {
     super();
@@ -26,50 +22,33 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
   }
 
   public ngOnInit(): void {
-    this.displayedColumns.push(
+    this.columns.push(
       'identifier',
       'displayName',
       'description',
-      'externalLink',
-      'type'
+      //'externalLink',
+      'type',
+      'version'
     );
 
     if (this.history) {
-      this.displayedColumns.push(
+      this.columns.push(
         'constraintId',
         'updated'
       );
+
+      this.historyTable = true;
     }
   }
 
   public ngOnChanges(): void {
-    const constraints: Constraint[] = [];
+    this.rows = this.constraints;
 
-    if (this.constraintMap && this.displayedColumns) {
-      const keys = Object.keys(this.constraintMap);
-
-      for (const key of keys) {
-        constraints.push(this.constraintMap[key]);
-      }
-
-      this.dataSource = new MatTableDataSource(constraints);
-
-      super.ngOnChanges();
-    }
-
-    this.showConstraintTable = this.constraintMap && constraints.length > 0;
+    super.ngOnChanges();
   }
 
   public onRowClick(constraint: Constraint) {
     this.constraintSelected.emit(constraint);
-  }
-
-  public filter(constraint: Constraint, filterValue: string): boolean {
-    return constraint.description?.toLowerCase().includes(filterValue)
-      || constraint.displayName?.toLowerCase().includes(filterValue)
-      || constraint.externalLink?.toLowerCase().includes(filterValue)
-      || constraint.identifier?.toLowerCase().includes(filterValue)
-      || constraint.type?.toLowerCase().includes(filterValue);
   }
 }
 
@@ -81,8 +60,7 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
     ConstraintTableComponent
   ],
   imports: [
-    CommonModule,
-    MaterialModule
+    CommonModule
   ]
 })
-export class ConstraintTableModule {}
+export class ConstraintTableModule { }

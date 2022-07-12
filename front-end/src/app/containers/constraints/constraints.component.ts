@@ -1,16 +1,15 @@
 import { CommonModule, Location } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { AppState } from 'src/app/app-store';
 import { SubSink } from 'subsink';
 
 import { ConstraintSidenavModule, ConstraintTableModule } from 'src/app/components/constraints';
-import { MaterialModule } from 'src/app/material';
-import { Constraint, ConstraintMap, IdentifierMap } from 'src/app/models';
+import { Constraint, IdentifierMap } from 'src/app/models';
 import {
   getConstraintIdentifierMap,
-  getConstraintMap,
+  getConstraints,
   getConstraintTypes,
   getSelectedCollectionId,
   getSelectedConstraint,
@@ -19,18 +18,17 @@ import {
 import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
-import { O } from '@angular/cdk/keycodes';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-constraints',
-  styleUrls: [ 'constraints.component.css' ],
+  styleUrls: ['constraints.component.css'],
   templateUrl: 'constraints.component.html'
 })
 export class ConstraintsComponent implements OnDestroy {
   public constraint: Constraint;
   public constraintIdentifierMap: IdentifierMap;
-  public constraintMap: ConstraintMap;
+  public constraints: Constraint[];
   public constraintTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
@@ -39,7 +37,6 @@ export class ConstraintsComponent implements OnDestroy {
   private subscriptions: SubSink;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private location: Location,
     private navigationService: NavigationService,
@@ -53,15 +50,9 @@ export class ConstraintsComponent implements OnDestroy {
         this.constraintIdentifierMap = constraintIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {
-        this.constraintMap = constraintMap;
+      this.store.pipe(select(getConstraints)).subscribe(constraints => {
+        this.constraints = constraints;
         this.changeDetectorRef.markForCheck();
-
-        this.constraintId = this.activatedRoute.snapshot.paramMap.get('id');
-
-        if (this.constraintId && this.constraintMap) {
-          this.onModifyConstraint(this.constraintMap[this.constraintId]);
-        }
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
@@ -100,7 +91,7 @@ export class ConstraintsComponent implements OnDestroy {
   public onFileUpload(): void {
     this.store.dispatch(LayoutActions.openFileUploadDialog({
       collectionId: this.selectedCollectionId,
-      csvFormat: [ UploadConstants.constraintCsvUploadFormat ],
+      csvFormat: [UploadConstants.constraintCsvUploadFormat],
       dialogType: 'Constraint',
       jsonFormat: UploadConstants.constraintJsonUploadFormat,
       types: this.constraintTypes
@@ -158,8 +149,7 @@ export class ConstraintsComponent implements OnDestroy {
     CommonModule,
     ConstraintSidenavModule,
     ConstraintTableModule,
-    MaterialModule,
     RouterModule
   ]
 })
-export class ConstraintsModule {}
+export class ConstraintsModule { }

@@ -173,7 +173,8 @@ export class ConstraintResolver {
       externalLink: constraint.externalLink,
       identifier: constraint.identifier,
       type: constraint.type,
-      updated: new Date()
+      updated: new Date(),
+      version: constraint.version
     });
 
     void constraintHistory.save();

@@ -20,11 +20,15 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
+        "indent": "off",
+        "@typescript-eslint/indent": [
+          "off"
+        ],
         "@angular-eslint/component-selector": [
           "error",
           {
             "type": "element",
-            "prefix": "app",
+            "prefix": "sm",
             "style": "kebab-case"
           }
         ],
@@ -32,7 +36,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "app",
+            "prefix": "sm",
             "style": "camelCase"
           }
         ],
@@ -46,7 +50,9 @@
           "error",
           {
             "selector": "enumMember",
-            "format": [ "PascalCase" ]
+            "format": [
+              "PascalCase"
+            ]
           }
         ],
         "@typescript-eslint/no-shadow": "error",

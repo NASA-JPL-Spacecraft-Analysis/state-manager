@@ -24,4 +24,7 @@ export class UpdateConstraintInput implements Partial<Constraint> {
 
   @Field()
   public type!: string;
+
+  @Field({ nullable: true })
+  public version?: string;
 }

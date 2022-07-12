@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, OnDestroy, NgModule, ChangeDetectorRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ROUTER_CONFIGURATION } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { MaterialModule } from 'src/app/material';
 import { CollectionActions } from 'src/app/actions';
 import { CollectionMap } from 'src/app/models';
 import { getCollectionMap, getSelectedCollectionId } from 'src/app/selectors';
@@ -16,13 +16,14 @@ import { NavigationService } from '../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-collections',
-  styleUrls: [ 'collections.component.css' ],
+  selector: 'sm-collections',
+  styleUrls: ['collections.component.css'],
   templateUrl: 'collections.component.html'
 })
 export class CollectionComponent implements OnDestroy {
   public collectionMap: CollectionMap;
   public collectionName: string;
+  public currentCollectionId: string;
   public deleting: boolean;
   public editing: boolean;
   public selectedCollectionId: string;
@@ -56,6 +57,7 @@ export class CollectionComponent implements OnDestroy {
       }),
       this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
         this.selectedCollectionId = selectedCollectionId;
+        this.currentCollectionId = selectedCollectionId;
 
         if (this.collectionMap) {
           this.setCollectioName();
@@ -71,19 +73,44 @@ export class CollectionComponent implements OnDestroy {
   }
 
   public onCollectionChange(collectionId: string): void {
-    // Don't try and do anything if we don't have a valid collectionId.
-    if (collectionId) {
-      this.store.dispatch(CollectionActions.setSelectedCollection({
-        id: collectionId
-      }));
+    switch (collectionId) {
+      case 'create':
+        this.toggleEditing();
+        this.selectedCollectionId = undefined;
 
-      const page = this.navigationService.getCurrentPageFromURL(this.router.url);
+        break;
+      case 'delete':
+        this.deleting = true;
 
-      if (page) {
-        this.router.navigate([ 'collection/' + collectionId + '/' + page ]);
-      } else {
-        this.router.navigate([ 'collection/' + collectionId ]);
-      }
+        this.store.dispatch(CollectionActions.deleteCollection({
+          id: this.currentCollectionId,
+          name: this.collectionMap[this.currentCollectionId].name
+        }));
+
+        setTimeout(() => {
+          this.deleting = false;
+        });
+
+        break;
+      case 'edit':
+        this.toggleEditing();
+        this.selectedCollectionId = this.currentCollectionId;
+
+        break;
+      default:
+        this.store.dispatch(CollectionActions.setSelectedCollection({
+          id: collectionId
+        }));
+
+        const page = this.navigationService.getCurrentPageFromURL(this.router.url);
+
+        if (page) {
+          this.router.navigate(['collection/' + collectionId + '/' + page]);
+        } else {
+          this.router.navigate(['collection/' + collectionId]);
+        }
+
+        break;
     }
   }
 
@@ -102,29 +129,6 @@ export class CollectionComponent implements OnDestroy {
         }));
       }
     }
-  }
-
-  public onCreateNewCollection(): void {
-    this.selectedCollectionId = null;
-
-    this.toggleEditing();
-  }
-
-  public onDeleteCollection(): void {
-    this.deleting = true;
-
-    this.store.dispatch(CollectionActions.deleteCollection({
-      id: this.selectedCollectionId,
-      name: this.collectionMap[this.selectedCollectionId].name
-    }));
-
-    setTimeout(() => {
-      this.deleting = false;
-    });
-  }
-
-  public onEditCollection(): void {
-    this.toggleEditing();
   }
 
   private setCollectioName(): void {
@@ -148,8 +152,8 @@ export class CollectionComponent implements OnDestroy {
   imports: [
     CollectionInputModule,
     CommonModule,
-    MaterialModule,
+    FormsModule,
     RouterModule
   ]
 })
-export class CollectionModule {}
+export class CollectionModule { }

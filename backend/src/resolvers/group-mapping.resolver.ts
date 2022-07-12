@@ -3,15 +3,14 @@ import { Arg, FieldResolver, Mutation, Resolver, ResolverInterface, Root } from 
 
 import { GroupConstants } from '../constants';
 import { UploadGroupMappingsInput } from '../inputs/group/upload-group-mappings-input';
-import { Group, GroupMapping, GroupMappingItemUnion, IdentifierTypeUnion } from '../models';
+import { Group, GroupMapping, GroupMappingUnion, GroupType } from '../models';
 import { GroupMappingResponse } from '../responses';
-import { GroupService, IdentifierTypeService } from '../service';
+import { GroupService } from '../service';
 
 @Resolver(() => GroupMapping)
 export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
   constructor(
-    private readonly groupService: GroupService,
-    private readonly identifierTypeService: IdentifierTypeService
+    private readonly groupService: GroupService
   ) {}
 
   @Mutation(() => GroupMappingResponse)
@@ -47,8 +46,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
 
         // Find the item the mapping is trying to bind to.
         const item =
-          await
-          this.identifierTypeService.findItemByIdentifierAndType(data.collectionId, groupMapping.itemIdentifier, groupMapping.itemType);
+          await this.groupService.findGroupItem(data.collectionId, groupMapping.itemIdentifier, groupMapping.itemType);
 
         // Check the group's existing mappings to make sure the input list doesn't contain a duplicate.
         if (this.isDuplicateMapping(await GroupMapping.find({ where: { groupId: group.id } }), item)) {
@@ -102,7 +100,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
    * @param groupMapping
    */
   @FieldResolver()
-  public async item(@Root() groupMapping: GroupMapping): Promise<typeof GroupMappingItemUnion | undefined> {
+  public async item(@Root() groupMapping: GroupMapping): Promise<typeof GroupMappingUnion | undefined> {
     return this.groupService.getItemByMapping(groupMapping);
   }
 
@@ -113,7 +111,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
    * @param item The item we are looking for.
    * @returns true if there is a duplicate mapping.
    */
-  private isDuplicateMapping(existingMappings: GroupMapping[], item: typeof IdentifierTypeUnion): boolean {
+  private isDuplicateMapping(existingMappings: GroupMapping[], item: GroupType): boolean {
     if (existingMappings) {
       for (const existingMapping of existingMappings) {
         if (existingMapping.itemId === item.id) {

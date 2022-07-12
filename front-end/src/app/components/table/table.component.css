@@ -1,0 +1,114 @@
+table {
+  table-layout: fixed;
+}
+
+tbody tr td:first-child {
+  padding-left: 16px;
+}
+
+th,
+td {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+thead th {
+  display: flex;
+  flex-direction: column;
+}
+
+thead tr th:first-child {
+  padding-left: 16px;
+}
+
+thead tr th input {
+  background-color: white;
+  border-color: var(--st-gray-20);
+  margin-top: 4px;
+}
+
+tr:hover {
+  background-color: var(--st-gray-10);
+}
+
+.column-header-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.no-data {
+  margin: 16px;
+}
+
+.pagination {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.pagination > * {
+  margin-right: 64px;
+}
+
+.pagination-navigation > * {
+  margin-left: 20px;
+}
+
+.pagination-navigation i {
+  font-size: 12px;
+}
+
+.reverse {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.sort-icons {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--st-gray-40);
+}
+
+.sort-icons:hover {
+  color: var(--st-gray-100);
+}
+
+.sort-icons button {
+  height: 10px;
+  margin: 0 auto;
+}
+
+.sort-icons i {
+  font-size: 12px;
+}
+
+/** Custom column width overrides **/
+th.identifier,
+td.identifier {
+  min-width: 300px;
+}
+
+th.dataType,
+td.dataType,
+th.restricted,
+td.restricted,
+th.subsystem,
+td.subsystem,
+th.units,
+td.units {
+  max-width: 105px;
+}
+
+th.source,
+td.source,
+th.type,
+td.type {
+  max-width: 120px;
+}

@@ -172,7 +172,8 @@ export class EventResolver {
       eventId: event.id,
       identifier: event.identifier,
       type: event.type,
-      updated: new Date()
+      updated: new Date(),
+      version: event.version
     });
 
     void eventHistory.save();

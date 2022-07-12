@@ -1,11 +1,8 @@
 import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import { StateEnumeration } from '../../models';
-import { MaterialModule } from 'src/app/material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,14 +16,6 @@ export class EnumFormComponent implements OnChanges {
   @Input() enumerations: StateEnumeration[];
 
   public enumerationsLabel: string;
-
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('add', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/add.svg'));
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
-  }
 
   public ngOnChanges(): void {
     this.updateEnumerationsLabel();
@@ -75,8 +64,7 @@ export class EnumFormComponent implements OnChanges {
   ],
   imports: [
     CommonModule,
-    FormsModule,
-    MaterialModule
+    FormsModule
   ]
 })
 export class EnumFormModule {}

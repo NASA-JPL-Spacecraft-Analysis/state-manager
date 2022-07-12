@@ -25,6 +25,9 @@ table td {
   background-color: #fff;
 }
 
+.enumeration-container {
+  margin-top: 3em;
+}
 
 .enumerations-header {
   display: flex;
@@ -32,21 +35,14 @@ table td {
 }
 
 .enumeration-label {
-  color: rgba(0,0,0,.6);
-  font-size: 14px;
+  color: var(--st-gray-60);
+  font-size: 12px;
   padding-bottom: .2em;
 }
 
 /* Make our label column the widest. */
 .label-column {
   width: 100%;
-}
-
-/*use Icon styling for size, and plain button for hover state for delete button*/
-.mat-button.mat-icon-button{
-  height: 24px;
-  line-height: 24px;
-  width: 24px;
 }
 
 /*Add a hover state for enum button*/

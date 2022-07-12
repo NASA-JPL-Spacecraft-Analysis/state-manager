@@ -1,35 +1,30 @@
- <mat-toolbar class="mat-toolbar-page secondary-toolbar" color="primary">
-  States
+<div class="page-toolbar">
+  <span class="st-typography-header">States</span>
 
-  <div>
-    <button mat-button routerLink="../../state-history">
-      State History
-    </button>
+  <div class="page-toolbar-buttons">
+    <button class="st-button tertiary" routerLink="../state-history">State History</button>
 
-    <button mat-button routerLink="../../state-enumeration-history">
+    <button class="st-button tertiary" routerLink="../state-enumeration-history">
       State Enumeration History
     </button>
 
-    <button mat-button (click)="onStateFileUpload()">
+    <button class="st-button icon tertiary" (click)="onStateFileUpload()">
+      <i class="si-upload"></i>
       Upload States
     </button>
 
-    <button mat-button (click)="onStateEnumerationFileUpload()">
+    <button class="st-button icon tertiary" (click)="onStateEnumerationFileUpload()">
+      <i class="si-upload"></i>
       Upload Enumerations
     </button>
 
-    <button mat-raised-button color="primary" (click)="onModifyState()">
-      Create New State
-    </button>
+    <button class="st-button primary" (click)="onModifyState()">Create New State</button>
   </div>
-</mat-toolbar>
+</div>
 
 <div class="content-container">
   <div class="content">
-    <app-state-table
-      [stateMap]="stateMap"
-      (stateSelected)="onModifyState($event)">
-    </app-state-table>
+    <sm-state-table [stateMap]="stateMap" (stateSelected)="onModifyState($event)"> </sm-state-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && collectionId">
@@ -40,7 +35,8 @@
       [stateIdentifierMap]="stateIdentifierMap"
       [stateTypes]="stateTypes"
       (errorEmitter)="onSidenavError($event)"
-      (modifyState)="onSidenavOutput($event)">
+      (modifyState)="onSidenavOutput($event)"
+    >
     </app-state-sidenav>
   </div>
 </div>

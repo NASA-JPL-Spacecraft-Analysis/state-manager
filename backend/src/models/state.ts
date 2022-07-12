@@ -15,6 +15,11 @@ export class State extends IdentifierType {
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
   // TODO: Ask Dan what we should rename this field to.
+  public channelId?: string;
+
+  @Column({ default: null, nullable: true })
+  @Field({ nullable: true })
+  // TODO: Ask Dan what we should rename this field to.
   public dataType?: string;
 
   @Column({ default: null, nullable: true })
@@ -27,6 +32,10 @@ export class State extends IdentifierType {
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
   public subsystem?: string;
+
+  @Column({ default: false })
+  @Field()
+  public restricted!: boolean;
 
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
