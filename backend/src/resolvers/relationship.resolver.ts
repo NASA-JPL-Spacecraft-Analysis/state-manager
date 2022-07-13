@@ -219,11 +219,12 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   private createRelationshipHistory(relationship: Relationship): void {
     const relationshipHistory = RelationshipHistory.create({
       collectionId: relationship.collectionId,
-      description: relationship.description,
       displayName: relationship.displayName,
       relationshipId: relationship.id,
+      subjectToTargetDescription: relationship.subjectToTargetDescription,
       subjectType: relationship.subjectType,
       subjectTypeId: relationship.subjectTypeId,
+      targetToSubjectDescription: relationship.targetToSubjectDescription,
       targetType: relationship.targetType,
       targetTypeId: relationship.targetTypeId,
       updated: new Date()

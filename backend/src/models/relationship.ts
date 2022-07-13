@@ -14,14 +14,14 @@ export class Relationship extends Node {
 
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
-  public description?: string;
-
-  @Column({ default: null, nullable: true })
-  @Field({ nullable: true })
   public displayName?: string;
 
   @Field(() => Models.AllTypesUnion, { nullable: true })
   public subject?: typeof Models.AllTypesUnion;
+
+  @Column({ default: null, nullable: true })
+  @Field({ nullable: true })
+  public subjectToTargetDescription?: string;
 
   @Column()
   @Field()
@@ -33,6 +33,10 @@ export class Relationship extends Node {
 
   @Field(() => Models.AllTypesUnion, { nullable: true })
   public target?: typeof Models.AllTypesUnion;
+
+  @Column({ default: null, nullable: true })
+  @Field({ nullable: true })
+  public targetToSubjectDescription?: string;
 
   @Column()
   @Field()

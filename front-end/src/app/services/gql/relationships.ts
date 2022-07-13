@@ -3,31 +3,34 @@ import gql from 'graphql-tag';
 export const CREATE_RELATIONSHIP = gql(`
   mutation CreateRelationship(
     $collectionId: ID!
-    $description: String
     $displayName: String!
+    $subjectToTargetDescription: String
     $subjectType: String!
     $subjectTypeId: ID!
+    $targetToSubjectDescription: String
     $targetType: String!
     $targetTypeId: ID!
   ) {
     createRelationship(
       data: {
         collectionId: $collectionId
-        description: $description
         displayName: $displayName
+        subjectToTargetDescription: $subjectToTargetDescription
         subjectType: $subjectType
         subjectTypeId: $subjectTypeId
+        targetToSubjectDescription: $targetToSubjectDescription
         targetType: $targetType
         targetTypeId: $targetTypeId
       }
     ) {
       message
       relationship {
-        description
         displayName
         id
+        subjectToTargetDescription
         subjectType
         subjectTypeId
+        targetToSubjectDescription
         targetType
         targetTypeId
       }
@@ -49,11 +52,12 @@ export const CREATE_RELATIONSHIPS = gql(`
     ) {
       message
       relationships {
-        description
         displayName
         id
+        subjectToTargetDescription
         subjectType
         subjectTypeId
+        targetToSubjectDescription
         targetType
         targetTypeId
       }
@@ -65,11 +69,12 @@ export const CREATE_RELATIONSHIPS = gql(`
 export const GET_RELATIONSHIPS = gql(`
   query relationships($collectionId: ID!) {
     relationships(collectionId: $collectionId) {
-      description
       displayName
       id
+      subjectToTargetDescription
       subjectType
       subjectTypeId
+      targetToSubjectDescription
       targetType
       targetTypeId
     }
@@ -79,12 +84,13 @@ export const GET_RELATIONSHIPS = gql(`
 export const GET_RELATIONSHIP_HISTORY = gql(`
   query relationshipHistory($collectionId: ID!) {
     relationshipHistory(collectionId: $collectionId) {
-      description
       displayName
       id
       relationshipId
+      subjectToTargetDescription
       subjectType
       subjectTypeId
+      targetToSubjectDescription
       targetType
       targetTypeId
       updated
@@ -94,32 +100,35 @@ export const GET_RELATIONSHIP_HISTORY = gql(`
 
 export const UPDATE_RELATIONSHIP = gql(`
   mutation UpdateRelationship(
-    $description: String
     $displayName: String!
     $id: ID!
+    $subjectToTargetDescription: String
     $subjectType: String!
     $subjectTypeId: ID!
+    $targetToSubjectDescription: String
     $targetType: String!
     $targetTypeId: ID!
   ) {
     updateRelationship(
       data: {
-        description: $description
         displayName: $displayName
         id: $id
+        subjectToTargetDescription: $subjectToTargetDescription
         subjectType: $subjectType
         subjectTypeId: $subjectTypeId
+        targetToSubjectDescription: $targetToSubjectDescription
         targetType: $targetType
         targetTypeId: $targetTypeId
       }
     ) {
       message
       relationship {
-        description
         displayName
         id
+        subjectToTargetDescription
         subjectType
         subjectTypeId
+        targetToSubjectDescription
         targetType
         targetTypeId
       }
