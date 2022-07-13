@@ -17,13 +17,13 @@ import {
 import { DeleteItemResponse, DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
 import { ErrorConstants, RelationshipConstants } from '../constants';
 import { ValidationService } from '../service';
-import { RelationshipTypeUnion } from '../models/relationship-type-union';
+import { AllTypesUnion } from '../models/all-types-union';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
   constructor(
     private readonly validationService: ValidationService
-  ) {}
+  ) { }
 
   @Mutation(() => RelationshipResponse)
   public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<RelationshipResponse> {
@@ -161,7 +161,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     });
   }
 
-  @Query(() => [ RelationshipHistory ])
+  @Query(() => [RelationshipHistory])
   public relationshipHistory(@Args() { collectionId }: CollectionIdArgs): Promise<RelationshipHistory[]> {
     return RelationshipHistory.find({
       where: {
@@ -170,7 +170,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     });
   }
 
-  @Query(() => [ Relationship ])
+  @Query(() => [Relationship])
   public relationships(@Args() { collectionId }: CollectionIdArgs): Promise<Relationship[]> {
     return Relationship.find({
       where: {
@@ -179,8 +179,8 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     });
   }
 
-  @FieldResolver(() => RelationshipTypeUnion)
-  public async subject(@Root() relationship: Relationship): Promise<typeof RelationshipTypeUnion | undefined> {
+  @FieldResolver(() => AllTypesUnion)
+  public async subject(@Root() relationship: Relationship): Promise<typeof AllTypesUnion | undefined> {
     return this.getSubjectOrTarget(
       relationship.collectionId,
       relationship.subjectType,
@@ -188,8 +188,8 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     );
   }
 
-  @FieldResolver(() => RelationshipTypeUnion)
-  public async target(@Root() relationship: Relationship): Promise<typeof RelationshipTypeUnion | undefined> {
+  @FieldResolver(() => AllTypesUnion)
+  public async target(@Root() relationship: Relationship): Promise<typeof AllTypesUnion | undefined> {
     return this.getSubjectOrTarget(
       relationship.collectionId,
       relationship.targetType,
@@ -248,7 +248,8 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
    * @param identifier The optional identifier of the thing we're looking for.
    */
   private async getSubjectOrTarget(collectionId: string, relationshipType: string, id?: string, identifier?: string):
-  Promise<typeof RelationshipTypeUnion | undefined> {
+    Promise<typeof AllTypesUnion | undefined> {
+
     if (id || identifier) {
       let query;
 
@@ -263,63 +264,31 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         };
       }
 
-      if (relationshipType.toLowerCase() === 'command') {
-        const command = await Command.findOne({ ...query });
-
-        if (command) {
-          return command;
+      switch (relationshipType) {
+        case 'Command': {
+          return await Command.findOne(query);
+        }
+        case 'Command Argument': {
+          return await CommandArgument.findOne({ id });
+        }
+        case 'Constraint': {
+          return await Constraint.findOne(query);
+        }
+        case 'Event': {
+          return await Event.findOne(query);
+        }
+        case 'Information Type': {
+          return await InformationType.findOne(query);
+        }
+        case 'State': {
+          return await State.findOne(query);
+        }
+        case 'State Enumeration': {
+          return await StateEnumeration.findOne({ id });
         }
       }
 
-      if (relationshipType.toLowerCase() === 'commandargument') {
-        const commandArgument = await CommandArgument.findOne({ id });
-
-        if (commandArgument) {
-          return commandArgument;
-        }
-      }
-
-      if (relationshipType.toLowerCase() === 'constraint') {
-        const constraint = await Constraint.findOne(query);
-
-        if (constraint) {
-          return constraint;
-        }
-      }
-
-      if (relationshipType.toLowerCase() === 'event') {
-        const event = await Event.findOne(query);
-
-        if (event) {
-          return event;
-        }
-      }
-
-      if (relationshipType.toLowerCase() === 'informationtype') {
-        const informationType = await InformationType.findOne(query);
-
-        if (informationType) {
-          return informationType;
-        }
-      }
-
-      if (relationshipType.toLowerCase() === 'state') {
-        const state = await State.findOne(query);
-
-        if (state) {
-          return state;
-        }
-      }
-
-      if (relationshipType.toLowerCase() === 'stateenumeration') {
-        const stateEnumeration = await StateEnumeration.findOne({ id });
-
-        if (stateEnumeration) {
-          return stateEnumeration;
-        }
-      }
+      return undefined;
     }
-
-    return undefined;
   }
 }

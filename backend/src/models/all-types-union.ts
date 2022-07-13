@@ -1,17 +1,23 @@
 import { createUnionType } from 'type-graphql';
 
-import { Command } from './command';
+import { Command, CommandArgument } from './command';
 import { Constraint } from './constraint';
 import { Event } from './event';
 import { InformationType } from './information-type';
+import { StateEnumeration } from './state-enumeration';
 import { State } from './state';
+import { Group } from './group';
 
-export const IdentifierTypeUnion = createUnionType({
-  name: 'IdentifierTypeUnion',
-  types: () => [ Command, Constraint, Event, InformationType, State ] as const,
+export const AllTypesUnion = createUnionType({
+  name: 'AllTypesUnion',
+  types: () => [Command, CommandArgument, Constraint, Event, Group, InformationType, State, StateEnumeration] as const,
   resolveType: value => {
     if (value instanceof Command) {
       return Command;
+    }
+
+    if (value instanceof CommandArgument) {
+      return CommandArgument;
     }
 
     if (value instanceof Constraint) {
@@ -22,12 +28,20 @@ export const IdentifierTypeUnion = createUnionType({
       return Event;
     }
 
+    if (value instanceof Group) {
+      return Group;
+    }
+
     if (value instanceof InformationType) {
       return InformationType;
     }
 
     if (value instanceof State) {
       return State;
+    }
+
+    if (value instanceof StateEnumeration) {
+      return StateEnumeration;
     }
 
     return undefined;
