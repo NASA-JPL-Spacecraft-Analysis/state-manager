@@ -3,25 +3,16 @@ import { UserInputError } from 'apollo-server';
 
 import { CollectionIdArgs, IdArgs, IdentifierArgs } from '../args';
 import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
-import {
-  Relationship,
-  InformationType,
-  Event,
-  State,
-  RelationshipHistory,
-  Constraint,
-  Command,
-  CommandArgument,
-  StateEnumeration
-} from '../models';
+import { Relationship, RelationshipHistory, } from '../models';
 import { DeleteItemResponse, DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
 import { ErrorConstants, RelationshipConstants } from '../constants';
-import { ValidationService } from '../service';
+import { HelperService, ValidationService } from '../service';
 import { AllTypesUnion } from '../models/all-types-union';
 
 @Resolver(() => Relationship)
 export class RelationshipResolver implements ResolverInterface<Relationship> {
   constructor(
+    private readonly helperService: HelperService,
     private readonly validationService: ValidationService
   ) { }
 
@@ -53,9 +44,9 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         relationship.collectionId = data.collectionId;
 
         const subject =
-          await this.getSubjectOrTarget(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
+          await this.helperService.findItemByType(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
         const target =
-          await this.getSubjectOrTarget(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
+          await this.helperService.findItemByType(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
 
         if (!subject) {
           throw new UserInputError(RelationshipConstants.subjectNotFoundError(relationship.subjectIdentifier));
@@ -181,7 +172,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
 
   @FieldResolver(() => AllTypesUnion)
   public async subject(@Root() relationship: Relationship): Promise<typeof AllTypesUnion | undefined> {
-    return this.getSubjectOrTarget(
+    return this.helperService.findItemByType(
       relationship.collectionId,
       relationship.subjectType,
       relationship.subjectTypeId
@@ -190,7 +181,7 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
 
   @FieldResolver(() => AllTypesUnion)
   public async target(@Root() relationship: Relationship): Promise<typeof AllTypesUnion | undefined> {
-    return this.getSubjectOrTarget(
+    return this.helperService.findItemByType(
       relationship.collectionId,
       relationship.targetType,
       relationship.targetTypeId
@@ -239,56 +230,5 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
     });
 
     void relationshipHistory.save();
-  }
-
-  /**
-   * Finds the subject or target of the relationship based on id or identifier.
-   *
-   * @param id The optional id of the thing we're looking for.
-   * @param identifier The optional identifier of the thing we're looking for.
-   */
-  private async getSubjectOrTarget(collectionId: string, relationshipType: string, id?: string, identifier?: string):
-    Promise<typeof AllTypesUnion | undefined> {
-
-    if (id || identifier) {
-      let query;
-
-      if (id) {
-        query = {
-          id
-        };
-      } else {
-        query = {
-          collectionId,
-          identifier
-        };
-      }
-
-      switch (relationshipType) {
-        case 'Command': {
-          return await Command.findOne(query);
-        }
-        case 'Command Argument': {
-          return await CommandArgument.findOne({ id });
-        }
-        case 'Constraint': {
-          return await Constraint.findOne(query);
-        }
-        case 'Event': {
-          return await Event.findOne(query);
-        }
-        case 'Information Type': {
-          return await InformationType.findOne(query);
-        }
-        case 'State': {
-          return await State.findOne(query);
-        }
-        case 'State Enumeration': {
-          return await StateEnumeration.findOne({ id });
-        }
-      }
-
-      return undefined;
-    }
   }
 }

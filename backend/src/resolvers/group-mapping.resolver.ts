@@ -3,15 +3,16 @@ import { Arg, FieldResolver, Mutation, Resolver, ResolverInterface, Root } from 
 
 import { GroupConstants } from '../constants';
 import { UploadGroupMappingsInput } from '../inputs/group/upload-group-mappings-input';
-import { Group, GroupMapping, GroupMappingUnion, GroupType } from '../models';
+import { AllTypesUnion, Group, GroupMapping, GroupMappingUnion } from '../models';
 import { GroupMappingResponse } from '../responses';
-import { GroupService } from '../service';
+import { GroupService, HelperService } from '../service';
 
 @Resolver(() => GroupMapping)
 export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
   constructor(
+    private readonly helperService: HelperService,
     private readonly groupService: GroupService
-  ) {}
+  ) { }
 
   @Mutation(() => GroupMappingResponse)
   public async createGroupMappings(@Arg('data') data: UploadGroupMappingsInput): Promise<GroupMappingResponse> {
@@ -41,25 +42,27 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
           groupMap.set(group.identifier, group);
         } else {
           throw new UserInputError(
-            GroupConstants.groupNotFoundIdentifierError(groupMapping.identifier ? groupMapping.identifier: 'undefined'));
+            GroupConstants.groupNotFoundIdentifierError(groupMapping.identifier ? groupMapping.identifier : 'undefined'));
         }
 
         // Find the item the mapping is trying to bind to.
         const item =
-          await this.groupService.findGroupItem(data.collectionId, groupMapping.itemIdentifier, groupMapping.itemType);
+          await this.helperService.findItemByType(data.collectionId, groupMapping.itemType, groupMapping.itemIdentifier);
 
         // Check the group's existing mappings to make sure the input list doesn't contain a duplicate.
-        if (this.isDuplicateMapping(await GroupMapping.find({ where: { groupId: group.id } }), item)) {
-          throw new UserInputError(GroupConstants.duplicateMappingError(groupMapping.itemIdentifier, groupMapping.itemType));
+        if (item) {
+          if (this.isDuplicateMapping(await GroupMapping.find({ where: { groupId: group.id } }), item)) {
+            throw new UserInputError(GroupConstants.duplicateMappingError(groupMapping.itemIdentifier, groupMapping.itemType));
+          }
+
+          const newMapping = GroupMapping.create({
+            itemId: item.id,
+            groupId: group.id,
+            sortOrder: groupMapping.sortOrder
+          });
+
+          groupMappingsToSave.push(newMapping);
         }
-
-        const newMapping = GroupMapping.create({
-          itemId: item.id,
-          groupId: group.id,
-          sortOrder: groupMapping.sortOrder
-        });
-
-        groupMappingsToSave.push(newMapping);
       }
 
       // Finally, save all our mappings.
@@ -100,7 +103,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
    * @param groupMapping
    */
   @FieldResolver()
-  public async item(@Root() groupMapping: GroupMapping): Promise<typeof GroupMappingUnion | undefined> {
+  public async item(@Root() groupMapping: GroupMapping): Promise<typeof AllTypesUnion | undefined> {
     return this.groupService.getItemByMapping(groupMapping);
   }
 
@@ -111,7 +114,7 @@ export class GroupMappingResolver implements ResolverInterface<GroupMapping> {
    * @param item The item we are looking for.
    * @returns true if there is a duplicate mapping.
    */
-  private isDuplicateMapping(existingMappings: GroupMapping[], item: GroupType): boolean {
+  private isDuplicateMapping(existingMappings: GroupMapping[], item: typeof AllTypesUnion): boolean {
     if (existingMappings) {
       for (const existingMapping of existingMappings) {
         if (existingMapping.itemId === item.id) {

@@ -1,7 +1,8 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 
-import { GroupMappingUnion } from './group';
+import { AllTypesUnion } from './all-types-union';
+
 import { Node } from './node';
 
 @Entity('group_mapping')
@@ -11,8 +12,8 @@ export class GroupMapping extends Node {
   @Column()
   public groupId!: string;
 
-  @Field(() => GroupMappingUnion, { nullable: true })
-  public item?: typeof GroupMappingUnion;
+  @Field(() => AllTypesUnion, { nullable: true })
+  public item?: typeof AllTypesUnion;
 
   @Field(() => ID)
   @Column()
