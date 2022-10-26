@@ -1,14 +1,10 @@
 <div>
-  <span class="st-chip chip" *ngFor="let selectedItem of selectedItems.values()">
-    {{ getItemNameOrIdentifierFunc(selectedItem) }}
-    <i class="si si-close" (click)="onRemoveSelected(selectedItem)"></i>
-  </span>
-
   <div #autocomplete>
+    <label for="Search">Data</label>
     <input
       class="st-input"
       type="text"
-      placeholder="Search for an item"
+      placeholder="Search"
       [disabled]="itemSet.size === 0"
       (input)="onFilter($event)"
       (click)="dropdownOpen = true"
@@ -24,4 +20,9 @@
       </div>
     </div>
   </div>
+
+  <span class="st-chip chip" *ngFor="let selectedItem of selectedItems.values()">
+    {{ getItemNameOrIdentifierFunc(selectedItem) }}
+    <i class="si si-close" (click)="onRemoveSelected(selectedItem)"></i>
+  </span>
 </div>

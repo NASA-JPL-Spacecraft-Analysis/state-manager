@@ -1,5 +1,5 @@
 <div class="page-toolbar">
-  <span class="st-typography-header" (click)="onCloseSidemenu()">Groups</span>
+  <span class="st-typography-header">Groups</span>
 
   <div class="page-toolbar-buttons">
     <button class="st-button tertiary" (click)="onFileUpload()">
@@ -16,34 +16,8 @@
 </div>
 
 <div class="content-container">
-  <div class="sidenav" *ngIf="showGroupsSidemenu">
-    <sm-groups-menu [groups]="groups" (groupSelected)="onGroupSelected($event)"> </sm-groups-menu>
-  </div>
-
-  <div class="content group-content">
-    <ng-container *ngIf="groups.length > 0; else noGroups">
-      <div *ngFor="let group of groups" class="group-container">
-        <span class="st-typography-header groups-toggle-text" (click)="onGroupSelected(group)">
-          {{ group.identifier }}
-        </span>
-
-        <br />
-
-        <span *ngFor="let mapping of group.groupMappings">
-          <span>{{ getItemNameOrIdentifierFunc(mapping.item) }}</span>
-
-          <br />
-        </span>
-
-        <ng-template *ngIf="groups.indexOf(group) !== groups.length - 1">
-          <hr />
-        </ng-template>
-      </div>
-    </ng-container>
-
-    <ng-template #noGroups>
-      <span>This collection does not have any groups.</span>
-    </ng-template>
+  <div class="content">
+    <sm-groups-table [groups]="groups" (groupSelected)="onGroupSelected($event)"></sm-groups-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">

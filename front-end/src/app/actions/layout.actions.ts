@@ -11,11 +11,6 @@ export const openFileUploadDialog = createAction(
   }>()
 );
 
-export const toggleGroupsSidemenu = createAction(
-  '[layout] toggleGroupsSidemenu',
-  props<{ showGroupsSidemenu: boolean }>()
-);
-
 export const toggleSidenav = createAction(
   '[layout] toggleSidenav',
   props<{ showSidenav: boolean }>()

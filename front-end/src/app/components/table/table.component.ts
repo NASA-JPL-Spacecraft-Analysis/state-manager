@@ -42,6 +42,18 @@ export class TableComponent<T> implements OnChanges {
   }
 
   /**
+   * This function provides an alternate API for ingesting table data,
+   * groups are a list so we need to support them here.
+   *
+   * @param dataList A plain list of objects.
+   */
+  public convertListData(dataList: T[]): void {
+    if (dataList) {
+      this.rows = dataList;
+    }
+  }
+
+  /**
    * Takes the incoming map of data and converts it to a list so we can
    * use it in the table.
    *

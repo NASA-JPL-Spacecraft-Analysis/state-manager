@@ -6,13 +6,12 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
+import { GroupsSidenavModule, GroupsTableModule } from 'src/app/components/groups';
 import {
   getCommandMap,
   getConstraintMap,
   getEventMap,
   getGroupIdentifierMap,
-  getShowGroupsSidemenu,
   getGroupMap,
   getGroups,
   getInformationTypeMap,
@@ -89,10 +88,6 @@ export class GroupsComponent implements OnDestroy {
         this.informationTypeMap = informationTypeMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getShowGroupsSidemenu)).subscribe(showGroupsSidemenu => {
-        this.showGroupsSidemenu = showGroupsSidemenu;
-        this.changeDetectorRef.markForCheck();
-      }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
@@ -114,14 +109,6 @@ export class GroupsComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  public onCloseSidemenu(): void {
-    this.store.dispatch(
-      LayoutActions.toggleGroupsSidemenu({
-        showGroupsSidemenu: !this.showGroupsSidemenu
-      })
-    );
   }
 
   public onDeleteGroup(): void {
@@ -192,8 +179,8 @@ export class GroupsComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
-    GroupsMenuModule,
-    GroupsSidenavModule
+    GroupsSidenavModule,
+    GroupsTableModule
   ]
 })
 export class GroupsModule { }
