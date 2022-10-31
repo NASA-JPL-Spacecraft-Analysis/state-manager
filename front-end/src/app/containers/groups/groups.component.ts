@@ -45,6 +45,7 @@ export class GroupsComponent implements OnDestroy {
   public showGroupsSidemenu: boolean;
   public showSidenav: boolean;
   public selectedCollectionId: string;
+  public selectedGroup: Group;
   public stateMap: StateMap;
 
   private subscriptions: SubSink;
@@ -147,26 +148,33 @@ export class GroupsComponent implements OnDestroy {
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
+
+    this.selectedGroup = group;
   }
 
-  public onSidenavOutput(group: Group): void {
-    if (group === undefined) {
+  public onSidenavOutput(group?: Group): void {
+    // Group will be undefined if the user closes the sidenav using the X or the cancel button.
+    if (!group) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
     } else {
+      // Group.id will be undefined if the user is creating a new group.
       if (!group.id) {
         this.store.dispatch(GroupActions.createGroup({
           collectionId: this.selectedCollectionId,
           group
         }));
       } else {
+        // Otherwise the user is updating an existing group.
         this.store.dispatch(GroupActions.updateGroup({
           collectionId: this.selectedCollectionId,
           group
         }));
       }
     }
+
+    this.selectedGroup = group;
   }
 }
 

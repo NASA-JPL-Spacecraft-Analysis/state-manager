@@ -126,13 +126,13 @@ td.type {
 
 th.expand,
 td.expand {
-  max-width: 38px;
+  width: 38px;
 }
 
 .table-row {
   flex-direction: column;
 }
 
-.row-content {
-  max-width: 38px;
+.expanded {
+  background-color: var(--st-primary-10);
 }

@@ -1,5 +1,5 @@
 <div *ngIf="rows.length > 0; else noData">
-  <table class="st-table" [ngClass]="{ history: historyTable }">
+  <table class="st-table">
     <thead>
       <tr>
         <th *ngIf="isTree" class="expand"></th>
@@ -32,7 +32,7 @@
 
     <tbody>
       <tr *ngFor="let row of paginatedRows" class="table-row">
-        <div class="row-content">
+        <div [ngClass]="{ expanded: selectedGroup === row }">
           <td *ngIf="isTree" (click)="onExpandToggle(row)" class="expand">
             <i [ngClass]="expandedSet.has(row) ? 'si si-chevron_down' : 'si si-chevron_right'"></i>
           </td>

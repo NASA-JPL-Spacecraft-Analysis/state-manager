@@ -18,7 +18,7 @@ export class TableComponent<T> implements OnChanges {
   public columns: string[] = [];
   public historyTable: boolean;
   // Keeps track of the expanded rows.
-  public expandedSet: Set<T>;
+  public expandedSet: Set<T> = new Set();
   public filteredRows: T[] = [];
   public groupMap: Map<Group, GroupMapping[]>;
   // Controls if the data rows can be expanded or not
@@ -37,7 +37,6 @@ export class TableComponent<T> implements OnChanges {
   public ngOnChanges(): void {
     this.filteredRows = this.rows;
     this.columnFilters = new Map();
-    this.expandedSet = new Set();
 
     this.calculateMaxPages(this.rows);
 

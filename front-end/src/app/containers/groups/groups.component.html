@@ -17,7 +17,11 @@
 
 <div class="content-container">
   <div class="content">
-    <sm-groups-table [groups]="groups" (groupSelected)="onGroupSelected($event)"></sm-groups-table>
+    <sm-groups-table
+      [groups]="groups"
+      [selectedGroup]="selectedGroup"
+      (groupSelected)="onGroupSelected($event)"
+    ></sm-groups-table>
   </div>
 
   <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">

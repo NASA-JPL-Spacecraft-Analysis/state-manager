@@ -14,6 +14,7 @@ import { getItemNameOrIdentifier } from '../../../functions/helpers';
 })
 export class GroupsTableComponent extends TableComponent<Group> implements OnChanges, OnInit {
   @Input() public groups: Group[];
+  @Input() public selectedGroup: Group;
 
   @Output() public groupSelected: EventEmitter<Group>;
 
