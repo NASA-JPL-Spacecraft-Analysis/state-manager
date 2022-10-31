@@ -38,6 +38,17 @@ tr:hover {
   justify-content: space-between;
 }
 
+.expanded-row {
+  height: 32px;
+  box-shadow: var(--st-table-td-box-shadow);
+  display: flex;
+  align-items: center;
+}
+
+.mapping-name {
+  margin-left: 45px;
+}
+
 .no-data {
   margin: 16px;
 }
@@ -111,4 +122,17 @@ td.source,
 th.type,
 td.type {
   max-width: 120px;
+}
+
+th.expand,
+td.expand {
+  max-width: 38px;
+}
+
+.table-row {
+  flex-direction: column;
+}
+
+.row-content {
+  max-width: 38px;
 }

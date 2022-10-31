@@ -1,24 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { Group } from '../../../models';
-import { TableComponent } from '../../table/table.component';
+import { TableComponent, TableModule } from '../../table/table.component';
+import { getItemNameOrIdentifier } from '../../../functions/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-groups-table',
   styleUrls: ['../../table/table.component.css'],
-  templateUrl: '../../table/table.component.html'
+  templateUrl: 'groups-table.component.html'
 })
 export class GroupsTableComponent extends TableComponent<Group> implements OnChanges, OnInit {
   @Input() public groups: Group[];
 
   @Output() public groupSelected: EventEmitter<Group>;
 
+  public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
+
   constructor() {
     super();
 
     this.groupSelected = new EventEmitter<Group>();
+    this.isTree = true;
   }
 
   public ngOnInit(): void {
@@ -46,7 +51,9 @@ export class GroupsTableComponent extends TableComponent<Group> implements OnCha
     GroupsTableComponent
   ],
   imports: [
-    CommonModule
+    BrowserModule,
+    CommonModule,
+    TableModule
   ]
 })
 export class GroupsTableModule { }

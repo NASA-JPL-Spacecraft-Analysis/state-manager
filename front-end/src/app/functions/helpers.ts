@@ -66,21 +66,39 @@ export const populateItemsWithList =
  * @param item The item that we need the name of
  * @returns The item's name
  */
-export const getItemNameOrIdentifier = (item: AutoCompleteType): string => {
+export const getItemNameOrIdentifier = (item: AutoCompleteType, withPrefix: boolean = true): string => {
+  let value = '';
+
   if (item) {
     if ('label' in item) {
       // Handle state enumerations.
-      return 'state_enumeration - ' + item.label;
+      if (withPrefix) {
+        value = 'state_enumeration - ';
+      }
+
+      return value += item.label;
     } else if ('name' in item) {
       // Handle command arguments.
-      return 'command_argument - ' + item.name;
+      if (withPrefix) {
+        value += 'command_argument - ';
+      }
+
+      return value += item.name;
     } else if ('identifier' in item) {
       if ('type' in item) {
         // Everything else has an identifier, so return that.
-        return item.type + ' - ' + item.identifier;
+        if (withPrefix) {
+          value += item.type + ' - ';
+        }
+
+        return value += item.identifier;
       } else {
         // If there isn't a type, it's a group.
-        return 'group - ' + item.identifier;
+        if (withPrefix) {
+          value += 'group - ';
+        }
+
+        return value += item.identifier;
       }
     }
   }

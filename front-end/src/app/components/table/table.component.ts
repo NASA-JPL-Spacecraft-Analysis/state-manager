@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule, OnChanges } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { startCase } from 'lodash';
+import { Group, GroupMapping } from '../../models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'sm-table',
   styleUrls: ['table.component.css'],
   templateUrl: 'table.component.html'
 })
@@ -14,7 +17,12 @@ export class TableComponent<T> implements OnChanges {
   // Column names that match the type's property names.
   public columns: string[] = [];
   public historyTable: boolean;
+  // Keeps track of the expanded rows.
+  public expandedSet: Set<T>;
   public filteredRows: T[] = [];
+  public groupMap: Map<Group, GroupMapping[]>;
+  // Controls if the data rows can be expanded or not
+  public isTree: boolean;
   public page = 1;
   // The paginated data.
   public paginatedRows: T[] = [];
@@ -22,13 +30,14 @@ export class TableComponent<T> implements OnChanges {
   // The unedited list of data.
   public rows: T[];
 
-  public ngOnChanges(): void {
-    if (!this.rows) {
-      this.rows = [];
-    }
+  constructor() {
+    this.rows = [];
+  }
 
+  public ngOnChanges(): void {
     this.filteredRows = this.rows;
     this.columnFilters = new Map();
+    this.expandedSet = new Set();
 
     this.calculateMaxPages(this.rows);
 
@@ -114,6 +123,14 @@ export class TableComponent<T> implements OnChanges {
     return startCase(columnName);
   }
 
+  public onExpandToggle(row: T): void {
+    if (this.expandedSet.has(row)) {
+      this.expandedSet.delete(row);
+    } else {
+      this.expandedSet.add(row);
+    }
+  }
+
   /**
    * Stub method so we can call the child's onRowClick.
    *
@@ -177,6 +194,7 @@ export class TableComponent<T> implements OnChanges {
     TableComponent
   ],
   imports: [
+    BrowserModule,
     CommonModule
   ]
 })
