@@ -20,7 +20,7 @@ import {
   getShowSidenav,
   getStates
 } from 'src/app/selectors';
-import { CommandMap, ConstraintMap, EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
+import { CommandMap, ConstraintMap, EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
 import { getItemNameOrIdentifier } from '../../functions/helpers';
@@ -38,7 +38,7 @@ export class GroupsComponent implements OnDestroy {
   public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
   public group: Group;
   public groupIdentifierMap: IdentifierMap;
-  public groupMap: GroupMap;
+  public groupMap: Record<string, Group>;
   public groupNameMap: IdentifierMap;
   public groups: Group[];
   public informationTypeMap: InformationTypeMap;

@@ -1,4 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { Group } from '../models';
 
 import { GroupState } from '../reducers/group.reducer';
 
@@ -9,14 +10,22 @@ export const getGroupIdentifierMap = createSelector(
   (state: GroupState) => state.groupIdentifierMap
 );
 
-export const getGroupMap = createSelector(
-  getGroupState,
-  (state: GroupState) => state.groupMap
-);
-
 export const getGroups = createSelector(
   getGroupState,
   (state: GroupState) => state.groups
+);
+
+export const getGroupMap = createSelector(
+  getGroups,
+  (groups: Group[]) => {
+    const groupMap: Record<string, Group> = {};
+
+    for (const group of groups) {
+      groupMap[group.id] = group;
+    }
+
+    return groupMap;
+  }
 );
 
 export const getSelectedGroup = createSelector(

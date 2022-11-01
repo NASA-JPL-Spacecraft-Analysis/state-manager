@@ -11,8 +11,6 @@ export interface Group {
   identifier: string;
 }
 
-export type GroupMap = StringTMap<Event>;
-
 export interface GroupMapping {
   groupId?: string;
   id: string;

@@ -2,18 +2,16 @@ import { createReducer, on } from '@ngrx/store';
 import { cloneDeep } from 'lodash';
 
 import { FileUploadActions, GroupActions } from '../actions';
-import { Group, GroupMap, IdentifierMap } from '../models';
+import { Group, IdentifierMap } from '../models';
 
 export interface GroupState {
   groupIdentifierMap: IdentifierMap;
-  groupMap: GroupMap;
   groups: Group[];
   selectedGroup: Group;
 };
 
 export const initialState: GroupState = {
   groupIdentifierMap: undefined,
-  groupMap: undefined,
   groups: [],
   selectedGroup: undefined
 };
@@ -26,12 +24,6 @@ export const reducer = createReducer(
       ...state.groupIdentifierMap,
       [group.identifier]: group.id
     },
-    groupMap: {
-      ...state.groupMap,
-      [group.id]: {
-        ...group
-      }
-    },
     groups: [
       ...state.groups,
       group
@@ -42,39 +34,30 @@ export const reducer = createReducer(
     const groupIdentifierMap = {
       ...state.groupIdentifierMap
     };
-    const groupMap = {
-      ...state.groupMap
-    };
 
     for (const identifier of Object.keys(groupIdentifierMap)) {
-      if (groupIdentifierMap[identifier] = id) {
+      if (groupIdentifierMap[identifier] === id) {
         delete groupIdentifierMap[identifier];
       }
     }
 
-    delete groupMap[id];
-
     return {
       ...state,
       groupIdentifierMap,
-      groupMap,
       groups: state.groups.filter((group) => group.id !== id),
       selectedGroup: undefined
     };
   }),
   on(GroupActions.setGroups, (state, { groups }) => {
     const groupIdentifierMap = {};
-    const groupMap = {};
 
     for (const group of groups) {
       groupIdentifierMap[group.identifier] = group.id;
-      groupMap[group.id] = group;
     }
 
     return {
       ...state,
       groupIdentifierMap,
-      groupMap,
       groups: [
         ...groups
       ]
@@ -108,12 +91,6 @@ export const reducer = createReducer(
         ...groupIdentifierMap,
         [group.identifier]: group.id
       },
-      groupMap: {
-        ...state.groupMap,
-        [group.id]: {
-          ...group
-        }
-      },
       ...groups,
       selectedGroup: group,
     };
@@ -121,11 +98,9 @@ export const reducer = createReducer(
   on(FileUploadActions.uploadGroupMappingsSuccess, (state, { groupMappings }) => {
     const groups = cloneDeep(state.groups);
     const groupIdentifierMap = {};
-    const groupMap = {};
 
     for (const group of groups) {
       groupIdentifierMap[group.identifier] = group.id;
-      groupMap[group.id] = group;
 
       for (const groupMapping of groupMappings) {
         if (group.id === groupMapping.groupId) {
@@ -140,10 +115,6 @@ export const reducer = createReducer(
         ...state.groupIdentifierMap,
         ...groupIdentifierMap
       },
-      groupMap: {
-        ...state.groupMap,
-        ...groupMap
-      },
       groups: [
         ...groups
       ]
@@ -151,11 +122,9 @@ export const reducer = createReducer(
   }),
   on(FileUploadActions.uploadGroupsSuccess, (state, { groups }) => {
     const groupIdentifierMap = {};
-    const groupMap = {};
 
     for (const group of groups) {
       groupIdentifierMap[group.identifier] = group.id;
-      groupMap[group.id] = group;
     }
 
     return {
@@ -163,10 +132,6 @@ export const reducer = createReducer(
       groupIdentifierMap: {
         ...state.groupIdentifierMap,
         ...groupIdentifierMap
-      },
-      groupMap: {
-        ...state.groupMap,
-        ...groupMap
       },
       groups: [
         ...state.groups,
