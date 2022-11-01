@@ -65,7 +65,7 @@ export const reducer = createReducer(
   on(GroupActions.setGroups, (state, { groups }) => {
     const groupIdentifierMap = {};
     const groupMap = {};
-    
+
     for (const group of groups) {
       groupIdentifierMap[group.identifier] = group.id;
       groupMap[group.id] = group;
@@ -85,11 +85,9 @@ export const reducer = createReducer(
     selectedGroup: group
   })),
   on(GroupActions.updateGroupSuccess, (state, { group }) => {
-    const groups = [ ...state.groups ];
+    const groups = [...state.groups];
     // Find the index of the group that was updated.
-    const index = state.groups.map((group) => {
-      return group.id;
-    }).indexOf(group.id);
+    const index = state.groups.map((g) => g.id).indexOf(group.id);
 
     groups.splice(index, 1, group);
 
@@ -116,9 +114,7 @@ export const reducer = createReducer(
           ...group
         }
       },
-      groups: [
-        ...groups
-      ],
+      ...groups,
       selectedGroup: group,
     };
   }),
@@ -126,7 +122,7 @@ export const reducer = createReducer(
     const groups = cloneDeep(state.groups);
     const groupIdentifierMap = {};
     const groupMap = {};
-    
+
     for (const group of groups) {
       groupIdentifierMap[group.identifier] = group.id;
       groupMap[group.id] = group;

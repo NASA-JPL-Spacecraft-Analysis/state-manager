@@ -1,0 +1,39 @@
+<div *ngIf="depth < 4; else maxDepth">
+  <div [ngClass]="selectedGroup === row ? 'selected' : ''">
+    <td (click)="onExpandToggle()" class="expand">
+      <i [ngClass]="expanded ? 'si si-chevron_down' : 'si si-chevron_right'"></i>
+    </td>
+
+    <td
+      *ngFor="let column of columns"
+      title="{{ row[column] }}"
+      [class]="column"
+      (click)="onRowClick(row)"
+    >
+      {{ row[column] }}
+    </td>
+  </div>
+
+  <ng-container *ngIf="expanded">
+    <div *ngFor="let mapping of row.groupMappings" class="expanded-row" (click)="onRowClick(row)">
+      <ng-container *ngIf="false; else group">
+        <sm-groups-table-row
+          [columns]="columns"
+          [depth]="incDepth()"
+          [row]="$any(mapping.item)"
+          [selectedGroup]="selectedGroup"
+        ></sm-groups-table-row>
+      </ng-container>
+
+      <ng-template #group>
+        <span class="st-typography-body mapping-name">
+          {{ getItemNameOrIdentifierFunc(mapping.item, false) }}
+        </span>
+      </ng-template>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #maxDepth>
+  <span>State Manager currently only supports groups with a max depth of 5.</span>
+</ng-template>

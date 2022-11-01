@@ -5,7 +5,9 @@ import {
   StringTMap,
   CommandArgumentMap,
   StateEnumerationMap,
-  AutoCompleteSetType
+  AutoCompleteSetType,
+  Group,
+  GroupMapping
 } from '../models';
 
 export const mapIdentifiers = (items: IdentifierType[]): IdentifierMap => {
@@ -34,7 +36,6 @@ export const mapItems = (items: IdentifierType[]): StringTMap<IdentifierType> =>
 
   return itemMap;
 };
-
 
 export const populateItems = (itemList: AutoCompleteSetType, items: Record<string, AutoCompleteType>): AutoCompleteSetType => {
   if (itemList && items) {

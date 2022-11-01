@@ -38,13 +38,6 @@ tr:hover {
   justify-content: space-between;
 }
 
-.expanded-row {
-  height: 32px;
-  box-shadow: var(--st-table-td-box-shadow);
-  display: flex;
-  align-items: center;
-}
-
 .mapping-name {
   margin-left: 45px;
 }
@@ -124,15 +117,6 @@ td.type {
   max-width: 120px;
 }
 
-th.expand,
-td.expand {
-  width: 38px;
-}
-
 .table-row {
   flex-direction: column;
-}
-
-.expanded {
-  background-color: var(--st-primary-10);
 }

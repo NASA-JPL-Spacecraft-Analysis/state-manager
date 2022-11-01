@@ -17,12 +17,8 @@ export class TableComponent<T> implements OnChanges {
   // Column names that match the type's property names.
   public columns: string[] = [];
   public historyTable: boolean;
-  // Keeps track of the expanded rows.
-  public expandedSet: Set<T> = new Set();
   public filteredRows: T[] = [];
   public groupMap: Map<Group, GroupMapping[]>;
-  // Controls if the data rows can be expanded or not
-  public isTree: boolean;
   public page = 1;
   // The paginated data.
   public paginatedRows: T[] = [];
@@ -120,14 +116,6 @@ export class TableComponent<T> implements OnChanges {
    */
   public formatColumnName(columnName: string): string {
     return startCase(columnName);
-  }
-
-  public onExpandToggle(row: T): void {
-    if (this.expandedSet.has(row)) {
-      this.expandedSet.delete(row);
-    } else {
-      this.expandedSet.add(row);
-    }
   }
 
   /**

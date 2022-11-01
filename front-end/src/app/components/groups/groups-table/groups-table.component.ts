@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { Group } from '../../../models';
 import { TableComponent, TableModule } from '../../table/table.component';
-import { getItemNameOrIdentifier } from '../../../functions/helpers';
+import { GroupsTableRowModule } from './groups-table-row/groups-table-row.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,13 +18,10 @@ export class GroupsTableComponent extends TableComponent<Group> implements OnCha
 
   @Output() public groupSelected: EventEmitter<Group>;
 
-  public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
-
   constructor() {
     super();
 
     this.groupSelected = new EventEmitter<Group>();
-    this.isTree = true;
   }
 
   public ngOnInit(): void {
@@ -39,7 +36,8 @@ export class GroupsTableComponent extends TableComponent<Group> implements OnCha
     super.ngOnChanges();
   }
 
-  public onRowClick(group: Group): void {
+
+  public onGroupSelected(group: Group): void {
     this.groupSelected.emit(group);
   }
 }
@@ -54,6 +52,7 @@ export class GroupsTableComponent extends TableComponent<Group> implements OnCha
   imports: [
     BrowserModule,
     CommonModule,
+    GroupsTableRowModule,
     TableModule
   ]
 })

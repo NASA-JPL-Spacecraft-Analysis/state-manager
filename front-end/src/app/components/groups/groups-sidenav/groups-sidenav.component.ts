@@ -71,7 +71,7 @@ export class GroupsSidenavComponent implements OnChanges {
     this.itemSet = new Set();
 
     // If we're updating a group, remove it from the set so the user can't add it as a group item.
-    if (this.group.id) {
+    if (this.group?.id) {
       delete this.groupMap[this.group.id];
     }
 
