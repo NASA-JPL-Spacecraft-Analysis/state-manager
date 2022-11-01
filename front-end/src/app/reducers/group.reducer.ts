@@ -2,16 +2,14 @@ import { createReducer, on } from '@ngrx/store';
 import { cloneDeep } from 'lodash';
 
 import { FileUploadActions, GroupActions } from '../actions';
-import { Group, IdentifierMap } from '../models';
+import { Group } from '../models';
 
 export interface GroupState {
-  groupIdentifierMap: IdentifierMap;
   groups: Group[];
   selectedGroup: Group;
 };
 
 export const initialState: GroupState = {
-  groupIdentifierMap: undefined,
   groups: [],
   selectedGroup: undefined
 };
@@ -20,49 +18,23 @@ export const reducer = createReducer(
   initialState,
   on(GroupActions.createGroupSuccess, (state, { group }) => ({
     ...state,
-    groupIdentifierMap: {
-      ...state.groupIdentifierMap,
-      [group.identifier]: group.id
-    },
     groups: [
       ...state.groups,
       group
     ],
     selectedGroup: group
   })),
-  on(GroupActions.deleteGroupSuccess, (state, { id }) => {
-    const groupIdentifierMap = {
-      ...state.groupIdentifierMap
-    };
-
-    for (const identifier of Object.keys(groupIdentifierMap)) {
-      if (groupIdentifierMap[identifier] === id) {
-        delete groupIdentifierMap[identifier];
-      }
-    }
-
-    return {
-      ...state,
-      groupIdentifierMap,
-      groups: state.groups.filter((group) => group.id !== id),
-      selectedGroup: undefined
-    };
-  }),
-  on(GroupActions.setGroups, (state, { groups }) => {
-    const groupIdentifierMap = {};
-
-    for (const group of groups) {
-      groupIdentifierMap[group.identifier] = group.id;
-    }
-
-    return {
-      ...state,
-      groupIdentifierMap,
-      groups: [
-        ...groups
-      ]
-    };
-  }),
+  on(GroupActions.deleteGroupSuccess, (state, { id }) => ({
+    ...state,
+    groups: state.groups.filter((group) => group.id !== id),
+    selectedGroup: undefined
+  })),
+  on(GroupActions.setGroups, (state, { groups }) => ({
+    ...state,
+    groups: [
+      ...groups
+    ]
+  })),
   on(GroupActions.setSelectedGroup, (state, { group }) => ({
     ...state,
     selectedGroup: group
@@ -74,34 +46,18 @@ export const reducer = createReducer(
 
     groups.splice(index, 1, group);
 
-    const groupIdentifierMap = {
-      ...state.groupIdentifierMap
-    };
-
-    for (const identifier of Object.keys(groupIdentifierMap)) {
-      // Remove the old identifier from our map
-      if (groupIdentifierMap[identifier] === group.id) {
-        delete groupIdentifierMap[identifier];
-      }
-    }
-
     return {
       ...state,
-      groupIdentifierMap: {
-        ...groupIdentifierMap,
-        [group.identifier]: group.id
-      },
-      ...groups,
+      groups: [
+        ...groups,
+      ],
       selectedGroup: group,
     };
   }),
   on(FileUploadActions.uploadGroupMappingsSuccess, (state, { groupMappings }) => {
     const groups = cloneDeep(state.groups);
-    const groupIdentifierMap = {};
 
     for (const group of groups) {
-      groupIdentifierMap[group.identifier] = group.id;
-
       for (const groupMapping of groupMappings) {
         if (group.id === groupMapping.groupId) {
           group.groupMappings.push(groupMapping);
@@ -111,32 +67,17 @@ export const reducer = createReducer(
 
     return {
       ...state,
-      groupIdentifierMap: {
-        ...state.groupIdentifierMap,
-        ...groupIdentifierMap
-      },
-      groups: [
-        ...groups
-      ]
-    };
-  }),
-  on(FileUploadActions.uploadGroupsSuccess, (state, { groups }) => {
-    const groupIdentifierMap = {};
-
-    for (const group of groups) {
-      groupIdentifierMap[group.identifier] = group.id;
-    }
-
-    return {
-      ...state,
-      groupIdentifierMap: {
-        ...state.groupIdentifierMap,
-        ...groupIdentifierMap
-      },
       groups: [
         ...state.groups,
         ...groups
       ]
     };
-  })
+  }),
+  on(FileUploadActions.uploadGroupsSuccess, (state, { groups }) => ({
+    ...state,
+    groups: [
+      ...state.groups,
+      ...groups
+    ]
+  }))
 );

@@ -8,7 +8,7 @@ import { IdentifierMap } from 'src/app/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-identifier-form',
-  styleUrls: [ 'identifier-form.component.css' ],
+  styleUrls: ['identifier-form.component.css'],
   templateUrl: 'identifier-form.component.html'
 })
 export class IdentifierFormComponent implements OnChanges {
@@ -81,6 +81,7 @@ export class IdentifierFormComponent implements OnChanges {
 
     if (identifierList) {
       for (const item of identifierList) {
+
         // Check each item that isn't the item we have open in the sidenav, and its type.
         if (item.id !== this.id && item.type === this.type) {
           return true;
@@ -105,4 +106,4 @@ export class IdentifierFormComponent implements OnChanges {
     MaterialModule
   ]
 })
-export class IdentifierFormModule {}
+export class IdentifierFormModule { }

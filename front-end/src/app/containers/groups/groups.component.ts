@@ -58,7 +58,6 @@ export class GroupsComponent implements OnDestroy {
   ) {
     this.iconRegistry.addSvgIcon('delete', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/delete.svg'));
     this.subscriptions = new SubSink();
-    this.groupIdentifierMap = {};
 
     this.subscriptions.add(
       this.store.pipe(select(getCommandMap)).subscribe(commandMap => {
@@ -74,10 +73,11 @@ export class GroupsComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getGroupMap)).subscribe(groupMap => {
-        this.groupMap = { ...groupMap };
+        this.groupMap = groupMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getGroupIdentifierMap)).subscribe(groupIdentifierMap => {
+        console.log(groupIdentifierMap);
         this.groupIdentifierMap = groupIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),

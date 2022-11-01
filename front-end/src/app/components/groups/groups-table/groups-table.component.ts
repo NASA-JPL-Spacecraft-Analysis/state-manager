@@ -36,7 +36,6 @@ export class GroupsTableComponent extends TableComponent<Group> implements OnCha
     super.ngOnChanges();
   }
 
-
   public onGroupSelected(group: Group): void {
     this.groupSelected.emit(group);
   }
