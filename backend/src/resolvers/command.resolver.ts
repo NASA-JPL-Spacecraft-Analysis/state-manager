@@ -45,15 +45,6 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @FieldResolver(() => [ CommandArgumentEnumeration ])
-  public async enumerations(@Root() commandArg: CommandArgument): Promise<CommandArgumentEnumeration[]> {
-    return CommandArgumentEnumeration.find({
-      where: {
-        commandId: commandArg.commandId
-      }
-    });
-  }
-
   @Query(() => Command)
   public command(@Args() { collectionId, id, identifier }: IdentifierArgs): Promise<Command | undefined> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
@@ -338,6 +329,19 @@ export class CommandResolver implements ResolverInterface<Command> {
     return CommandArgument.find({
       where: {
         commandId
+      }
+    });
+  }
+}
+
+@Resolver(() => CommandArgument)
+export class CommandArgumentResolver implements ResolverInterface<CommandArgument> {
+
+  @FieldResolver(() => [ CommandArgumentEnumeration ])
+  public async enumerations(@Root() commandArg: CommandArgument): Promise<CommandArgumentEnumeration[]> {
+    return CommandArgumentEnumeration.find({
+      where: {
+        commandId: commandArg.commandId
       }
     });
   }

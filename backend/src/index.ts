@@ -7,6 +7,7 @@ import { Container } from 'typedi';
 import {
   CollectionResolver,
   CommandResolver,
+  CommandArgumentResolver,
   ConstraintResolver,
   EventResolver,
   GroupMappingResolver,
@@ -25,6 +26,7 @@ const main = async () => {
     resolvers: [
       CollectionResolver,
       CommandResolver,
+      CommandArgumentResolver,
       ConstraintResolver,
       EventResolver,
       GroupMappingResolver,
