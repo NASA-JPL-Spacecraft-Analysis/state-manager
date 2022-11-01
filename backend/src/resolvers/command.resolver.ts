@@ -12,7 +12,7 @@ import {
   ModifyCommandArgument,
   UpdateCommandInput
 } from '../inputs';
-import { Command, CommandArgument, CommandArgumentHistory, CommandHistory } from '../models';
+import { Command, CommandArgument, CommandArgumentEnumeration,  CommandArgumentHistory, CommandHistory } from '../models';
 import { SharedRepository } from '../repositories';
 import {
   CommandArgumentResponse,
@@ -41,6 +41,15 @@ export class CommandResolver implements ResolverInterface<Command> {
     return CommandArgument.find({
       where: {
         commandId: command.id
+      }
+    });
+  }
+
+  @FieldResolver(() => [ CommandArgumentEnumeration ])
+  public async enumerations(@Root() commandArg: CommandArgument): Promise<CommandArgumentEnumeration[]> {
+    return CommandArgumentEnumeration.find({
+      where: {
+        commandId: commandArg.commandId
       }
     });
   }
