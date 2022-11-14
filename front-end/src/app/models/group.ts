@@ -1,8 +1,4 @@
 import { AutoCompleteType } from './autocomplete';
-import { Event } from './event';
-import { InformationType } from './information-type';
-import { State } from './state';
-import { StringTMap } from './string-t-map';
 
 export interface Group {
   collectionId: string;

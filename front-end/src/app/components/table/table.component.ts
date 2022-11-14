@@ -18,7 +18,6 @@ export class TableComponent<T> implements OnChanges {
   public columns: string[] = [];
   public historyTable: boolean;
   public filteredRows: T[] = [];
-  public groupMap: Map<Group, GroupMapping[]>;
   public page = 1;
   // The paginated data.
   public paginatedRows: T[] = [];
