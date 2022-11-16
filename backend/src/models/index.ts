@@ -1,5 +1,6 @@
 export * from './collection';
 export * from './command';
+export * from './command-enumeration';
 export * from './constraint';
 export * from './data-type';
 export * from './event';
