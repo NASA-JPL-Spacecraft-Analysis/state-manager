@@ -30,7 +30,7 @@ CREATE TABLE `command_arguments` (
 CREATE TABLE `command_argument_enumerations` (
   `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) NOT NULL,
-  `stateId` varchar(36) NOT NULL,
+  `commandId` varchar(36) NOT NULL,
   `label` text,
   `value` text,
   PRIMARY KEY (`id`)

@@ -10,9 +10,9 @@ export class CommandArgumentEnumeration extends Node {
   @Column()
   public collectionId: string;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => ID)
   @Column()
-  public commandId?: string;
+  public commandId!: string;
 
   @Field()
   @Column()
