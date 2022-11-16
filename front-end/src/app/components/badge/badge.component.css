@@ -1,0 +1,18 @@
+.command-argument-chip-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8ecf0;
+  border-radius: 16px;
+}
+
+.command-argument-chip-text-container {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 15px;
+  color: #464e60;
+  mix-blend-mode: normal;
+  opacity: 0.9;
+}
