@@ -4,6 +4,12 @@ import { Column, Entity } from 'typeorm';
 import { IdentifierType } from './identifier-type';
 import { Node } from './node';
 
+export enum CommandArgumentType {
+  'Enumerated',
+  'Numeric',
+  'String'
+}
+
 @Entity({
   name: 'commands',
   orderBy: {
@@ -12,7 +18,7 @@ import { Node } from './node';
 })
 @ObjectType()
 export class Command extends IdentifierType {
-  @Field(() => [ CommandArgument ], { nullable: true })
+  @Field(() => [CommandArgument], { nullable: true })
   public arguments?: CommandArgument[];
 }
 
@@ -30,12 +36,24 @@ export class CommandArgument extends Node {
   public commandId!: string;
 
   @Column()
+  @Field({ nullable: true })
+  public description?: string;
+
+  @Column()
+  @Field()
+  public enums?: string;
+
+  @Column()
   @Field()
   public name!: string;
 
   @Column()
   @Field({ nullable: true })
   public sortOrder?: number;
+
+  @Column()
+  @Field()
+  public type!: CommandArgumentType;
 }
 
 @Entity('command_argument_history')

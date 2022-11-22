@@ -21,9 +21,12 @@ CREATE TABLE `command_argument_history` (
 CREATE TABLE `command_arguments` (
   `collectionId` varchar(36) NOT NULL,
   `commandId` varchar(36) NOT NULL,
+  `description` text DEFAULT NULL,
+  `enums` text DEFAULT NULL,
   `id` varchar(36) NOT NULL,
   `name` text NOT NULL,
   `sortOrder` int(11) DEFAULT NULL,
+  `type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
