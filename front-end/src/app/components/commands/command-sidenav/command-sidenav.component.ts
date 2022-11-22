@@ -19,18 +19,13 @@ export class CommandSidenavComponent implements OnChanges {
   @Input() public commandIdentifierMap: IdentifierMap;
   @Input() public commandTypes: string[];
 
-  @Output() public errorEmitter: EventEmitter<string>;
-  @Output() public modifyCommand: EventEmitter<{ command: Command; deletedArgumentIds: string[] }>;
+  @Output() public closeSidenav: EventEmitter<boolean>;
 
-  public deletedArgumentIds: string[];
   public form: FormGroup;
   public newCommand: Command;
 
-  private isDuplicateIdentifier: boolean;
-
   constructor() {
-    this.errorEmitter = new EventEmitter<string>();
-    this.modifyCommand = new EventEmitter<{ command: Command; deletedArgumentIds: string[] }>();
+    this.closeSidenav = new EventEmitter();
   }
 
   public ngOnChanges(): void {
@@ -60,8 +55,6 @@ export class CommandSidenavComponent implements OnChanges {
       };
     }
 
-    this.deletedArgumentIds = [];
-
     this.form = new FormGroup({
       collectionId: new FormControl(this.newCommand.collectionId),
       description: new FormControl(this.newCommand.description),
@@ -76,45 +69,12 @@ export class CommandSidenavComponent implements OnChanges {
   }
 
   public onCancel(): void {
-    this.modifyCommand.emit(undefined);
-  }
-
-  public onDuplicateIdentifier(duplicateIdentifier: boolean): void {
-    this.isDuplicateIdentifier = duplicateIdentifier;
+    this.closeSidenav.emit(true);
   }
 
   public onIdentifierChange(identifier: string): void {
     this.newCommand.identifier = identifier;
     this.form.get('identifier').setValue(identifier);
-  }
-
-  public onSubmit(): void {
-    if (this.processArguments()) {
-      if (!this.isDuplicateIdentifier) {
-        this.modifyCommand.emit({
-          command: {
-            ...this.form.value,
-            arguments: this.newCommand.arguments
-          },
-          deletedArgumentIds: this.deletedArgumentIds
-        });
-      } else {
-        this.errorEmitter.emit('Please provide a unique identifier');
-      }
-    } else {
-      this.errorEmitter.emit('Please provide a name for each argument');
-    }
-  }
-
-  // Make sure that each argument has a required name.
-  private processArguments(): boolean {
-    for (const argument of this.newCommand.arguments) {
-      if (!argument.name) {
-        return false;
-      }
-    }
-
-    return true;
   }
 }
 

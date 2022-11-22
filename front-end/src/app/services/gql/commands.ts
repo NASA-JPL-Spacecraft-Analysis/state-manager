@@ -1,54 +1,5 @@
 import gql from 'graphql-tag';
 
-export const CREATE_COMMAND = gql(`
-  mutation CreateCommand(
-    $arguments: [ModifyCommandArgument!]
-    $collectionId: ID!
-    $description: String
-    $displayName: String!
-    $editable: Boolean!
-    $externalLink: String
-    $identifier: String!
-    $type: String!
-    $version: String
-  ) {
-    createCommand(
-      data: {
-        arguments: $arguments
-        collectionId: $collectionId
-        description: $description
-        displayName: $displayName
-        editable: $editable
-        externalLink: $externalLink
-        identifier: $identifier
-        type: $type
-        version: $version
-      }
-    ) {
-      command {
-        arguments {
-          collectionId
-          commandId
-          name
-          id
-          sortOrder
-        }
-        collectionId
-        description
-        displayName
-        editable
-        externalLink
-        id
-        identifier
-        type
-        version
-      }
-      message
-      success
-    }
-  }
-`);
-
 export const CREATE_COMMAND_ARGUMENTS = gql(`
   mutation CreateCommandArguments(
     $collectionId: ID!
@@ -102,24 +53,6 @@ export const CREATE_COMMANDS = gql(`
         type
         version
       }
-      message
-      success
-    }
-  }
-`);
-
-export const DELETE_ARGUMENTS = gql(`
-  mutation DeleteArguments(
-    $commandId: ID!
-    $deletedArgumentIds: [ID!]!
-  ) {
-    deleteArguments(
-      data: {
-        commandId: $commandId
-        deletedArgumentIds: $deletedArgumentIds
-      }
-    ) {
-      deletedArgumentIds
       message
       success
     }
@@ -189,52 +122,5 @@ export const GET_COMMANDS = gql(`
 export const GET_COMMAND_TYPES = gql(`
   query CommandTypes {
     commandTypes
-  }
-`);
-
-export const UPDATE_COMMAND = gql(`
-  mutation UpdateCommand(
-    $arguments: [ModifyCommandArgument!]
-    $description: String
-    $displayName: String
-    $editable: Boolean
-    $externalLink: String
-    $id: ID!
-    $identifier: String!
-    $version: String
-  ) {
-    updateCommand(
-      data: {
-        arguments: $arguments
-        description: $description
-        displayName: $displayName
-        editable: $editable
-        externalLink: $externalLink
-        id: $id
-        identifier: $identifier
-        version: $version
-      }
-    ) {
-      command {
-        arguments {
-          collectionId
-          commandId
-          name
-          id
-          sortOrder
-        }
-        collectionId
-        description
-        displayName
-        editable
-        externalLink
-        id
-        identifier
-        type
-        version
-      }
-      message
-      success
-    }
   }
 `);

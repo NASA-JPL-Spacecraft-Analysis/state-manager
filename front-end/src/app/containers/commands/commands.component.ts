@@ -113,7 +113,7 @@ export class CommandsComponent implements OnDestroy {
     }
   }
 
-  public onModifyCommand(command?: Command): void {
+  public onSelectCommand(command?: Command): void {
     this.store.dispatch(CommandActions.setSelectedCommand({
       id: command?.id
     }));
@@ -135,33 +135,13 @@ export class CommandsComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { command: Command; deletedArgumentIds: string[] }): void {
-    if (!result) {
-      // If the user is closing the sidenav intentionally, remove the ID from the URL.
-      this.navigationService.removeIDFromURL(this.location, this.router.url);
-      this.commandId = '';
+  public onSidenavOutput(): void {
+    this.navigationService.removeIDFromURL(this.location, this.router.url);
+    this.commandId = '';
 
-      this.store.dispatch(LayoutActions.toggleSidenav({
-        showSidenav: false
-      }));
-    } else {
-      if (!result.command.id) {
-        this.store.dispatch(CommandActions.createCommand({
-          command: result.command
-        }));
-      } else {
-        this.store.dispatch(CommandActions.updateCommand({
-          command: result.command
-        }));
-      }
-
-      if (result.deletedArgumentIds.length > 0 && result.command.id) {
-        this.store.dispatch(CommandActions.deleteArguments({
-          commandId: result.command.id,
-          deletedArgumentIds: result.deletedArgumentIds
-        }));
-      }
-    }
+    this.store.dispatch(LayoutActions.toggleSidenav({
+      showSidenav: false
+    }));
   }
 }
 

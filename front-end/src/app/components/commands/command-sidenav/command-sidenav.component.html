@@ -8,14 +8,13 @@
   </div>
 
   <div class="sidenav-content">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="form">
       <div *ngIf="commandIdentifierMap">
         <app-identifier-form
           [originalIdentifier]="newCommand.identifier"
           [identifierMap]="commandIdentifierMap"
           [id]="newCommand.id"
           [type]="form.value.type"
-          (duplicateIdentifier)="onDuplicateIdentifier($event)"
           (identifierEmitter)="onIdentifierChange($event)"
         >
         </app-identifier-form>
@@ -36,21 +35,6 @@
         <textarea class="st-input" placeholder="Description" formControlName="description">
         </textarea>
 
-        <!--<label for="External Link">External Link</label>
-        <input class="st-input"
-          placeholder="External Link"
-          name="External Link"
-          type="text"
-          formControlName="externalLink"
-        />-->
-
-        <!-- <label for="Command Type">Command Type</label>
-        <select class="st-select" placeholder="Command Type" formControlName="type">
-          <option *ngFor="let commandType of commandTypes" [value]="commandType">
-            {{commandType}}
-          </option>
-        </select> -->
-
         <label for="Version">Version</label>
         <input
           class="st-input"
@@ -68,11 +52,7 @@
           </option>
         </select>
 
-        <app-command-argument-form
-          [arguments]="newCommand.arguments"
-          [collectionId]="collectionId"
-          [deletedArgumentIds]="deletedArgumentIds"
-        >
+        <app-command-argument-form [arguments]="newCommand.arguments" [collectionId]="collectionId">
         </app-command-argument-form>
       </div>
     </form>
@@ -80,7 +60,5 @@
 
   <div class="sidenav-footer">
     <button class="st-button secondary" (click)="onCancel()">Cancel</button>
-
-    <button class="st-button" (click)="onSubmit()">Save Command</button>
   </div>
 </div>

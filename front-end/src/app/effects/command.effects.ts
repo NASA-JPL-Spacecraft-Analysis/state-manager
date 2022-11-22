@@ -1,78 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect } from '@ngrx/effects';
 import { Observable, merge, of } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { CommandActions, LayoutActions, ToastActions } from '../actions';
+import { CommandActions, LayoutActions } from '../actions';
 import { CommandService } from '../services';
 import { mapToParam, ofRoute } from '../functions/router';
-import { CommandResponse, DeleteArgumentResponse } from '../models';
 
 @Injectable()
 export class CommandEffects {
-  public createCommand = createEffect(() =>
-    this.actions.pipe(
-      ofType(CommandActions.createCommand),
-      switchMap(({ command }) =>
-        this.commandService.createCommand(
-          command
-        ).pipe(
-          switchMap((createCommand: CommandResponse) => [
-            CommandActions.createCommandSuccess({
-              command: createCommand.command
-            }),
-            ToastActions.showToast({
-              message: createCommand.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            CommandActions.createCommandFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
-        )
-      )
-    )
-  );
-
-  public deleteArguments = createEffect(() =>
-    this.actions.pipe(
-      ofType(CommandActions.deleteArguments),
-      switchMap(({ commandId, deletedArgumentIds }) =>
-        this.commandService.deleteArguments(
-          commandId,
-          deletedArgumentIds
-        ).pipe(
-          switchMap((deleteArguments: DeleteArgumentResponse) => [
-            CommandActions.deleteArgumentsSuccess({
-              deletedArgumentIds: deleteArguments.deletedArgumentIds
-            }),
-            ToastActions.showToast({
-              message: deleteArguments.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            CommandActions.deleteArgumentsFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
-        )
-      )
-    )
-  );
-
   public navCommands = createEffect(() =>
     this.actions.pipe(
       ofRoute([
@@ -110,41 +48,11 @@ export class CommandEffects {
     )
   );
 
-  public updateCommand = createEffect(() =>
-    this.actions.pipe(
-      ofType(CommandActions.updateCommand),
-      switchMap(({ command }) =>
-        this.commandService.updateCommand(
-          command
-        ).pipe(
-          switchMap((updateCommand: CommandResponse) => [
-            CommandActions.updateCommandSuccess({
-              command: updateCommand.command
-            }),
-            ToastActions.showToast({
-              message: updateCommand.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            CommandActions.updateCommandFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
-        )
-      )
-    )
-  );
-
   constructor(
     private actions: Actions,
     private commandService: CommandService,
     private router: Router
-  ) {}
+  ) { }
 
   public getCommandArgumentHistory(collectionId: string): Observable<Action> {
     return this.commandService.getCommandArgumentHistory(

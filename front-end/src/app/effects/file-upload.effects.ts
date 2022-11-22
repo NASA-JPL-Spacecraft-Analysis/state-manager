@@ -125,8 +125,8 @@ export class FileUploadEffects {
         if (Array.isArray(commands) && commands.length > 0) {
           for (const command of commands) {
             command.collectionId = collectionId;
-            // TODO: This will change at some point.
-            command.editable = true;
+            // Commands are never editable.
+            command.editable = false;
 
             if (!this.validationService.isCommand(command)) {
               return [
