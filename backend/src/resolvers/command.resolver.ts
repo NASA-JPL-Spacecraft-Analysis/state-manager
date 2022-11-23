@@ -12,7 +12,7 @@ import {
   ModifyCommandArgument,
   UpdateCommandInput
 } from '../inputs';
-import { Command, CommandArgument, CommandArgumentHistory, CommandHistory } from '../models';
+import { Command, CommandArgument, CommandArgumentEnumeration,  CommandArgumentHistory, CommandHistory } from '../models';
 import { SharedRepository } from '../repositories';
 import {
   CommandArgumentResponse,
