@@ -3,8 +3,9 @@ import { Relationship, RelationshipHistory, RelationshipMap } from '../models';
 export const mockRelationship: Relationship = {
   id: '1',
   displayName: 'Test relationship name',
-  description: 'Test relationship description',
+  subjectToTargetDescription: 'Test subject to target description',
   subjectType: 'informationType',
+  targetToSubjectDescription: 'Test subject to target description',
   targetType: 'informationType',
   subjectTypeId: '1',
   targetTypeId: '2'

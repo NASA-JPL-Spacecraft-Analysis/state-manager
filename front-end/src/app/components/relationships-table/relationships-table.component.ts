@@ -52,9 +52,10 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   public ngOnInit(): void {
     this.columns.push(
       'displayName',
-      'description',
+      'subjectToTargetDescription',
       'subjectIdentifier',
       'subjectType',
+      'targetToSubjectDescription',
       'targetIdentifier',
       'targetType'
     );

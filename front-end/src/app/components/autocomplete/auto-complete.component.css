@@ -2,6 +2,10 @@ i {
   cursor: pointer;
 }
 
+input {
+  margin-bottom: 4px;
+}
+
 .autocomplete-dropdown {
   position: absolute;
   background-color: white;
@@ -22,5 +26,7 @@ i {
 
 .chip {
   display: inline-flex;
+  justify-content: space-between;
   margin-bottom: 8px;
+  width: 100%;
 }

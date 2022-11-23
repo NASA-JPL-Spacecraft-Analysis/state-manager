@@ -1,7 +1,9 @@
 <div *ngIf="rows.length > 0; else noData">
-  <table class="st-table" [ngClass]="{ history: historyTable }">
+  <table class="st-table">
     <thead>
       <tr>
+        <th class="expand"></th>
+
         <th *ngFor="let column of columns" [class]="column">
           <span class="column-header-content">
             {{ formatColumnName(column) }}
@@ -29,10 +31,14 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let row of paginatedRows" (click)="onRowClick(row)">
-        <td *ngFor="let column of columns" title="{{ row[column] }}" [class]="column">
-          {{ row[column] }}
-        </td>
+      <tr *ngFor="let row of paginatedRows" class="table-row">
+        <sm-groups-table-row
+          [columns]="columns"
+          [depth]="0"
+          [row]="row"
+          [selectedGroup]="selectedGroup"
+          (groupSelected)="onGroupSelected($event)"
+        ></sm-groups-table-row>
       </tr>
     </tbody>
   </table>

@@ -1,3 +1,4 @@
+export * from './all-types-union';
 export * from './collection';
 export * from './command';
 export * from './command-enumeration';
@@ -6,11 +7,9 @@ export * from './data-type';
 export * from './event';
 export * from './group-mapping';
 export * from './group';
-export * from './identifier-type-union';
 export * from './identifier-type';
 export * from './information-type';
 export * from './information-type.enum';
-export * from './relationship-type-union';
 export * from './relationship';
 export * from './state-enumeration';
 export * from './state';

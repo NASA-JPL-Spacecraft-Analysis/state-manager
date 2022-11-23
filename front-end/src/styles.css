@@ -105,8 +105,27 @@ table tbody tr {
   cursor: pointer;
 }
 
+td.expand {
+  width: 38px !important;
+}
+
+th.expand {
+  width: 28px !important;
+}
+
+.expanded-row {
+  height: 32px;
+  box-shadow: var(--st-table-td-box-shadow);
+  display: flex;
+  align-items: center;
+}
+
 .history tbody tr {
   cursor: default;
+}
+
+.selected {
+  background-color: var(--st-primary-10);
 }
 
 /**************
