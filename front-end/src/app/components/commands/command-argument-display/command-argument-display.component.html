@@ -24,7 +24,7 @@
       <div *ngIf="argument.type === CommandArgumentType.Enumerated">
         <div *ngIf="argument.enums && argument.enums.length > 0; else noEnums">
           <span class="enumerations-header st-typography-small-caps">
-            ENUMS ({{ enumerationsMap[argument.id].length - 1 }})
+            ENUMS ({{ splitEnums(argument.enums).length - 1 }})
           </span>
 
           <div class="enum-container">

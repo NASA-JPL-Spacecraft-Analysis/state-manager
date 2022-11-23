@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
-import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
+import { Command, CommandArgument } from 'src/app/models';
 import { CommandArgumentDisplayModule } from '../command-argument-display/command-argument-display.component';
 
 @Component({
@@ -13,16 +11,10 @@ import { CommandArgumentDisplayModule } from '../command-argument-display/comman
   templateUrl: 'command-sidenav.component.html'
 })
 export class CommandSidenavComponent implements OnChanges {
-  @Input() public collectionId: string;
   @Input() public command: Command;
   @Input() public commandArguments: CommandArgument[];
-  @Input() public commandIdentifierMap: IdentifierMap;
-  @Input() public commandTypes: string[];
 
   @Output() public closeSidenav: EventEmitter<boolean>;
-
-  public form: FormGroup;
-  public newCommand: Command;
 
   constructor() {
     this.closeSidenav = new EventEmitter();
@@ -32,49 +24,10 @@ export class CommandSidenavComponent implements OnChanges {
     if (!this.commandArguments) {
       this.commandArguments = [];
     }
-
-    if (!this.command) {
-      this.newCommand = {
-        arguments: this.commandArguments,
-        collectionId: this.collectionId,
-        description: '',
-        displayName: '',
-        editable: true,
-        externalLink: '',
-        id: undefined,
-        identifier: '',
-        type: '',
-        version: ''
-      };
-    } else {
-      this.newCommand = {
-        ...this.command,
-        arguments: [
-          ...this.commandArguments.map(argument => ({ ...argument }))
-        ]
-      };
-    }
-
-    this.form = new FormGroup({
-      collectionId: new FormControl(this.newCommand.collectionId),
-      description: new FormControl(this.newCommand.description),
-      displayName: new FormControl(this.newCommand.displayName),
-      editable: new FormControl(this.newCommand.editable),
-      externalLink: new FormControl(this.newCommand.externalLink),
-      id: new FormControl(this.newCommand.id),
-      identifier: new FormControl(this.newCommand.identifier, [Validators.required]),
-      type: new FormControl(this.newCommand.type, [Validators.required]),
-      version: new FormControl(this.newCommand.version)
-    });
   }
 
   public onCancel(): void {
     this.closeSidenav.emit(true);
-  }
-
-  public onIdentifierChange(identifier: string): void {
-    this.newCommand.identifier = identifier;
-    this.form.get('identifier').setValue(identifier);
   }
 }
 
@@ -87,10 +40,7 @@ export class CommandSidenavComponent implements OnChanges {
   ],
   imports: [
     CommandArgumentDisplayModule,
-    CommonModule,
-    FormsModule,
-    IdentifierFormModule,
-    ReactiveFormsModule
+    CommonModule
   ]
 })
 export class CommandSidenavModule { }

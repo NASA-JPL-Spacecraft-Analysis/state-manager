@@ -8,7 +8,6 @@ import { AppState } from 'src/app/app-store';
 import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
 import {
   getCommandArguments,
-  getCommandIdentifierMap,
   getCommands,
   getCommandTypes,
   getSelectedCollectionId,
@@ -30,7 +29,6 @@ export class CommandsComponent implements OnDestroy {
   public command: Command;
   public commands: Command[];
   public commandArguments: CommandArgument[];
-  public commandIdentifierMap: IdentifierMap;
   public commandTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
@@ -50,10 +48,6 @@ export class CommandsComponent implements OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(getCommandArguments)).subscribe(commandArguments => {
         this.commandArguments = commandArguments;
-        this.changeDetectorRef.markForCheck();
-      }),
-      this.store.pipe(select(getCommandIdentifierMap)).subscribe(commandIdentifierMap => {
-        this.commandIdentifierMap = commandIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getCommands)).subscribe(commands => {
