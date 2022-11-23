@@ -1,14 +1,18 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 
 import { IdentifierType } from './identifier-type';
 import { Node } from './node';
 
 export enum CommandArgumentType {
-  'Enumerated',
-  'Numeric',
-  'String'
+  Enumerated = 'Enumerated',
+  Numeric = 'Numeric',
+  String = 'String'
 }
+
+registerEnumType(CommandArgumentType, {
+  name: 'CommandArgumentType'
+});
 
 @Entity({
   name: 'commands',
@@ -40,7 +44,7 @@ export class CommandArgument extends Node {
   public description?: string;
 
   @Column()
-  @Field()
+  @Field({ nullable: true })
   public enums?: string;
 
   @Column()
@@ -52,7 +56,7 @@ export class CommandArgument extends Node {
   public sortOrder?: number;
 
   @Column()
-  @Field()
+  @Field(() => CommandArgumentType)
   public type!: CommandArgumentType;
 }
 

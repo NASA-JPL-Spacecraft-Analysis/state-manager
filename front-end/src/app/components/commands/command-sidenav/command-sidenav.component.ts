@@ -3,8 +3,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnCh
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
-import { CommandArgumentFormModule } from '../../command-argument-form/command-argument-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
+import { CommandArgumentDisplayModule } from '../command-argument-display/command-argument-display.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -86,7 +86,7 @@ export class CommandSidenavComponent implements OnChanges {
     CommandSidenavComponent
   ],
   imports: [
-    CommandArgumentFormModule,
+    CommandArgumentDisplayModule,
     CommonModule,
     FormsModule,
     IdentifierFormModule,

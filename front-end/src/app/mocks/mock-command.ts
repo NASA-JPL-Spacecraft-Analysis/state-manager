@@ -1,4 +1,4 @@
-import { Command, CommandArgument, CommandHistory, IdentifierMap } from '../models';
+import { Command, CommandArgument, CommandArgumentType, CommandHistory, IdentifierMap } from '../models';
 
 export const mockCommand: Command = {
   arguments: [],
@@ -16,13 +16,16 @@ export const mockCommand: Command = {
 export const mockCommandArgument: CommandArgument = {
   collectionId: '1',
   commandId: '2',
+  description: '',
+  enums: '',
   id: '1',
   name: 'Mock Command Argument',
-  sortOrder: 1
+  sortOrder: 1,
+  type: CommandArgumentType.Numeric
 };
 
 export const mockCommandWithArgument: Command = {
-  arguments: [ mockCommandArgument ],
+  arguments: [mockCommandArgument],
   collectionId: '1',
   description: 'Mock command with argument description',
   displayName: 'Mock Command With Argument',

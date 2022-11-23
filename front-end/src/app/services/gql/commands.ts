@@ -14,9 +14,12 @@ export const CREATE_COMMAND_ARGUMENTS = gql(`
       commandArguments {
         collectionId
         commandId
+        description
+        enums
         name
         id
         sortOrder
+        type
       }
       message
       success
@@ -39,9 +42,12 @@ export const CREATE_COMMANDS = gql(`
         arguments {
           collectionId
           commandId
+          description
+          enums
           name
           id
           sortOrder
+          type
         }
         collectionId
         description
@@ -65,9 +71,12 @@ export const GET_COMMAND_ARGUMENT_HISTORY = gql(`
       collectionId
       commandArgumentId
       commandId
+      description
+      enums
       name
       id
       sortOrder
+      type
       updated
     }
   }
@@ -78,9 +87,12 @@ export const GET_COMMAND_ARGUMENTS = gql(`
     commandArguments(collectionId: $collectionId) {
       collectionId
       commandId
+      description
+      enums
       name
       id
       sortOrder
+      type
     }
   }
 `);

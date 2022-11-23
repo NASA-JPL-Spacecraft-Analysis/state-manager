@@ -51,12 +51,11 @@
             {{ commandType }}
           </option>
         </select>
-
-        <app-command-argument-form [arguments]="newCommand.arguments" [collectionId]="collectionId">
-        </app-command-argument-form>
       </div>
     </form>
   </div>
+
+  <sm-command-argument-display [arguments]="commandArguments"></sm-command-argument-display>
 
   <div class="sidenav-footer">
     <button class="st-button secondary" (click)="onCancel()">Cancel</button>

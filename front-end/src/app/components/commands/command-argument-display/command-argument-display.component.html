@@ -1,0 +1,43 @@
+<div class="argument-header">
+  <span class="st-typography-medium">Command Arguments</span>
+
+  <button class="st-button icon" (click)="onExpandArguments()">
+    <i [ngClass]="showArguments ? 'si si-chevron_down' : 'si si-chevron_right'"></i>
+  </button>
+</div>
+
+<div *ngIf="showArguments">
+  <div *ngFor="let argument of arguments" class="argument-section">
+    <div class="argument-info-container">
+      <span class="st-typography-bold"
+        >{{ arguments.indexOf(argument) + 1 }} {{ argument.name }}</span
+      >
+
+      <span class="argument-type st-chip chip st-typography-bold">{{ argument.type }}</span>
+    </div>
+
+    <span class="argument-description st-typography-body" [title]="argument.description">{{
+      argument.description
+    }}</span>
+
+    <div class="enumerations-section">
+      <div *ngIf="argument.type === CommandArgumentType.Enumerated">
+        <div *ngIf="argument.enums && argument.enums.length > 0; else noEnums">
+          <span class="enumerations-header st-typography-small-caps">
+            ENUMS ({{ enumerationsMap[argument.id].length - 1 }})
+          </span>
+
+          <div class="enum-container">
+            <ng-container *ngFor="let val of splitEnums(argument.enums)">
+              <span class="st-chip chip" *ngIf="val !== ''">{{ val }}</span>
+            </ng-container>
+          </div>
+        </div>
+
+        <ng-template #noEnums>
+          <span class="st-typography-small-caps">NO ENUMS</span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

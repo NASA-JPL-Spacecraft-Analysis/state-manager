@@ -1,0 +1,49 @@
+button > i {
+  font-size: 12px;
+}
+
+span.argument-type {
+  background-color: var(--st-gray-20);
+  color: var(--st-gray-80);
+  width: max-content;
+}
+
+span.chip {
+  width: fit-content;
+}
+
+.argument-description {
+  font-style: italic;
+  text-overflow: ellipsis;
+}
+
+.argument-header {
+  align-items: center;
+  background-color: var(--st-gray-10);
+  display: flex;
+  height: 32px;
+  justify-content: space-between;
+  padding: 0 12px;
+}
+
+.argument-info-container {
+  align-items: center;
+  display: flex;
+  padding-top: 8px;
+  justify-content: space-between;
+}
+
+.argument-section {
+  border-bottom: 1px solid var(--st-gray-20);
+  padding: 0 12px;
+}
+
+.enum-container {
+  display: flex;
+  gap: 4px;
+}
+
+.enumerations-section {
+  display: flex;
+  padding-bottom: 12px;
+}

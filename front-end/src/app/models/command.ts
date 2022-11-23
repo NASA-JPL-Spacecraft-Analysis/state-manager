@@ -6,11 +6,20 @@ export interface Command extends IdentifierType {
   arguments: CommandArgument[];
 }
 
+export enum CommandArgumentType {
+  Enumerated = 'Enumerated',
+  Numeric = 'Numeric',
+  String = 'String'
+}
+
 export interface CommandArgument extends Node {
   collectionId: string;
   commandId: string;
+  description: string;
+  enums: string;
   name: string;
   sortOrder: number;
+  type: CommandArgumentType;
 }
 
 export interface CommandArgumentHistory extends CommandArgument {
