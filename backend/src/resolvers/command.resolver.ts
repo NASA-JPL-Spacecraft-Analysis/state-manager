@@ -12,7 +12,7 @@ import {
   ModifyCommandArgument,
   UpdateCommandInput
 } from '../inputs';
-import { Command, CommandArgument, CommandArgumentEnumeration,  CommandArgumentHistory, CommandHistory } from '../models';
+import { Command, CommandArgument, CommandArgumentEnumeration, CommandArgumentHistory, CommandHistory } from '../models';
 import { SharedRepository } from '../repositories';
 import {
   CommandArgumentResponse,
@@ -36,7 +36,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     this.sharedRepository = new SharedRepository<Command>(getConnection(), Command, validationService);
   }
 
-  @FieldResolver(() => [ CommandArgument ])
+  @FieldResolver(() => [CommandArgument])
   public async arguments(@Root() command: Command): Promise<CommandArgument[]> {
     return CommandArgument.find({
       where: {
@@ -50,7 +50,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
-  @Query(() => [ CommandArgumentHistory ])
+  @Query(() => [CommandArgumentHistory])
   public commandArgumentHistory(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgumentHistory[]> {
     return CommandArgumentHistory.find({
       where: {
@@ -62,7 +62,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ CommandArgument ])
+  @Query(() => [CommandArgument])
   public commandArguments(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgument[]> {
     return CommandArgument.find({
       where: {
@@ -71,7 +71,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ CommandHistory ])
+  @Query(() => [CommandHistory])
   public commandHistory(@Args() { collectionId }: CollectionIdArgs): Promise<CommandHistory[]> {
     return CommandHistory.find({
       where: {
@@ -80,7 +80,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ Command ])
+  @Query(() => [Command])
   public commands(@Args() { collectionId }: CollectionIdArgs): Promise<Command[]> {
     return Command.find({
       where: {
@@ -89,9 +89,9 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ String ])
+  @Query(() => [String])
   public async commandTypes(): Promise<string[]> {
-    return [ ...(await this.dataTypesService.getDataType('command')) ] as string[];
+    return [...(await this.dataTypesService.getDataType('command'))] as string[];
   }
 
   @Mutation(() => CommandResponse)
@@ -163,6 +163,7 @@ export class CommandResolver implements ResolverInterface<Command> {
   public async createCommands(@Arg('data') data: CreateCommandsInput): Promise<CommandsResponse> {
     try {
       const existingCommands = await this.commands({ collectionId: data.collectionId });
+      const commandMap: Record<string, string> = {};
 
       for (const command of data.commands) {
         this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, command.type);
@@ -175,7 +176,24 @@ export class CommandResolver implements ResolverInterface<Command> {
       for (const command of commands) {
         await command.save();
 
+        // Map the command identifier for later so we can get the new ID.
+        commandMap[command.identifier] = command.id;
+
         this.createCommandHistory(command);
+      }
+
+      // We need to do another loop to create the args since those properties aren't copied.
+      for (const command of data.commands) {
+        if (command.arguments) {
+          const commandArguments = CommandArgument.create(command.arguments);
+
+          for (const argument of commandArguments) {
+            argument.commandId = commandMap[command.identifier];
+
+            await argument.save();
+            this.createCommandArgumentHistory(argument);
+          }
+        }
       }
 
       return {
@@ -263,7 +281,7 @@ export class CommandResolver implements ResolverInterface<Command> {
 
       Object.assign(command, data);
 
-      this.validationService.hasValidType([ command ], await this.dataTypesService.getDataType('command'));
+      this.validationService.hasValidType([command], await this.dataTypesService.getDataType('command'));
 
       await command.save();
 
