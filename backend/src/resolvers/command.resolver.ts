@@ -163,35 +163,43 @@ export class CommandResolver implements ResolverInterface<Command> {
   public async createCommands(@Arg('data') data: CreateCommandsInput): Promise<CommandsResponse> {
     try {
       const existingCommands = await this.commands({ collectionId: data.collectionId });
-      const commandMap: Record<string, string> = {};
 
       for (const command of data.commands) {
         this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, command.type);
       }
 
-      const commands = Command.create(data.commands);
+      this.validationService.hasValidType(Command.create(data.commands), await this.dataTypesService.getDataType('command'));
 
-      this.validationService.hasValidType(commands, await this.dataTypesService.getDataType('command'));
+      const commands = [];
 
-      for (const command of commands) {
+      for (const newCommand of data.commands) {
+        const command = Command.create(newCommand);
+        commands.push(command);
+
         await command.save();
-
-        // Map the command identifier for later so we can get the new ID.
-        commandMap[command.identifier] = command.id;
-
         this.createCommandHistory(command);
-      }
 
-      // We need to do another loop to create the args since those properties aren't copied.
-      for (const command of data.commands) {
-        if (command.arguments) {
-          const commandArguments = CommandArgument.create(command.arguments);
+        if (newCommand.arguments) {
+          for (const commandArgument of newCommand.arguments) {
+            const argument = CommandArgument.create(commandArgument);
 
-          for (const argument of commandArguments) {
-            argument.commandId = commandMap[command.identifier];
+            argument.collectionId = newCommand.collectionId;
+            argument.commandId = command.id;
 
             await argument.save();
             this.createCommandArgumentHistory(argument);
+
+            // If the argument has enumerations, create them now.
+            if (commandArgument.enumerations) {
+              for (const commandArgumentEnumeration of commandArgument.enumerations) {
+                const enumeration = CommandArgumentEnumeration.create(commandArgumentEnumeration);
+
+                enumeration.collectionId = argument.collectionId;
+                enumeration.commandArgumentId = argument.id;
+
+                await enumeration.save();
+              }
+            }
           }
         }
       }

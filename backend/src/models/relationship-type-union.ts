@@ -1,15 +1,16 @@
 import { createUnionType } from 'type-graphql';
 
-import { Command, CommandArgument } from './command';
+import { Command } from './command';
 import { Constraint } from './constraint';
 import { Event } from './event';
 import { InformationType } from './information-type';
 import { StateEnumeration } from './state-enumeration';
 import { State } from './state';
+import { CommandArgument } from './command-argument';
 
 export const RelationshipTypeUnion = createUnionType({
   name: 'RelationshipTypeUnion',
-  types: () => [ Command, CommandArgument, Constraint, Event, InformationType, State, StateEnumeration ] as const,
+  types: () => [Command, CommandArgument, Constraint, Event, InformationType, State, StateEnumeration] as const,
   resolveType: value => {
     if (value instanceof Command) {
       return Command;

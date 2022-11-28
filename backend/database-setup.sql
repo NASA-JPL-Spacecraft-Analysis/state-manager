@@ -22,7 +22,6 @@ CREATE TABLE `command_arguments` (
   `collectionId` varchar(36) NOT NULL,
   `commandId` varchar(36) NOT NULL,
   `description` text DEFAULT NULL,
-  `enums` text DEFAULT NULL,
   `id` varchar(36) NOT NULL,
   `name` text NOT NULL,
   `sortOrder` int(11) DEFAULT NULL,
@@ -33,9 +32,9 @@ CREATE TABLE `command_arguments` (
 CREATE TABLE `command_argument_enumerations` (
   `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) NOT NULL,
-  `commandId` varchar(36) NOT NULL,
+  `commandArgumentId` varchar(36) NOT NULL,
   `label` text,
-  `value` text,
+  `value` int(11),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

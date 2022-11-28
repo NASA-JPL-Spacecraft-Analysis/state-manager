@@ -1,19 +1,8 @@
-import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 
 import { IdentifierType } from './identifier-type';
-import { CommandArgumentEnumeration } from './command-enumeration';
-import { Node } from './node';
-
-export enum CommandArgumentType {
-  Enumerated = 'Enumerated',
-  Numeric = 'Numeric',
-  String = 'String'
-}
-
-registerEnumType(CommandArgumentType, {
-  name: 'CommandArgumentType'
-});
+import { CommandArgument } from './command-argument';
 
 @Entity({
   name: 'commands',
@@ -25,55 +14,6 @@ registerEnumType(CommandArgumentType, {
 export class Command extends IdentifierType {
   @Field(() => [CommandArgument], { nullable: true })
   public arguments?: CommandArgument[];
-}
-
-// TODO:: Is sort order required?
-
-@Entity('command_arguments')
-@ObjectType()
-export class CommandArgument extends Node {
-  @Column()
-  @Field(() => ID)
-  public collectionId!: string;
-
-  @Column()
-  @Field(() => ID)
-  public commandId!: string;
-
-  @Column()
-  @Field({ nullable: true })
-  public description?: string;
-
-  @Column()
-  @Field({ nullable: true })
-  public enums?: string;
-
-  @Column()
-  @Field()
-  public name!: string;
-
-  @Column()
-  @Field({ nullable: true })
-  public sortOrder?: number;
-
-  @Column()
-  @Field(() => CommandArgumentType)
-  public type!: CommandArgumentType;
-
-  @Field(() => [ CommandArgumentEnumeration ], { nullable: true })
-  public enumerations?: CommandArgumentEnumeration[];
-}
-
-@Entity('command_argument_history')
-@ObjectType()
-export class CommandArgumentHistory extends CommandArgument {
-  @Column()
-  @Field(() => ID)
-  public commandArgumentId!: string;
-
-  @Column()
-  @Field(() => Date)
-  public updated!: Date;
 }
 
 @Entity('command_history')

@@ -1,6 +1,7 @@
 import { Field, ID, InputType } from 'type-graphql';
 
 import { CommandArgumentType } from '../../models';
+import { CreateCommandArgumentEnumerationInput } from './create-command-argument-enumeration.input';
 
 @InputType()
 export class CreateCommandArgumentInput {
@@ -13,8 +14,8 @@ export class CreateCommandArgumentInput {
   @Field({ nullable: true })
   public description?: string;
 
-  @Field({ nullable: true })
-  public enums?: string;
+  @Field(() => [CreateCommandArgumentEnumerationInput], { nullable: true })
+  public enumerations?: CreateCommandArgumentEnumerationInput[];
 
   @Field()
   public name!: string;
