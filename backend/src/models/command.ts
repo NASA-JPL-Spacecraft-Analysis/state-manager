@@ -2,6 +2,7 @@ import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 
 import { IdentifierType } from './identifier-type';
+import { CommandArgumentEnumeration } from './command-enumeration';
 import { Node } from './node';
 
 export enum CommandArgumentType {
@@ -58,6 +59,9 @@ export class CommandArgument extends Node {
   @Column()
   @Field(() => CommandArgumentType)
   public type!: CommandArgumentType;
+
+  @Field(() => [ CommandArgumentEnumeration ], { nullable: true })
+  public enumerations?: CommandArgumentEnumeration[];
 }
 
 @Entity('command_argument_history')
