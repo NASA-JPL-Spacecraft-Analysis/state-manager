@@ -48,7 +48,11 @@ const main = async () => {
       credentials: true
     },
     introspection: true,
-    playground: true,
+    playground: {
+      settings: {
+        'request.credentials': 'include'
+      }
+    },
     schema,
     tracing: true
   });
