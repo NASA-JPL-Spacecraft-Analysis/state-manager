@@ -50,6 +50,15 @@ export class CommandResolver implements ResolverInterface<Command> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
+  @Query(() => [CommandArgumentEnumeration])
+  public commandArgumentEnumeration(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgumentEnumeration[]> {
+    return CommandArgumentEnumeration.find({
+      where: {
+        collectionId
+      }
+    });
+  }
+
   @Query(() => [CommandArgumentHistory])
   public commandArgumentHistory(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgumentHistory[]> {
     return CommandArgumentHistory.find({

@@ -17,7 +17,7 @@ export const mockCommandArgument: CommandArgument = {
   collectionId: '1',
   commandId: '2',
   description: '',
-  enums: '',
+  enumerations: [],
   id: '1',
   name: 'Mock Command Argument',
   sortOrder: 1,

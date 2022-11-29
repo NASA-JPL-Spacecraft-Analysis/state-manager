@@ -15,7 +15,6 @@ export const CREATE_COMMAND_ARGUMENTS = gql(`
         collectionId
         commandId
         description
-        enums
         name
         id
         sortOrder
@@ -43,7 +42,6 @@ export const CREATE_COMMANDS = gql(`
           collectionId
           commandId
           description
-          enums
           name
           id
           sortOrder
@@ -72,27 +70,11 @@ export const GET_COMMAND_ARGUMENT_HISTORY = gql(`
       commandArgumentId
       commandId
       description
-      enums
       name
       id
       sortOrder
       type
       updated
-    }
-  }
-`);
-
-export const GET_COMMAND_ARGUMENTS = gql(`
-  query CommandArguments($collectionId: ID!) {
-    commandArguments(collectionId: $collectionId) {
-      collectionId
-      commandId
-      description
-      enums
-      name
-      id
-      sortOrder
-      type
     }
   }
 `);
@@ -118,6 +100,21 @@ export const GET_COMMAND_HISTORY = gql(`
 export const GET_COMMANDS = gql(`
   query Commands($collectionId: ID!) {
     commands(collectionId: $collectionId) {
+      arguments {
+        collectionId
+        commandId
+        description
+        enumerations {
+          collectionId
+          commandArgumentId
+          label
+          value
+        }
+        name
+        id
+        sortOrder
+        type
+      }
       collectionId
       description
       displayName

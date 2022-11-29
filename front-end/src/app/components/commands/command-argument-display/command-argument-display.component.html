@@ -22,14 +22,14 @@
 
     <div class="enumerations-section">
       <div *ngIf="argument.type === CommandArgumentType.Enumerated">
-        <div *ngIf="argument.enums && argument.enums.length > 0; else noEnums">
+        <div *ngIf="argument.enumerations && argument.enumerations.length > 0; else noEnums">
           <span class="enumerations-header st-typography-small-caps">
-            ENUMS ({{ splitEnums(argument.enums).length - 1 }})
+            ENUMS ({{ argument.enumerations.length }})
           </span>
 
           <div class="enum-container">
-            <ng-container *ngFor="let val of splitEnums(argument.enums)">
-              <span class="st-chip chip" *ngIf="val !== ''">{{ val }}</span>
+            <ng-container *ngFor="let enumeration of argument.enumerations">
+              <span class="st-chip chip">{{ enumeration.label }}</span>
             </ng-container>
           </div>
         </div>

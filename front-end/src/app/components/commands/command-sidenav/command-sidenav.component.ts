@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
 
-import { Command, CommandArgument } from 'src/app/models';
+import { Command } from 'src/app/models';
 import { CommandArgumentDisplayModule } from '../command-argument-display/command-argument-display.component';
 
 @Component({
@@ -10,20 +10,13 @@ import { CommandArgumentDisplayModule } from '../command-argument-display/comman
   styleUrls: ['command-sidenav.component.css'],
   templateUrl: 'command-sidenav.component.html'
 })
-export class CommandSidenavComponent implements OnChanges {
+export class CommandSidenavComponent {
   @Input() public command: Command;
-  @Input() public commandArguments: CommandArgument[];
 
   @Output() public closeSidenav: EventEmitter<boolean>;
 
   constructor() {
     this.closeSidenav = new EventEmitter();
-  }
-
-  public ngOnChanges(): void {
-    if (!this.commandArguments) {
-      this.commandArguments = [];
-    }
   }
 
   public onCancel(): void {

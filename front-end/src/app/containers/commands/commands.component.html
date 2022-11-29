@@ -27,11 +27,6 @@
   </div>
 
   <div class="sidenav" *ngIf="showSidenav">
-    <command-sidenav
-      [command]="command"
-      [commandArguments]="commandArguments"
-      (closeSidenav)="onSidenavOutput()"
-    >
-    </command-sidenav>
+    <command-sidenav [command]="command" (closeSidenav)="onSidenavOutput()"> </command-sidenav>
   </div>
 </div>

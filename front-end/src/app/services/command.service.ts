@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 
 import {
   Command,
-  CommandArgument,
   CommandArgumentHistory,
   CommandArgumentResponse,
   CommandArgumentUpload,
@@ -71,18 +70,6 @@ export class CommandService {
         }
       })
       .pipe(map(({ data: { commandArgumentHistory } }) => commandArgumentHistory));
-  }
-
-  public getCommandArguments(collectionId: string): Observable<CommandArgument[]> {
-    return this.apollo
-      .query<{ commandArguments: CommandArgument[] }>({
-        fetchPolicy: 'no-cache',
-        query: gql.GET_COMMAND_ARGUMENTS,
-        variables: {
-          collectionId
-        }
-      })
-      .pipe(map(({ data: { commandArguments } }) => commandArguments));
   }
 
   public getCommandHistory(collectionId: string): Observable<CommandHistory[]> {

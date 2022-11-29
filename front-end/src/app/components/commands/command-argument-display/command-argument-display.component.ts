@@ -24,14 +24,6 @@ export class CommandArgumentDisplayComponent implements OnChanges {
   public onExpandArguments(): void {
     this.showArguments = !this.showArguments;
   }
-
-  public splitEnums(enumString: string): string[] {
-    return enumString.split(',');
-  }
-
-  public removeTrailingComma(enumVal: string): string {
-    return enumVal.substring(0, enumVal.length - 1);
-  }
 }
 
 @NgModule({

@@ -74,20 +74,6 @@ export class CommandEffects {
   public getCommands(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
       return merge(
-        this.commandService.getCommandArguments(
-          collectionId
-        ).pipe(
-          map(commandArguments => CommandActions.setCommandArguments({
-            commandArguments
-          })),
-          catchError(
-            (error: Error) => [
-              CommandActions.fetchCommandArgumentsFailure({
-                error
-              })
-            ]
-          )
-        ),
         this.commandService.getCommands(
           collectionId
         ).pipe(

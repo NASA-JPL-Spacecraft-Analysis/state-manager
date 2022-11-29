@@ -24,7 +24,7 @@
     <p class="st-typography-body">{{ command.type }}</p>
   </div>
 
-  <sm-command-argument-display [arguments]="commandArguments"></sm-command-argument-display>
+  <sm-command-argument-display [arguments]="command.arguments"></sm-command-argument-display>
 
   <div class="sidenav-footer">
     <button class="st-button secondary" (click)="onCancel()">Cancel</button>

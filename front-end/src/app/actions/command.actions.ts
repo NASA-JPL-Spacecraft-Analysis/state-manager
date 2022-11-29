@@ -7,11 +7,6 @@ export const fetchCommandArgumentHistoryFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const fetchCommandArgumentsFailure = createAction(
-  '[command] fetchCommandArgumentsFailure',
-  props<{ error: Error }>()
-);
-
 export const fetchCommandHistoryFailure = createAction(
   '[command] fetchCommandHistoryFailure',
   props<{ error: Error }>()
@@ -35,11 +30,6 @@ export const saveCommandArgumentsSuccess = createAction(
 export const setCommandArgumentHistory = createAction(
   '[command] setCommandArgumentHistory',
   props<{ commandArgumentHistory: CommandArgumentHistory[] }>()
-);
-
-export const setCommandArguments = createAction(
-  '[command] setCommandArguments',
-  props<{ commandArguments: CommandArgument[] }>()
 );
 
 export const setCommandHistory = createAction(
