@@ -108,6 +108,7 @@ export const GET_COMMANDS = gql(`
           collectionId
           commandArgumentId
           label
+          id
           value
         }
         name

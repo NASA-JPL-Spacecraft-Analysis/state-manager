@@ -25,9 +25,10 @@ export type RelationshipMap = Record<string, Relationship>;
 export enum RelationshipTypeEnum {
   'Command' = 'Command',
   'Command Argument' = 'Command Argument',
+  'Command Argument Enumeration' = 'Command Argument Enumeration',
   'Constraint' = 'Constraint',
   'Event' = 'Event',
   'Information Type' = 'Information Type',
   'State Enumeration' = 'State Enumeration',
   'State' = 'State'
-};
+}

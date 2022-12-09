@@ -1,4 +1,10 @@
-import { NgModule, Component, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import {
+  NgModule,
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  OnDestroy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { SubSink } from 'subsink';
@@ -18,7 +24,6 @@ import {
 import {
   getCommandMap,
   getConstraintMap,
-  getCommandArgumentMap,
   getStateEnumerationMap,
   getStates,
   getRelationshipHistory,
@@ -34,7 +39,6 @@ import {
 })
 export class RelationshipHistoryComponent implements OnDestroy {
   public commandMap: CommandMap;
-  public commandArgumentMap: CommandArgumentMap;
   public constraintMap: ConstraintMap;
   public eventMap: EventMap;
   public informationTypeMap: InformationTypeMap;
@@ -44,44 +48,37 @@ export class RelationshipHistoryComponent implements OnDestroy {
 
   private subscriptions = new SubSink();
 
-  constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
+  constructor(private store: Store<AppState>, private changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.add(
-      this.store.pipe(select(getCommandMap)).subscribe(commandMap => {
+      this.store.pipe(select(getCommandMap)).subscribe((commandMap) => {
         this.commandMap = commandMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getCommandArgumentMap)).subscribe(commandArgumentMap => {
-        this.commandArgumentMap = commandArgumentMap;
-        this.changeDetectorRef.markForCheck();
-      }),
-      this.store.pipe(select(getConstraintMap)).subscribe(constraintMap => {
+      this.store.pipe(select(getConstraintMap)).subscribe((constraintMap) => {
         this.constraintMap = constraintMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getEventMap)).subscribe(eventMap => {
+      this.store.pipe(select(getEventMap)).subscribe((eventMap) => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {
+      this.store.pipe(select(getInformationTypeMap)).subscribe((informationTypeMap) => {
         this.informationTypeMap = informationTypeMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getRelationshipHistory)).subscribe(relationshipHistoryMap => {
+      this.store.pipe(select(getRelationshipHistory)).subscribe((relationshipHistoryMap) => {
         this.relationshipHistoryMap = relationshipHistoryMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateEnumerationMap)).subscribe(stateEnumerationMap => {
+      this.store.pipe(select(getStateEnumerationMap)).subscribe((stateEnumerationMap) => {
         this.stateEnumerationMap = stateEnumerationMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStates)).subscribe(stateMap => {
+      this.store.pipe(select(getStates)).subscribe((stateMap) => {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateEnumerationMap)).subscribe(stateEnumerationMap => {
+      this.store.pipe(select(getStateEnumerationMap)).subscribe((stateEnumerationMap) => {
         this.stateEnumerationMap = stateEnumerationMap;
         this.changeDetectorRef.markForCheck();
       })
@@ -94,15 +91,8 @@ export class RelationshipHistoryComponent implements OnDestroy {
 }
 
 @NgModule({
-  declarations: [
-    RelationshipHistoryComponent
-  ],
-  exports: [
-    RelationshipHistoryComponent
-  ],
-  imports: [
-    CommonModule,
-    RelationshipsTableModule
-  ]
+  declarations: [RelationshipHistoryComponent],
+  exports: [RelationshipHistoryComponent],
+  imports: [CommonModule, RelationshipsTableModule]
 })
-export class RelationshipHistoryModule { }
+export class RelationshipHistoryModule {}

@@ -1,7 +1,7 @@
 # Multi-stage Docker build
 
 # Build stage
-FROM node:14.17-alpine AS build
+FROM node:14.20-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps

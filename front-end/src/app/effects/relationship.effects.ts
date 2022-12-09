@@ -17,15 +17,11 @@ import { ConstraintEffects } from './constraint.effects';
 
 @Injectable()
 export class RelationshipEffects {
-
   public createRelationship = createEffect(() =>
     this.actions.pipe(
       ofType(RelationshipActions.createRelationship),
       switchMap(({ collectionId, relationship }) =>
-        this.relationshipService.createRelationship(
-          collectionId,
-          relationship
-        ).pipe(
+        this.relationshipService.createRelationship(collectionId, relationship).pipe(
           switchMap((createRelationship: RelationshipResponse) => [
             RelationshipActions.createRelationshipSuccess({
               relationship: createRelationship.relationship
@@ -58,18 +54,16 @@ export class RelationshipEffects {
         'collection/:collectionId/relationship-history'
       ]),
       mapToParam<string>('collectionId'),
-      switchMap(collectionId => {
+      switchMap((collectionId) => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = false;
-
-        if (url === 'relationship-history') {
-          history = true;
-        }
+        const history = url === 'relationship-history';
 
         return merge(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
           this.constraintEffects.getConstraints(collectionId, history),
           this.commandEffects.getCommands(collectionId, history),
           this.commandEffects.getCommandArgumentHistory(collectionId),
@@ -87,9 +81,7 @@ export class RelationshipEffects {
     this.actions.pipe(
       ofType(RelationshipActions.updateRelationship),
       switchMap(({ relationship }) =>
-        this.relationshipService.updateRelationship(
-          relationship
-        ).pipe(
+        this.relationshipService.updateRelationship(relationship).pipe(
           switchMap((updateRelationship: RelationshipResponse) => [
             RelationshipActions.updateRelationshipSuccess({
               relationship: updateRelationship.relationship
@@ -126,34 +118,30 @@ export class RelationshipEffects {
 
   private getRelationships(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return this.relationshipService.getRelationships(
-        collectionId
-      ).pipe(
-        map(relationships => RelationshipActions.setRelationships({
-          relationships
-        })),
-        catchError(
-          (error: Error) => [
-            RelationshipActions.fetchRelationshipsFailure({
-              error
-            })
-          ]
-        )
+      return this.relationshipService.getRelationships(collectionId).pipe(
+        map((relationships) =>
+          RelationshipActions.setRelationships({
+            relationships
+          })
+        ),
+        catchError((error: Error) => [
+          RelationshipActions.fetchRelationshipsFailure({
+            error
+          })
+        ])
       );
     } else {
-      return this.relationshipService.getRelationshipHistory(
-        collectionId
-      ).pipe(
-        map(relationshipHistory => RelationshipActions.setRelationshipHistory({
-          relationshipHistory
-        })),
-        catchError(
-          (error: Error) => [
-            RelationshipActions.fetchRelationshipHistoryFailure({
-              error
-            })
-          ]
-        )
+      return this.relationshipService.getRelationshipHistory(collectionId).pipe(
+        map((relationshipHistory) =>
+          RelationshipActions.setRelationshipHistory({
+            relationshipHistory
+          })
+        ),
+        catchError((error: Error) => [
+          RelationshipActions.fetchRelationshipHistoryFailure({
+            error
+          })
+        ])
       );
     }
   }
