@@ -12,6 +12,8 @@
       <app-identifier-form
         [originalIdentifier]="originalGroupIdentifier"
         [identifierMap]="groupIdentifierMap"
+        [id]="newGroup?.id"
+        [type]="'group'"
         (duplicateIdentifier)="onDuplicateGroupIdentifier($event)"
         (identifierEmitter)="onGroupIdentifierChange($event)"
       >

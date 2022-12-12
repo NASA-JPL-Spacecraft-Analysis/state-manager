@@ -18,8 +18,12 @@
         required
       />
 
-      <label for="description">Description</label>
-      <textarea class="st-input" placeholder="Description" formControlName="description"></textarea>
+      <label for="description">Subject to Target Description</label>
+      <textarea
+        class="st-input"
+        placeholder="Subject to Target Description"
+        formControlName="subjectToTargetDescription"
+      ></textarea>
 
       <label>Subject</label>
       <sm-auto-complete
@@ -30,7 +34,12 @@
       >
       </sm-auto-complete>
 
-      <br />
+      <label for="description">Target to Subject Description</label>
+      <textarea
+        class="st-input"
+        placeholder="Target to Subject Description"
+        formControlName="targetToSubjectDescription"
+      ></textarea>
 
       <label>Target</label>
       <sm-auto-complete

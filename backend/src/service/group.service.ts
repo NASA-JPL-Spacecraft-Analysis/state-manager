@@ -1,74 +1,9 @@
-import { UserInputError } from 'apollo-server';
 import { Service } from 'typedi';
 
-import { ErrorConstants } from '../constants';
-import { Command, Constraint, Event, Group, GroupMapping, GroupMappingUnion, GroupType, InformationType, State } from '../models';
+import { AllTypesUnion, Command, CommandArgument, Constraint, Event, Group, GroupMapping, GroupMappingUnion, InformationType, State, StateEnumeration } from '../models';
 
 @Service()
 export class GroupService {
-  // TODO: See if we can add memoization so that we cache results without each class handling that.
-  public async findGroupItem(collectionId: string, identifier: string, type: string): Promise<GroupType> {
-    let item: GroupType | undefined;
-
-    switch (type) {
-      case Command.name:
-        item = await Command.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-        break;
-      case Constraint.name:
-        item = await Constraint.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-        break;
-      case Event.name:
-        item = await Event.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-        break;
-      case Group.name:
-        item = await Group.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-        break;
-      case InformationType.name:
-        item = await InformationType.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-        break;
-      case State.name:
-        item = await State.findOne({
-          where: {
-            collectionId,
-            identifier
-          }
-        });
-        break;
-    }
-
-
-    if (!item) {
-      throw new UserInputError(ErrorConstants.itemNotFoundError(identifier, type));
-    }
-
-    return item;
-  }
-
   /**
    * Gets a list of group mappings, sorted ASC by their sortOrder.
    *
@@ -104,11 +39,17 @@ export class GroupService {
     return [];
   }
 
-  public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof GroupMappingUnion | undefined> {
+  public async getItemByMapping(groupMapping: GroupMapping): Promise<typeof AllTypesUnion | undefined> {
     const command = await Command.findOne({ where: { id: groupMapping.itemId } });
 
     if (command) {
       return command;
+    }
+
+    const commandArgument = await CommandArgument.findOne({ where: { id: groupMapping.itemId } });
+
+    if (commandArgument) {
+      return commandArgument;
     }
 
     const constraint = await Constraint.findOne({ where: { id: groupMapping.itemId } });
@@ -139,6 +80,12 @@ export class GroupService {
 
     if (state) {
       return state;
+    }
+
+    const stateEnumeration = await StateEnumeration.findOne({ where: { id: groupMapping.itemId } });
+
+    if (stateEnumeration) {
+      return stateEnumeration;
     }
 
     return undefined;

@@ -38,6 +38,10 @@ tr:hover {
   justify-content: space-between;
 }
 
+.mapping-name {
+  margin-left: 45px;
+}
+
 .no-data {
   margin: 16px;
 }
@@ -111,4 +115,8 @@ td.source,
 th.type,
 td.type {
   max-width: 120px;
+}
+
+.table-row {
+  flex-direction: column;
 }

@@ -7,11 +7,12 @@ import { CreateGroupInput, UpdateGroupInput, UploadGroupsInput } from '../inputs
 import { CreateGroupMappingInput } from '../inputs/group/create-group-mapping-input';
 import { Collection, Group, GroupMapping } from '../models';
 import { DeleteItemsResponse, GroupResponse, GroupsResponse, Response } from '../responses';
-import { GroupService } from '../service';
+import { GroupService, HelperService } from '../service';
 
 @Resolver(() => Group)
 export class GroupResolver implements ResolverInterface<Group> {
   constructor(
+    private readonly helperService: HelperService,
     private readonly groupService: GroupService
   ) { }
 
@@ -68,7 +69,7 @@ export class GroupResolver implements ResolverInterface<Group> {
             sortOrder: mapping.sortOrder
           });
 
-          const item = await this.groupService.findGroupItem(data.collectionId, mapping.itemIdentifier, mapping.itemType);
+          const item = await this.helperService.findItemByType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
 
           if (item) {
             newMapping.itemId = item.id;

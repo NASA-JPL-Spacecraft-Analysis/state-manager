@@ -7,10 +7,14 @@ import { InformationType } from './information-type';
 import { StateEnumeration } from './state-enumeration';
 import { State } from './state';
 import { CommandArgument } from './command-argument';
+import { CommandArgumentEnumeration } from './command-enumeration';
+import { Group } from './group';
 
-export const RelationshipTypeUnion = createUnionType({
-  name: 'RelationshipTypeUnion',
-  types: () => [Command, CommandArgument, Constraint, Event, InformationType, State, StateEnumeration] as const,
+export const AllTypesUnion = createUnionType({
+  name: 'AllTypesUnion',
+  types: () => [
+    Command, CommandArgument, CommandArgumentEnumeration, Constraint, Event, Group, InformationType, State, StateEnumeration
+  ] as const,
   resolveType: value => {
     if (value instanceof Command) {
       return Command;
@@ -20,12 +24,20 @@ export const RelationshipTypeUnion = createUnionType({
       return CommandArgument;
     }
 
+    if (value instanceof CommandArgumentEnumeration) {
+      return CommandArgumentEnumeration;
+    }
+
     if (value instanceof Constraint) {
       return Constraint;
     }
 
     if (value instanceof Event) {
       return Event;
+    }
+
+    if (value instanceof Group) {
+      return Group;
     }
 
     if (value instanceof InformationType) {

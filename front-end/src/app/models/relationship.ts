@@ -1,10 +1,11 @@
 export interface Relationship {
   displayName: string;
-  description: string;
   id: string;
   subjectIdentifier?: string;
+  subjectToTargetDescription?: string;
   subjectType: string;
   subjectTypeId: string;
+  targetToSubjectDescription?: string;
   targetIdentifier?: string;
   targetType: string;
   targetTypeId: string;

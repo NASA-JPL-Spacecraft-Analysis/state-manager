@@ -13,7 +13,7 @@ import * as gql from './gql/relationships';
 export class RelationshipService {
   constructor(
     private apollo: Apollo
-  ) {}
+  ) { }
 
   public createRelationship(collectionId: string, relationship: Relationship): Observable<RelationshipResponse> {
     return this.apollo
@@ -22,21 +22,22 @@ export class RelationshipService {
         query: gql.CREATE_RELATIONSHIP,
         variables: {
           collectionId,
-          description: relationship.description,
           displayName: relationship.displayName,
+          subjectToTargetDescription: relationship.subjectToTargetDescription,
           subjectType: relationship.subjectType,
-          targetType: relationship.targetType,
           subjectTypeId: relationship.subjectTypeId,
+          targetToSubjectDescription: relationship.targetToSubjectDescription,
+          targetType: relationship.targetType,
           targetTypeId: relationship.targetTypeId
         }
       })
-    .pipe(map(({ data: { createRelationship } }) => {
-      if (!createRelationship.success) {
-        throw new Error(createRelationship.message);
-      }
+      .pipe(map(({ data: { createRelationship } }) => {
+        if (!createRelationship.success) {
+          throw new Error(createRelationship.message);
+        }
 
-      return createRelationship;
-    }));
+        return createRelationship;
+      }));
   }
 
   public createRelationships(collectionId: string, relationships: RelationshipUpload[]): Observable<RelationshipsResponse> {
@@ -49,13 +50,13 @@ export class RelationshipService {
           relationships
         }
       })
-    .pipe(map(({ data: { createRelationships } }) => {
-      if (!createRelationships.success) {
-        throw new Error(createRelationships.message);
-      }
+      .pipe(map(({ data: { createRelationships } }) => {
+        if (!createRelationships.success) {
+          throw new Error(createRelationships.message);
+        }
 
-      return createRelationships;
-    }));
+        return createRelationships;
+      }));
   }
 
   public getRelationships(collectionId: string): Observable<Relationship[]> {
@@ -88,21 +89,22 @@ export class RelationshipService {
         fetchPolicy: 'no-cache',
         query: gql.UPDATE_RELATIONSHIP,
         variables: {
-          description: relationship.description,
           displayName: relationship.displayName,
           id: relationship.id,
+          subjectToTargetDescription: relationship.subjectToTargetDescription,
           subjectType: relationship.subjectType,
-          targetType: relationship.targetType,
           subjectTypeId: relationship.subjectTypeId,
+          targetToSubjectDescription: relationship.targetToSubjectDescription,
+          targetType: relationship.targetType,
           targetTypeId: relationship.targetTypeId
         }
       })
-    .pipe(map(({ data: { updateRelationship } }) => {
-      if (!updateRelationship.success) {
-        throw new Error(updateRelationship.message);
-      }
+      .pipe(map(({ data: { updateRelationship } }) => {
+        if (!updateRelationship.success) {
+          throw new Error(updateRelationship.message);
+        }
 
-      return updateRelationship;
-    }));
+        return updateRelationship;
+      }));
   }
 }

@@ -6,13 +6,12 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { GroupsMenuModule, GroupsSidenavModule } from 'src/app/components/groups';
+import { GroupsSidenavModule, GroupsTableModule } from 'src/app/components/groups';
 import {
   getCommandMap,
   getConstraintMap,
   getEventMap,
   getGroupIdentifierMap,
-  getShowGroupsSidemenu,
   getGroupMap,
   getGroups,
   getInformationTypeMap,
@@ -21,7 +20,7 @@ import {
   getShowSidenav,
   getStates
 } from 'src/app/selectors';
-import { CommandMap, ConstraintMap, EventMap, Group, GroupMap, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
+import { CommandMap, ConstraintMap, EventMap, Group, IdentifierMap, InformationTypeMap, StateMap } from 'src/app/models';
 import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
 import { getItemNameOrIdentifier } from '../../functions/helpers';
@@ -39,13 +38,14 @@ export class GroupsComponent implements OnDestroy {
   public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
   public group: Group;
   public groupIdentifierMap: IdentifierMap;
-  public groupMap: GroupMap;
+  public groupMap: Record<string, Group>;
   public groupNameMap: IdentifierMap;
   public groups: Group[];
   public informationTypeMap: InformationTypeMap;
   public showGroupsSidemenu: boolean;
   public showSidenav: boolean;
   public selectedCollectionId: string;
+  public selectedGroup: Group;
   public stateMap: StateMap;
 
   private subscriptions: SubSink;
@@ -58,7 +58,6 @@ export class GroupsComponent implements OnDestroy {
   ) {
     this.iconRegistry.addSvgIcon('delete', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/delete.svg'));
     this.subscriptions = new SubSink();
-    this.groupIdentifierMap = {};
 
     this.subscriptions.add(
       this.store.pipe(select(getCommandMap)).subscribe(commandMap => {
@@ -74,7 +73,7 @@ export class GroupsComponent implements OnDestroy {
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getGroupMap)).subscribe(groupMap => {
-        this.groupMap = { ...groupMap };
+        this.groupMap = groupMap;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getGroupIdentifierMap)).subscribe(groupIdentifierMap => {
@@ -87,10 +86,6 @@ export class GroupsComponent implements OnDestroy {
       }),
       this.store.pipe(select(getInformationTypeMap)).subscribe(informationTypeMap => {
         this.informationTypeMap = informationTypeMap;
-        this.changeDetectorRef.markForCheck();
-      }),
-      this.store.pipe(select(getShowGroupsSidemenu)).subscribe(showGroupsSidemenu => {
-        this.showGroupsSidemenu = showGroupsSidemenu;
         this.changeDetectorRef.markForCheck();
       }),
       this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
@@ -114,14 +109,6 @@ export class GroupsComponent implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  public onCloseSidemenu(): void {
-    this.store.dispatch(
-      LayoutActions.toggleGroupsSidemenu({
-        showGroupsSidemenu: !this.showGroupsSidemenu
-      })
-    );
   }
 
   public onDeleteGroup(): void {
@@ -160,26 +147,33 @@ export class GroupsComponent implements OnDestroy {
     this.store.dispatch(LayoutActions.toggleSidenav({
       showSidenav: true
     }));
+
+    this.selectedGroup = group;
   }
 
-  public onSidenavOutput(group: Group): void {
-    if (group === undefined) {
+  public onSidenavOutput(group?: Group): void {
+    // Group will be undefined if the user closes the sidenav using the X or the cancel button.
+    if (!group) {
       this.store.dispatch(LayoutActions.toggleSidenav({
         showSidenav: false
       }));
     } else {
+      // Group.id will be undefined if the user is creating a new group.
       if (!group.id) {
         this.store.dispatch(GroupActions.createGroup({
           collectionId: this.selectedCollectionId,
           group
         }));
       } else {
+        // Otherwise the user is updating an existing group.
         this.store.dispatch(GroupActions.updateGroup({
           collectionId: this.selectedCollectionId,
           group
         }));
       }
     }
+
+    this.selectedGroup = group;
   }
 }
 
@@ -192,8 +186,8 @@ export class GroupsComponent implements OnDestroy {
   ],
   imports: [
     CommonModule,
-    GroupsMenuModule,
-    GroupsSidenavModule
+    GroupsSidenavModule,
+    GroupsTableModule
   ]
 })
 export class GroupsModule { }

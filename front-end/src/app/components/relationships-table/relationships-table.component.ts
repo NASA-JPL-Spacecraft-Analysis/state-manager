@@ -66,9 +66,10 @@ export class RelationshipsTableComponent
   public ngOnInit(): void {
     this.columns.push(
       'displayName',
-      'description',
+      'subjectToTargetDescription',
       'subjectIdentifier',
       'subjectType',
+      'targetToSubjectDescription',
       'targetIdentifier',
       'targetType'
     );

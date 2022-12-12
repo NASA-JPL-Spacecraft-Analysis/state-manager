@@ -23,7 +23,6 @@ import { MaterialModule } from 'src/app/material';
 import {
   EventMap,
   Group,
-  GroupMap,
   IdentifierMap,
   InformationTypeMap,
   CommandMap,
@@ -53,7 +52,7 @@ export class GroupsSidenavComponent implements OnChanges {
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public group: Group;
-  @Input() public groupMap: GroupMap;
+  @Input() public groupMap: Record<string, Group>;
   @Input() public groupIdentifierMap: IdentifierMap;
   @Input() public informationTypeMap: InformationTypeMap;
   @Input() public selectedCollectionId: string;
@@ -98,6 +97,10 @@ export class GroupsSidenavComponent implements OnChanges {
     this.itemSet = populateItems(this.itemSet, this.informationTypeMap);
     this.itemSet = populateItemsWithList(this.itemSet, this.stateEnumerationMap);
     this.itemSet = populateItems(this.itemSet, this.stateMap);
+
+    if (this.group?.id && this.itemSet.has(this.group)) {
+      this.itemSet.delete(this.group);
+    }
 
     if (this.group) {
       this.newGroup = cloneDeep(this.group);

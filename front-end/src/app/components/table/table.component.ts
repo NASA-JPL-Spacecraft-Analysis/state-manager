@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, NgModule, OnChanges } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { startCase } from 'lodash';
+import { Group, GroupMapping } from '../../models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'sm-table',
   styleUrls: ['table.component.css'],
   templateUrl: 'table.component.html'
 })
@@ -22,11 +25,11 @@ export class TableComponent<T> implements OnChanges {
   // The unedited list of data.
   public rows: T[];
 
-  public ngOnChanges(): void {
-    if (!this.rows) {
-      this.rows = [];
-    }
+  constructor() {
+    this.rows = [];
+  }
 
+  public ngOnChanges(): void {
     this.filteredRows = this.rows;
     this.columnFilters = new Map();
 
@@ -38,6 +41,18 @@ export class TableComponent<T> implements OnChanges {
     } else {
       // No need to paginate.
       this.paginatedRows = this.rows;
+    }
+  }
+
+  /**
+   * This function provides an alternate API for ingesting table data,
+   * groups are a list so we need to support them here.
+   *
+   * @param dataList A plain list of objects.
+   */
+  public convertListData(dataList: T[]): void {
+    if (dataList) {
+      this.rows = dataList;
     }
   }
 
@@ -165,6 +180,7 @@ export class TableComponent<T> implements OnChanges {
     TableComponent
   ],
   imports: [
+    BrowserModule,
     CommonModule
   ]
 })

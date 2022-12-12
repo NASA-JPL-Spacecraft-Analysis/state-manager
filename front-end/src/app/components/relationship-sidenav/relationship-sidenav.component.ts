@@ -78,10 +78,11 @@ export class RelationshipSidenavComponent implements OnChanges {
       this.newRelationship = {
         id: null,
         displayName: '',
-        description: '',
+        subjectToTargetDescription: '',
         subjectType: null,
-        targetType: null,
         subjectTypeId: null,
+        targetToSubjectDescription: '',
+        targetType: null,
         targetTypeId: null
       };
     } else {
@@ -93,9 +94,10 @@ export class RelationshipSidenavComponent implements OnChanges {
     this.form = new FormGroup({
       id: new FormControl(this.newRelationship.id),
       displayName: new FormControl(this.newRelationship.displayName, [Validators.required]),
-      description: new FormControl(this.newRelationship.description),
+      subjectToTargetDescription: new FormControl(this.newRelationship.subjectToTargetDescription),
       subjectType: new FormControl(this.newRelationship.subjectType, [Validators.required]),
       subjectTypeId: new FormControl(this.newRelationship.subjectTypeId, [Validators.required]),
+      targetToSubjectDescription: new FormControl(this.newRelationship.targetToSubjectDescription),
       targetType: new FormControl(this.newRelationship.targetType, [Validators.required]),
       targetTypeId: new FormControl(this.newRelationship.targetTypeId, [Validators.required])
     });

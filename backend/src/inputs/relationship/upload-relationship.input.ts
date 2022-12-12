@@ -7,11 +7,11 @@ export class UploadRelationshipInput implements Partial<Relationship> {
   @Field(() => ID, { nullable: true })
   public collectionId: string;
 
-  @Field({ nullable: true })
-  public description: string;
-
   @Field()
   public displayName!: string;
+
+  @Field({ nullable: true })
+  public subjectToTargetDescription: string;
 
   @Field()
   public subjectIdentifier!: string;
@@ -21,6 +21,9 @@ export class UploadRelationshipInput implements Partial<Relationship> {
 
   @Field(() => ID, { nullable: true })
   public subjectTypeId?: string;
+
+  @Field({ nullable: true })
+  public targetToSubjectDescription: string;
 
   @Field()
   public targetIdentifier!: string;
