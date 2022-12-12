@@ -3,7 +3,7 @@ import { Arg, FieldResolver, Mutation, Resolver, ResolverInterface, Root } from 
 
 import { GroupConstants } from '../constants';
 import { UploadGroupMappingsInput } from '../inputs/group/upload-group-mappings-input';
-import { AllTypesUnion, Group, GroupMapping, GroupMappingUnion } from '../models';
+import { AllTypesUnion, Group, GroupMapping } from '../models';
 import { GroupMappingResponse } from '../responses';
 import { GroupService, HelperService } from '../service';
 

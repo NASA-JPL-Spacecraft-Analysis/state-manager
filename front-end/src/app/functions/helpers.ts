@@ -104,18 +104,18 @@ export const getItemNameOrIdentifier = (
       }
 
       return value + item.label;
-    } else if ('stateId' in item) {
-      if (withPrefix) {
-        value = 'state_enumeration - ';
-      }
-
-      return value + item.label;
     } else if ('commandId' in item) {
       if (withPrefix) {
         value = 'command_arugment - ';
       }
 
       return (value += item.name);
+    } else if ('stateId' in item) {
+      if (withPrefix) {
+        value = 'state_enumeration - ';
+      }
+
+      return value + item.label;
     } else if ('identifier' in item) {
       if ('type' in item) {
         // Everything else has an identifier, so return that.
