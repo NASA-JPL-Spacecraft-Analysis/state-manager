@@ -17,13 +17,15 @@
       >
       </app-identifier-form>
 
-      <sm-auto-complete
-        [itemSet]="itemSet"
-        [multiselect]="true"
-        [selectedItemIds]="selectedItemIds"
-        (itemRemoved)="onItemRemoved($event)"
-        (itemSelected)="onItemSelected($event)"
-      ></sm-auto-complete>
+      <div class="group-item-selector">
+        <sm-auto-complete
+          [itemSet]="itemSet"
+          [multiselect]="true"
+          [selectedItemIds]="selectedItemIds"
+          (itemRemoved)="onItemRemoved($event)"
+          (itemSelected)="onItemSelected($event)"
+        ></sm-auto-complete>
+      </div>
     </form>
   </div>
 
