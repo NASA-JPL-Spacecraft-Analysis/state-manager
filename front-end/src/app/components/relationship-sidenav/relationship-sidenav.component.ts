@@ -1,5 +1,19 @@
-import { Component, NgModule, ChangeDetectionStrategy, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  Component,
+  NgModule,
+  ChangeDetectionStrategy,
+  OnChanges,
+  Input,
+  Output,
+  EventEmitter
+} from '@angular/core';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { Relationship } from '../../models/relationship';
@@ -16,7 +30,11 @@ import {
   AutoCompleteType
 } from 'src/app/models';
 import { AutoCompleteModule } from '../autocomplete/auto-complete.component';
-import { populateItems, populateItemsWithList } from '../../functions/helpers';
+import {
+  populateItems,
+  populateItemsWithCommandsAndChildren,
+  populateItemsWithList
+} from '../../functions/helpers';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,8 +67,7 @@ export class RelationshipSidenavComponent implements OnChanges {
   public ngOnChanges(): void {
     this.itemSet = new Set();
 
-    this.itemSet = populateItems(this.itemSet, this.commandMap);
-    this.itemSet = populateItemsWithList(this.itemSet, this.commandArgumentMap);
+    this.itemSet = populateItemsWithCommandsAndChildren(this.itemSet, this.commandMap);
     this.itemSet = populateItems(this.itemSet, this.constraintMap);
     this.itemSet = populateItems(this.itemSet, this.eventMap);
     this.itemSet = populateItems(this.itemSet, this.informationTypeMap);
@@ -118,12 +135,16 @@ export class RelationshipSidenavComponent implements OnChanges {
     if (this.form.valid) {
       this.modifyRelationship.emit(this.form.value);
     } else {
-      this.formError.emit('Please fill in required form fields, including selecting a subject and a target');
+      this.formError.emit(
+        'Please fill in required form fields, including selecting a subject and a target'
+      );
     }
   }
 
   /**
-   * Looks at each map and removes the ones that don't have any data.
+   * TODO: This can be cleaned up in the future.
+   * Rather than looking at each list of types and finding the corresponding object by id, keep a map
+   * of ids -> RelationshipTypeEnums that we populate when the component is created, or is passed into this component.
    */
   private findType(id: string): string | undefined {
     if (!id) {
@@ -134,12 +155,16 @@ export class RelationshipSidenavComponent implements OnChanges {
       if (command.id === id) {
         return RelationshipTypeEnum.Command;
       }
-    }
 
-    for (const commandArgumentList of Object.values(this.commandArgumentMap)) {
-      for (const commandArgument of Object.values(commandArgumentList)) {
+      for (const commandArgument of command.arguments) {
         if (commandArgument.id === id) {
           return RelationshipTypeEnum['Command Argument'];
+        }
+
+        for (const commandArgumentEnumeration of commandArgument.enumerations) {
+          if (commandArgumentEnumeration.id === id) {
+            return RelationshipTypeEnum['Command Argument Enumeration'];
+          }
         }
       }
     }
@@ -179,17 +204,8 @@ export class RelationshipSidenavComponent implements OnChanges {
 }
 
 @NgModule({
-  declarations: [
-    RelationshipSidenavComponent
-  ],
-  exports: [
-    RelationshipSidenavComponent
-  ],
-  imports: [
-    AutoCompleteModule,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule
-  ]
+  declarations: [RelationshipSidenavComponent],
+  exports: [RelationshipSidenavComponent],
+  imports: [AutoCompleteModule, CommonModule, FormsModule, ReactiveFormsModule]
 })
-export class RelationshipSidenavModule { }
+export class RelationshipSidenavModule {}

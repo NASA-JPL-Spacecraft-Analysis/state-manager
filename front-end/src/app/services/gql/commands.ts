@@ -1,54 +1,5 @@
 import gql from 'graphql-tag';
 
-export const CREATE_COMMAND = gql(`
-  mutation CreateCommand(
-    $arguments: [ModifyCommandArgument!]
-    $collectionId: ID!
-    $description: String
-    $displayName: String!
-    $editable: Boolean!
-    $externalLink: String
-    $identifier: String!
-    $type: String!
-    $version: String
-  ) {
-    createCommand(
-      data: {
-        arguments: $arguments
-        collectionId: $collectionId
-        description: $description
-        displayName: $displayName
-        editable: $editable
-        externalLink: $externalLink
-        identifier: $identifier
-        type: $type
-        version: $version
-      }
-    ) {
-      command {
-        arguments {
-          collectionId
-          commandId
-          name
-          id
-          sortOrder
-        }
-        collectionId
-        description
-        displayName
-        editable
-        externalLink
-        id
-        identifier
-        type
-        version
-      }
-      message
-      success
-    }
-  }
-`);
-
 export const CREATE_COMMAND_ARGUMENTS = gql(`
   mutation CreateCommandArguments(
     $collectionId: ID!
@@ -63,9 +14,11 @@ export const CREATE_COMMAND_ARGUMENTS = gql(`
       commandArguments {
         collectionId
         commandId
+        description
         name
         id
         sortOrder
+        type
       }
       message
       success
@@ -88,9 +41,11 @@ export const CREATE_COMMANDS = gql(`
         arguments {
           collectionId
           commandId
+          description
           name
           id
           sortOrder
+          type
         }
         collectionId
         description
@@ -108,46 +63,18 @@ export const CREATE_COMMANDS = gql(`
   }
 `);
 
-export const DELETE_ARGUMENTS = gql(`
-  mutation DeleteArguments(
-    $commandId: ID!
-    $deletedArgumentIds: [ID!]!
-  ) {
-    deleteArguments(
-      data: {
-        commandId: $commandId
-        deletedArgumentIds: $deletedArgumentIds
-      }
-    ) {
-      deletedArgumentIds
-      message
-      success
-    }
-  }
-`);
-
 export const GET_COMMAND_ARGUMENT_HISTORY = gql(`
   query CommandArgumentHistory($collectionId: ID!) {
     commandArgumentHistory(collectionId: $collectionId) {
       collectionId
       commandArgumentId
       commandId
+      description
       name
       id
       sortOrder
+      type
       updated
-    }
-  }
-`);
-
-export const GET_COMMAND_ARGUMENTS = gql(`
-  query CommandArguments($collectionId: ID!) {
-    commandArguments(collectionId: $collectionId) {
-      collectionId
-      commandId
-      name
-      id
-      sortOrder
     }
   }
 `);
@@ -173,6 +100,22 @@ export const GET_COMMAND_HISTORY = gql(`
 export const GET_COMMANDS = gql(`
   query Commands($collectionId: ID!) {
     commands(collectionId: $collectionId) {
+      arguments {
+        collectionId
+        commandId
+        description
+        enumerations {
+          collectionId
+          commandArgumentId
+          label
+          id
+          value
+        }
+        name
+        id
+        sortOrder
+        type
+      }
       collectionId
       description
       displayName
@@ -189,52 +132,5 @@ export const GET_COMMANDS = gql(`
 export const GET_COMMAND_TYPES = gql(`
   query CommandTypes {
     commandTypes
-  }
-`);
-
-export const UPDATE_COMMAND = gql(`
-  mutation UpdateCommand(
-    $arguments: [ModifyCommandArgument!]
-    $description: String
-    $displayName: String
-    $editable: Boolean
-    $externalLink: String
-    $id: ID!
-    $identifier: String!
-    $version: String
-  ) {
-    updateCommand(
-      data: {
-        arguments: $arguments
-        description: $description
-        displayName: $displayName
-        editable: $editable
-        externalLink: $externalLink
-        id: $id
-        identifier: $identifier
-        version: $version
-      }
-    ) {
-      command {
-        arguments {
-          collectionId
-          commandId
-          name
-          id
-          sortOrder
-        }
-        collectionId
-        description
-        displayName
-        editable
-        externalLink
-        id
-        identifier
-        type
-        version
-      }
-      message
-      success
-    }
   }
 `);

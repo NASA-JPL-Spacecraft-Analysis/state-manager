@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 
-import { AllTypesUnion, Command, CommandArgument, Constraint, Event, Group, GroupMapping, GroupMappingUnion, InformationType, State, StateEnumeration } from '../models';
+import { AllTypesUnion, Command, CommandArgument, CommandArgumentEnumeration, Constraint, Event, Group, GroupMapping, InformationType, State, StateEnumeration } from '../models';
 
 @Service()
 export class GroupService {
@@ -50,6 +50,12 @@ export class GroupService {
 
     if (commandArgument) {
       return commandArgument;
+    }
+
+    const commandArgumentEnumeration = await CommandArgumentEnumeration.findOne({ where: { id: groupMapping.itemId } });
+
+    if (commandArgumentEnumeration) {
+      return commandArgumentEnumeration;
     }
 
     const constraint = await Constraint.findOne({ where: { id: groupMapping.itemId } });

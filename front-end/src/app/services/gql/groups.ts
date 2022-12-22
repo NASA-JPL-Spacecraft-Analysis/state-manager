@@ -23,6 +23,18 @@ export const CREATE_GROUP = gql(`
               id
               identifier
             }
+            ... on CommandArgument {
+              commandId
+              id
+              name
+              sortOrder
+            }
+            ... on CommandArgumentEnumeration {
+              commandArgumentId
+              label
+              id
+              value
+            }
             ... on Constraint {
               description
               displayName
@@ -96,6 +108,18 @@ export const CREATE_GROUP_MAPPINGS = gql(`
             id
             identifier
           }
+          ... on CommandArgument {
+            commandId
+            id
+            name
+            sortOrder
+          }
+          ... on CommandArgumentEnumeration {
+            commandArgumentId
+            label
+            id
+            value
+          }
           ... on Constraint {
             description
             displayName
@@ -165,6 +189,18 @@ export const CREATE_GROUPS = gql(`
               externalLink
               id
               identifier
+            }
+            ... on CommandArgument {
+              commandId
+              id
+              name
+              sortOrder
+            }
+            ... on CommandArgumentEnumeration {
+              commandArgumentId
+              label
+              id
+              value
             }
             ... on Constraint {
               description
@@ -246,6 +282,18 @@ export const GET_GROUPS_AND_MAPPINGS = gql(`
             id
             identifier
           }
+          ... on CommandArgument {
+            commandId
+            id
+            name
+            sortOrder
+          }
+          ... on CommandArgumentEnumeration {
+            commandArgumentId
+            label
+            id
+            value
+          }
           ... on Constraint {
             description
             displayName
@@ -318,6 +366,18 @@ export const UPDATE_GROUP = gql(`
               id
               identifier
             }
+            ... on CommandArgument {
+              commandId
+              id
+              name
+              sortOrder
+            }
+            ... on CommandArgumentEnumeration {
+              commandArgumentId
+              label
+              id
+              value
+            }
             ... on Constraint {
               description
               displayName
@@ -369,4 +429,3 @@ export const UPDATE_GROUP = gql(`
     }
   }
 `);
-

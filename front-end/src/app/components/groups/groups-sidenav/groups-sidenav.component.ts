@@ -1,8 +1,22 @@
-import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges } from '@angular/core';
+import {
+  EventEmitter,
+  Component,
+  NgModule,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  OnChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { cloneDeep } from 'lodash';
 
 import { MaterialModule } from 'src/app/material';
@@ -14,14 +28,17 @@ import {
   CommandMap,
   ConstraintMap,
   StateEnumerationMap,
-  CommandArgumentMap,
   AutoCompleteType,
   AutoCompleteSetType,
   StateMap
 } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
 import { AutoCompleteModule } from '../../autocomplete/auto-complete.component';
-import { populateItems, populateItemsWithList } from '../../../functions/helpers';
+import {
+  populateItems,
+  populateItemsWithCommandsAndChildren,
+  populateItemsWithList
+} from '../../../functions/helpers';
 import { StateManagementConstants } from '../../../constants';
 
 @Component({
@@ -31,7 +48,6 @@ import { StateManagementConstants } from '../../../constants';
   templateUrl: 'groups-sidenav.component.html'
 })
 export class GroupsSidenavComponent implements OnChanges {
-  @Input() public commandArgumentMap: CommandArgumentMap;
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
@@ -56,11 +72,11 @@ export class GroupsSidenavComponent implements OnChanges {
 
   private isDuplicateGroupIdentifier: boolean;
 
-  constructor(
-    private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
-  ) {
-    this.iconRegistry.addSvgIcon('clear', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg'));
+  constructor(private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer) {
+    this.iconRegistry.addSvgIcon(
+      'clear',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/clear.svg')
+    );
 
     this.modifyGroup = new EventEmitter<Group>();
     this.showError = new EventEmitter<string>();
@@ -69,8 +85,12 @@ export class GroupsSidenavComponent implements OnChanges {
   public ngOnChanges(): void {
     this.itemSet = new Set();
 
-    this.itemSet = populateItems(this.itemSet, this.commandMap);
-    this.itemSet = populateItemsWithList(this.itemSet, this.commandArgumentMap);
+    // If we're updating a group, remove it from the set so the user can't add it as a group item.
+    if (this.group?.id) {
+      delete this.groupMap[this.group.id];
+    }
+
+    this.itemSet = populateItemsWithCommandsAndChildren(this.itemSet, this.commandMap);
     this.itemSet = populateItems(this.itemSet, this.constraintMap);
     this.itemSet = populateItems(this.itemSet, this.eventMap);
     this.itemSet = populateItems(this.itemSet, this.groupMap);
@@ -122,12 +142,13 @@ export class GroupsSidenavComponent implements OnChanges {
    * @param removedItem The item the user removed.
    */
   public onItemRemoved(removedItem: AutoCompleteType): void {
-    this.newGroup.groupMappings = this.newGroup.groupMappings.filter((groupMapping) => groupMapping.item.id !== removedItem.id);
+    this.newGroup.groupMappings = this.newGroup.groupMappings.filter(
+      (groupMapping) => groupMapping.item.id !== removedItem.id
+    );
   }
 
   /**
-   * When an item is selected, add it to the groupItemMap and remove it
-   * from the collectionItems list.
+   * When an item is selected, add it to the groupItemMap.
    *
    * @param groupItemList The list of items that the user has selected.
    */
@@ -163,7 +184,9 @@ export class GroupsSidenavComponent implements OnChanges {
 
         this.modifyGroup.emit(this.newGroup);
       } else {
-        this.showError.emit('Your group identifier contains invalid characters, please only use alphanumerics and underscores');
+        this.showError.emit(
+          'Your group identifier contains invalid characters, please only use alphanumerics and underscores'
+        );
       }
     } else {
       this.showError.emit('Please provide a unique group identifier');
@@ -176,12 +199,8 @@ export class GroupsSidenavComponent implements OnChanges {
 }
 
 @NgModule({
-  declarations: [
-    GroupsSidenavComponent
-  ],
-  exports: [
-    GroupsSidenavComponent
-  ],
+  declarations: [GroupsSidenavComponent],
+  exports: [GroupsSidenavComponent],
   imports: [
     AutoCompleteModule,
     CommonModule,
@@ -191,4 +210,4 @@ export class GroupsSidenavComponent implements OnChanges {
     ReactiveFormsModule
   ]
 })
-export class GroupsSidenavModule { }
+export class GroupsSidenavModule {}

@@ -6,20 +6,20 @@ import { Node } from './node';
 @Entity('command_argument_enumerations')
 @ObjectType()
 export class CommandArgumentEnumeration extends Node {
-  @Field()
+  @Field(() => ID)
   @Column()
-  public collectionId: string;
+  public collectionId!: string;
 
   @Field(() => ID)
   @Column()
-  public commandId!: string;
+  public commandArgumentId!: string;
 
   @Field()
   @Column()
-  public label: string;
+  public label!: string;
 
   @Field()
   @Column()
-  public value: string;
+  public value!: number;
 }
 

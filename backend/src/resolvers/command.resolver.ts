@@ -12,7 +12,7 @@ import {
   ModifyCommandArgument,
   UpdateCommandInput
 } from '../inputs';
-import { Command, CommandArgument, CommandArgumentEnumeration,  CommandArgumentHistory, CommandHistory } from '../models';
+import { Command, CommandArgument, CommandArgumentEnumeration, CommandArgumentHistory, CommandHistory } from '../models';
 import { SharedRepository } from '../repositories';
 import {
   CommandArgumentResponse,
@@ -36,7 +36,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     this.sharedRepository = new SharedRepository<Command>(getConnection(), Command, validationService);
   }
 
-  @FieldResolver(() => [ CommandArgument ])
+  @FieldResolver(() => [CommandArgument])
   public async arguments(@Root() command: Command): Promise<CommandArgument[]> {
     return CommandArgument.find({
       where: {
@@ -50,7 +50,16 @@ export class CommandResolver implements ResolverInterface<Command> {
     return this.sharedRepository.getOne(collectionId, id, identifier);
   }
 
-  @Query(() => [ CommandArgumentHistory ])
+  @Query(() => [CommandArgumentEnumeration])
+  public commandArgumentEnumeration(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgumentEnumeration[]> {
+    return CommandArgumentEnumeration.find({
+      where: {
+        collectionId
+      }
+    });
+  }
+
+  @Query(() => [CommandArgumentHistory])
   public commandArgumentHistory(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgumentHistory[]> {
     return CommandArgumentHistory.find({
       where: {
@@ -62,7 +71,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ CommandArgument ])
+  @Query(() => [CommandArgument])
   public commandArguments(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgument[]> {
     return CommandArgument.find({
       where: {
@@ -71,7 +80,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ CommandHistory ])
+  @Query(() => [CommandHistory])
   public commandHistory(@Args() { collectionId }: CollectionIdArgs): Promise<CommandHistory[]> {
     return CommandHistory.find({
       where: {
@@ -80,7 +89,7 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ Command ])
+  @Query(() => [Command])
   public commands(@Args() { collectionId }: CollectionIdArgs): Promise<Command[]> {
     return Command.find({
       where: {
@@ -89,9 +98,9 @@ export class CommandResolver implements ResolverInterface<Command> {
     });
   }
 
-  @Query(() => [ String ])
+  @Query(() => [String])
   public async commandTypes(): Promise<string[]> {
-    return [ ...(await this.dataTypesService.getDataType('command')) ] as string[];
+    return [...(await this.dataTypesService.getDataType('command'))] as string[];
   }
 
   @Mutation(() => CommandResponse)
@@ -168,14 +177,40 @@ export class CommandResolver implements ResolverInterface<Command> {
         this.validationService.isDuplicateIdentifier(existingCommands, command.identifier, command.type);
       }
 
-      const commands = Command.create(data.commands);
+      this.validationService.hasValidType(Command.create(data.commands), await this.dataTypesService.getDataType('command'));
 
-      this.validationService.hasValidType(commands, await this.dataTypesService.getDataType('command'));
+      const commands = [];
 
-      for (const command of commands) {
+      for (const newCommand of data.commands) {
+        const command = Command.create(newCommand);
+        commands.push(command);
+
         await command.save();
-
         this.createCommandHistory(command);
+
+        if (newCommand.arguments) {
+          for (const commandArgument of newCommand.arguments) {
+            const argument = CommandArgument.create(commandArgument);
+
+            argument.collectionId = newCommand.collectionId;
+            argument.commandId = command.id;
+
+            await argument.save();
+            this.createCommandArgumentHistory(argument);
+
+            // If the argument has enumerations, create them now.
+            if (commandArgument.enumerations) {
+              for (const commandArgumentEnumeration of commandArgument.enumerations) {
+                const enumeration = CommandArgumentEnumeration.create(commandArgumentEnumeration);
+
+                enumeration.collectionId = argument.collectionId;
+                enumeration.commandArgumentId = argument.id;
+
+                await enumeration.save();
+              }
+            }
+          }
+        }
       }
 
       return {
@@ -263,7 +298,7 @@ export class CommandResolver implements ResolverInterface<Command> {
 
       Object.assign(command, data);
 
-      this.validationService.hasValidType([ command ], await this.dataTypesService.getDataType('command'));
+      this.validationService.hasValidType([command], await this.dataTypesService.getDataType('command'));
 
       await command.save();
 

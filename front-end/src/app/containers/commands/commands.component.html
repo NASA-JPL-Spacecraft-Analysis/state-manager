@@ -17,27 +17,16 @@
       <i class="si-upload"></i>
       Upload Command Arguments
     </button>
-
-    <button class="st-button primary" (click)="onModifyCommand()">Create New Command</button>
   </div>
 </div>
 
 <div class="content-container">
   <div class="content">
-    <sm-command-table [commands]="commands" (commandSelected)="onModifyCommand($event)">
+    <sm-command-table [commands]="commands" (commandSelected)="onSelectCommand($event)">
     </sm-command-table>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <command-sidenav
-      [collectionId]="selectedCollectionId"
-      [command]="command"
-      [commandArguments]="commandArguments"
-      [commandIdentifierMap]="commandIdentifierMap"
-      [commandTypes]="commandTypes"
-      (errorEmitter)="onSidenavError($event)"
-      (modifyCommand)="onSidenavOutput($event)"
-    >
-    </command-sidenav>
+  <div class="sidenav" *ngIf="showSidenav">
+    <command-sidenav [command]="command" (closeSidenav)="onSidenavOutput()"> </command-sidenav>
   </div>
 </div>

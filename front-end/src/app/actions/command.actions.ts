@@ -2,43 +2,8 @@ import { createAction, props } from '@ngrx/store';
 
 import { Command, CommandArgument, CommandArgumentHistory, CommandHistory } from '../models';
 
-export const createCommand = createAction(
-  '[command] createCommand',
-  props<{ command: Command }>()
-);
-
-export const createCommandFailure = createAction(
-  '[command] createCommandFailure',
-  props<{ error: Error }>()
-);
-
-export const createCommandSuccess = createAction(
-  '[command] createCommandSuccess',
-  props<{ command: Command }>()
-);
-
-export const deleteArguments = createAction(
-  '[command] deleteArguments',
-  props<{ commandId: string; deletedArgumentIds: string[] }>()
-);
-
-export const deleteArgumentsFailure = createAction(
-  '[command] deleteArgumentsFailure',
-  props<{ error: Error }>()
-);
-
-export const deleteArgumentsSuccess = createAction(
-  '[command] deleteArgumentsSuccess',
-  props<{ deletedArgumentIds: string[] }>()
-);
-
 export const fetchCommandArgumentHistoryFailure = createAction(
   '[command] fetchCommandArgumentHistoryFailure',
-  props<{ error: Error }>()
-);
-
-export const fetchCommandArgumentsFailure = createAction(
-  '[command] fetchCommandArgumentsFailure',
   props<{ error: Error }>()
 );
 
@@ -67,11 +32,6 @@ export const setCommandArgumentHistory = createAction(
   props<{ commandArgumentHistory: CommandArgumentHistory[] }>()
 );
 
-export const setCommandArguments = createAction(
-  '[command] setCommandArguments',
-  props<{ commandArguments: CommandArgument[] }>()
-);
-
 export const setCommandHistory = createAction(
   '[command] setCommandHistory',
   props<{ commandHistory: CommandHistory[] }>()
@@ -90,19 +50,4 @@ export const setCommandTypes = createAction(
 export const setSelectedCommand = createAction(
   '[command] setSelectedCommand',
   props<{ id: string }>()
-);
-
-export const updateCommand = createAction(
-  '[command] updateCommand',
-  props<{ command: Command }>()
-);
-
-export const updateCommandFailure = createAction(
-  '[command] updateCommandFailure',
-  props<{ error: Error }>()
-);
-
-export const updateCommandSuccess = createAction(
-  '[command] updateCommandSuccess',
-  props<{ command: Command }>()
 );

@@ -1,3 +1,5 @@
+export * from './create-command-argument-enumeration.input';
+export * from './create-command-argument-enumerations.input';
 export * from './create-command-argument.input';
 export * from './create-command-arguments.input';
 export * from './create-command.input';

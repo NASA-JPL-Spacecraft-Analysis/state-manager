@@ -1,14 +1,21 @@
 import { Field, ID, InputType } from 'type-graphql';
 
-import { CommandArgument } from '../../models';
+import { CommandArgumentType } from '../../models';
+import { CreateCommandArgumentEnumerationInput } from './create-command-argument-enumeration.input';
 
 @InputType()
-export class ModifyCommandArgument implements Partial<CommandArgument> {
+export class ModifyCommandArgument {
   @Field(() => ID, { nullable: true })
   public collectionId?: string;
 
   @Field(() => ID, { nullable: true })
   public commandId?: string;
+
+  @Field({ nullable: true })
+  public description?: string;
+
+  @Field(() => [CreateCommandArgumentEnumerationInput], { nullable: true })
+  public enumerations?: CreateCommandArgumentEnumerationInput[];
 
   @Field(() => ID, { nullable: true })
   public id?: string;
@@ -18,4 +25,7 @@ export class ModifyCommandArgument implements Partial<CommandArgument> {
 
   @Field({ nullable: true })
   public sortOrder?: number;
+
+  @Field(() => CommandArgumentType)
+  public type!: CommandArgumentType;
 }

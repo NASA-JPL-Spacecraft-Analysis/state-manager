@@ -25,11 +25,6 @@ export const getCommandHistory = createSelector(
   (state: CommandState) => state.commandHistory
 );
 
-export const getCommandIdentifierMap = createSelector(
-  getCommandState,
-  (state: CommandState) => state.commandIdentifierMap
-);
-
 export const getCommandMap = createSelector(
   getCommandState,
   (state: CommandState) => state.commandMap

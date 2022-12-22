@@ -2,7 +2,18 @@ import { UserInputError } from 'apollo-server';
 import { Service } from 'typedi';
 import { ErrorConstants } from '../constants';
 
-import { AllTypesUnion, Command, CommandArgument, Constraint, Event, Group, InformationType, State, StateEnumeration } from '../models';
+import {
+  AllTypesUnion,
+  Command,
+  CommandArgument,
+  CommandArgumentEnumeration,
+  Constraint,
+  Event,
+  Group,
+  InformationType,
+  State,
+  StateEnumeration
+} from '../models';
 
 @Service()
 export class HelperService {
@@ -28,6 +39,9 @@ export class HelperService {
         }
         case 'Command Argument': {
           return await CommandArgument.findOne({ id });
+        }
+        case 'Command Argument Enumeration': {
+          return await CommandArgumentEnumeration.findOne({ id });
         }
         case 'Constraint': {
           return await Constraint.findOne(query);

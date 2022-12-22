@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  Output
+} from '@angular/core';
 
 import { getItemNameOrIdentifier } from '../../../../functions/helpers';
 import { Group } from '../../../../models';
@@ -39,14 +46,8 @@ export class GroupsTableRowComponent {
 }
 
 @NgModule({
-  declarations: [
-    GroupsTableRowComponent
-  ],
-  exports: [
-    GroupsTableRowComponent
-  ],
-  imports: [
-    CommonModule
-  ]
+  declarations: [GroupsTableRowComponent],
+  exports: [GroupsTableRowComponent],
+  imports: [CommonModule]
 })
-export class GroupsTableRowModule { }
+export class GroupsTableRowModule {}

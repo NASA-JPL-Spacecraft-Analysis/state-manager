@@ -1,4 +1,13 @@
-import { Component, NgModule, Input, OnChanges, ChangeDetectionStrategy, EventEmitter, Output, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  Input,
+  OnChanges,
+  ChangeDetectionStrategy,
+  EventEmitter,
+  Output,
+  OnInit
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import {
@@ -12,7 +21,9 @@ import {
   ConstraintMap,
   CommandArgumentMap,
   StringTMap,
-  StateEnumerationMap
+  StateEnumerationMap,
+  CommandArgumentEnumeration,
+  CommandArgument
 } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
@@ -24,9 +35,12 @@ import { TableComponent } from '../table/table.component';
   styleUrls: ['../table/table.component.css'],
   templateUrl: '../table/table.component.html'
 })
-export class RelationshipsTableComponent extends TableComponent<Relationship> implements OnInit, OnChanges {
-  @Input() public commandArgumentMap: CommandArgumentMap;
+export class RelationshipsTableComponent
+  extends TableComponent<Relationship>
+  implements OnInit, OnChanges
+{
   @Input() public commandMap: CommandMap;
+  @Input() public commandArgumentEnumerationMap: Record<string, CommandArgumentEnumeration>;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public history: boolean;
@@ -38,8 +52,8 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   @Output() public relationshipSelected: EventEmitter<Relationship>;
 
   public relationshipsList: Relationship[];
-  // Keep a map of command arguments so we don't have to loop over the list each time.
-  public commandArguments: StringTMap<string>;
+  public commandArguments: Record<string, string>;
+  public commandArgumentEnumerations: Record<string, string>;
   // Keep a map of state enumerations so we don't have to loop over the list each time.
   public stateEnumerations: StringTMap<string>;
 
@@ -61,10 +75,7 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
     );
 
     if (this.history) {
-      this.columns.push(
-        'relationshipId',
-        'updated'
-      );
+      this.columns.push('relationshipId', 'updated');
 
       this.historyTable = true;
     }
@@ -73,6 +84,7 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   public ngOnChanges(): void {
     this.relationshipsList = [];
     this.commandArguments = {};
+    this.commandArgumentEnumerations = {};
     this.stateEnumerations = {};
 
     if (this.relationshipMap) {
@@ -104,8 +116,14 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
 
   private getType(id: string, type: string): string {
     switch (type) {
+      case RelationshipTypeEnum.Command:
+        if (this.commandMap && this.commandMap[id]) {
+          return this.commandMap[id].identifier;
+        }
+
+        break;
       case RelationshipTypeEnum['Command Argument']:
-        // If this is the first time we've seen a command argument, memoize them.
+        // If this is the first time we've seen a command argument, memoize them and their enumerations.
         if (Object.keys(this.commandArguments).length === 0) {
           this.mapCommandArguments();
         }
@@ -115,9 +133,9 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
         }
 
         break;
-      case RelationshipTypeEnum.Command:
-        if (this.commandMap && this.commandMap[id]) {
-          return this.commandMap[id].identifier;
+      case RelationshipTypeEnum['Command Argument Enumeration']:
+        if (this.commandArgumentEnumerations && this.commandArgumentEnumerations[id]) {
+          return this.commandArgumentEnumerations[id];
         }
 
         break;
@@ -164,9 +182,16 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
   }
 
   private mapCommandArguments() {
-    for (const key of Object.keys(this.commandArgumentMap)) {
-      for (const commandArgument of this.commandArgumentMap[key]) {
-        this.commandArguments[commandArgument.id] = commandArgument.name;
+    if (this.commandMap) {
+      for (const command of Object.values(this.commandMap)) {
+        for (const commandArgument of command.arguments) {
+          this.commandArguments[commandArgument.id] = commandArgument.name;
+
+          for (const commandArgumentEnumeration of commandArgument.enumerations) {
+            this.commandArgumentEnumerations[commandArgumentEnumeration.id] =
+              commandArgumentEnumeration.label;
+          }
+        }
       }
     }
   }
@@ -181,15 +206,8 @@ export class RelationshipsTableComponent extends TableComponent<Relationship> im
 }
 
 @NgModule({
-  declarations: [
-    RelationshipsTableComponent
-  ],
-  exports: [
-    RelationshipsTableComponent
-  ],
-  imports: [
-    CommonModule,
-    MaterialModule
-  ]
+  declarations: [RelationshipsTableComponent],
+  exports: [RelationshipsTableComponent],
+  imports: [CommonModule, MaterialModule]
 })
-export class RelationshipsTableModule { }
+export class RelationshipsTableModule {}

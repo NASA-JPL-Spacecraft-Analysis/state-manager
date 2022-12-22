@@ -5,10 +5,8 @@ import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
-import { Command, CommandArgument, IdentifierMap } from 'src/app/models';
+import { Command } from 'src/app/models';
 import {
-  getCommandArguments,
-  getCommandIdentifierMap,
   getCommands,
   getCommandTypes,
   getSelectedCollectionId,
@@ -29,8 +27,6 @@ import { NavigationService } from '../../services';
 export class CommandsComponent implements OnDestroy {
   public command: Command;
   public commands: Command[];
-  public commandArguments: CommandArgument[];
-  public commandIdentifierMap: IdentifierMap;
   public commandTypes: string[];
   public showSidenav: boolean;
   public selectedCollectionId: string;
@@ -48,14 +44,6 @@ export class CommandsComponent implements OnDestroy {
     this.subscriptions = new SubSink();
 
     this.subscriptions.add(
-      this.store.pipe(select(getCommandArguments)).subscribe(commandArguments => {
-        this.commandArguments = commandArguments;
-        this.changeDetectorRef.markForCheck();
-      }),
-      this.store.pipe(select(getCommandIdentifierMap)).subscribe(commandIdentifierMap => {
-        this.commandIdentifierMap = commandIdentifierMap;
-        this.changeDetectorRef.markForCheck();
-      }),
       this.store.pipe(select(getCommands)).subscribe(commands => {
         this.commands = commands;
         this.changeDetectorRef.markForCheck();
@@ -113,7 +101,7 @@ export class CommandsComponent implements OnDestroy {
     }
   }
 
-  public onModifyCommand(command?: Command): void {
+  public onSelectCommand(command?: Command): void {
     this.store.dispatch(CommandActions.setSelectedCommand({
       id: command?.id
     }));
@@ -135,33 +123,13 @@ export class CommandsComponent implements OnDestroy {
     }));
   }
 
-  public onSidenavOutput(result: { command: Command; deletedArgumentIds: string[] }): void {
-    if (!result) {
-      // If the user is closing the sidenav intentionally, remove the ID from the URL.
-      this.navigationService.removeIDFromURL(this.location, this.router.url);
-      this.commandId = '';
+  public onSidenavOutput(): void {
+    this.navigationService.removeIDFromURL(this.location, this.router.url);
+    this.commandId = '';
 
-      this.store.dispatch(LayoutActions.toggleSidenav({
-        showSidenav: false
-      }));
-    } else {
-      if (!result.command.id) {
-        this.store.dispatch(CommandActions.createCommand({
-          command: result.command
-        }));
-      } else {
-        this.store.dispatch(CommandActions.updateCommand({
-          command: result.command
-        }));
-      }
-
-      if (result.deletedArgumentIds.length > 0 && result.command.id) {
-        this.store.dispatch(CommandActions.deleteArguments({
-          commandId: result.command.id,
-          deletedArgumentIds: result.deletedArgumentIds
-        }));
-      }
-    }
+    this.store.dispatch(LayoutActions.toggleSidenav({
+      showSidenav: false
+    }));
   }
 }
 

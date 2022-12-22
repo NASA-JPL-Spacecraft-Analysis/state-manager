@@ -46,7 +46,11 @@ export class AutoCompleteComponent implements OnChanges {
 
   @HostListener('document:click', ['$event'])
   public clickout(event: Event) {
-    if (this.autocomplete && !this.autocomplete.nativeElement.contains(event.target) && this.dropdownOpen) {
+    if (
+      this.autocomplete &&
+      !this.autocomplete.nativeElement.contains(event.target) &&
+      this.dropdownOpen
+    ) {
       this.dropdownOpen = false;
     }
   }
@@ -76,7 +80,7 @@ export class AutoCompleteComponent implements OnChanges {
     if (filter === '') {
       this.filteredItems = [...this.itemSet.values()];
     } else {
-      this.filteredItems = [...this.itemSet.values()].filter(item => {
+      this.filteredItems = [...this.itemSet.values()].filter((item) => {
         let searchContext: string;
 
         // Prepend the item's name / identifier / label with the type to improve searching.
@@ -112,6 +116,7 @@ export class AutoCompleteComponent implements OnChanges {
 
     if (this.multiselect) {
       this.itemSet.add(item);
+      this.filteredItems = [...this.itemSet];
     }
 
     this.itemRemoved.emit(item);
@@ -124,6 +129,7 @@ export class AutoCompleteComponent implements OnChanges {
       this.selectedItems.add(item);
 
       this.itemSet.delete(item);
+      this.filteredItems = [...this.itemSet];
     } else {
       this.selectedItems = new Set([item]);
     }
@@ -133,14 +139,8 @@ export class AutoCompleteComponent implements OnChanges {
 }
 
 @NgModule({
-  declarations: [
-    AutoCompleteComponent
-  ],
-  exports: [
-    AutoCompleteComponent,
-  ],
-  imports: [
-    CommonModule,
-  ]
+  declarations: [AutoCompleteComponent],
+  exports: [AutoCompleteComponent],
+  imports: [CommonModule]
 })
-export class AutoCompleteModule { }
+export class AutoCompleteModule {}
