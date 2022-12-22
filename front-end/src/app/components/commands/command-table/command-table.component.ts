@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  OnChanges,
+  OnInit,
+  Output
+} from '@angular/core';
 
 import { Command } from 'src/app/models';
 import { TableComponent } from '../../table/table.component';
@@ -33,17 +42,16 @@ export class CommandTableComponent extends TableComponent<Command> implements On
     );
 
     if (this.history) {
-      this.columns.push(
-        'commandId',
-        'updated'
-      );
+      this.columns.push('commandId', 'updated');
 
       this.historyTable = true;
     }
   }
 
   public ngOnChanges(): void {
-    this.rows = this.commands;
+    if (this.commands) {
+      this.rows = this.commands;
+    }
 
     super.ngOnChanges();
   }
@@ -54,14 +62,8 @@ export class CommandTableComponent extends TableComponent<Command> implements On
 }
 
 @NgModule({
-  declarations: [
-    CommandTableComponent
-  ],
-  exports: [
-    CommandTableComponent
-  ],
-  imports: [
-    CommonModule
-  ]
+  declarations: [CommandTableComponent],
+  exports: [CommandTableComponent],
+  imports: [CommonModule]
 })
-export class CommandTableModule { }
+export class CommandTableModule {}
