@@ -135,3 +135,7 @@ export const getItemNameOrIdentifier = (
     }
   }
 };
+
+export const assertNever = (x: never): never => {
+  throw new Error('We should never reach this code!');
+};
