@@ -184,7 +184,7 @@
   /* Table. */
   --st-table-th-padding: var(--st-grid-unit);
   --st-table-th-background: var(--st-gray-10);
-  --st-table-th-box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.09);
+  --st-table-th-box-shadow: inset 0px -1px 0px var(--st-gray-20);
   --st-table-th-color: var(--st-gray-100);
   --st-table-th-font-family: var(--st-typography-font-family);
   --st-table-th-font-weight: var(--st-typography-medium-font-weight);
@@ -193,7 +193,7 @@
   --st-table-th-letter-spacing: var(--st-typography-medium-letter-spacing);
   --st-table-td-padding: var(--st-grid-unit);
   --st-table-td-background: var(--st-white);
-  --st-table-td-box-shadow: inset 0px -1px 0px #E3E7EB;
+  --st-table-td-box-shadow: inset 0px -1px 0px var(--st-gray-20);
   --st-table-td-color: var(--st-gray-100);
   --st-table-td-font-family: var(--st-typography-font-family);
   --st-table-td-font-weight: var(--st-typography-body-font-weight);
