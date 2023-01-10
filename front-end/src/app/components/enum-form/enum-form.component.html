@@ -3,11 +3,11 @@
     <span class="enumeration-label">{{enumerationsLabel}}</span>
   </div>
 
-  <table>
+  <table class="st-table">
     <tr>
       <th>Value</th>
       <th class="label-column">Label</th>
-      <th></th>
+      <th class="delete-enum"></th>
     </tr>
 
     <tr *ngFor="let enumeration of enumerations">
@@ -25,7 +25,7 @@
           placeholder="Label" />
       </td>
 
-      <td>
+      <td class="delete-enum">
         <button class="st-button icon tertiary" type="button" (click)="onDeleteEnumeration(enumeration)">
           <i class="si si-close"></i>
         </button>
