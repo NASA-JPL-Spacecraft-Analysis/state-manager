@@ -6,45 +6,59 @@
   </div>
 
   <div class="toolbar-buttons">
-    <button class="st-button tertiary"
-      routerLink="/collection/{{selectedCollectionId}}/states"
-      [ngClass]="{ 'active': route === 'states' || route === 'state-history' }">
+    <button
+      class="st-button tertiary"
+      routerLink="/collection/{{ selectedCollectionId }}/states"
+      [ngClass]="{ active: route === 'states' || route === 'state-history' }"
+    >
       States
     </button>
 
-    <button class="st-button tertiary"
-      routerLink="/collection/{{selectedCollectionId}}/relationships"
-      [ngClass]="{ 'active': route === 'relationships' || route === 'relationship-history' }">
+    <button
+      class="st-button tertiary"
+      routerLink="/collection/{{ selectedCollectionId }}/relationships"
+      [ngClass]="{ active: route === 'relationships' || route === 'relationship-history' }"
+    >
       Relationships
     </button>
 
-    <button class="st-button tertiary"
-      routerLink="/collection/{{selectedCollectionId}}/events"
-      [ngClass]="{ 'active': route === 'events' || route === 'event-history' }">
+    <button
+      class="st-button tertiary"
+      routerLink="/collection/{{ selectedCollectionId }}/events"
+      [ngClass]="{ active: route === 'events' || route === 'event-history' }"
+    >
       Events
     </button>
 
-    <button class="st-button tertiary"
-      routerLink="/collection/{{selectedCollectionId}}/constraints"
-      [ngClass]="{ 'active': route === 'constraints' || route === 'constraint-history' }">
+    <button
+      class="st-button tertiary"
+      routerLink="/collection/{{ selectedCollectionId }}/constraints"
+      [ngClass]="{ active: route === 'constraints' || route === 'constraint-history' }"
+    >
       Constraints
     </button>
 
-    <button class="st-button tertiary"
-      routerLink="/collection/{{selectedCollectionId}}/commands"
-      [ngClass]="{ 'active': route === 'commands' || route === 'command-history' }">
+    <button
+      class="st-button tertiary"
+      routerLink="/collection/{{ selectedCollectionId }}/commands"
+      [ngClass]="{ active: route === 'commands' || route === 'command-history' }"
+    >
       Commands
     </button>
 
-    <button class="st-button tertiary"
-      routerLink="/collection/{{selectedCollectionId}}/information-types"
-      [ngClass]="{ 'active': route === 'information-types' }">
-      Information Types 
+    <button
+      class="st-button tertiary"
+      routerLink="/collection/{{ selectedCollectionId }}/information-types"
+      [ngClass]="{ active: route === 'information-types' }"
+    >
+      Information Types
     </button>
 
-    <button class="st-button tertiary"
-      routerLink="/collection/{{selectedCollectionId}}/groups"
-      [ngClass]="{ 'active': route === 'groups' }">
+    <button
+      class="st-button tertiary"
+      routerLink="/collection/{{ selectedCollectionId }}/groups"
+      [ngClass]="{ active: route === 'groups' }"
+    >
       Groups
     </button>
 
@@ -53,7 +67,7 @@
     </button>
 
     <mat-menu #versionMenu="matMenu">
-      <span class="version-text">State Manager V3.0</span>
+      <span class="version-text">State Manager V7.0</span>
     </mat-menu>
 
     <button class="st-button tertiary" [matMenuTriggerFor]="menu">
