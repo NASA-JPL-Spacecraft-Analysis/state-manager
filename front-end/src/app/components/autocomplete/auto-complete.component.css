@@ -11,12 +11,13 @@ input {
   background-color: white;
   border: 1px solid var(--st-gray-20);
   border-radius: 4px;
-  width: 262px;
+  width: 325px;
 }
 
 .autocomplete-item {
   font-size: 14px;
   padding: 4px;
+  word-wrap: break-word;
 }
 
 .autocomplete-item:hover {

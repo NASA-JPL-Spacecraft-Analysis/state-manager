@@ -1,28 +1,27 @@
-<div>
-  <div #autocomplete>
-    <label for="Search">Data</label>
-    <input
-      class="st-input"
-      type="text"
-      placeholder="Search"
-      [disabled]="itemSet.size === 0"
-      (input)="onFilter($event)"
-      (click)="dropdownOpen = true"
-    />
+<div #autocomplete>
+  <label for="Search">Data</label>
+  <input
+    class="st-input"
+    type="text"
+    placeholder="Search"
+    [disabled]="itemSet.size === 0"
+    (input)="onFilter($event)"
+    (click)="dropdownOpen = true"
+  />
 
-    <div *ngIf="dropdownOpen" class="autocomplete-dropdown">
-      <div
-        *ngFor="let item of filteredItems.slice(0, MAX_SHOWN_ITEMS)"
-        (click)="onSelectItem(item)"
-        class="autocomplete-item"
-      >
-        {{ getItemNameOrIdentifierFunc(item) }}
-      </div>
+  <div *ngIf="dropdownOpen" class="autocomplete-dropdown">
+    <div
+      *ngFor="let item of filteredItems.slice(0, MAX_SHOWN_ITEMS)"
+      (click)="onSelectItem(item)"
+      class="autocomplete-item"
+      [ngClass]="getItemClass(item)"
+    >
+      {{ getItemNameOrIdentifierFunc(item, itemSet) }}
     </div>
   </div>
-
-  <span class="st-chip chip" *ngFor="let selectedItem of selectedItems.values()">
-    {{ getItemNameOrIdentifierFunc(selectedItem) }}
-    <i class="si si-close" (click)="onRemoveSelected(selectedItem)"></i>
-  </span>
 </div>
+
+<span class="st-chip chip" *ngFor="let selectedItem of selectedItems.values()">
+  {{ getItemNameOrIdentifierFunc(selectedItem, itemSet) }}
+  <i class="si si-close" (click)="onRemoveSelected(selectedItem)"></i>
+</span>

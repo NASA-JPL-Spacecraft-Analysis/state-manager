@@ -18,9 +18,7 @@ export class CollectionEffects {
     this.actions.pipe(
       ofType(CollectionActions.createCollection),
       switchMap(({ name }) =>
-        this.collectionService.createCollection(
-          name
-        ).pipe(
+        this.collectionService.createCollection(name).pipe(
           switchMap((createCollection: CollectionResponse) => [
             CollectionActions.createCollectionSuccess({
               collection: createCollection.collection
@@ -51,46 +49,36 @@ export class CollectionEffects {
     this.actions.pipe(
       ofType(CollectionActions.deleteCollection),
       switchMap(({ id, name }) => {
-        const dialog = this.dialog.open(
-          ConfirmationDialogComponent,
-          {
-            data: {
-              confirmButtonText: 'Delete',
-              delete: true,
-              message: 'You can recover your data by contacting FSPA support.',
-              title: 'Delete collection "' + name + '"?'
-            }
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            confirmButtonText: 'Delete',
+            delete: true,
+            message: 'You can recover your data by contacting FSPA support.',
+            title: 'Delete collection "' + name + '"?'
           }
-        );
-        return forkJoin([
-          of(id),
-          dialog.afterClosed(),
-        ]);
+        });
+        return forkJoin([of(id), dialog.afterClosed()]);
       }),
-      map(([ id, result ]) => ({
+      map(([id, result]) => ({
         id,
         result
       })),
       switchMap(({ id, result }) => {
         if (result) {
           return concat(
-            this.collectionService.deleteCollection(
-              id
-            ).pipe(
-              switchMap(
-                (deleteCollection: boolean) => [
-                  CollectionActions.deleteCollectionSuccess({
-                    id
-                  }),
-                  CollectionActions.setSelectedCollection({
-                    id: null
-                  }),
-                  ToastActions.showToast({
-                    message: 'Collection deleted',
-                    toastType: 'success'
-                  })
-                ]
-              ),
+            this.collectionService.deleteCollection(id).pipe(
+              switchMap((deleteCollection: boolean) => [
+                CollectionActions.deleteCollectionSuccess({
+                  id
+                }),
+                CollectionActions.setSelectedCollection({
+                  id: null
+                }),
+                ToastActions.showToast({
+                  message: 'Collection deleted',
+                  toastType: 'success'
+                })
+              ]),
               catchError((error: Error) => [
                 CollectionActions.deleteCollectionFailure({
                   error
@@ -120,10 +108,7 @@ export class CollectionEffects {
     this.actions.pipe(
       ofType(CollectionActions.updateCollection),
       switchMap(({ collectionId, name }) =>
-        this.collectionService.updateCollection(
-          collectionId,
-          name
-        ).pipe(
+        this.collectionService.updateCollection(collectionId, name).pipe(
           switchMap((updateCollection: CollectionResponse) => [
             CollectionActions.updateCollectionSuccess({
               collection: updateCollection.collection
@@ -205,13 +190,15 @@ export class CollectionEffects {
         if (splitUrl[2] !== id) {
           // Keep the current page the user is on when changing collections.
           if (page) {
-            this.router.navigate([ 'collection/' + id + '/' + page ]);
+            this.router.navigate(['collection/' + id + '/' + page]);
           } else {
-            this.router.navigate([ 'collection/' + id ]);
+            this.router.navigate(['collection/' + id]);
           }
+
+          return [];
         }
 
-        this.router.navigate([ this.router.url ]);
+        this.router.navigate([this.router.url]);
 
         return [];
       })
