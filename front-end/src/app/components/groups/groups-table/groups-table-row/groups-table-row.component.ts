@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 
 import { getItemNameOrIdentifier } from '../../../../functions/helpers';
-import { Group } from '../../../../models';
+import { AutoCompleteSetType, Group } from '../../../../models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

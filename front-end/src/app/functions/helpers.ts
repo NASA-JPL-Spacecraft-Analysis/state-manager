@@ -107,22 +107,30 @@ export const getItemNameOrIdentifier = (
         value = 'command_arg_enum - ';
       }
 
-      const commandArgument = getCommandArgument(item, itemSet);
+      if (itemSet) {
+        const commandArgument = getCommandArgument(item, itemSet);
 
-      return (
-        value +
-        getCommand(commandArgument, itemSet).identifier +
-        ' ' +
-        commandArgument.name +
-        ' ' +
-        item.label
-      );
+        return (
+          value +
+          getCommand(commandArgument, itemSet).identifier +
+          ' ' +
+          commandArgument.name +
+          ' ' +
+          item.label
+        );
+      } else {
+        return value + item.label;
+      }
     } else if ('commandId' in item) {
       if (withPrefix) {
         value = 'command_arg - ';
       }
 
-      return value + getCommand(item, itemSet).identifier + ' ' + item.name;
+      if (itemSet) {
+        return value + getCommand(item, itemSet).identifier + ' ' + item.name;
+      }
+
+      return value + item.name;
     } else if ('stateId' in item) {
       if (withPrefix) {
         value = 'state_enumeration - ';
