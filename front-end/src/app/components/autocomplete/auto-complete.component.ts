@@ -73,6 +73,26 @@ export class AutoCompleteComponent implements OnChanges {
     }
   }
 
+  /**
+   * Adds custom classes based on the type of the item in the dropdown.
+   *
+   * @param item The item that is being inspected.
+   * @returns A string containing the CSS classes that should be applied.
+   */
+  public getItemClass(item: AutoCompleteType): string {
+    const classes = ['autocomplete-item'];
+
+    // If we're looking at a Command Argument then we indent it under the command.
+    if ('commandId' in item) {
+      classes.push('indent');
+    } else if ('commandArgumentId' in item) {
+      // Add twice the indentation for a Command Argument Enumeration.
+      classes.push('double-indent');
+    }
+
+    return classes.join(', ');
+  }
+
   // As the user types, filter down our items and only show up to the max.
   public onFilter(event: any): void {
     const filter = event.target.value.toLowerCase();

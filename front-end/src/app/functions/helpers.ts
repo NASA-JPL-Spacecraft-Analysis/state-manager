@@ -5,7 +5,10 @@ import {
   StringTMap,
   StateEnumerationMap,
   AutoCompleteSetType,
-  CommandMap
+  CommandMap,
+  CommandArgument,
+  Command,
+  CommandArgumentEnumeration
 } from '../models';
 
 export const mapIdentifiers = (items: IdentifierType[]): IdentifierMap => {
@@ -93,6 +96,7 @@ export const populateItemsWithCommandsAndChildren = (
  */
 export const getItemNameOrIdentifier = (
   item: AutoCompleteType,
+  itemSet: AutoCompleteSetType,
   withPrefix: boolean = true
 ): string => {
   let value = '';
@@ -100,16 +104,25 @@ export const getItemNameOrIdentifier = (
   if (item) {
     if ('commandArgumentId' in item) {
       if (withPrefix) {
-        value = 'command_arugment_enumeration - ';
+        value = 'command_arg_enum - ';
       }
 
-      return value + item.label;
+      const commandArgument = getCommandArgument(item, itemSet);
+
+      return (
+        value +
+        getCommand(commandArgument, itemSet).identifier +
+        ' ' +
+        commandArgument.name +
+        ' ' +
+        item.label
+      );
     } else if ('commandId' in item) {
       if (withPrefix) {
-        value = 'command_arugment - ';
+        value = 'command_arg - ';
       }
 
-      return (value += item.name);
+      return value + getCommand(item, itemSet).identifier + ' ' + item.name;
     } else if ('stateId' in item) {
       if (withPrefix) {
         value = 'state_enumeration - ';
@@ -139,3 +152,14 @@ export const getItemNameOrIdentifier = (
 export const assertNever = (x: never): never => {
   throw new Error('We should never reach this code!');
 };
+
+const getCommand = (item: CommandArgument, itemSet: AutoCompleteSetType): Command =>
+  [...itemSet].filter((entry) => entry.id === (item as CommandArgument).commandId)[0] as Command;
+
+const getCommandArgument = (
+  item: CommandArgumentEnumeration,
+  itemSet: AutoCompleteSetType
+): CommandArgument =>
+  [...itemSet].filter(
+    (entry) => entry.id === (item as CommandArgumentEnumeration).commandArgumentId
+  )[0] as CommandArgument;
