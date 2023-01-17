@@ -1,5 +1,6 @@
-import { FieldResolver, Resolver, ResolverInterface, Root } from 'type-graphql';
+import { Args, FieldResolver, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
+import { CollectionIdArgs } from '../args';
 import {
   Command,
   CommandArgument,
@@ -14,6 +15,13 @@ export class CommandArgumentResolver implements ResolverInterface<CommandArgumen
       where: {
         id: commandArgument.commandId
       }
+    });
+  }
+
+  @Query(() => [CommandArgument])
+  public async commandArgument(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgument[]> {
+    return CommandArgument.find({
+      where: collectionId
     });
   }
 

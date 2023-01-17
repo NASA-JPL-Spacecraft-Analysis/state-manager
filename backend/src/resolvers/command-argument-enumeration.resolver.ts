@@ -1,5 +1,6 @@
-import { FieldResolver, Resolver, ResolverInterface, Root } from 'type-graphql';
+import { Args, FieldResolver, Query, Resolver, ResolverInterface, Root } from 'type-graphql';
 
+import { CollectionIdArgs } from '../args';
 import { Command, CommandArgument, CommandArgumentEnumeration } from '../models';
 
 @Resolver(() => CommandArgumentEnumeration)
@@ -20,6 +21,15 @@ export class CommandArgumentEnumerationResolver implements ResolverInterface<Com
     return CommandArgument.findOne({
       where: {
         id: commandArgumentEnumeration.commandArgumentId
+      }
+    });
+  }
+
+  @Query(() => [CommandArgumentEnumeration])
+  public async commandArgumentEnumerations(@Args() { collectionId }: CollectionIdArgs): Promise<CommandArgumentEnumeration[]> {
+    return CommandArgumentEnumeration.find({
+      where: {
+        collectionId
       }
     });
   }
