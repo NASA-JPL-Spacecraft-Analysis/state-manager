@@ -1,5 +1,89 @@
 import gql from 'graphql-tag';
 
+const MAX_GROUP_DEPTH = 5;
+
+const generateRecursiveGroupCall = (query: string, depth = 1): string => {
+  if (depth === MAX_GROUP_DEPTH) {
+    return query;
+  }
+
+  query = groupMappingItemQuery(query);
+
+  depth += 1;
+
+  return generateRecursiveGroupCall(query, depth);
+};
+
+const groupMappingItemQuery = (itemQuery: string): string =>
+  `
+  item {
+    ... on Command {
+      description
+      displayName
+      externalLink
+      id
+      identifier
+    }
+    ... on CommandArgument {
+      commandId
+      id
+      name
+      sortOrder
+    }
+    ... on CommandArgumentEnumeration {
+      commandArgumentId
+      label
+      id
+      value
+    }
+    ... on Constraint {
+      description
+      displayName
+      externalLink
+      id
+      identifier
+    }
+    ... on Event {
+      description
+      displayName
+      externalLink
+      id
+      identifier
+    }
+    ... on Group {
+      id
+      identifier
+      groupMappings {
+        groupId
+        ${itemQuery ? itemQuery : ''}
+      }
+    }
+    ... on InformationType {
+      description
+      displayName
+      externalLink
+      id
+      identifier
+      informationType: type 
+    }
+    ... on State {
+      description
+      displayName
+      enumerations {
+        id
+        label
+        value
+      }
+      id
+      identifier
+      source
+      subsystem
+      type
+      units
+    }
+  }
+`;
+
 export const CREATE_GROUP = gql(`
   mutation CreateGroup(
     $collectionId: ID!
@@ -274,68 +358,8 @@ export const GET_GROUPS_AND_MAPPINGS = gql(`
       id
       identifier
       groupMappings {
-        item {
-          ... on Command {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on CommandArgument {
-            commandId
-            id
-            name
-            sortOrder
-          }
-          ... on CommandArgumentEnumeration {
-            commandArgumentId
-            label
-            id
-            value
-          }
-          ... on Constraint {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on Group {
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
+        groupId
+        ${generateRecursiveGroupCall('')}
       }
     }
   }

@@ -9,7 +9,8 @@ import {
 } from '@angular/core';
 
 import { getItemNameOrIdentifier } from '../../../../functions/helpers';
-import { AutoCompleteSetType, Group } from '../../../../models';
+import { Group } from '../../../../models';
+import { ValidationService } from '../../../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,8 +29,20 @@ export class GroupsTableRowComponent {
   public expanded: boolean;
   public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
 
-  constructor() {
+  constructor(public validationService: ValidationService) {
     this.groupSelected = new EventEmitter<Group>();
+  }
+
+  public calcIndentation(depth: number): { 'padding-left': string } {
+    let indentation = 32;
+
+    for (let i = 0; i < depth; i++) {
+      indentation += 32;
+    }
+
+    return {
+      'padding-left': `${indentation}px`
+    };
   }
 
   public onExpandToggle(): void {
@@ -41,6 +54,7 @@ export class GroupsTableRowComponent {
   }
 
   public incDepth(): number {
+    console.log(this.depth);
     return this.depth++;
   }
 }
