@@ -99,68 +99,8 @@ export const CREATE_GROUP = gql(`
     ) {
       group {
         groupMappings {
-          item {
-            ... on Command {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on CommandArgument {
-              commandId
-              id
-              name
-              sortOrder
-            }
-            ... on CommandArgumentEnumeration {
-              commandArgumentId
-              label
-              id
-              value
-            }
-            ... on Constraint {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on Event {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on Group {
-              id
-              identifier
-            }
-            ... on InformationType {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-              informationType: type 
-            }
-            ... on State {
-              description
-              displayName
-              enumerations {
-                id
-                label
-                value
-              }
-              id
-              identifier
-              source
-              subsystem
-              type
-              units
-            }
-          }
+          groupId
+          ${generateRecursiveGroupCall('')}
         }
         id
         identifier
@@ -184,68 +124,7 @@ export const CREATE_GROUP_MAPPINGS = gql(`
     ) {
       groupMappings {
         groupId
-        item {
-          ... on Command {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on CommandArgument {
-            commandId
-            id
-            name
-            sortOrder
-          }
-          ... on CommandArgumentEnumeration {
-            commandArgumentId
-            label
-            id
-            value
-          }
-          ... on Constraint {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on Event {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-          }
-          ... on Group {
-            id
-            identifier
-          }
-          ... on InformationType {
-            description
-            displayName
-            externalLink
-            id
-            identifier
-            informationType: type 
-          }
-          ... on State {
-            description
-            displayName
-            enumerations {
-              id
-              label
-              value
-            }
-            id
-            identifier
-            source
-            subsystem
-            type
-            units
-          }
-        }
+        ${generateRecursiveGroupCall('')}
       }
       message
       success
@@ -266,68 +145,8 @@ export const CREATE_GROUPS = gql(`
     ) {
       groups {
         groupMappings {
-          item {
-            ... on Command {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on CommandArgument {
-              commandId
-              id
-              name
-              sortOrder
-            }
-            ... on CommandArgumentEnumeration {
-              commandArgumentId
-              label
-              id
-              value
-            }
-            ... on Constraint {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on Event {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on Group {
-              id
-              identifier
-            }
-            ... on InformationType {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-              informationType: type 
-            }
-            ... on State {
-              description
-              displayName
-              enumerations {
-                id
-                label
-                value
-              }
-              id
-              identifier
-              source
-              subsystem
-              dataType
-              units
-            }
-          }
+          groupId
+          ${generateRecursiveGroupCall('')}
         }
         id
         identifier
@@ -382,68 +201,8 @@ export const UPDATE_GROUP = gql(`
     ) {
       group {
         groupMappings {
-          item {
-            ... on Command {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on CommandArgument {
-              commandId
-              id
-              name
-              sortOrder
-            }
-            ... on CommandArgumentEnumeration {
-              commandArgumentId
-              label
-              id
-              value
-            }
-            ... on Constraint {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on Event {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-            }
-            ... on Group {
-              id
-              identifier
-            }
-            ... on InformationType {
-              description
-              displayName
-              externalLink
-              id
-              identifier
-              informationType: type 
-            }
-            ... on State {
-              description
-              displayName
-              enumerations {
-                id
-                label
-                value
-              }
-              id
-              identifier
-              source
-              subsystem
-              type
-              units
-            }
-          }
+          groupId
+          ${generateRecursiveGroupCall('')}
         }
         id
         identifier
