@@ -54,7 +54,6 @@ export class GroupsTableRowComponent {
   }
 
   public incDepth(): number {
-    console.log(this.depth);
     return this.depth++;
   }
 }
