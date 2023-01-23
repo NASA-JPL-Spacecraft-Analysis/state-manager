@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   NgModule,
+  OnInit,
   Output
 } from '@angular/core';
 
@@ -18,7 +19,7 @@ import { ValidationService } from '../../../../services';
   templateUrl: 'groups-table-row.component.html',
   styleUrls: ['groups-table-row.component.css']
 })
-export class GroupsTableRowComponent {
+export class GroupsTableRowComponent implements OnInit {
   @Input() public columns: string[];
   @Input() public depth: number;
   @Input() public row: Group;
@@ -33,8 +34,12 @@ export class GroupsTableRowComponent {
     this.groupSelected = new EventEmitter<Group>();
   }
 
+  public ngOnInit(): void {
+    this.depth += 1;
+  }
+
   public calcIndentation(depth: number): { 'padding-left': string } {
-    let indentation = 32;
+    let indentation = 0;
 
     for (let i = 0; i < depth; i++) {
       indentation += 32;
@@ -51,10 +56,6 @@ export class GroupsTableRowComponent {
 
   public onRowClick(group: Group): void {
     this.groupSelected.emit(group);
-  }
-
-  public incDepth(): number {
-    return this.depth++;
   }
 }
 

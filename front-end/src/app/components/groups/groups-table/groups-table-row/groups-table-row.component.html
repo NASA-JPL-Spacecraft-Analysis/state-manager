@@ -1,6 +1,9 @@
 <div [ngClass]="selectedGroup === row ? 'selected' : ''">
   <td (click)="onExpandToggle()" class="expand">
-    <i [ngClass]="expanded ? 'si si-chevron_down' : 'si si-chevron_right'"></i>
+    <i
+      [ngClass]="expanded ? 'si si-chevron_down' : 'si si-chevron_right'"
+      [ngStyle]="calcIndentation(depth)"
+    ></i>
   </td>
 
   <td
@@ -20,14 +23,14 @@
     >
       <sm-groups-table-row
         [columns]="columns"
-        [depth]="incDepth()"
+        [depth]="depth"
         [row]="$any(mapping.item)"
         [selectedGroup]="selectedGroup"
       ></sm-groups-table-row>
     </ng-container>
 
     <ng-template #notGroup>
-      <span class="st-typography-body mapping-name">
+      <span class="st-typography-body mapping-name" [ngStyle]="calcIndentation(depth)">
         {{ getItemNameOrIdentifierFunc(mapping.item, undefined, false) }}
       </span>
     </ng-template>
