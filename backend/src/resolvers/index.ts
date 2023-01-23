@@ -9,3 +9,4 @@ export * from './identifier-type.resolver';
 export * from './information-type.resolver';
 export * from './relationship.resolver';
 export * from './state.resolver';
+export * from './version.resolver';
