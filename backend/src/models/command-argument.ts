@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
+import { Command } from './command';
 
 import { CommandArgumentEnumeration } from './command-enumeration';
 import { Node } from './node';
@@ -22,6 +23,9 @@ export class CommandArgument extends Node {
   @Column()
   @Field(() => ID)
   public collectionId!: string;
+
+  @Field(() => Command, { nullable: true })
+  public command?: Command;
 
   @Column()
   @Field(() => ID)
