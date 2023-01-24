@@ -16,7 +16,8 @@ import {
   IdentifierTypeResolver,
   InformationTypeResolver,
   RelationshipResolver,
-  StateResolver
+  StateResolver,
+  VersionResolver
 } from './resolvers/';
 
 const main = async () => {
@@ -36,7 +37,8 @@ const main = async () => {
       IdentifierTypeResolver,
       InformationTypeResolver,
       RelationshipResolver,
-      StateResolver
+      StateResolver,
+      VersionResolver
     ],
     validate: false
   });
