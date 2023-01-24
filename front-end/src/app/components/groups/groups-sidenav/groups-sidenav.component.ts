@@ -85,19 +85,15 @@ export class GroupsSidenavComponent implements OnChanges {
   public ngOnChanges(): void {
     this.itemSet = new Set();
 
+    populateItemsWithCommandsAndChildren(this.itemSet, this.commandMap);
+    populateItems(this.itemSet, this.constraintMap);
+    populateItems(this.itemSet, this.eventMap);
+    populateItems(this.itemSet, this.groupMap);
+    populateItems(this.itemSet, this.informationTypeMap);
+    populateItemsWithList(this.itemSet, this.stateEnumerationMap);
+    populateItems(this.itemSet, this.stateMap);
+
     // If we're updating a group, remove it from the set so the user can't add it as a group item.
-    if (this.group?.id) {
-      delete this.groupMap[this.group.id];
-    }
-
-    this.itemSet = populateItemsWithCommandsAndChildren(this.itemSet, this.commandMap);
-    this.itemSet = populateItems(this.itemSet, this.constraintMap);
-    this.itemSet = populateItems(this.itemSet, this.eventMap);
-    this.itemSet = populateItems(this.itemSet, this.groupMap);
-    this.itemSet = populateItems(this.itemSet, this.informationTypeMap);
-    this.itemSet = populateItemsWithList(this.itemSet, this.stateEnumerationMap);
-    this.itemSet = populateItems(this.itemSet, this.stateMap);
-
     if (this.group?.id && this.itemSet.has(this.group)) {
       this.itemSet.delete(this.group);
     }

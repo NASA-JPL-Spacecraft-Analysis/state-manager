@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import {
+  AutoCompleteType,
   Command,
   CommandArgumentUpload,
   Constraint,
   Event,
+  Group,
   GroupMappingUpload,
   GroupUpload,
   GroupUploadMappings,
@@ -22,45 +24,55 @@ import {
 })
 export class ValidationService {
   public validateEvent(event: Event): boolean {
-    return (
-      event.hasOwnProperty('identifier')
-      && event.hasOwnProperty('displayName')
-    );
+    return event.hasOwnProperty('identifier') && event.hasOwnProperty('displayName');
   }
 
   public isCommand(command: Command): command is Command {
-    if (!command.collectionId
-      && command.description
-      && command.displayName
-      && command.editable
-      && command.externalLink
-      && command.identifier
-      && command.type) {
-        return false;
-      }
+    if (
+      !command.collectionId &&
+      command.description &&
+      command.displayName &&
+      command.editable &&
+      command.externalLink &&
+      command.identifier &&
+      command.type
+    ) {
+      return false;
+    }
 
     return true;
   }
 
-  public isCommandArgumentUpload(commandArgumentUpload: CommandArgumentUpload): commandArgumentUpload is CommandArgumentUpload {
-    if (!commandArgumentUpload.commandIdentifier
-      && commandArgumentUpload.name) {
-        return false;
-      }
+  public isCommandArgumentUpload(
+    commandArgumentUpload: CommandArgumentUpload
+  ): commandArgumentUpload is CommandArgumentUpload {
+    if (!commandArgumentUpload.commandIdentifier && commandArgumentUpload.name) {
+      return false;
+    }
 
     return true;
   }
 
   public isConstraint(constraint: Constraint): constraint is Constraint {
-    if (!constraint.collectionId
-      && constraint.description
-      && constraint.displayName
-      && constraint.editable
-      && constraint.externalLink
-      && constraint.identifier
-      && constraint.type) {
-        return false;
-      }
+    if (
+      !constraint.collectionId &&
+      constraint.description &&
+      constraint.displayName &&
+      constraint.editable &&
+      constraint.externalLink &&
+      constraint.identifier &&
+      constraint.type
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public isGroup(group: AutoCompleteType): group is Group {
+    if (!(group as Group).groupMappings) {
+      return false;
+    }
 
     return true;
   }
@@ -87,47 +99,54 @@ export class ValidationService {
     return true;
   }
 
-  public isGroupMappingUpload(groupMapping: GroupMappingUpload): groupMapping is GroupMappingUpload {
+  public isGroupMappingUpload(
+    groupMapping: GroupMappingUpload
+  ): groupMapping is GroupMappingUpload {
     return groupMapping.itemIdentifier !== undefined && groupMapping.itemType !== undefined;
   }
 
   public isInformationType(informationType: InformationType): informationType is InformationType {
-    return informationType.identifier !== undefined
-      && informationType.displayName !== undefined
-      && informationTypes.includes(informationType.type);
+    return (
+      informationType.identifier !== undefined &&
+      informationType.displayName !== undefined &&
+      informationTypes.includes(informationType.type)
+    );
   }
 
   public isMappingsUpload(mappingsUpload: MappingsUpload): mappingsUpload is MappingsUpload {
-    return mappingsUpload.identifier !== undefined && mappingsUpload.itemIdentifier !== undefined
-      && mappingsUpload.itemType !== undefined;
+    return (
+      mappingsUpload.identifier !== undefined &&
+      mappingsUpload.itemIdentifier !== undefined &&
+      mappingsUpload.itemType !== undefined
+    );
   }
 
   public validateRelationship(relationship: Relationship): boolean {
     return (
-      relationship.hasOwnProperty('displayName')
-      && relationship.hasOwnProperty('subjectType')
-      && relationship.hasOwnProperty('subjectIdentifier')
-      && relationship.hasOwnProperty('targetType')
-      && relationship.hasOwnProperty('targetIdentifier')
+      relationship.hasOwnProperty('displayName') &&
+      relationship.hasOwnProperty('subjectType') &&
+      relationship.hasOwnProperty('subjectIdentifier') &&
+      relationship.hasOwnProperty('targetType') &&
+      relationship.hasOwnProperty('targetIdentifier')
     );
   }
 
   public validateState(state: State): boolean {
     return (
-      state.hasOwnProperty('displayName')
-      && state.hasOwnProperty('identifier')
-      && state.hasOwnProperty('source')
-      && state.hasOwnProperty('subsystem')
-      && state.hasOwnProperty('type')
-      && state.hasOwnProperty('units')
+      state.hasOwnProperty('displayName') &&
+      state.hasOwnProperty('identifier') &&
+      state.hasOwnProperty('source') &&
+      state.hasOwnProperty('subsystem') &&
+      state.hasOwnProperty('type') &&
+      state.hasOwnProperty('units')
     );
   }
 
   public validateStateEnumerationUpload(stateEnumeration: StateEnumerationUpload): boolean {
     return (
-      stateEnumeration.hasOwnProperty('label')
-      && stateEnumeration.hasOwnProperty('stateIdentifier')
-      && stateEnumeration.hasOwnProperty('value')
+      stateEnumeration.hasOwnProperty('label') &&
+      stateEnumeration.hasOwnProperty('stateIdentifier') &&
+      stateEnumeration.hasOwnProperty('value')
     );
   }
 }

@@ -72,7 +72,7 @@ export const populateItemsWithCommandsAndChildren = (
 ): AutoCompleteSetType => {
   if (itemList && commandMap && Object.keys(commandMap).length > 0) {
     for (const command of Object.values(commandMap)) {
-      itemList.add(command);
+      itemList.add({ ...command });
 
       for (const commandArgument of command.arguments) {
         itemList.add(commandArgument);
@@ -127,7 +127,7 @@ export const getItemNameOrIdentifier = (
       }
 
       if (itemSet) {
-        return value + getCommand(item, itemSet).identifier + ' ' + item.name;
+        return value + getCommand(item, itemSet)?.identifier + ' ' + item.name;
       }
 
       return value + item.name;

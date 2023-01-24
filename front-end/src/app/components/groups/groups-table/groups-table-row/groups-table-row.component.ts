@@ -5,11 +5,13 @@ import {
   EventEmitter,
   Input,
   NgModule,
+  OnInit,
   Output
 } from '@angular/core';
 
 import { getItemNameOrIdentifier } from '../../../../functions/helpers';
-import { AutoCompleteSetType, Group } from '../../../../models';
+import { Group } from '../../../../models';
+import { ValidationService } from '../../../../services';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +19,7 @@ import { AutoCompleteSetType, Group } from '../../../../models';
   templateUrl: 'groups-table-row.component.html',
   styleUrls: ['groups-table-row.component.css']
 })
-export class GroupsTableRowComponent {
+export class GroupsTableRowComponent implements OnInit {
   @Input() public columns: string[];
   @Input() public depth: number;
   @Input() public row: Group;
@@ -28,8 +30,24 @@ export class GroupsTableRowComponent {
   public expanded: boolean;
   public getItemNameOrIdentifierFunc = getItemNameOrIdentifier;
 
-  constructor() {
+  constructor(public validationService: ValidationService) {
     this.groupSelected = new EventEmitter<Group>();
+  }
+
+  public ngOnInit(): void {
+    this.depth += 1;
+  }
+
+  public calcIndentation(depth: number): { 'padding-left': string } {
+    let indentation = 0;
+
+    for (let i = 0; i < depth; i++) {
+      indentation += 32;
+    }
+
+    return {
+      'padding-left': `${indentation}px`
+    };
   }
 
   public onExpandToggle(): void {
@@ -38,10 +56,6 @@ export class GroupsTableRowComponent {
 
   public onRowClick(group: Group): void {
     this.groupSelected.emit(group);
-  }
-
-  public incDepth(): number {
-    return this.depth++;
   }
 }
 

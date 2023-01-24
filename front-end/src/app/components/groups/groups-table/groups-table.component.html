@@ -34,7 +34,7 @@
       <tr *ngFor="let row of paginatedRows" class="table-row">
         <sm-groups-table-row
           [columns]="columns"
-          [depth]="0"
+          [depth]="-1"
           [row]="row"
           [selectedGroup]="selectedGroup"
           (groupSelected)="onGroupSelected($event)"
