@@ -139,7 +139,7 @@ th.expand {
 
 .sidenav-container {
   background: white;
-  border: 1px solid var(--st-gray-20);
+  border-left: 1px solid var(--st-gray-20);
 }
 
 .sidenav-container input,
@@ -165,6 +165,7 @@ th.expand {
   border-bottom: 0 !important;
   margin-top: 3em;
   justify-content: flex-end !important;
+  border-top: 1px var(--st-gray-20) solid;
 }
 
 .sidenav-footer button {

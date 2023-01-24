@@ -1,28 +1,15 @@
-table, th, td {
-  border: 1px solid #cfd4da;
+
+table{
+  border: 1px solid var(--st-gray-20);
+  border-radius: 4px;
 }
 
-th, td {
-  background-color: rgba(0,0,0,.04);
-  padding: .4em;
+.st-table input{
+  width: 100%;
 }
 
-table {
-  border-collapse: collapse;
-}
-
-th {
-  background-color: #f1f3f5;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-table tr td:nth-child(odd) {
-  background-color: #f1f3f5;
-}
-
-table td {
-  background-color: #fff;
+.delete-enum{
+  width: 60px;
 }
 
 .enumeration-container {

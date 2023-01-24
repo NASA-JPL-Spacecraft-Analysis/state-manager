@@ -42,11 +42,11 @@
   background: none;
   border: none;
   color: inherit;
-  color: var(--st-secondary-10);
+  color: var(--st-primary-10);
 }
 
 .collection-dropdown > .st-select:hover:not([disabled], .error){
-  background-color: var(--st-secondary-80);
+  background-color: var(--st-primary-90);
 }
 
 .collection-dropdown .st-select option{
