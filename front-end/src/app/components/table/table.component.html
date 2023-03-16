@@ -1,4 +1,4 @@
-<div *ngIf="rows.length > 0; else noData">
+<div *ngIf="rows && rows.length > 0; else noData">
   <table class="st-table" [ngClass]="{ history: historyTable }">
     <thead>
       <tr>

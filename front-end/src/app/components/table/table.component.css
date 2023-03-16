@@ -94,11 +94,15 @@ tr:hover {
 }
 
 /** Custom column width overrides **/
+th.description,
+td.description,
 th.identifier,
 td.identifier {
   min-width: 300px;
 }
 
+th.channelId,
+td.channelId,
 th.dataType,
 td.dataType,
 th.restricted,
@@ -113,7 +117,9 @@ td.units {
 th.source,
 td.source,
 th.type,
-td.type {
+td.type,
+th.version,
+td.version {
   max-width: 120px;
 }
 

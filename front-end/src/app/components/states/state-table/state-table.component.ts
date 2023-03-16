@@ -1,4 +1,13 @@
-import { Component, ChangeDetectionStrategy, NgModule, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  NgModule,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  OnInit
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { State, StateMap } from '../../../models';
@@ -7,7 +16,7 @@ import { TableComponent } from '../../table/table.component';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-state-table',
-  styleUrls: [ '../../table/table.component.css' ],
+  styleUrls: ['../../table/table.component.css'],
   templateUrl: '../../table/table.component.html'
 })
 export class StateTableComponent extends TableComponent<State> implements OnChanges, OnInit {
@@ -25,7 +34,7 @@ export class StateTableComponent extends TableComponent<State> implements OnChan
   public ngOnInit(): void {
     this.columns.push(
       'identifier',
-      'displayName',
+      //'displayName',
       'type',
       'dataType',
       'units',
@@ -39,10 +48,7 @@ export class StateTableComponent extends TableComponent<State> implements OnChan
     );
 
     if (this.history) {
-      this.columns.push(
-        'stateId',
-        'updated'
-      );
+      this.columns.push('stateId', 'updated');
 
       this.historyTable = true;
     }
@@ -60,14 +66,8 @@ export class StateTableComponent extends TableComponent<State> implements OnChan
 }
 
 @NgModule({
-  declarations: [
-    StateTableComponent
-  ],
-  exports: [
-    StateTableComponent
-  ],
-  imports: [
-    CommonModule
-  ]
+  declarations: [StateTableComponent],
+  exports: [StateTableComponent],
+  imports: [CommonModule]
 })
 export class StateTableModule {}
