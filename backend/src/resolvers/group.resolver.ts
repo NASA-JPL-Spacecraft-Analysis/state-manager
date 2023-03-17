@@ -69,7 +69,7 @@ export class GroupResolver implements ResolverInterface<Group> {
             sortOrder: mapping.sortOrder
           });
 
-          const item = await this.helperService.findItemByType(data.collectionId, mapping.itemIdentifier, mapping.itemType);
+          const item = await this.helperService.findItemByType(data.collectionId, mapping.itemType, mapping.itemIdentifier);
 
           if (item) {
             newMapping.itemId = item.id;
