@@ -1,9 +1,8 @@
-<mat-toolbar>
-  Command Argument History
-</mat-toolbar>
+<sm-loading [isLoading]="isLoading">
+  <mat-toolbar> Command Argument History </mat-toolbar>
 
-<div class="content">
-  <sm-command-argument-history-table
-    [commandArgumentHistory]="commandArgumentHistory">
-  </sm-command-argument-history-table>
-</div>
+  <div class="content">
+    <sm-command-argument-history-table [commandArgumentHistory]="commandArgumentHistory">
+    </sm-command-argument-history-table>
+  </div>
+</sm-loading>
