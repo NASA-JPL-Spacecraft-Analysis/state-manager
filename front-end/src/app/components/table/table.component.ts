@@ -24,12 +24,6 @@ export class TableComponent<T> implements OnChanges {
   // The unedited list of data.
   public rows: T[];
 
-  constructor() {
-    //this.rows = [];
-
-    console.log(this.rows);
-  }
-
   public ngOnChanges(): void {
     this.filteredRows = this.rows;
     this.columnFilters = new Map();

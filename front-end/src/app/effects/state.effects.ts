@@ -9,7 +9,6 @@ import { StateService } from '../services';
 import { ToastActions, StateActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { StateResponse } from '../models';
-import { isLoading, isSaving } from '../actions/layout.actions';
 
 @Injectable()
 export class StateEffects {
@@ -17,27 +16,28 @@ export class StateEffects {
     this.actions.pipe(
       ofType(StateActions.createState),
       switchMap(({ state }) =>
-        this.stateService.createState(state).pipe(
-          switchMap((createState: StateResponse) => [
-            StateActions.createStateSuccess({
-              state: createState.state
-            }),
-            ToastActions.showToast({
-              message: createState.message,
-              toastType: 'success'
-            }),
-            isSaving({ isSaving: false })
-          ]),
-          catchError((error: Error) => [
-            StateActions.createStateFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            }),
-            isSaving({ isSaving: false })
-          ])
+        concat(
+          this.stateService.createState(state).pipe(
+            switchMap((createState: StateResponse) => [
+              StateActions.createStateSuccess({
+                state: createState.state
+              }),
+              ToastActions.showToast({
+                message: createState.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              StateActions.createStateFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -126,27 +126,28 @@ export class StateEffects {
     this.actions.pipe(
       ofType(StateActions.updateState),
       switchMap(({ state }) =>
-        this.stateService.updateState(state).pipe(
-          switchMap((updateState: StateResponse) => [
-            StateActions.updateStateSuccess({
-              state: updateState.state
-            }),
-            ToastActions.showToast({
-              message: updateState.message,
-              toastType: 'success'
-            }),
-            isSaving({ isSaving: false })
-          ]),
-          catchError((error: Error) => [
-            StateActions.updateStateFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            }),
-            isSaving({ isSaving: false })
-          ])
+        concat(
+          this.stateService.updateState(state).pipe(
+            switchMap((updateState: StateResponse) => [
+              StateActions.updateStateSuccess({
+                state: updateState.state
+              }),
+              ToastActions.showToast({
+                message: updateState.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              StateActions.updateStateFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )

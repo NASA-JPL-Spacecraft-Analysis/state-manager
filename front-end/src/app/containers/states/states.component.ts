@@ -153,6 +153,8 @@ export class StatesComponent implements OnDestroy {
         })
       );
     } else {
+      this.store.dispatch(LayoutActions.isSaving({ isSaving: true }));
+
       if (!result.state.id) {
         this.store.dispatch(
           StateActions.createState({
@@ -166,8 +168,6 @@ export class StatesComponent implements OnDestroy {
           })
         );
       }
-
-      this.store.dispatch(LayoutActions.isSaving({ isSaving: true }));
 
       if (result.deletedEnumerationIds.length > 0 && result.state.id) {
         this.store.dispatch(

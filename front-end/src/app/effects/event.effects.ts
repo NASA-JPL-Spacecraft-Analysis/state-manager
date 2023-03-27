@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, concat } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { EventActions, LayoutActions, ToastActions } from '../actions';
@@ -16,31 +16,28 @@ export class EventEffects {
     this.actions.pipe(
       ofType(EventActions.createEvent),
       switchMap(({ collectionId, event }) =>
-        this.eventService.createEvent(
-          collectionId,
-          event
-        ).pipe(
-          switchMap((createEvent: EventResponse) => [
-            EventActions.createEventSuccess({
-              event: createEvent.event
-            }),
-            LayoutActions.toggleSidenav({
-              showSidenav: false
-            }),
-            ToastActions.showToast({
-              message: createEvent.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            EventActions.createEventFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.eventService.createEvent(collectionId, event).pipe(
+            switchMap((createEvent: EventResponse) => [
+              EventActions.createEventSuccess({
+                event: createEvent.event
+              }),
+              ToastActions.showToast({
+                message: createEvent.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              EventActions.createEventFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -55,7 +52,7 @@ export class EventEffects {
         'collection/:collectionId/event-history'
       ]),
       mapToParam<string>('collectionId'),
-      switchMap(collectionId => {
+      switchMap((collectionId) => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
         let history = false;
 
@@ -64,9 +61,16 @@ export class EventEffects {
         }
 
         return merge(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
           this.getEvents(collectionId, history)
         );
       })
@@ -77,27 +81,28 @@ export class EventEffects {
     this.actions.pipe(
       ofType(EventActions.updateEvent),
       switchMap(({ event }) =>
-        this.eventService.updateEvent(
-          event
-        ).pipe(
-          switchMap((updateEvent: EventResponse) => [
-            EventActions.updateEventSuccess({
-              event: updateEvent.event
-            }),
-            ToastActions.showToast({
-              message: updateEvent.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            EventActions.updateEventFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.eventService.updateEvent(event).pipe(
+            switchMap((updateEvent: EventResponse) => [
+              EventActions.updateEventSuccess({
+                event: updateEvent.event
+              }),
+              ToastActions.showToast({
+                message: updateEvent.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              EventActions.updateEventFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -111,48 +116,48 @@ export class EventEffects {
 
   public getEvents(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return merge(
-        this.eventService.getEvents(
-          collectionId
-        ).pipe(
-          map(events => EventActions.setEvents({
-            events
-          })),
-          catchError(
-            (error: Error) => [
-              EventActions.fetchEventsFailure({
-                error
-              })
-            ]
-          )
+      return concat(
+        this.eventService.getEvents(collectionId).pipe(
+          map((events) =>
+            EventActions.setEvents({
+              events
+            })
+          ),
+          catchError((error: Error) => [
+            EventActions.fetchEventsFailure({
+              error
+            })
+          ])
         ),
         this.eventService.getEventTypes().pipe(
-          map(eventTypes => EventActions.setEventTypes({
-            eventTypes
-          })),
-          catchError(
-            (error: Error) => [
-              EventActions.fetchEventTypesFailure({
-                error
-              })
-            ]
-          )
-        )
+          map((eventTypes) =>
+            EventActions.setEventTypes({
+              eventTypes
+            })
+          ),
+          catchError((error: Error) => [
+            EventActions.fetchEventTypesFailure({
+              error
+            })
+          ])
+        ),
+        of(LayoutActions.isLoading({ isLoading: false }))
       );
     } else {
-      return this.eventService.getEventHistory(
-        collectionId
-      ).pipe(
-        map(eventHistory => EventActions.setEventHistory({
-          eventHistory
-        })),
-        catchError(
-          (error: Error) => [
+      return concat(
+        this.eventService.getEventHistory(collectionId).pipe(
+          map((eventHistory) =>
+            EventActions.setEventHistory({
+              eventHistory
+            })
+          ),
+          catchError((error: Error) => [
             EventActions.fetchEventHistoryMapFailure({
               error
             })
-          ]
-        )
+          ])
+        ),
+        of(LayoutActions.isLoading({ isLoading: false }))
       );
     }
   }

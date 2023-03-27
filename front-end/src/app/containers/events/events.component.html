@@ -1,32 +1,36 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Events</span>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Events</span>
 
-  <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../event-history">Event History</button>
+    <div class="page-toolbar-buttons">
+      <button class="st-button tertiary" routerLink="../../event-history">Event History</button>
 
-    <button class="st-button icon tertiary" (click)="onEventFileUpload()">
-      <i class="si-upload"></i>
-      Upload Events
-    </button>
+      <button class="st-button icon tertiary" (click)="onEventFileUpload()">
+        <i class="si-upload"></i>
+        Upload Events
+      </button>
 
-    <button class="st-button primary" (click)="onModifyEvent()">Create New Event</button>
-  </div>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-event-table [eventMap]="eventMap" (eventSelected)="onModifyEvent($event)"> </sm-event-table>
+      <button class="st-button primary" (click)="onModifyEvent()">Create New Event</button>
+    </div>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <app-event-sidenav
-      [eventIdentifierMap]="eventIdentifierMap"
-      [event]="event"
-      [eventTypes]="eventTypes"
-      [selectedCollectionId]="selectedCollectionId"
-      (duplicateIdentifier)="onDuplicateIdentifier($event)"
-      (modifyEvent)="onSidenavOutput($event)"
-    >
-    </app-event-sidenav>
+  <div class="content-container">
+    <div class="content">
+      <sm-event-table [eventMap]="eventMap" (eventSelected)="onModifyEvent($event)">
+      </sm-event-table>
+    </div>
+
+    <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
+      <sm-event-sidenav
+        [eventIdentifierMap]="eventIdentifierMap"
+        [event]="event"
+        [eventTypes]="eventTypes"
+        [isSaving]="isSaving"
+        [selectedCollectionId]="selectedCollectionId"
+        (duplicateIdentifier)="onDuplicateIdentifier($event)"
+        (modifyEvent)="onSidenavOutput($event)"
+      >
+      </sm-event-sidenav>
+    </div>
   </div>
-</div>
+</sm-loading>

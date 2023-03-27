@@ -1,14 +1,29 @@
-import { EventEmitter, Component, NgModule, ChangeDetectionStrategy, Input, Output, OnChanges } from '@angular/core';
+import {
+  EventEmitter,
+  Component,
+  NgModule,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  OnChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 
 import { MaterialModule } from 'src/app/material';
 import { Event, IdentifierMap } from 'src/app/models';
 import { IdentifierFormModule } from '../identifier-form/identifier-form.component';
+import { LoadingModule } from '../loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-event-sidenav',
+  selector: 'sm-event-sidenav',
   styleUrls: ['event-sidenav.component.css'],
   templateUrl: 'event-sidenav.component.html'
 })
@@ -16,6 +31,7 @@ export class EventSidenavComponent implements OnChanges {
   @Input() public event: Event;
   @Input() public eventIdentifierMap: IdentifierMap;
   @Input() public eventTypes: string[];
+  @Input() public isSaving: boolean;
   @Input() public selectedCollectionId: string;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
@@ -85,18 +101,15 @@ export class EventSidenavComponent implements OnChanges {
 }
 
 @NgModule({
-  declarations: [
-    EventSidenavComponent
-  ],
-  exports: [
-    EventSidenavComponent
-  ],
+  declarations: [EventSidenavComponent],
+  exports: [EventSidenavComponent],
   imports: [
     CommonModule,
     FormsModule,
+    LoadingModule,
     IdentifierFormModule,
     MaterialModule,
     ReactiveFormsModule
   ]
 })
-export class EventSidenavModule { }
+export class EventSidenavModule {}

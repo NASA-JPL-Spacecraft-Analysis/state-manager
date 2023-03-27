@@ -1,12 +1,11 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Event History</span>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-event-table
-      [eventMap]="eventHistoryMap"
-      [history]="true">
-    </sm-event-table>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Event History</span>
   </div>
-</div>
+
+  <div class="content-container">
+    <div class="content">
+      <sm-event-table [eventMap]="eventHistoryMap" [history]="true"> </sm-event-table>
+    </div>
+  </div>
+</sm-loading>
