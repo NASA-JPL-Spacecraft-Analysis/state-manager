@@ -1,9 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgModule, OnChanges, Output } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  OnChanges,
+  Output
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 
 import { Constraint, IdentifierMap } from 'src/app/models';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
+import { LoadingModule } from '../../loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +30,7 @@ export class ConstraintSidenavComponent implements OnChanges {
   @Input() public constraint: Constraint;
   @Input() public constraintIdentifierMap: IdentifierMap;
   @Input() public constraintTypes: string[];
+  @Input() public isSaving: boolean;
 
   @Output() public duplicateIdentifier: EventEmitter<boolean>;
   @Output() public modifyConstraint: EventEmitter<Constraint>;
@@ -40,7 +56,7 @@ export class ConstraintSidenavComponent implements OnChanges {
         id: undefined,
         identifier: '',
         type: '',
-        version: '',
+        version: ''
       };
     } else {
       this.newConstraint = {
@@ -84,17 +100,8 @@ export class ConstraintSidenavComponent implements OnChanges {
 }
 
 @NgModule({
-  declarations: [
-    ConstraintSidenavComponent
-  ],
-  exports: [
-    ConstraintSidenavComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    IdentifierFormModule,
-    ReactiveFormsModule
-  ]
+  declarations: [ConstraintSidenavComponent],
+  exports: [ConstraintSidenavComponent],
+  imports: [CommonModule, FormsModule, IdentifierFormModule, LoadingModule, ReactiveFormsModule]
 })
-export class ConstraintSidenavModule { }
+export class ConstraintSidenavModule {}

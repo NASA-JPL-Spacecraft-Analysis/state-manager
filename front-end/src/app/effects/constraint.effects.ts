@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, concat } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
 import { ConstraintActions, LayoutActions, ToastActions } from '../actions';
@@ -16,27 +16,28 @@ export class ConstraintEffects {
     this.actions.pipe(
       ofType(ConstraintActions.createConstraint),
       switchMap(({ constraint }) =>
-        this.constraintService.createConstraint(
-          constraint
-        ).pipe(
-          switchMap((createConstraint: ConstraintResponse) => [
-            ConstraintActions.createConstraintSuccess({
-              constraint: createConstraint.constraint
-            }),
-            ToastActions.showToast({
-              message: createConstraint.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            ConstraintActions.createConstraintFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.constraintService.createConstraint(constraint).pipe(
+            switchMap((createConstraint: ConstraintResponse) => [
+              ConstraintActions.createConstraintSuccess({
+                constraint: createConstraint.constraint
+              }),
+              ToastActions.showToast({
+                message: createConstraint.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              ConstraintActions.createConstraintFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -51,7 +52,7 @@ export class ConstraintEffects {
         'collection/:collectionId/constraint-history'
       ]),
       mapToParam<string>('collectionId'),
-      switchMap(collectionId => {
+      switchMap((collectionId) => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
         let history = false;
 
@@ -60,9 +61,16 @@ export class ConstraintEffects {
         }
 
         return merge(
-          of(LayoutActions.toggleSidenav({
-            showSidenav: false
-          })),
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
           this.getConstraints(collectionId, history)
         );
       })
@@ -73,27 +81,28 @@ export class ConstraintEffects {
     this.actions.pipe(
       ofType(ConstraintActions.updateConstraint),
       switchMap(({ constraint }) =>
-        this.constraintService.updateConstraint(
-          constraint
-        ).pipe(
-          switchMap((updateConstraint: ConstraintResponse) => [
-            ConstraintActions.updateConstraintSuccess({
-              constraint: updateConstraint.constraint
-            }),
-            ToastActions.showToast({
-              message: updateConstraint.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            ConstraintActions.updateConstraintFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.constraintService.updateConstraint(constraint).pipe(
+            switchMap((updateConstraint: ConstraintResponse) => [
+              ConstraintActions.updateConstraintSuccess({
+                constraint: updateConstraint.constraint
+              }),
+              ToastActions.showToast({
+                message: updateConstraint.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              ConstraintActions.updateConstraintFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -107,48 +116,48 @@ export class ConstraintEffects {
 
   public getConstraints(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return merge(
-        this.constraintService.getConstraints(
-          collectionId
-        ).pipe(
-          map(constraints => ConstraintActions.setConstraints({
-            constraints
-          })),
-          catchError(
-            (error: Error) => [
-              ConstraintActions.fetchConstraintsFailure({
-                error
-              })
-            ]
-          )
+      return concat(
+        this.constraintService.getConstraints(collectionId).pipe(
+          map((constraints) =>
+            ConstraintActions.setConstraints({
+              constraints
+            })
+          ),
+          catchError((error: Error) => [
+            ConstraintActions.fetchConstraintsFailure({
+              error
+            })
+          ])
         ),
         this.constraintService.getConstraintTypes().pipe(
-          map(constraintTypes => ConstraintActions.setConstraintTypes({
-            constraintTypes
-          })),
-          catchError(
-            (error: Error) => [
-              ConstraintActions.fetchConstraintTypesFailure({
-                error
-              })
-            ]
-          )
-        )
-      )
+          map((constraintTypes) =>
+            ConstraintActions.setConstraintTypes({
+              constraintTypes
+            })
+          ),
+          catchError((error: Error) => [
+            ConstraintActions.fetchConstraintTypesFailure({
+              error
+            })
+          ])
+        ),
+        of(LayoutActions.isLoading({ isLoading: false }))
+      );
     } else {
-      return this.constraintService.getConstraintHistory(
-        collectionId
-      ).pipe(
-        map(constraintHistory => ConstraintActions.setConstraintHistory({
-          constraintHistory
-        })),
-        catchError(
-          (error: Error) => [
+      return concat(
+        this.constraintService.getConstraintHistory(collectionId).pipe(
+          map((constraintHistory) =>
+            ConstraintActions.setConstraintHistory({
+              constraintHistory
+            })
+          ),
+          catchError((error: Error) => [
             ConstraintActions.fetchConstraintHistoryFailure({
               error
             })
-          ]
-        )
+          ])
+        ),
+        of(LayoutActions.isLoading({ isLoading: false }))
       );
     }
   }
