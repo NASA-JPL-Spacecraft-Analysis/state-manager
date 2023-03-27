@@ -1,20 +1,36 @@
-import { Component, NgModule, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators
+} from '@angular/forms';
 
 import { IdentifierMap, State, StateEnumeration } from '../../../models';
 import { MaterialModule } from 'src/app/material';
 import { EnumFormModule } from '../../enum-form/enum-form.component';
 import { IdentifierFormModule } from '../../identifier-form/identifier-form.component';
+import { LoadingModule } from '../../loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-state-sidenav',
+  selector: 'sm-state-sidenav',
   styleUrls: ['state-sidenav.component.css'],
   templateUrl: 'state-sidenav.component.html'
 })
 export class StateSidenavComponent implements OnChanges {
   @Input() public collectionId: string;
+  @Input() public isSaving: boolean;
   @Input() public state: State;
   @Input() public stateEnumerations: StateEnumeration[];
   @Input() public stateIdentifierMap: IdentifierMap;
@@ -61,9 +77,7 @@ export class StateSidenavComponent implements OnChanges {
     } else {
       this.newState = {
         ...this.state,
-        enumerations: [
-          ...this.stateEnumerations.map(enumeration => ({ ...enumeration }))
-        ]
+        enumerations: [...this.stateEnumerations.map((enumeration) => ({ ...enumeration }))]
       };
     }
 
@@ -143,19 +157,16 @@ export class StateSidenavComponent implements OnChanges {
 }
 
 @NgModule({
-  declarations: [
-    StateSidenavComponent
-  ],
-  exports: [
-    StateSidenavComponent
-  ],
+  declarations: [StateSidenavComponent],
+  exports: [StateSidenavComponent],
   imports: [
-    EnumFormModule,
-    IdentifierFormModule,
     CommonModule,
+    EnumFormModule,
     FormsModule,
-    ReactiveFormsModule,
-    MaterialModule
+    IdentifierFormModule,
+    LoadingModule,
+    MaterialModule,
+    ReactiveFormsModule
   ]
 })
-export class StateSidenavModule { }
+export class StateSidenavModule {}

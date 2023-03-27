@@ -1,0 +1,17 @@
+img {
+  height: 42px;
+  position: fixed;
+  width: 80px;
+  top: 50%;
+  left: 50%;
+  margin-top: -21px;
+  margin-left: -40px;
+}
+
+img.saving {
+  position: relative;
+}
+
+.loading {
+  opacity: 0.4;
+}

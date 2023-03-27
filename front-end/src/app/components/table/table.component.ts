@@ -25,7 +25,9 @@ export class TableComponent<T> implements OnChanges {
   public rows: T[];
 
   constructor() {
-    this.rows = [];
+    //this.rows = [];
+
+    console.log(this.rows);
   }
 
   public ngOnChanges(): void {

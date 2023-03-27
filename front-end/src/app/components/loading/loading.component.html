@@ -1,0 +1,7 @@
+<ng-container *ngIf="isLoading || isSaving">
+  <img src="assets/OrbitingEuropa.gif" [ngClass]="isSaving ? 'saving' : ''" />
+</ng-container>
+
+<div [ngClass]="isLoading || isSaving ? 'loading' : ''">
+  <ng-content></ng-content>
+</div>
