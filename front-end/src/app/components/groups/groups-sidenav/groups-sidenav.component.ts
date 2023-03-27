@@ -40,6 +40,7 @@ import {
   populateItemsWithList
 } from '../../../functions/helpers';
 import { StateManagementConstants } from '../../../constants';
+import { LoadingModule } from '../../loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,6 +49,7 @@ import { StateManagementConstants } from '../../../constants';
   templateUrl: 'groups-sidenav.component.html'
 })
 export class GroupsSidenavComponent implements OnChanges {
+  @Input() public isSaving: boolean;
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
@@ -203,6 +205,7 @@ export class GroupsSidenavComponent implements OnChanges {
     FormsModule,
     IdentifierFormModule,
     MaterialModule,
+    LoadingModule,
     ReactiveFormsModule
   ]
 })

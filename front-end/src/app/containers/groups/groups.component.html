@@ -1,43 +1,46 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Groups</span>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Groups</span>
 
-  <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" (click)="onFileUpload()">
-      <i class="si-upload"></i>
-      Upload Groups
-    </button>
+    <div class="page-toolbar-buttons">
+      <button class="st-button tertiary" (click)="onFileUpload()">
+        <i class="si-upload"></i>
+        Upload Groups
+      </button>
 
-    <button class="st-button icon" (click)="onDeleteGroup()" title="Delete Selected Group">
-      <i class="si-trash"></i>
-    </button>
+      <button class="st-button icon" (click)="onDeleteGroup()" title="Delete Selected Group">
+        <i class="si-trash"></i>
+      </button>
 
-    <button class="st-button primary" (click)="onGroupSelected()">New Group</button>
-  </div>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-groups-table
-      [groups]="groups"
-      [selectedGroup]="selectedGroup"
-      (groupSelected)="onGroupSelected($event)"
-    ></sm-groups-table>
+      <button class="st-button primary" (click)="onGroupSelected()">New Group</button>
+    </div>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <sm-groups-sidenav
-      [commandMap]="commandMap"
-      [constraintMap]="constraintMap"
-      [informationTypeMap]="informationTypeMap"
-      [eventMap]="eventMap"
-      [group]="group"
-      [groupMap]="groupMap"
-      [groupIdentifierMap]="groupIdentifierMap"
-      [selectedCollectionId]="selectedCollectionId"
-      [stateMap]="stateMap"
-      (modifyGroup)="onSidenavOutput($event)"
-      (showError)="onShowError($event)"
-    >
-    </sm-groups-sidenav>
+  <div class="content-container">
+    <div class="content">
+      <sm-groups-table
+        [groups]="groups"
+        [selectedGroup]="selectedGroup"
+        (groupSelected)="onGroupSelected($event)"
+      ></sm-groups-table>
+    </div>
+
+    <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
+      <sm-groups-sidenav
+        [isSaving]="isSaving"
+        [commandMap]="commandMap"
+        [constraintMap]="constraintMap"
+        [informationTypeMap]="informationTypeMap"
+        [eventMap]="eventMap"
+        [group]="group"
+        [groupMap]="groupMap"
+        [groupIdentifierMap]="groupIdentifierMap"
+        [selectedCollectionId]="selectedCollectionId"
+        [stateMap]="stateMap"
+        (modifyGroup)="onSidenavOutput($event)"
+        (showError)="onShowError($event)"
+      >
+      </sm-groups-sidenav>
+    </div>
   </div>
-</div>
+</sm-loading>

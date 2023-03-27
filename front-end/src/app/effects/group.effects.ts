@@ -3,19 +3,30 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, EMPTY, merge, of, forkJoin } from 'rxjs';
+import { Observable, EMPTY, merge, of, forkJoin, concat } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 
-import { GroupActions, LayoutActions, ToastActions } from '../actions';
+import {
+  CommandActions,
+  ConstraintActions,
+  EventActions,
+  GroupActions,
+  InformationTypeActions,
+  LayoutActions,
+  StateActions,
+  ToastActions
+} from '../actions';
 import { mapToParam, ofRoute } from '../functions/router';
-import { GroupService } from '../services';
+import {
+  CommandService,
+  ConstraintService,
+  EventService,
+  GroupService,
+  InformationTypeService,
+  StateService
+} from '../services';
 import { GroupResponse, Response } from '../models';
 import { ConfirmationDialogComponent } from '../components';
-import { InformationTypeEffects } from './information-types.effects';
-import { EventEffects } from './event.effects';
-import { StateEffects } from './state.effects';
-import { CommandEffects } from './command.effects';
-import { ConstraintEffects } from './constraint.effects';
 
 @Injectable()
 export class GroupEffects {
@@ -23,28 +34,28 @@ export class GroupEffects {
     this.actions.pipe(
       ofType(GroupActions.createGroup),
       switchMap(({ collectionId, group }) =>
-        this.groupService.createGroup(
-          collectionId,
-          group
-        ).pipe(
-          switchMap((createGroup: GroupResponse) => [
-            GroupActions.createGroupSuccess({
-              group: createGroup.group
-            }),
-            ToastActions.showToast({
-              message: createGroup.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            GroupActions.createGroupFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.groupService.createGroup(collectionId, group).pipe(
+            switchMap((createGroup: GroupResponse) => [
+              GroupActions.createGroupSuccess({
+                group: createGroup.group
+              }),
+              ToastActions.showToast({
+                message: createGroup.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              GroupActions.createGroupFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -54,34 +65,26 @@ export class GroupEffects {
     this.actions.pipe(
       ofType(GroupActions.deleteGroup),
       switchMap(({ group }) => {
-        const dialog = this.dialog.open(
-          ConfirmationDialogComponent,
-          {
-            autoFocus: false,
-            data: {
-              confirmButtonText: 'Yes, delete ' + group.identifier,
-              delete: true,
-              message: 'Are you sure you want to delete "' + group.identifier + '"?',
-              title: 'Delete ' + group.identifier + '?'
-            }
+        const dialog = this.dialog.open(ConfirmationDialogComponent, {
+          autoFocus: false,
+          data: {
+            confirmButtonText: 'Yes, delete ' + group.identifier,
+            delete: true,
+            message: 'Are you sure you want to delete "' + group.identifier + '"?',
+            title: 'Delete ' + group.identifier + '?'
           }
-        );
+        });
 
-        return forkJoin([
-          of(group.id),
-          dialog.afterClosed()
-        ]);
+        return forkJoin([of(group.id), dialog.afterClosed()]);
       }),
-      map(([ id, result ]) => ({
+      map(([id, result]) => ({
         id,
         result
       })),
       switchMap(({ id, result }) => {
         if (result) {
           return merge(
-            this.groupService.deleteGroup(
-              id
-            ).pipe(
+            this.groupService.deleteGroup(id).pipe(
               switchMap((deleteGroup: Response) => [
                 GroupActions.deleteGroupSuccess({
                   id
@@ -115,16 +118,83 @@ export class GroupEffects {
     this.actions.pipe(
       ofRoute('collection/:collectionId/groups'),
       mapToParam<string>('collectionId'),
-      switchMap(collectionId =>
-        merge(
-          this.constraintEffects.getConstraints(collectionId, false),
-          this.commandEffects.getCommands(collectionId, false),
-          this.eventEffects.getEvents(collectionId, false),
+      switchMap((collectionId) => {
+        const data = merge(
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
+          this.constraintService.getConstraints(collectionId).pipe(
+            map((constraints) =>
+              ConstraintActions.setConstraints({
+                constraints
+              })
+            ),
+            catchError((error: Error) => [
+              ConstraintActions.fetchConstraintsFailure({
+                error
+              })
+            ])
+          ),
+          this.commandService.getCommands(collectionId).pipe(
+            map((commands) =>
+              CommandActions.setCommands({
+                commands
+              })
+            ),
+            catchError((error: Error) => [
+              CommandActions.fetchCommandsFailure({
+                error
+              })
+            ])
+          ),
+          this.eventService.getEvents(collectionId).pipe(
+            map((events) =>
+              EventActions.setEvents({
+                events
+              })
+            ),
+            catchError((error: Error) => [
+              EventActions.fetchEventsFailure({
+                error
+              })
+            ])
+          ),
           this.getGroupsAndMappings(collectionId),
-          this.informationTypeEffects.getInformationTypes(collectionId),
-          this.stateEffects.getStates(collectionId, false)
-        )
-      )
+          this.informationTypeService.getInformationTypes(collectionId).pipe(
+            map((informationTypes) =>
+              InformationTypeActions.setInformationTypes({
+                informationTypes
+              })
+            ),
+            catchError((error: Error) => [
+              InformationTypeActions.fetchInformationTypesFailure({
+                error
+              })
+            ])
+          ),
+          this.stateService.getStates(collectionId).pipe(
+            map((states) =>
+              StateActions.setStates({
+                states
+              })
+            ),
+            catchError((error: Error) => [
+              StateActions.fetchStatesFailure({
+                error
+              })
+            ])
+          )
+        );
+
+        return concat(data, of(LayoutActions.isLoading({ isLoading: false })));
+      })
     )
   );
 
@@ -132,28 +202,28 @@ export class GroupEffects {
     this.actions.pipe(
       ofType(GroupActions.updateGroup),
       switchMap(({ collectionId, group }) =>
-        this.groupService.updateGroup(
-          group,
-          collectionId
-        ).pipe(
-          switchMap((updateGroup: GroupResponse) => [
-            GroupActions.updateGroupSuccess({
-              group: updateGroup.group
-            }),
-            ToastActions.showToast({
-              message: updateGroup.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            GroupActions.updateGroupFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.groupService.updateGroup(group, collectionId).pipe(
+            switchMap((updateGroup: GroupResponse) => [
+              GroupActions.updateGroupSuccess({
+                group: updateGroup.group
+              }),
+              ToastActions.showToast({
+                message: updateGroup.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              GroupActions.updateGroupFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -161,37 +231,32 @@ export class GroupEffects {
 
   constructor(
     private actions: Actions,
-    private commandEffects: CommandEffects,
-    private constraintEffects: ConstraintEffects,
+    private commandService: CommandService,
+    private constraintService: ConstraintService,
     private dialog: MatDialog,
-    private eventEffects: EventEffects,
+    private eventService: EventService,
     private groupService: GroupService,
-    private informationTypeEffects: InformationTypeEffects,
+    private informationTypeService: InformationTypeService,
     private router: Router,
-    private stateEffects: StateEffects
+    private stateService: StateService
   ) {}
 
   private getGroupsAndMappings(collectionId: string): Observable<Action> {
     const url = this.router.routerState.snapshot.url.split('/').pop();
 
     if (url === 'groups') {
-      return merge(
-        of(LayoutActions.toggleSidenav({
-          showSidenav: false
-        })),
-        this.groupService.getGroupsAndMappings(
-          collectionId
-        ).pipe(
-          map(groups => GroupActions.setGroups({
-            groups
-          })),
-          catchError(
-            (error: Error) => [
-              GroupActions.fetchGroupsFailure({
-                error
-              })
-            ]
-          )
+      return concat(
+        this.groupService.getGroupsAndMappings(collectionId).pipe(
+          map((groups) =>
+            GroupActions.setGroups({
+              groups
+            })
+          ),
+          catchError((error: Error) => [
+            GroupActions.fetchGroupsFailure({
+              error
+            })
+          ])
         )
       );
     }

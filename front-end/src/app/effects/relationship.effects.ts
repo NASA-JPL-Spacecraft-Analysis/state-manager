@@ -5,8 +5,25 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { Observable, merge, of, concat } from 'rxjs';
 
-import { RelationshipService } from '../services';
-import { ToastActions, RelationshipActions, LayoutActions } from '../actions';
+import {
+  CommandService,
+  ConstraintService,
+  EventService,
+  InformationTypeService,
+  MockInformationTypesService,
+  RelationshipService,
+  StateService
+} from '../services';
+import {
+  ToastActions,
+  RelationshipActions,
+  LayoutActions,
+  StateActions,
+  InformationTypeActions,
+  EventActions,
+  CommandActions,
+  ConstraintActions
+} from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { RelationshipResponse } from '../models';
 import { InformationTypeEffects } from './information-types.effects';
@@ -61,26 +78,81 @@ export class RelationshipEffects {
         const url = this.router.routerState.snapshot.url.split('/').pop();
         const history = url === 'relationship-history';
 
-        return merge(
-          of(
-            LayoutActions.toggleSidenav({
-              showSidenav: false
-            })
-          ),
+        const data = merge(
           of(
             LayoutActions.isLoading({
               isLoading: true
             })
           ),
-          this.constraintEffects.getConstraints(collectionId, history),
-          this.commandEffects.getCommands(collectionId, history),
-          this.commandEffects.getCommandArgumentHistory(collectionId),
-          this.eventEffects.getEvents(collectionId, history),
-          this.informationTypeEffects.getInformationTypes(collectionId),
-          this.stateEffects.getStates(collectionId, history),
-          this.stateEffects.getStateEnumerationHistory(collectionId),
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
+          this.constraintService.getConstraints(collectionId).pipe(
+            map((constraints) =>
+              ConstraintActions.setConstraints({
+                constraints
+              })
+            ),
+            catchError((error: Error) => [
+              ConstraintActions.fetchConstraintsFailure({
+                error
+              })
+            ])
+          ),
+          this.commandService.getCommands(collectionId).pipe(
+            map((commands) =>
+              CommandActions.setCommands({
+                commands
+              })
+            ),
+            catchError((error: Error) => [
+              CommandActions.fetchCommandsFailure({
+                error
+              })
+            ])
+          ),
+          this.eventService.getEvents(collectionId).pipe(
+            map((events) =>
+              EventActions.setEvents({
+                events
+              })
+            ),
+            catchError((error: Error) => [
+              EventActions.fetchEventsFailure({
+                error
+              })
+            ])
+          ),
+          this.informationTypesService.getInformationTypes(collectionId).pipe(
+            map((informationTypes) =>
+              InformationTypeActions.setInformationTypes({
+                informationTypes
+              })
+            ),
+            catchError((error: Error) => [
+              InformationTypeActions.fetchInformationTypesFailure({
+                error
+              })
+            ])
+          ),
+          this.stateService.getStates(collectionId).pipe(
+            map((states) =>
+              StateActions.setStates({
+                states
+              })
+            ),
+            catchError((error: Error) => [
+              StateActions.fetchStatesFailure({
+                error
+              })
+            ])
+          ),
           this.getRelationships(collectionId, history)
         );
+
+        return concat(data, of(LayoutActions.isLoading({ isLoading: false })));
       })
     )
   );
@@ -118,47 +190,41 @@ export class RelationshipEffects {
 
   constructor(
     private actions: Actions,
-    private commandEffects: CommandEffects,
-    private constraintEffects: ConstraintEffects,
-    private eventEffects: EventEffects,
-    private informationTypeEffects: InformationTypeEffects,
-    private stateEffects: StateEffects,
+    private commandService: CommandService,
+    private constraintService: ConstraintService,
+    private eventService: EventService,
+    private informationTypesService: InformationTypeService,
+    private stateService: StateService,
     private relationshipService: RelationshipService,
     private router: Router
   ) {}
 
   private getRelationships(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return concat(
-        this.relationshipService.getRelationships(collectionId).pipe(
-          map((relationships) =>
-            RelationshipActions.setRelationships({
-              relationships
-            })
-          ),
-          catchError((error: Error) => [
-            RelationshipActions.fetchRelationshipsFailure({
-              error
-            })
-          ])
+      return this.relationshipService.getRelationships(collectionId).pipe(
+        map((relationships) =>
+          RelationshipActions.setRelationships({
+            relationships
+          })
         ),
-        of(LayoutActions.isLoading({ isLoading: false }))
+        catchError((error: Error) => [
+          RelationshipActions.fetchRelationshipsFailure({
+            error
+          })
+        ])
       );
     } else {
-      return concat(
-        this.relationshipService.getRelationshipHistory(collectionId).pipe(
-          map((relationshipHistory) =>
-            RelationshipActions.setRelationshipHistory({
-              relationshipHistory
-            })
-          ),
-          catchError((error: Error) => [
-            RelationshipActions.fetchRelationshipHistoryFailure({
-              error
-            })
-          ])
+      return this.relationshipService.getRelationshipHistory(collectionId).pipe(
+        map((relationshipHistory) =>
+          RelationshipActions.setRelationshipHistory({
+            relationshipHistory
+          })
         ),
-        of(LayoutActions.isLoading({ isLoading: false }))
+        catchError((error: Error) => [
+          RelationshipActions.fetchRelationshipHistoryFailure({
+            error
+          })
+        ])
       );
     }
   }
