@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, concat } from 'rxjs';
 
 import { RelationshipService } from '../services';
 import { ToastActions, RelationshipActions, LayoutActions } from '../actions';
@@ -21,25 +21,28 @@ export class RelationshipEffects {
     this.actions.pipe(
       ofType(RelationshipActions.createRelationship),
       switchMap(({ collectionId, relationship }) =>
-        this.relationshipService.createRelationship(collectionId, relationship).pipe(
-          switchMap((createRelationship: RelationshipResponse) => [
-            RelationshipActions.createRelationshipSuccess({
-              relationship: createRelationship.relationship
-            }),
-            ToastActions.showToast({
-              message: createRelationship.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            RelationshipActions.createRelationshipFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.relationshipService.createRelationship(collectionId, relationship).pipe(
+            switchMap((createRelationship: RelationshipResponse) => [
+              RelationshipActions.createRelationshipSuccess({
+                relationship: createRelationship.relationship
+              }),
+              ToastActions.showToast({
+                message: createRelationship.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              RelationshipActions.createRelationshipFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -64,6 +67,11 @@ export class RelationshipEffects {
               showSidenav: false
             })
           ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
           this.constraintEffects.getConstraints(collectionId, history),
           this.commandEffects.getCommands(collectionId, history),
           this.commandEffects.getCommandArgumentHistory(collectionId),
@@ -81,25 +89,28 @@ export class RelationshipEffects {
     this.actions.pipe(
       ofType(RelationshipActions.updateRelationship),
       switchMap(({ relationship }) =>
-        this.relationshipService.updateRelationship(relationship).pipe(
-          switchMap((updateRelationship: RelationshipResponse) => [
-            RelationshipActions.updateRelationshipSuccess({
-              relationship: updateRelationship.relationship
-            }),
-            ToastActions.showToast({
-              message: updateRelationship.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            RelationshipActions.updateRelationshipFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.relationshipService.updateRelationship(relationship).pipe(
+            switchMap((updateRelationship: RelationshipResponse) => [
+              RelationshipActions.updateRelationshipSuccess({
+                relationship: updateRelationship.relationship
+              }),
+              ToastActions.showToast({
+                message: updateRelationship.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              RelationshipActions.updateRelationshipFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -118,30 +129,36 @@ export class RelationshipEffects {
 
   private getRelationships(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
-      return this.relationshipService.getRelationships(collectionId).pipe(
-        map((relationships) =>
-          RelationshipActions.setRelationships({
-            relationships
-          })
+      return concat(
+        this.relationshipService.getRelationships(collectionId).pipe(
+          map((relationships) =>
+            RelationshipActions.setRelationships({
+              relationships
+            })
+          ),
+          catchError((error: Error) => [
+            RelationshipActions.fetchRelationshipsFailure({
+              error
+            })
+          ])
         ),
-        catchError((error: Error) => [
-          RelationshipActions.fetchRelationshipsFailure({
-            error
-          })
-        ])
+        of(LayoutActions.isLoading({ isLoading: false }))
       );
     } else {
-      return this.relationshipService.getRelationshipHistory(collectionId).pipe(
-        map((relationshipHistory) =>
-          RelationshipActions.setRelationshipHistory({
-            relationshipHistory
-          })
+      return concat(
+        this.relationshipService.getRelationshipHistory(collectionId).pipe(
+          map((relationshipHistory) =>
+            RelationshipActions.setRelationshipHistory({
+              relationshipHistory
+            })
+          ),
+          catchError((error: Error) => [
+            RelationshipActions.fetchRelationshipHistoryFailure({
+              error
+            })
+          ])
         ),
-        catchError((error: Error) => [
-          RelationshipActions.fetchRelationshipHistoryFailure({
-            error
-          })
-        ])
+        of(LayoutActions.isLoading({ isLoading: false }))
       );
     }
   }

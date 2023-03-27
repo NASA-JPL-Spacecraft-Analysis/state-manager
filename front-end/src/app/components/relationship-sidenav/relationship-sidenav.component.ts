@@ -35,14 +35,16 @@ import {
   populateItemsWithCommandsAndChildren,
   populateItemsWithList
 } from '../../functions/helpers';
+import { LoadingModule } from '../loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-relationship-sidenav',
+  selector: 'sm-relationship-sidenav',
   styleUrls: ['relationship-sidenav.component.css'],
   templateUrl: 'relationship-sidenav.component.html'
 })
 export class RelationshipSidenavComponent implements OnChanges {
+  @Input() public isSaving: boolean;
   @Input() public commandArgumentMap: CommandArgumentMap;
   @Input() public commandMap: CommandMap;
   @Input() public constraintMap: ConstraintMap;
@@ -206,6 +208,6 @@ export class RelationshipSidenavComponent implements OnChanges {
 @NgModule({
   declarations: [RelationshipSidenavComponent],
   exports: [RelationshipSidenavComponent],
-  imports: [AutoCompleteModule, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [AutoCompleteModule, CommonModule, FormsModule, LoadingModule, ReactiveFormsModule]
 })
 export class RelationshipSidenavModule {}

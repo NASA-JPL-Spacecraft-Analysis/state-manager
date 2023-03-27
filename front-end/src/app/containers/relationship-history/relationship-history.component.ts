@@ -14,7 +14,6 @@ import { AppState } from 'src/app/app-store';
 import {
   ConstraintMap,
   CommandMap,
-  CommandArgumentMap,
   StateMap,
   StateEnumerationMap,
   RelationshipMap,
@@ -28,8 +27,10 @@ import {
   getStates,
   getRelationshipHistory,
   getEventMap,
-  getInformationTypeMap
+  getInformationTypeMap,
+  getIsLoading
 } from 'src/app/selectors';
+import { LoadingModule } from '../../components/loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +39,7 @@ import {
   templateUrl: 'relationship-history.component.html'
 })
 export class RelationshipHistoryComponent implements OnDestroy {
+  public isLoading: boolean;
   public commandMap: CommandMap;
   public constraintMap: ConstraintMap;
   public eventMap: EventMap;
@@ -50,6 +52,10 @@ export class RelationshipHistoryComponent implements OnDestroy {
 
   constructor(private store: Store<AppState>, private changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.add(
+      this.store.pipe(select(getIsLoading)).subscribe((isLoading) => {
+        this.isLoading = isLoading;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getCommandMap)).subscribe((commandMap) => {
         this.commandMap = commandMap;
         this.changeDetectorRef.markForCheck();
@@ -93,6 +99,6 @@ export class RelationshipHistoryComponent implements OnDestroy {
 @NgModule({
   declarations: [RelationshipHistoryComponent],
   exports: [RelationshipHistoryComponent],
-  imports: [CommonModule, RelationshipsTableModule]
+  imports: [CommonModule, LoadingModule, RelationshipsTableModule]
 })
 export class RelationshipHistoryModule {}
