@@ -1,6 +1,6 @@
-<ng-container *ngIf="isLoading || isSaving">
+<div *ngIf="isLoading || isSaving" [ngClass]="isLoading || isSaving ? 'fadeIn' : 'fadeOut'">
   <img src="assets/OrbitingEuropa.gif" [ngClass]="isSaving ? 'saving' : ''" />
-</ng-container>
+</div>
 
 <div [ngClass]="isLoading || isSaving ? 'loading' : ''">
   <ng-content></ng-content>

@@ -1,3 +1,4 @@
+import { PlatformModule } from '@angular/cdk/platform';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, NgModule } from '@angular/core';
 
@@ -15,6 +16,6 @@ export class LoadingComponent {
 @NgModule({
   declarations: [LoadingComponent],
   exports: [LoadingComponent],
-  imports: [CommonModule]
+  imports: [CommonModule, PlatformModule]
 })
 export class LoadingModule {}
