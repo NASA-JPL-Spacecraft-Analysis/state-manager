@@ -30,7 +30,7 @@ CREATE TABLE `command_arguments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `command_argument_enumerations` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) NOT NULL,
   `commandArgumentId` varchar(36) NOT NULL,
   `label` text,
@@ -95,14 +95,14 @@ CREATE TABLE `constraints` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_types` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `name` text NOT NULL,
   `type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `event_history` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `eventId` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE `groups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `information_types` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) DEFAULT NULL,
   `type` text NOT NULL,
   `identifier` varchar(45) NOT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE `information_types` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `relationship_history` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) NOT NULL,
   `relationshipId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
@@ -177,7 +177,7 @@ CREATE TABLE `relationship_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `relationships` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
   `subjectToTargetDescription` text,
@@ -201,7 +201,7 @@ CREATE TABLE `state_enumeration_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_enumerations` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) NOT NULL,
   `stateId` varchar(36) NOT NULL,
   `label` text,
@@ -210,7 +210,7 @@ CREATE TABLE `state_enumerations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_history` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `collectionId` varchar(36) NOT NULL,
   `stateId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
@@ -231,7 +231,7 @@ CREATE TABLE `state_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `states` (
-  `id` varchar(36) NOT NULL DEFAULT uuid(),
+  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
   `channelId` text,
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
