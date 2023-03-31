@@ -22,7 +22,9 @@ import {
   getInformationTypeMap,
   getCommandMap,
   getConstraintMap,
-  getStateEnumerationMap
+  getStateEnumerationMap,
+  getIsLoading,
+  getIsSaving
 } from 'src/app/selectors';
 import { RelationshipsTableModule } from 'src/app/components/relationships-table/relationships-table.component';
 import { LayoutActions, ToastActions, RelationshipActions } from 'src/app/actions';
@@ -38,6 +40,7 @@ import {
 } from 'src/app/models';
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
+import { LoadingModule } from '../../components/loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,6 +49,8 @@ import { NavigationService } from '../../services';
   templateUrl: 'relationships.component.html'
 })
 export class RelationshipsComponent implements OnDestroy {
+  public isLoading: boolean;
+  public isSaving: boolean;
   public commandMap: CommandMap;
   public constraintMap: ConstraintMap;
   public eventMap: EventMap;
@@ -69,6 +74,14 @@ export class RelationshipsComponent implements OnDestroy {
     private store: Store<AppState>
   ) {
     this.subscriptions.add(
+      this.store.pipe(select(getIsLoading)).subscribe((isLoading) => {
+        this.isLoading = isLoading;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getIsSaving)).subscribe((isSaving) => {
+        this.isSaving = isSaving;
+        this.changeDetectorRef.markForCheck();
+      }),
       this.store.pipe(select(getSelectedCollectionId)).subscribe((collectionId) => {
         this.collectionId = collectionId;
         this.changeDetectorRef.markForCheck();
@@ -178,6 +191,8 @@ export class RelationshipsComponent implements OnDestroy {
         })
       );
     } else {
+      this.store.dispatch(LayoutActions.isSaving({ isSaving: true }));
+
       if (relationship.id === null) {
         this.store.dispatch(
           RelationshipActions.createRelationship({
@@ -202,6 +217,7 @@ export class RelationshipsComponent implements OnDestroy {
   imports: [
     CommonModule,
     MaterialModule,
+    LoadingModule,
     RelationshipSidenavModule,
     RelationshipsTableModule,
     RouterModule

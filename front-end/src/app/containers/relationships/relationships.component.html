@@ -1,49 +1,52 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Relationships</span>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Relationships</span>
 
-  <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../relationship-history">
-      Relationship History
-    </button>
+    <div class="page-toolbar-buttons">
+      <button class="st-button tertiary" routerLink="../../relationship-history">
+        Relationship History
+      </button>
 
-    <button class="st-button icon tertiary" (click)="onFileUpload()">
-      <i class="si-upload"></i>
-      Upload Relationships
-    </button>
+      <button class="st-button icon tertiary" (click)="onFileUpload()">
+        <i class="si-upload"></i>
+        Upload Relationships
+      </button>
 
-    <button class="st-button primary" (click)="onModifyRelationship()">
-      Create New Relationship
-    </button>
-  </div>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-relationships-table
-      [commandMap]="commandMap"
-      [constraintMap]="constraintMap"
-      [eventMap]="eventMap"
-      [informationTypeMap]="informationTypeMap"
-      [relationshipMap]="relationshipMap"
-      [stateEnumerationMap]="stateEnumerationMap"
-      [stateMap]="stateMap"
-      (relationshipSelected)="onModifyRelationship($event)"
-    >
-    </sm-relationships-table>
+      <button class="st-button primary" (click)="onModifyRelationship()">
+        Create New Relationship
+      </button>
+    </div>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav">
-    <app-relationship-sidenav
-      [commandMap]="commandMap"
-      [constraintMap]="constraintMap"
-      [eventMap]="eventMap"
-      [informationTypeMap]="informationTypeMap"
-      [relationship]="relationship"
-      [stateEnumerationMap]="stateEnumerationMap"
-      [stateMap]="stateMap"
-      (formError)="onFormErrorOutput($event)"
-      (modifyRelationship)="onRelationshipOutput($event)"
-    >
-    </app-relationship-sidenav>
+  <div class="content-container">
+    <div class="content">
+      <sm-relationships-table
+        [commandMap]="commandMap"
+        [constraintMap]="constraintMap"
+        [eventMap]="eventMap"
+        [informationTypeMap]="informationTypeMap"
+        [relationshipMap]="relationshipMap"
+        [stateEnumerationMap]="stateEnumerationMap"
+        [stateMap]="stateMap"
+        (relationshipSelected)="onModifyRelationship($event)"
+      >
+      </sm-relationships-table>
+    </div>
+
+    <div class="sidenav" *ngIf="showSidenav">
+      <sm-relationship-sidenav
+        [commandMap]="commandMap"
+        [constraintMap]="constraintMap"
+        [isSaving]="isSaving"
+        [eventMap]="eventMap"
+        [informationTypeMap]="informationTypeMap"
+        [relationship]="relationship"
+        [stateEnumerationMap]="stateEnumerationMap"
+        [stateMap]="stateMap"
+        (formError)="onFormErrorOutput($event)"
+        (modifyRelationship)="onRelationshipOutput($event)"
+      >
+      </sm-relationship-sidenav>
+    </div>
   </div>
-</div>
+</sm-loading>

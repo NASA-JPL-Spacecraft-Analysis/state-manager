@@ -1,4 +1,10 @@
-import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  OnDestroy
+} from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -15,16 +21,19 @@ import {
   getEventMap,
   getSelectedEvent,
   getSelectedCollectionId,
-  getEventIdentifierMap
+  getEventIdentifierMap,
+  getIsLoading,
+  getIsSaving
 } from 'src/app/selectors';
 import { EventSidenavModule, EventTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
+import { LoadingModule } from '../../components/loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-events',
-  styleUrls: [ 'events.component.css' ],
+  selector: 'sm-events',
+  styleUrls: ['events.component.css'],
   templateUrl: 'events.component.html'
 })
 export class EventsComponent implements OnDestroy {
@@ -32,6 +41,8 @@ export class EventsComponent implements OnDestroy {
   public eventIdentifierMap: IdentifierMap;
   public eventMap: EventMap;
   public eventTypes: string[];
+  public isLoading: boolean;
+  public isSaving: boolean;
   public selectedCollectionId: string;
   public showSidenav: boolean;
 
@@ -44,38 +55,46 @@ export class EventsComponent implements OnDestroy {
     private location: Location,
     private navigationService: NavigationService,
     private router: Router,
-    private store: Store<AppState>,
+    private store: Store<AppState>
   ) {
     this.subscriptions = new SubSink();
 
     this.subscriptions.add(
-      this.store.pipe(select(getEventIdentifierMap)).subscribe(eventIdentifierMap => {
+      this.store.pipe(select(getEventIdentifierMap)).subscribe((eventIdentifierMap) => {
         this.eventIdentifierMap = eventIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getEventMap)).subscribe(eventMap => {
+      this.store.pipe(select(getEventMap)).subscribe((eventMap) => {
         this.eventMap = eventMap;
         this.changeDetectorRef.markForCheck();
 
         this.eventId = this.activatedRoute.snapshot.paramMap.get('id');
- 
+
         if (this.eventId && this.eventMap) {
           this.onModifyEvent(this.eventMap[this.eventId]);
         }
       }),
-      this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
+      this.store.pipe(select(getIsLoading)).subscribe((isLoading) => {
+        this.isLoading = isLoading;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getIsSaving)).subscribe((isSaving) => {
+        this.isSaving = isSaving;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getShowSidenav)).subscribe((showSidenav) => {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
+      this.store.pipe(select(getSelectedCollectionId)).subscribe((selectedCollectionId) => {
         this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getSelectedEvent)).subscribe(event => {
+      this.store.pipe(select(getSelectedEvent)).subscribe((event) => {
         this.event = event;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getEventTypes)).subscribe(eventTypes => {
+      this.store.pipe(select(getEventTypes)).subscribe((eventTypes) => {
         this.eventTypes = eventTypes;
         this.changeDetectorRef.markForCheck();
       })
@@ -98,28 +117,34 @@ export class EventsComponent implements OnDestroy {
   }
 
   public onModifyEvent(event?: StateEvent): void {
-    this.store.dispatch(EventActions.setSelectedEvent({
-      event
-    }));
+    this.store.dispatch(
+      EventActions.setSelectedEvent({
+        event
+      })
+    );
 
     const newEventId = event?.id ?? '';
 
     this.navigationService.addItemIDToURL(this.eventId, newEventId, this.location, this.router.url);
     this.eventId = newEventId;
 
-    this.store.dispatch(LayoutActions.toggleSidenav({
-      showSidenav: true
-    }));
+    this.store.dispatch(
+      LayoutActions.toggleSidenav({
+        showSidenav: true
+      })
+    );
   }
 
   public onEventFileUpload(): void {
-    this.store.dispatch(LayoutActions.openFileUploadDialog({
-      collectionId: this.selectedCollectionId,
-      csvFormat: [ UploadConstants.eventCsvUploadFormat ],
-      dialogType: 'Event',
-      jsonFormat: UploadConstants.eventJsonUploadFormat,
-      types: this.eventTypes
-    }));
+    this.store.dispatch(
+      LayoutActions.openFileUploadDialog({
+        collectionId: this.selectedCollectionId,
+        csvFormat: [UploadConstants.eventCsvUploadFormat],
+        dialogType: 'Event',
+        jsonFormat: UploadConstants.eventJsonUploadFormat,
+        types: this.eventTypes
+      })
+    );
   }
 
   public onSidenavOutput(event: StateEvent): void {
@@ -128,35 +153,40 @@ export class EventsComponent implements OnDestroy {
       this.navigationService.removeIDFromURL(this.location, this.router.url);
       this.eventId = '';
 
-      this.store.dispatch(LayoutActions.toggleSidenav({
-        showSidenav: false
-      }));
+      this.store.dispatch(
+        LayoutActions.toggleSidenav({
+          showSidenav: false
+        })
+      );
     } else {
+      this.store.dispatch(LayoutActions.isSaving({ isSaving: true }));
+
       if (event.id === null) {
-        this.store.dispatch(EventActions.createEvent({
-          collectionId: this.selectedCollectionId,
-          event
-        }));
+        this.store.dispatch(
+          EventActions.createEvent({
+            collectionId: this.selectedCollectionId,
+            event
+          })
+        );
       } else {
-        this.store.dispatch(EventActions.updateEvent({
-          event
-        }));
+        this.store.dispatch(
+          EventActions.updateEvent({
+            event
+          })
+        );
       }
     }
   }
 }
 
 @NgModule({
-  declarations: [
-    EventsComponent
-  ],
-  exports: [
-    EventsComponent
-  ],
+  declarations: [EventsComponent],
+  exports: [EventsComponent],
   imports: [
     CommonModule,
     EventSidenavModule,
     EventTableModule,
+    LoadingModule,
     MaterialModule,
     RouterModule
   ]

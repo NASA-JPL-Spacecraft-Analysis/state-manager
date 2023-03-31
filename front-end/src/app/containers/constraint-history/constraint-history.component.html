@@ -1,9 +1,11 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Constraint History</span>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-constraint-table [constraints]="constraintHistory" [history]="true"></sm-constraint-table>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Constraint History</span>
   </div>
-</div>
+
+  <div class="content-container">
+    <div class="content">
+      <sm-constraint-table [constraints]="constraintHistory" [history]="true"></sm-constraint-table>
+    </div>
+  </div>
+</sm-loading>

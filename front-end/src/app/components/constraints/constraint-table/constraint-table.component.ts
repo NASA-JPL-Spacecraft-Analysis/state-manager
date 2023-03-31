@@ -9,7 +9,10 @@ import { TableComponent } from '../../table/table.component';
   styleUrls: ['../../table/table.component.css'],
   templateUrl: '../../table/table.component.html'
 })
-export class ConstraintTableComponent extends TableComponent<Constraint> implements OnInit, OnChanges {
+export class ConstraintTableComponent
+  extends TableComponent<Constraint>
+  implements OnInit, OnChanges
+{
   @Input() public constraints: Constraint[];
   @Input() public history: boolean;
 
@@ -32,10 +35,7 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
     );
 
     if (this.history) {
-      this.columns.push(
-        'constraintId',
-        'updated'
-      );
+      this.columns.push('constraintId', 'updated');
 
       this.historyTable = true;
     }
@@ -53,14 +53,8 @@ export class ConstraintTableComponent extends TableComponent<Constraint> impleme
 }
 
 @NgModule({
-  declarations: [
-    ConstraintTableComponent
-  ],
-  exports: [
-    ConstraintTableComponent
-  ],
-  imports: [
-    CommonModule
-  ]
+  declarations: [ConstraintTableComponent],
+  exports: [ConstraintTableComponent],
+  imports: [CommonModule]
 })
-export class ConstraintTableModule { }
+export class ConstraintTableModule {}

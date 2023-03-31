@@ -3,10 +3,27 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, of } from 'rxjs';
+import { Observable, merge, of, concat } from 'rxjs';
 
-import { RelationshipService } from '../services';
-import { ToastActions, RelationshipActions, LayoutActions } from '../actions';
+import {
+  CommandService,
+  ConstraintService,
+  EventService,
+  InformationTypeService,
+  MockInformationTypesService,
+  RelationshipService,
+  StateService
+} from '../services';
+import {
+  ToastActions,
+  RelationshipActions,
+  LayoutActions,
+  StateActions,
+  InformationTypeActions,
+  EventActions,
+  CommandActions,
+  ConstraintActions
+} from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { RelationshipResponse } from '../models';
 import { InformationTypeEffects } from './information-types.effects';
@@ -21,25 +38,28 @@ export class RelationshipEffects {
     this.actions.pipe(
       ofType(RelationshipActions.createRelationship),
       switchMap(({ collectionId, relationship }) =>
-        this.relationshipService.createRelationship(collectionId, relationship).pipe(
-          switchMap((createRelationship: RelationshipResponse) => [
-            RelationshipActions.createRelationshipSuccess({
-              relationship: createRelationship.relationship
-            }),
-            ToastActions.showToast({
-              message: createRelationship.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            RelationshipActions.createRelationshipFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.relationshipService.createRelationship(collectionId, relationship).pipe(
+            switchMap((createRelationship: RelationshipResponse) => [
+              RelationshipActions.createRelationshipSuccess({
+                relationship: createRelationship.relationship
+              }),
+              ToastActions.showToast({
+                message: createRelationship.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              RelationshipActions.createRelationshipFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -58,21 +78,81 @@ export class RelationshipEffects {
         const url = this.router.routerState.snapshot.url.split('/').pop();
         const history = url === 'relationship-history';
 
-        return merge(
+        const data = merge(
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
           of(
             LayoutActions.toggleSidenav({
               showSidenav: false
             })
           ),
-          this.constraintEffects.getConstraints(collectionId, history),
-          this.commandEffects.getCommands(collectionId, history),
-          this.commandEffects.getCommandArgumentHistory(collectionId),
-          this.eventEffects.getEvents(collectionId, history),
-          this.informationTypeEffects.getInformationTypes(collectionId),
-          this.stateEffects.getStates(collectionId, history),
-          this.stateEffects.getStateEnumerationHistory(collectionId),
+          this.constraintService.getConstraints(collectionId).pipe(
+            map((constraints) =>
+              ConstraintActions.setConstraints({
+                constraints
+              })
+            ),
+            catchError((error: Error) => [
+              ConstraintActions.fetchConstraintsFailure({
+                error
+              })
+            ])
+          ),
+          this.commandService.getCommands(collectionId).pipe(
+            map((commands) =>
+              CommandActions.setCommands({
+                commands
+              })
+            ),
+            catchError((error: Error) => [
+              CommandActions.fetchCommandsFailure({
+                error
+              })
+            ])
+          ),
+          this.eventService.getEvents(collectionId).pipe(
+            map((events) =>
+              EventActions.setEvents({
+                events
+              })
+            ),
+            catchError((error: Error) => [
+              EventActions.fetchEventsFailure({
+                error
+              })
+            ])
+          ),
+          this.informationTypesService.getInformationTypes(collectionId).pipe(
+            map((informationTypes) =>
+              InformationTypeActions.setInformationTypes({
+                informationTypes
+              })
+            ),
+            catchError((error: Error) => [
+              InformationTypeActions.fetchInformationTypesFailure({
+                error
+              })
+            ])
+          ),
+          this.stateService.getStates(collectionId).pipe(
+            map((states) =>
+              StateActions.setStates({
+                states
+              })
+            ),
+            catchError((error: Error) => [
+              StateActions.fetchStatesFailure({
+                error
+              })
+            ])
+          ),
           this.getRelationships(collectionId, history)
         );
+
+        return concat(data, of(LayoutActions.isLoading({ isLoading: false })));
       })
     )
   );
@@ -81,25 +161,28 @@ export class RelationshipEffects {
     this.actions.pipe(
       ofType(RelationshipActions.updateRelationship),
       switchMap(({ relationship }) =>
-        this.relationshipService.updateRelationship(relationship).pipe(
-          switchMap((updateRelationship: RelationshipResponse) => [
-            RelationshipActions.updateRelationshipSuccess({
-              relationship: updateRelationship.relationship
-            }),
-            ToastActions.showToast({
-              message: updateRelationship.message,
-              toastType: 'success'
-            })
-          ]),
-          catchError((error: Error) => [
-            RelationshipActions.updateRelationshipFailure({
-              error
-            }),
-            ToastActions.showToast({
-              message: error.message,
-              toastType: 'error'
-            })
-          ])
+        concat(
+          this.relationshipService.updateRelationship(relationship).pipe(
+            switchMap((updateRelationship: RelationshipResponse) => [
+              RelationshipActions.updateRelationshipSuccess({
+                relationship: updateRelationship.relationship
+              }),
+              ToastActions.showToast({
+                message: updateRelationship.message,
+                toastType: 'success'
+              })
+            ]),
+            catchError((error: Error) => [
+              RelationshipActions.updateRelationshipFailure({
+                error
+              }),
+              ToastActions.showToast({
+                message: error.message,
+                toastType: 'error'
+              })
+            ])
+          ),
+          of(LayoutActions.isSaving({ isSaving: false }))
         )
       )
     )
@@ -107,11 +190,11 @@ export class RelationshipEffects {
 
   constructor(
     private actions: Actions,
-    private commandEffects: CommandEffects,
-    private constraintEffects: ConstraintEffects,
-    private eventEffects: EventEffects,
-    private informationTypeEffects: InformationTypeEffects,
-    private stateEffects: StateEffects,
+    private commandService: CommandService,
+    private constraintService: ConstraintService,
+    private eventService: EventService,
+    private informationTypesService: InformationTypeService,
+    private stateService: StateService,
     private relationshipService: RelationshipService,
     private router: Router
   ) {}

@@ -1,32 +1,39 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Commands</span>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Commands</span>
 
-  <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../../command-history">Command History</button>
+    <div class="page-toolbar-buttons">
+      <button class="st-button tertiary" routerLink="../../command-history">Command History</button>
 
-    <button class="st-button tertiary" routerLink="../../command-argument-history">
-      Command Argument History
-    </button>
+      <button class="st-button tertiary" routerLink="../../command-argument-history">
+        Command Argument History
+      </button>
 
-    <button class="st-button icon tertiary" (click)="onCommandFileUpload()">
-      <i class="si-upload"></i>
-      Upload Commands
-    </button>
+      <button class="st-button icon tertiary" (click)="onCommandFileUpload()">
+        <i class="si-upload"></i>
+        Upload Commands
+      </button>
 
-    <button class="st-button icon tertiary" (click)="onCommandArgumentFileUpload()">
-      <i class="si-upload"></i>
-      Upload Command Arguments
-    </button>
-  </div>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-command-table [commands]="commands" (commandSelected)="onSelectCommand($event)">
-    </sm-command-table>
+      <button class="st-button icon tertiary" (click)="onCommandArgumentFileUpload()">
+        <i class="si-upload"></i>
+        Upload Command Arguments
+      </button>
+    </div>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav">
-    <command-sidenav [command]="command" (closeSidenav)="onSidenavOutput()"> </command-sidenav>
+  <div class="content-container">
+    <div class="content">
+      <sm-command-table [commands]="commands" (commandSelected)="onSelectCommand($event)">
+      </sm-command-table>
+    </div>
+
+    <div class="sidenav" *ngIf="showSidenav">
+      <sm-command-sidenav
+        [command]="command"
+        [isSaving]="isSaving"
+        (closeSidenav)="onSidenavOutput()"
+      >
+      </sm-command-sidenav>
+    </div>
   </div>
-</div>
+</sm-loading>

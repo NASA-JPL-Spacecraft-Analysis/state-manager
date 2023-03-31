@@ -1,35 +1,40 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Constraints</span>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Constraints</span>
 
-  <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" routerLink="../constraint-history">History</button>
+    <div class="page-toolbar-buttons">
+      <button class="st-button tertiary" routerLink="../../constraint-history">History</button>
 
-    <button class="st-button icon tertiary" (click)="onFileUpload()">
-      <i class="si-upload"></i>
-      Upload Constraints
-    </button>
+      <button class="st-button icon tertiary" (click)="onFileUpload()">
+        <i class="si-upload"></i>
+        Upload Constraints
+      </button>
 
-    <button class="st-button primary" (click)="onModifyConstraint()">Create New Constraint</button>
-  </div>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-constraint-table
-      [constraints]="constraints"
-      (constraintSelected)="onModifyConstraint($event)"
-    >
-    </sm-constraint-table>
+      <button class="st-button primary" (click)="onModifyConstraint()">
+        Create New Constraint
+      </button>
+    </div>
   </div>
 
-  <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
-    <sm-constraint-sidenav
-      [constraint]="constraint"
-      [constraintIdentifierMap]="constraintIdentifierMap"
-      [constraintTypes]="constraintTypes"
-      (duplicateIdentifier)="onDuplicateIdentifier($event)"
-      (modifyConstraint)="onSidenavOutput($event)"
-    >
-    </sm-constraint-sidenav>
+  <div class="content-container">
+    <div class="content">
+      <sm-constraint-table
+        [constraints]="constraints"
+        (constraintSelected)="onModifyConstraint($event)"
+      >
+      </sm-constraint-table>
+    </div>
+
+    <div class="sidenav" *ngIf="showSidenav && selectedCollectionId">
+      <sm-constraint-sidenav
+        [constraint]="constraint"
+        [constraintIdentifierMap]="constraintIdentifierMap"
+        [constraintTypes]="constraintTypes"
+        [isSaving]="isSaving"
+        (duplicateIdentifier)="onDuplicateIdentifier($event)"
+        (modifyConstraint)="onSidenavOutput($event)"
+      >
+      </sm-constraint-sidenav>
+    </div>
   </div>
-</div>
+</sm-loading>

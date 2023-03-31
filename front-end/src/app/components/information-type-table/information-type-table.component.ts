@@ -1,4 +1,11 @@
-import { Component, NgModule, ChangeDetectionStrategy, Input, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  ChangeDetectionStrategy,
+  Input,
+  OnChanges,
+  OnInit
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { InformationType } from 'src/app/models';
@@ -6,11 +13,14 @@ import { TableComponent } from '../table/table.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-information-type-table',
-  styleUrls: [ './../table/table.component.css' ],
+  selector: 'sm-information-type-table',
+  styleUrls: ['./../table/table.component.css'],
   templateUrl: './../table/table.component.html'
 })
-export class InformationTypeTableComponent extends TableComponent<InformationType> implements OnInit, OnChanges {
+export class InformationTypeTableComponent
+  extends TableComponent<InformationType>
+  implements OnInit, OnChanges
+{
   @Input() public informationTypes: InformationType[];
 
   constructor() {
@@ -39,14 +49,8 @@ export class InformationTypeTableComponent extends TableComponent<InformationTyp
 }
 
 @NgModule({
-  declarations: [
-    InformationTypeTableComponent
-  ],
-  exports: [
-    InformationTypeTableComponent
-  ],
-  imports: [
-    CommonModule
-  ]
+  declarations: [InformationTypeTableComponent],
+  exports: [InformationTypeTableComponent],
+  imports: [CommonModule]
 })
 export class InformationTypeTableModule {}

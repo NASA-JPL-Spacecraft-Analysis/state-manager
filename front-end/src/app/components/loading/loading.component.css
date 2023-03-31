@@ -1,0 +1,43 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fadeIn > img {
+  animation: fadeIn ease 1s;
+}
+
+.fadeOut > img {
+  animation: fadeOut ease 1s;
+}
+
+img {
+  height: 42px;
+  position: fixed;
+  width: 80px;
+  top: 50%;
+  left: 50%;
+  margin-top: -21px;
+  margin-left: -40px;
+}
+
+img.saving {
+  position: relative;
+}
+
+.loading {
+  opacity: 0.4;
+}

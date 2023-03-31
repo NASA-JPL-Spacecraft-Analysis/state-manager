@@ -1,39 +1,41 @@
-<div class="sidenav-container">
-  <div class="sidenav-header">
-    <span class="st-typography-header">Group Details</span>
+<sm-loading [isSaving]="isSaving">
+  <div class="sidenav-container">
+    <div class="sidenav-header">
+      <span class="st-typography-header">Group Details</span>
 
-    <button class="st-button icon tertiary" (click)="onCancel()">
-      <i class="si si-close"></i>
-    </button>
+      <button class="st-button icon tertiary" (click)="onCancel()">
+        <i class="si si-close"></i>
+      </button>
+    </div>
+
+    <div class="sidenav-content">
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+        <app-identifier-form
+          [originalIdentifier]="originalGroupIdentifier"
+          [identifierMap]="groupIdentifierMap"
+          [id]="newGroup?.id"
+          [type]="'group'"
+          (duplicateIdentifier)="onDuplicateGroupIdentifier($event)"
+          (identifierEmitter)="onGroupIdentifierChange($event)"
+        >
+        </app-identifier-form>
+
+        <div class="group-item-selector">
+          <sm-auto-complete
+            [itemSet]="itemSet"
+            [multiselect]="true"
+            [selectedItemIds]="selectedItemIds"
+            (itemRemoved)="onItemRemoved($event)"
+            (itemSelected)="onItemSelected($event)"
+          ></sm-auto-complete>
+        </div>
+      </form>
+    </div>
+
+    <div class="sidenav-footer">
+      <button class="st-button secondary" (click)="onCancel()">Cancel</button>
+
+      <button class="st-button" (click)="onSubmit()">Save Group</button>
+    </div>
   </div>
-
-  <div class="sidenav-content">
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-      <app-identifier-form
-        [originalIdentifier]="originalGroupIdentifier"
-        [identifierMap]="groupIdentifierMap"
-        [id]="newGroup?.id"
-        [type]="'group'"
-        (duplicateIdentifier)="onDuplicateGroupIdentifier($event)"
-        (identifierEmitter)="onGroupIdentifierChange($event)"
-      >
-      </app-identifier-form>
-
-      <div class="group-item-selector">
-        <sm-auto-complete
-          [itemSet]="itemSet"
-          [multiselect]="true"
-          [selectedItemIds]="selectedItemIds"
-          (itemRemoved)="onItemRemoved($event)"
-          (itemSelected)="onItemSelected($event)"
-        ></sm-auto-complete>
-      </div>
-    </form>
-  </div>
-
-  <div class="sidenav-footer">
-    <button class="st-button secondary" (click)="onCancel()">Cancel</button>
-
-    <button class="st-button" (click)="onSubmit()">Save Group</button>
-  </div>
-</div>
+</sm-loading>

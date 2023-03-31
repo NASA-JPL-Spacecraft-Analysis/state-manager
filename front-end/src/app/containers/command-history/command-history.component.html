@@ -1,9 +1,11 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Command History</span>
-</div>
-
-<div class="content-container">
-  <div class="content">
-    <sm-command-table [commands]="commandHistory" [history]="true"> </sm-command-table>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Command History</span>
   </div>
-</div>
+
+  <div class="content-container">
+    <div class="content">
+      <sm-command-table [commands]="commandHistory" [history]="true"> </sm-command-table>
+    </div>
+  </div>
+</sm-loading>

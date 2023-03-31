@@ -1,31 +1,40 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgModule, OnDestroy } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  NgModule,
+  OnDestroy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store, select } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { StateMap } from 'src/app/models';
 import { AppState } from 'src/app/app-store';
-import { getStateHistory } from 'src/app/selectors';
+import { getIsLoading, getStateHistory } from 'src/app/selectors';
 import { StateTableModule } from 'src/app/components';
+import { LoadingModule } from '../../components/loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'sm-state-history',
-  styleUrls: [ 'state-history.component.css' ],
+  styleUrls: ['state-history.component.css'],
   templateUrl: 'state-history.component.html'
 })
 export class StateHistoryComponent implements OnDestroy {
+  public isLoading: boolean;
   public stateHistoryMap: StateMap;
 
   private subscriptions = new SubSink();
 
-  constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
+  constructor(private store: Store<AppState>, private changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.add(
-      this.store.pipe(select(getStateHistory)).subscribe(stateHistoryMap => {
+      this.store.pipe(select(getStateHistory)).subscribe((stateHistoryMap) => {
         this.stateHistoryMap = stateHistoryMap;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getIsLoading)).subscribe((isLoading) => {
+        this.isLoading = isLoading;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -37,15 +46,8 @@ export class StateHistoryComponent implements OnDestroy {
 }
 
 @NgModule({
-  declarations: [
-    StateHistoryComponent
-  ],
-  exports: [
-    StateHistoryComponent
-  ],
-  imports: [
-    CommonModule,
-    StateTableModule
-  ]
+  declarations: [StateHistoryComponent],
+  exports: [StateHistoryComponent],
+  imports: [CommonModule, LoadingModule, StateTableModule]
 })
 export class StateHistoryModule {}

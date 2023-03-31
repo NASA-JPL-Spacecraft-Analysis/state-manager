@@ -1,12 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgModule, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  NgModule,
+  OnDestroy
+} from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { SubSink } from 'subsink';
 
 import { AppState } from 'src/app/app-store';
 import { Command } from 'src/app/models';
-import { getCommandHistory } from 'src/app/selectors';
+import { getCommandHistory, getIsLoading } from 'src/app/selectors';
 import { CommandTableModule } from 'src/app/components/commands';
+import { LoadingModule } from '../../components/loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,18 +23,20 @@ import { CommandTableModule } from 'src/app/components/commands';
 })
 export class CommandHistoryComponent implements OnDestroy {
   public commandHistory: Command[];
+  public isLoading: boolean;
 
   private subscriptions: SubSink;
 
-  constructor(
-    private store: Store<AppState>,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
+  constructor(private store: Store<AppState>, private changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions = new SubSink();
 
     this.subscriptions.add(
-      this.store.pipe(select(getCommandHistory)).subscribe(commandHistory => {
+      this.store.pipe(select(getCommandHistory)).subscribe((commandHistory) => {
         this.commandHistory = commandHistory;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getIsLoading)).subscribe((isLoading) => {
+        this.isLoading = isLoading;
         this.changeDetectorRef.markForCheck();
       })
     );
@@ -39,15 +48,8 @@ export class CommandHistoryComponent implements OnDestroy {
 }
 
 @NgModule({
-  declarations: [
-    CommandHistoryComponent
-  ],
-  exports: [
-    CommandHistoryComponent
-  ],
-  imports: [
-    CommonModule,
-    CommandTableModule
-  ]
+  declarations: [CommandHistoryComponent],
+  exports: [CommandHistoryComponent],
+  imports: [CommonModule, CommandTableModule, LoadingModule]
 })
-export class CommandHistoryModule { }
+export class CommandHistoryModule {}

@@ -1,14 +1,18 @@
-<div class="page-toolbar">
-  <span class="st-typography-header">Information Types</span>
+<sm-loading [isLoading]="isLoading">
+  <div class="page-toolbar">
+    <span class="st-typography-header">Information Types</span>
 
-  <div class="page-toolbar-buttons">
-    <button class="st-button tertiary" (click)="onFileUpload()">
-      <i class="si-upload"></i>
-      Upload Information Types
-    </button>
+    <div class="page-toolbar-buttons">
+      <button class="st-button tertiary" (click)="onFileUpload()">
+        <i class="si-upload"></i>
+        Upload Information Types
+      </button>
+    </div>
   </div>
-</div>
 
-<div class="content-container">
-  <app-information-type-table [informationTypes]="informationTypes"> </app-information-type-table>
-</div>
+  <div class="content-container">
+    <div class="content">
+      <sm-information-type-table [informationTypes]="informationTypes"> </sm-information-type-table>
+    </div>
+  </div>
+</sm-loading>

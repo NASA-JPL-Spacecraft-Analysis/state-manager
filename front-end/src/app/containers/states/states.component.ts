@@ -1,4 +1,10 @@
-import { NgModule, Component, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  NgModule,
+  Component,
+  ChangeDetectionStrategy,
+  OnDestroy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -12,7 +18,9 @@ import {
   getSelectedCollectionId,
   getStateIdentifierMap,
   getStateEnumerations,
-  getStateTypes
+  getStateTypes,
+  getIsLoading,
+  getIsSaving
 } from '../../selectors';
 import { StateActions, LayoutActions, ToastActions } from '../../actions';
 import { StateSidenavModule, StateTableModule } from 'src/app/components';
@@ -20,15 +28,18 @@ import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
+import { LoadingModule } from '../../components/loading/loading.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-states',
-  styleUrls: [ 'states.component.css' ],
+  selector: 'sm-states',
+  styleUrls: ['states.component.css'],
   templateUrl: 'states.component.html'
 })
 export class StatesComponent implements OnDestroy {
   public collectionId: string;
+  public isLoading: boolean;
+  public isSaving: boolean;
   public showSidenav: boolean;
   public stateMap: StateMap;
   public state: State;
@@ -48,27 +59,35 @@ export class StatesComponent implements OnDestroy {
     private store: Store<AppState>
   ) {
     this.subscriptions.add(
-      this.store.pipe(select(getSelectedCollectionId)).subscribe(collectionId => {
+      this.store.pipe(select(getSelectedCollectionId)).subscribe((collectionId) => {
         this.collectionId = collectionId;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getShowSidenav)).subscribe(showSidenav => {
+      this.store.pipe(select(getIsLoading)).subscribe((isLoading) => {
+        this.isLoading = isLoading;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getIsSaving)).subscribe((isSaving) => {
+        this.isSaving = isSaving;
+        this.changeDetectorRef.markForCheck();
+      }),
+      this.store.pipe(select(getShowSidenav)).subscribe((showSidenav) => {
         this.showSidenav = showSidenav;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getSelectedState)).subscribe(selectedState => {
+      this.store.pipe(select(getSelectedState)).subscribe((selectedState) => {
         this.state = selectedState;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateEnumerations)).subscribe(stateEnumerations => {
+      this.store.pipe(select(getStateEnumerations)).subscribe((stateEnumerations) => {
         this.stateEnumerations = stateEnumerations;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStateIdentifierMap)).subscribe(stateIdentifierMap => {
+      this.store.pipe(select(getStateIdentifierMap)).subscribe((stateIdentifierMap) => {
         this.stateIdentifierMap = stateIdentifierMap;
         this.changeDetectorRef.markForCheck();
       }),
-      this.store.pipe(select(getStates)).subscribe(stateMap => {
+      this.store.pipe(select(getStates)).subscribe((stateMap) => {
         this.stateMap = stateMap;
         this.changeDetectorRef.markForCheck();
 
@@ -78,7 +97,7 @@ export class StatesComponent implements OnDestroy {
           this.onModifyState(this.stateMap[this.stateId]);
         }
       }),
-      this.store.pipe(select(getStateTypes)).subscribe(stateTypes => {
+      this.store.pipe(select(getStateTypes)).subscribe((stateTypes) => {
         this.stateTypes = stateTypes;
         this.changeDetectorRef.markForCheck();
       })
@@ -95,25 +114,31 @@ export class StatesComponent implements OnDestroy {
    * @param state The state that we're creating or modifing. Can be undefined if the user is creating a new state.
    */
   public onModifyState(state?: State): void {
-    this.store.dispatch(StateActions.setSelectedState({
-      id: state?.id
-    }));
+    this.store.dispatch(
+      StateActions.setSelectedState({
+        id: state?.id
+      })
+    );
 
     const newStateId = state?.id ?? '';
 
     this.navigationService.addItemIDToURL(this.stateId, newStateId, this.location, this.router.url);
     this.stateId = newStateId;
 
-    this.store.dispatch(LayoutActions.toggleSidenav({
-      showSidenav: true
-    }));
+    this.store.dispatch(
+      LayoutActions.toggleSidenav({
+        showSidenav: true
+      })
+    );
   }
 
   public onSidenavError(error: string): void {
-    this.store.dispatch(ToastActions.showToast({
-      message: error,
-      toastType: 'error'
-    }));
+    this.store.dispatch(
+      ToastActions.showToast({
+        message: error,
+        toastType: 'error'
+      })
+    );
   }
 
   public onSidenavOutput(result: { state: State; deletedEnumerationIds: string[] }): void {
@@ -122,58 +147,69 @@ export class StatesComponent implements OnDestroy {
       this.navigationService.removeIDFromURL(this.location, this.router.url);
       this.stateId = '';
 
-      this.store.dispatch(LayoutActions.toggleSidenav({
-        showSidenav: false
-      }));
+      this.store.dispatch(
+        LayoutActions.toggleSidenav({
+          showSidenav: false
+        })
+      );
     } else {
+      this.store.dispatch(LayoutActions.isSaving({ isSaving: true }));
+
       if (!result.state.id) {
-        this.store.dispatch(StateActions.createState({
-          state: result.state
-        }));
+        this.store.dispatch(
+          StateActions.createState({
+            state: result.state
+          })
+        );
       } else {
-        this.store.dispatch(StateActions.updateState({
-          state: result.state
-        }));
+        this.store.dispatch(
+          StateActions.updateState({
+            state: result.state
+          })
+        );
       }
 
       if (result.deletedEnumerationIds.length > 0 && result.state.id) {
-        this.store.dispatch(StateActions.deleteEnumerations({
-          deletedEnumerationIds: result.deletedEnumerationIds,
-          stateId: result.state.id
-        }));
+        this.store.dispatch(
+          StateActions.deleteEnumerations({
+            deletedEnumerationIds: result.deletedEnumerationIds,
+            stateId: result.state.id
+          })
+        );
       }
     }
   }
 
-  public onStateEnumerationFileUpload():  void {
-    this.store.dispatch(LayoutActions.openFileUploadDialog({
-      collectionId: this.collectionId,
-      csvFormat: [ UploadConstants.stateEnumerationCsvUploadFormat ],
-      dialogType: 'State Enumeration',
-      jsonFormat: UploadConstants.stateEnumerationJsonUploadFormat
-    }));
+  public onStateEnumerationFileUpload(): void {
+    this.store.dispatch(
+      LayoutActions.openFileUploadDialog({
+        collectionId: this.collectionId,
+        csvFormat: [UploadConstants.stateEnumerationCsvUploadFormat],
+        dialogType: 'State Enumeration',
+        jsonFormat: UploadConstants.stateEnumerationJsonUploadFormat
+      })
+    );
   }
 
   public onStateFileUpload(): void {
-    this.store.dispatch(LayoutActions.openFileUploadDialog({
-      collectionId: this.collectionId,
-      csvFormat: [ UploadConstants.stateCsvUploadFormat ],
-      dialogType: 'State',
-      jsonFormat: UploadConstants.stateJsonUploadFormat,
-      types: this.stateTypes
-    }));
+    this.store.dispatch(
+      LayoutActions.openFileUploadDialog({
+        collectionId: this.collectionId,
+        csvFormat: [UploadConstants.stateCsvUploadFormat],
+        dialogType: 'State',
+        jsonFormat: UploadConstants.stateJsonUploadFormat,
+        types: this.stateTypes
+      })
+    );
   }
 }
 
 @NgModule({
-  declarations: [
-    StatesComponent
-  ],
-  exports: [
-    StatesComponent
-  ],
+  declarations: [StatesComponent],
+  exports: [StatesComponent],
   imports: [
     CommonModule,
+    LoadingModule,
     MaterialModule,
     RouterModule,
     StateSidenavModule,

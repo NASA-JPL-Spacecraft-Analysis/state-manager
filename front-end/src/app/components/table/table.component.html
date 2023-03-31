@@ -1,69 +1,70 @@
-<div *ngIf="rows.length > 0; else noData">
-  <table class="st-table" [ngClass]="{ history: historyTable }">
-    <thead>
-      <tr>
-        <th *ngFor="let column of columns" [class]="column">
-          <span class="column-header-content">
-            {{ formatColumnName(column) }}
+<div *ngIf="rows">
+  <div *ngIf="rows && rows.length > 0; else noData">
+    <table class="st-table" [ngClass]="{ history: historyTable }">
+      <thead>
+        <tr>
+          <th *ngFor="let column of columns" [class]="column">
+            <span class="column-header-content">
+              {{ formatColumnName(column) }}
 
-            <span class="sort-icons">
-              <button class="st-button icon tertiary" (click)="sortColumn(column, true)">
-                <i class="si si-chevron_up"></i>
-              </button>
+              <span class="sort-icons">
+                <button class="st-button icon tertiary" (click)="sortColumn(column, true)">
+                  <i class="si si-chevron_up"></i>
+                </button>
 
-              <button class="st-button icon tertiary" (click)="sortColumn(column, false)">
-                <i class="si si-chevron_down"></i>
-              </button>
+                <button class="st-button icon tertiary" (click)="sortColumn(column, false)">
+                  <i class="si si-chevron_down"></i>
+                </button>
+              </span>
             </span>
-          </span>
 
-          <input
-            class="st-input"
-            [placeholder]="formatColumnName(column)"
-            [name]="formatColumnName(column)"
-            type="text"
-            (keyup)="filterData($event, column)"
-          />
-        </th>
-      </tr>
-    </thead>
+            <input
+              class="st-input"
+              [placeholder]="formatColumnName(column)"
+              [name]="formatColumnName(column)"
+              type="text"
+              (keyup)="filterData($event, column)"
+            />
+          </th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <tr *ngFor="let row of paginatedRows" (click)="onRowClick(row)">
-        <td *ngFor="let column of columns" title="{{ row[column] }}" [class]="column">
-          {{ row[column] }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <tbody>
+        <tr *ngFor="let row of paginatedRows" (click)="onRowClick(row)">
+          <td *ngFor="let column of columns" title="{{ row[column] }}" [class]="column">
+            {{ row[column] }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <div class="pagination st-typography-bold">
-    <span>Items per page: {{ paginatedRows.length }}</span>
+    <div class="pagination st-typography-bold">
+      <span>Items per page: {{ paginatedRows.length }}</span>
 
-    <span>{{ page }} of {{ maxPages }}</span>
+      <span>{{ page }} of {{ maxPages }}</span>
 
-    <div class="pagination-navigation">
-      <button class="st-button icon tertiary" (click)="pageChange(1, filteredRows)">
-        <i class="si si-collapse reverse"></i>
-      </button>
+      <div class="pagination-navigation">
+        <button class="st-button icon tertiary" (click)="pageChange(1, filteredRows)">
+          <i class="si si-collapse reverse"></i>
+        </button>
 
-      <button class="st-button icon tertiary" (click)="pageChange(page - 1, filteredRows)">
-        <i class="si si-chevron_left"></i>
-      </button>
+        <button class="st-button icon tertiary" (click)="pageChange(page - 1, filteredRows)">
+          <i class="si si-chevron_left"></i>
+        </button>
 
-      <button class="st-button icon tertiary" (click)="pageChange(page + 1, filteredRows)">
-        <i class="si si-chevron_right"></i>
-      </button>
+        <button class="st-button icon tertiary" (click)="pageChange(page + 1, filteredRows)">
+          <i class="si si-chevron_right"></i>
+        </button>
 
-      <button class="st-button icon tertiary" (click)="pageChange(maxPages, filteredRows)">
-        <i class="si si-collapse"></i>
-      </button>
+        <button class="st-button icon tertiary" (click)="pageChange(maxPages, filteredRows)">
+          <i class="si si-collapse"></i>
+        </button>
+      </div>
     </div>
   </div>
+  <ng-template #noData>
+    <div class="no-data">
+      <span>There is no data for this table.</span>
+    </div>
+  </ng-template>
 </div>
-
-<ng-template #noData>
-  <div class="no-data">
-    <span>There is no data for this table.</span>
-  </div>
-</ng-template>
