@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of, forkJoin, concat } from 'rxjs';
-import { switchMap, catchError, map } from 'rxjs/operators';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
 import {
   CommandActions,
@@ -27,6 +27,7 @@ import {
 } from '../services';
 import { GroupResponse, Response } from '../models';
 import { ConfirmationDialogComponent } from '../components';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class GroupEffects {
@@ -118,7 +119,9 @@ export class GroupEffects {
     this.actions.pipe(
       ofRoute('collection/:collectionId/groups'),
       mapToParam<string>('collectionId'),
-      switchMap((collectionId) => {
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
         const data = merge(
           of(
             LayoutActions.isLoading({
@@ -179,18 +182,20 @@ export class GroupEffects {
               })
             ])
           ),
-          this.stateService.getStates(collectionId).pipe(
-            map((states) =>
-              StateActions.setStates({
-                states
-              })
-            ),
-            catchError((error: Error) => [
-              StateActions.fetchStatesFailure({
-                error
-              })
-            ])
-          )
+          !store.states.stateMap
+            ? this.stateService.getStates(collectionId).pipe(
+                map((states) =>
+                  StateActions.setStates({
+                    states
+                  })
+                ),
+                catchError((error: Error) => [
+                  StateActions.fetchStatesFailure({
+                    error
+                  })
+                ])
+              )
+            : EMPTY
         );
 
         return concat(data, of(LayoutActions.isLoading({ isLoading: false })));
@@ -238,7 +243,8 @@ export class GroupEffects {
     private groupService: GroupService,
     private informationTypeService: InformationTypeService,
     private router: Router,
-    private stateService: StateService
+    private stateService: StateService,
+    private store: Store<AppState>
   ) {}
 
   private getGroupsAndMappings(collectionId: string): Observable<Action> {

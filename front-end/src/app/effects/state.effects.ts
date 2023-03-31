@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map } from 'rxjs/operators';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 import { Observable, merge, of, concat } from 'rxjs';
 
 import { StateService } from '../services';
 import { ToastActions, StateActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { StateResponse } from '../models';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class StateEffects {
@@ -73,25 +73,54 @@ export class StateEffects {
 
   public navStates = createEffect(() =>
     this.actions.pipe(
-      ofRoute([
-        'collection/:collectionId/state-enumeration-history',
-        'collection/:collectionId/states',
-        'collection/:collectionId/states/',
-        'collection/:collectionId/states/:id',
-        'collection/:collectionId/state-history'
-      ]),
+      ofRoute(['collection/:collectionId/states', 'collection/:collectionId/states/:id']),
       mapToParam<string>('collectionId'),
-      switchMap((collectionId) => {
-        const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = false;
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          )
+        );
 
-        if (url === 'state-enumeration-history') {
+        if (!store.states.stateMap) {
           return merge(
+            actions,
             of(
-              LayoutActions.toggleSidenav({
-                showSidenav: false
+              LayoutActions.isLoading({
+                isLoading: true
               })
             ),
+            this.getStates(collectionId, false)
+          );
+        }
+
+        return merge(actions, of(LayoutActions.isLoading({ isLoading: false })));
+      })
+    )
+  );
+
+  public navStateEnumerationHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/state-enumeration-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          )
+        );
+
+        if (!store.states.stateEnumerationHistory) {
+          return merge(
+            actions,
             of(
               LayoutActions.isLoading({
                 isLoading: true
@@ -101,22 +130,52 @@ export class StateEffects {
           );
         }
 
-        if (url === 'state-history') {
-          history = true;
-        }
-
         return merge(
+          actions,
+          of(
+            LayoutActions.isLoading({
+              isLoading: false
+            })
+          )
+        );
+      })
+    )
+  );
+
+  public navStateHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/state-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
           of(
             LayoutActions.toggleSidenav({
               showSidenav: false
             })
-          ),
+          )
+        );
+
+        if (!store.states.stateHistoryMap) {
+          return merge(
+            actions,
+            of(
+              LayoutActions.isLoading({
+                isLoading: true
+              })
+            ),
+            this.getStates(collectionId, true)
+          );
+        }
+
+        return merge(
+          actions,
           of(
             LayoutActions.isLoading({
-              isLoading: true
+              isLoading: false
             })
-          ),
-          this.getStates(collectionId, history)
+          )
         );
       })
     )
@@ -155,11 +214,11 @@ export class StateEffects {
 
   constructor(
     private actions: Actions,
-    private router: Router,
-    private stateService: StateService
+    private stateService: StateService,
+    private store: Store<AppState>
   ) {}
 
-  public getStates(collectionId: string, history: boolean): Observable<Action> {
+  private getStates(collectionId: string, history: boolean): Observable<Action> {
     if (!history) {
       return concat(
         this.stateService.getStateEnumerations(collectionId).pipe(
@@ -219,7 +278,7 @@ export class StateEffects {
     }
   }
 
-  public getStateEnumerationHistory(collectionId: string): Observable<Action> {
+  private getStateEnumerationHistory(collectionId: string): Observable<Action> {
     return concat(
       this.stateService.getStateEnumerationHistory(collectionId).pipe(
         map((stateEnumerationHistory) =>

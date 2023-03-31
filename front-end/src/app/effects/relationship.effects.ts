@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, of, concat } from 'rxjs';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { Observable, merge, of, concat, EMPTY } from 'rxjs';
 
 import {
   CommandService,
@@ -31,6 +31,7 @@ import { EventEffects } from './event.effects';
 import { StateEffects } from './state.effects';
 import { CommandEffects } from './command.effects';
 import { ConstraintEffects } from './constraint.effects';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class RelationshipEffects {
@@ -74,7 +75,9 @@ export class RelationshipEffects {
         'collection/:collectionId/relationship-history'
       ]),
       mapToParam<string>('collectionId'),
-      switchMap((collectionId) => {
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
         const history = url === 'relationship-history';
 
@@ -137,18 +140,20 @@ export class RelationshipEffects {
               })
             ])
           ),
-          this.stateService.getStates(collectionId).pipe(
-            map((states) =>
-              StateActions.setStates({
-                states
-              })
-            ),
-            catchError((error: Error) => [
-              StateActions.fetchStatesFailure({
-                error
-              })
-            ])
-          ),
+          !store.states.stateMap
+            ? this.stateService.getStates(collectionId).pipe(
+                map((states) =>
+                  StateActions.setStates({
+                    states
+                  })
+                ),
+                catchError((error: Error) => [
+                  StateActions.fetchStatesFailure({
+                    error
+                  })
+                ])
+              )
+            : EMPTY,
           this.getRelationships(collectionId, history)
         );
 
@@ -196,7 +201,8 @@ export class RelationshipEffects {
     private informationTypesService: InformationTypeService,
     private stateService: StateService,
     private relationshipService: RelationshipService,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
   ) {}
 
   private getRelationships(collectionId: string, history: boolean): Observable<Action> {

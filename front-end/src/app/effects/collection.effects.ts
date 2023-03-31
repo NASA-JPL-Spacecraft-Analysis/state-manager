@@ -5,10 +5,10 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { MatDialog } from '@angular/material/dialog';
 import { switchMap, map, withLatestFrom, catchError } from 'rxjs/operators';
 
-import { CollectionActions, ToastActions } from '../actions';
+import { CollectionActions, StateActions, ToastActions } from '../actions';
 import { CollectionService, NavigationService } from '../services';
 import { CollectionResponse } from '../models';
-import { of, forkJoin, concat } from 'rxjs';
+import { of, forkJoin, concat, merge } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components';
 import { AppState } from '../app-store';
 
@@ -195,12 +195,12 @@ export class CollectionEffects {
             this.router.navigate(['collection/' + id]);
           }
 
-          return [];
+          return merge(of(StateActions.clearStates()));
         }
 
         this.router.navigate([this.router.url]);
 
-        return [];
+        return merge(of(StateActions.clearStates()));
       })
     )
   );
