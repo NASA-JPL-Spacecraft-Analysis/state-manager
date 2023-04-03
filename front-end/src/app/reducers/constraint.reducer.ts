@@ -23,7 +23,12 @@ export const initialState: ConstraintState = {
 
 export const reducer = createReducer(
   initialState,
-  on(ConstraintActions.createConstraintSuccess, (state, { constraint }) => modifyConstraint(state, constraint)),
+  on(ConstraintActions.clearConstraints, ({}) => ({
+    ...initialState
+  })),
+  on(ConstraintActions.createConstraintSuccess, (state, { constraint }) =>
+    modifyConstraint(state, constraint)
+  ),
   on(ConstraintActions.setConstraintHistory, (state, { constraintHistory }) => ({
     ...state,
     constraintHistory
@@ -34,25 +39,25 @@ export const reducer = createReducer(
       ...mapIdentifiers(constraints)
     },
     constraintMap: {
-      ...mapItems(constraints) as ConstraintMap
+      ...(mapItems(constraints) as ConstraintMap)
     }
   })),
   on(ConstraintActions.setConstraintTypes, (state, { constraintTypes }) => ({
     ...state,
-    constraintTypes: [
-      ...constraintTypes
-    ]
+    constraintTypes: [...constraintTypes]
   })),
   on(ConstraintActions.setSelectedConstraint, (state, { id }) => ({
     ...state,
     selectedConstraintId: id
   })),
-  on(ConstraintActions.updateConstraintSuccess, (state, { constraint }) => modifyConstraint(state, constraint)),
+  on(ConstraintActions.updateConstraintSuccess, (state, { constraint }) =>
+    modifyConstraint(state, constraint)
+  ),
   on(FileUploadActions.uploadConstraintsSuccess, (state, { constraints }) => ({
     ...state,
     constraintMap: {
       ...state.constraintMap,
-      ...mapItems(constraints) as ConstraintMap
+      ...(mapItems(constraints) as ConstraintMap)
     },
     constraintIdentifierMap: {
       ...state.constraintIdentifierMap,
@@ -76,8 +81,9 @@ const modifyConstraint = (state: ConstraintState, constraint: Constraint): Const
     }
   }
 
-  const currentIdentifierMap =
-        constraintIdentifierMap[constraint.identifier] ? constraintIdentifierMap[constraint.identifier] : [];
+  const currentIdentifierMap = constraintIdentifierMap[constraint.identifier]
+    ? constraintIdentifierMap[constraint.identifier]
+    : [];
 
   return {
     ...state,

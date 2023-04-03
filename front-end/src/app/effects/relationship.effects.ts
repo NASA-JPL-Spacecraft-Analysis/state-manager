@@ -3,28 +3,22 @@ import { Router } from '@angular/router';
 import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
-import { Observable, merge, of, concat, EMPTY } from 'rxjs';
+import { Observable, merge, of, concat } from 'rxjs';
 
-import {
-  CommandService,
-  ConstraintService,
-  EventService,
-  InformationTypeService,
-  RelationshipService
-} from '../services';
+import { InformationTypeService, RelationshipService } from '../services';
 import {
   ToastActions,
   RelationshipActions,
   LayoutActions,
-  InformationTypeActions,
-  EventActions,
-  CommandActions,
-  ConstraintActions
+  InformationTypeActions
 } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { RelationshipResponse } from '../models';
 import { StateEffects } from './state.effects';
 import { AppState } from '../app-store';
+import { EventEffects } from './event.effects';
+import { ConstraintEffects } from './constraint.effects';
+import { CommandEffects } from './command.effects';
 
 @Injectable()
 export class RelationshipEffects {
@@ -85,42 +79,9 @@ export class RelationshipEffects {
               showSidenav: false
             })
           ),
-          this.constraintService.getConstraints(collectionId).pipe(
-            map((constraints) =>
-              ConstraintActions.setConstraints({
-                constraints
-              })
-            ),
-            catchError((error: Error) => [
-              ConstraintActions.fetchConstraintsFailure({
-                error
-              })
-            ])
-          ),
-          this.commandService.getCommands(collectionId).pipe(
-            map((commands) =>
-              CommandActions.setCommands({
-                commands
-              })
-            ),
-            catchError((error: Error) => [
-              CommandActions.fetchCommandsFailure({
-                error
-              })
-            ])
-          ),
-          this.eventService.getEvents(collectionId).pipe(
-            map((events) =>
-              EventActions.setEvents({
-                events
-              })
-            ),
-            catchError((error: Error) => [
-              EventActions.fetchEventsFailure({
-                error
-              })
-            ])
-          ),
+          this.constraintEffects.loadConstraints(collectionId, store.constraints.constraintMap),
+          this.commandEffects.loadCommands(collectionId, store.commands.commandMap),
+          this.eventEffects.loadEvents(collectionId, store.events.eventMap),
           this.informationTypesService.getInformationTypes(collectionId).pipe(
             map((informationTypes) =>
               InformationTypeActions.setInformationTypes({
@@ -175,9 +136,9 @@ export class RelationshipEffects {
 
   constructor(
     private actions: Actions,
-    private commandService: CommandService,
-    private constraintService: ConstraintService,
-    private eventService: EventService,
+    private commandEffects: CommandEffects,
+    private constraintEffects: ConstraintEffects,
+    private eventEffects: EventEffects,
     private informationTypesService: InformationTypeService,
     private stateEffects: StateEffects,
     private relationshipService: RelationshipService,

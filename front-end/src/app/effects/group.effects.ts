@@ -6,27 +6,16 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of, forkJoin, concat } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
-import {
-  CommandActions,
-  ConstraintActions,
-  EventActions,
-  GroupActions,
-  InformationTypeActions,
-  LayoutActions,
-  ToastActions
-} from '../actions';
+import { GroupActions, InformationTypeActions, LayoutActions, ToastActions } from '../actions';
 import { mapToParam, ofRoute } from '../functions/router';
-import {
-  CommandService,
-  ConstraintService,
-  EventService,
-  GroupService,
-  InformationTypeService
-} from '../services';
+import { GroupService, InformationTypeService } from '../services';
 import { GroupResponse, Response } from '../models';
 import { ConfirmationDialogComponent } from '../components';
 import { AppState } from '../app-store';
 import { StateEffects } from './state.effects';
+import { EventEffects } from './event.effects';
+import { ConstraintEffects } from './constraint.effects';
+import { CommandEffects } from './command.effects';
 
 @Injectable()
 export class GroupEffects {
@@ -132,42 +121,9 @@ export class GroupEffects {
               showSidenav: false
             })
           ),
-          this.constraintService.getConstraints(collectionId).pipe(
-            map((constraints) =>
-              ConstraintActions.setConstraints({
-                constraints
-              })
-            ),
-            catchError((error: Error) => [
-              ConstraintActions.fetchConstraintsFailure({
-                error
-              })
-            ])
-          ),
-          this.commandService.getCommands(collectionId).pipe(
-            map((commands) =>
-              CommandActions.setCommands({
-                commands
-              })
-            ),
-            catchError((error: Error) => [
-              CommandActions.fetchCommandsFailure({
-                error
-              })
-            ])
-          ),
-          this.eventService.getEvents(collectionId).pipe(
-            map((events) =>
-              EventActions.setEvents({
-                events
-              })
-            ),
-            catchError((error: Error) => [
-              EventActions.fetchEventsFailure({
-                error
-              })
-            ])
-          ),
+          this.constraintEffects.loadConstraints(collectionId, store.constraints.constraintMap),
+          this.commandEffects.loadCommands(collectionId, store.commands.commandMap),
+          this.eventEffects.loadEvents(collectionId, store.events.eventMap),
           this.getGroupsAndMappings(collectionId),
           this.informationTypeService.getInformationTypes(collectionId).pipe(
             map((informationTypes) =>
@@ -222,10 +178,10 @@ export class GroupEffects {
 
   constructor(
     private actions: Actions,
-    private commandService: CommandService,
-    private constraintService: ConstraintService,
+    private commandEffects: CommandEffects,
+    private constraintEffects: ConstraintEffects,
     private dialog: MatDialog,
-    private eventService: EventService,
+    private eventEffects: EventEffects,
     private groupService: GroupService,
     private informationTypeService: InformationTypeService,
     private router: Router,

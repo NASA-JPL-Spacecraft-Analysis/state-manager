@@ -13,6 +13,9 @@ export const initialState: InformationTypeState = {
 
 export const reducer = createReducer(
   initialState,
+  on(InformationTypeActions.clearInformationTypes, ({}) => ({
+    ...initialState
+  })),
   on(InformationTypeActions.setInformationTypes, (state, { informationTypes }) => ({
     ...state,
     informationTypeMap: {

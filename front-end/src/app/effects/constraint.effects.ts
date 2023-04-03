@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, merge, of, concat } from 'rxjs';
-import { switchMap, catchError, map } from 'rxjs/operators';
+import { Observable, merge, of, concat, EMPTY } from 'rxjs';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
 import { ConstraintActions, LayoutActions, ToastActions } from '../actions';
 import { ConstraintService } from '../services';
 import { mapToParam, ofRoute } from '../functions/router';
-import { ConstraintResponse } from '../models';
+import { Constraint, ConstraintResponse } from '../models';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class ConstraintEffects {
@@ -45,22 +45,12 @@ export class ConstraintEffects {
 
   public navConstraints = createEffect(() =>
     this.actions.pipe(
-      ofRoute([
-        'collection/:collectionId/constraints',
-        'collection/:collectionId/constraints/',
-        'collection/:collectionId/constraints/:id',
-        'collection/:collectionId/constraint-history'
-      ]),
+      ofRoute(['collection/:collectionId/constraints', 'collection/:collectionId/constraints/:id']),
       mapToParam<string>('collectionId'),
-      switchMap((collectionId) => {
-        const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = false;
-
-        if (url === 'constraint-history') {
-          history = true;
-        }
-
-        return merge(
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) =>
+        merge(
           of(
             LayoutActions.toggleSidenav({
               showSidenav: false
@@ -71,9 +61,70 @@ export class ConstraintEffects {
               isLoading: true
             })
           ),
-          this.getConstraints(collectionId, history)
-        );
-      })
+          this.loadConstraints(collectionId, store.constraints.constraintMap),
+          this.constraintService.getConstraintTypes().pipe(
+            map((constraintTypes) =>
+              ConstraintActions.setConstraintTypes({
+                constraintTypes
+              })
+            ),
+            catchError((error: Error) => [
+              ConstraintActions.fetchConstraintTypesFailure({
+                error
+              })
+            ])
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: false
+            })
+          )
+        )
+      )
+    )
+  );
+
+  public navConstraintHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/constraint-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) =>
+        merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
+          concat(
+            store.constraints.constraintHistory
+              ? this.constraintService.getConstraintHistory(collectionId).pipe(
+                  map((constraintHistory) =>
+                    ConstraintActions.setConstraintHistory({
+                      constraintHistory
+                    })
+                  ),
+                  catchError((error: Error) => [
+                    ConstraintActions.fetchConstraintHistoryFailure({
+                      error
+                    })
+                  ])
+                )
+              : EMPTY,
+            of(
+              LayoutActions.isLoading({
+                isLoading: false
+              })
+            )
+          )
+        )
+      )
     )
   );
 
@@ -111,54 +162,28 @@ export class ConstraintEffects {
   constructor(
     private actions: Actions,
     private constraintService: ConstraintService,
-    private router: Router
+    private store: Store<AppState>
   ) {}
 
-  public getConstraints(collectionId: string, history: boolean): Observable<Action> {
-    if (!history) {
-      return concat(
-        this.constraintService.getConstraints(collectionId).pipe(
-          map((constraints) =>
-            ConstraintActions.setConstraints({
-              constraints
-            })
-          ),
-          catchError((error: Error) => [
-            ConstraintActions.fetchConstraintsFailure({
-              error
-            })
-          ])
+  public loadConstraints(
+    collectionId: string,
+    constraintMap: Record<string, Constraint>
+  ): Observable<Action> {
+    if (!constraintMap) {
+      this.constraintService.getConstraints(collectionId).pipe(
+        map((constraints) =>
+          ConstraintActions.setConstraints({
+            constraints
+          })
         ),
-        this.constraintService.getConstraintTypes().pipe(
-          map((constraintTypes) =>
-            ConstraintActions.setConstraintTypes({
-              constraintTypes
-            })
-          ),
-          catchError((error: Error) => [
-            ConstraintActions.fetchConstraintTypesFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
-      );
-    } else {
-      return concat(
-        this.constraintService.getConstraintHistory(collectionId).pipe(
-          map((constraintHistory) =>
-            ConstraintActions.setConstraintHistory({
-              constraintHistory
-            })
-          ),
-          catchError((error: Error) => [
-            ConstraintActions.fetchConstraintHistoryFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
+        catchError((error: Error) => [
+          ConstraintActions.fetchConstraintsFailure({
+            error
+          })
+        ])
       );
     }
+
+    return EMPTY;
   }
 }

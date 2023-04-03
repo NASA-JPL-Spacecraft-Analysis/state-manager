@@ -23,13 +23,16 @@ export const initialState: EventState = {
 
 export const reducer = createReducer(
   initialState,
+  on(EventActions.clearEvents, ({}) => ({
+    ...initialState
+  })),
   on(EventActions.createEventSuccess, (state, { event }) => modifyEvent(state, event)),
   on(EventActions.updateEventSuccess, (state, { event }) => modifyEvent(state, event)),
   on(FileUploadActions.uploadEventsSuccess, (state, { events }) => ({
     ...state,
     eventMap: {
       ...state.eventMap,
-      ...mapItems(events) as EventMap
+      ...(mapItems(events) as EventMap)
     },
     eventIdentifierMap: {
       ...state.eventIdentifierMap,
@@ -39,7 +42,7 @@ export const reducer = createReducer(
   on(EventActions.setEvents, (state, { events }) => ({
     ...state,
     eventMap: {
-      ...mapItems(events) as EventMap
+      ...(mapItems(events) as EventMap)
     },
     eventIdentifierMap: {
       ...mapIdentifiers(events)
@@ -61,9 +64,7 @@ export const reducer = createReducer(
   }),
   on(EventActions.setEventTypes, (state, { eventTypes }) => ({
     ...state,
-    eventTypes: [
-      ...eventTypes
-    ]
+    eventTypes: [...eventTypes]
   })),
   on(EventActions.setSelectedEvent, (state, { event }) => ({
     ...state,
@@ -86,8 +87,9 @@ const modifyEvent = (state: EventState, event: Event): EventState => {
     }
   }
 
-  const currentIdentifierMap =
-        eventIdentifierMap[event.identifier] ? eventIdentifierMap[event.identifier] : [];
+  const currentIdentifierMap = eventIdentifierMap[event.identifier]
+    ? eventIdentifierMap[event.identifier]
+    : [];
 
   return {
     ...state,

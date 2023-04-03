@@ -177,17 +177,17 @@ export class StateEffects {
             LayoutActions.toggleSidenav({
               showSidenav: false
             })
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
           )
         );
 
         if (!store.states.stateHistoryMap) {
           return merge(
             actions,
-            of(
-              LayoutActions.isLoading({
-                isLoading: true
-              })
-            ),
             concat(
               this.stateService.getStateHistory(collectionId).pipe(
                 map((stateHistory) =>

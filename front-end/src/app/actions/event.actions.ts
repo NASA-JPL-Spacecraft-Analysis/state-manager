@@ -2,6 +2,8 @@ import { createAction, props } from '@ngrx/store';
 
 import { Event } from '../models';
 
+export const clearEvents = createAction('[event] clearEvents');
+
 export const createEvent = createAction(
   '[event] createEvent',
   props<{ collectionId: string; event: Event }>()
@@ -32,10 +34,7 @@ export const fetchEventTypesFailure = createAction(
   props<{ error: Error }>()
 );
 
-export const setEvents = createAction(
-  '[event] setEvents',
-  props<{ events: Event[] }>()
-);
+export const setEvents = createAction('[event] setEvents', props<{ events: Event[] }>());
 
 export const setEventHistory = createAction(
   '[event] setEventHistory',
@@ -47,15 +46,9 @@ export const setEventTypes = createAction(
   props<{ eventTypes: string[] }>()
 );
 
-export const setSelectedEvent = createAction(
-  '[event] setSelectedEvent',
-  props<{ event: Event }>()
-);
+export const setSelectedEvent = createAction('[event] setSelectedEvent', props<{ event: Event }>());
 
-export const updateEvent = createAction(
-  '[event] updateEvent',
-  props<{ event: Event }>()
-);
+export const updateEvent = createAction('[event] updateEvent', props<{ event: Event }>());
 
 export const updateEventFailure = createAction(
   '[event] updateEventFailure',

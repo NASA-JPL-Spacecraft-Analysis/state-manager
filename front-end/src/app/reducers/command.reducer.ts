@@ -24,6 +24,9 @@ export const initialState: CommandState = {
 
 export const reducer = createReducer(
   initialState,
+  on(CommandActions.clearCommands, ({}) => ({
+    ...initialState
+  })),
   on(CommandActions.saveCommandArgumentsSuccess, (state, { commandArguments }) => {
     const commandArgumentMap = {};
 
@@ -54,14 +57,12 @@ export const reducer = createReducer(
   on(CommandActions.setCommands, (state, { commands }) => ({
     ...state,
     commandMap: {
-      ...mapItems(commands) as CommandMap
+      ...(mapItems(commands) as CommandMap)
     }
   })),
   on(CommandActions.setCommandTypes, (state, { commandTypes }) => ({
     ...state,
-    commandTypes: [
-      ...commandTypes
-    ]
+    commandTypes: [...commandTypes]
   })),
   on(CommandActions.setSelectedCommand, (state, { id }) => ({
     ...state,
@@ -71,7 +72,7 @@ export const reducer = createReducer(
     ...state,
     commandMap: {
       ...state.commandMap,
-      ...mapItems(commands) as CommandMap
+      ...(mapItems(commands) as CommandMap)
     }
   }))
 );

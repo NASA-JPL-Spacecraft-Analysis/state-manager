@@ -2,6 +2,8 @@ import { createAction, props } from '@ngrx/store';
 
 import { Constraint } from '../models';
 
+export const clearConstraints = createAction('[constraint] clearConstraints');
+
 export const createConstraint = createAction(
   '[constraint] createConstraint',
   props<{ constraint: Constraint }>()
