@@ -10,15 +10,12 @@ import {
   ConstraintService,
   EventService,
   InformationTypeService,
-  MockInformationTypesService,
-  RelationshipService,
-  StateService
+  RelationshipService
 } from '../services';
 import {
   ToastActions,
   RelationshipActions,
   LayoutActions,
-  StateActions,
   InformationTypeActions,
   EventActions,
   CommandActions,
@@ -26,11 +23,7 @@ import {
 } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { RelationshipResponse } from '../models';
-import { InformationTypeEffects } from './information-types.effects';
-import { EventEffects } from './event.effects';
 import { StateEffects } from './state.effects';
-import { CommandEffects } from './command.effects';
-import { ConstraintEffects } from './constraint.effects';
 import { AppState } from '../app-store';
 
 @Injectable()
@@ -140,20 +133,7 @@ export class RelationshipEffects {
               })
             ])
           ),
-          !store.states.stateMap
-            ? this.stateService.getStates(collectionId).pipe(
-                map((states) =>
-                  StateActions.setStates({
-                    states
-                  })
-                ),
-                catchError((error: Error) => [
-                  StateActions.fetchStatesFailure({
-                    error
-                  })
-                ])
-              )
-            : EMPTY,
+          this.stateEffects.loadStates(collectionId, store.states.stateMap),
           this.getRelationships(collectionId, history)
         );
 
@@ -199,7 +179,7 @@ export class RelationshipEffects {
     private constraintService: ConstraintService,
     private eventService: EventService,
     private informationTypesService: InformationTypeService,
-    private stateService: StateService,
+    private stateEffects: StateEffects,
     private relationshipService: RelationshipService,
     private router: Router,
     private store: Store<AppState>

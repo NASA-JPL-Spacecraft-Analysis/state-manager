@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
-import { Observable, merge, of, concat } from 'rxjs';
+import { Observable, merge, of, concat, EMPTY } from 'rxjs';
 
 import { StateService } from '../services';
 import { ToastActions, StateActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { StateResponse } from '../models';
+import { State, StateResponse } from '../models';
 import { AppState } from '../app-store';
 
 @Injectable()
@@ -83,22 +83,45 @@ export class StateEffects {
             LayoutActions.toggleSidenav({
               showSidenav: false
             })
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
           )
         );
 
-        if (!store.states.stateMap) {
-          return merge(
-            actions,
-            of(
-              LayoutActions.isLoading({
-                isLoading: true
-              })
+        return merge(
+          actions,
+          concat(
+            this.loadStates(collectionId, store.states.stateMap),
+            this.stateService.getStateEnumerations(collectionId).pipe(
+              map((stateEnumerations) =>
+                StateActions.setStateEnumerations({
+                  stateEnumerations
+                })
+              ),
+              catchError((error: Error) => [
+                StateActions.fetchStateEnumerationsFailure({
+                  error
+                })
+              ])
             ),
-            this.getStates(collectionId, false)
-          );
-        }
-
-        return merge(actions, of(LayoutActions.isLoading({ isLoading: false })));
+            this.stateService.getStateTypes().pipe(
+              map((stateTypes) =>
+                StateActions.setStateTypes({
+                  stateTypes
+                })
+              ),
+              catchError((error: Error) => [
+                StateActions.fetchStateTypesFailure({
+                  error
+                })
+              ])
+            ),
+            of(LayoutActions.isLoading({ isLoading: false }))
+          )
+        );
       })
     )
   );
@@ -165,7 +188,21 @@ export class StateEffects {
                 isLoading: true
               })
             ),
-            this.getStates(collectionId, true)
+            concat(
+              this.stateService.getStateHistory(collectionId).pipe(
+                map((stateHistory) =>
+                  StateActions.setStateHistory({
+                    stateHistory
+                  })
+                ),
+                catchError((error: Error) => [
+                  StateActions.fetchStateHistoryFailure({
+                    error
+                  })
+                ])
+              ),
+              of(LayoutActions.isLoading({ isLoading: false }))
+            )
           );
         }
 
@@ -218,64 +255,23 @@ export class StateEffects {
     private store: Store<AppState>
   ) {}
 
-  private getStates(collectionId: string, history: boolean): Observable<Action> {
-    if (!history) {
-      return concat(
-        this.stateService.getStateEnumerations(collectionId).pipe(
-          map((stateEnumerations) =>
-            StateActions.setStateEnumerations({
-              stateEnumerations
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStateEnumerationsFailure({
-              error
-            })
-          ])
+  public loadStates(collectionId: string, stateMap: Record<string, State>): Observable<Action> {
+    if (!stateMap) {
+      return this.stateService.getStates(collectionId).pipe(
+        map((states) =>
+          StateActions.setStates({
+            states
+          })
         ),
-        this.stateService.getStates(collectionId).pipe(
-          map((states) =>
-            StateActions.setStates({
-              states
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStatesFailure({
-              error
-            })
-          ])
-        ),
-        this.stateService.getStateTypes().pipe(
-          map((stateTypes) =>
-            StateActions.setStateTypes({
-              stateTypes
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStateTypesFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
-      );
-    } else {
-      return concat(
-        this.stateService.getStateHistory(collectionId).pipe(
-          map((stateHistory) =>
-            StateActions.setStateHistory({
-              stateHistory
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStateHistoryFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
+        catchError((error: Error) => [
+          StateActions.fetchStatesFailure({
+            error
+          })
+        ])
       );
     }
+
+    return EMPTY;
   }
 
   private getStateEnumerationHistory(collectionId: string): Observable<Action> {

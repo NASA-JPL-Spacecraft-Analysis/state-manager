@@ -13,7 +13,6 @@ import {
   GroupActions,
   InformationTypeActions,
   LayoutActions,
-  StateActions,
   ToastActions
 } from '../actions';
 import { mapToParam, ofRoute } from '../functions/router';
@@ -22,12 +21,12 @@ import {
   ConstraintService,
   EventService,
   GroupService,
-  InformationTypeService,
-  StateService
+  InformationTypeService
 } from '../services';
 import { GroupResponse, Response } from '../models';
 import { ConfirmationDialogComponent } from '../components';
 import { AppState } from '../app-store';
+import { StateEffects } from './state.effects';
 
 @Injectable()
 export class GroupEffects {
@@ -182,20 +181,7 @@ export class GroupEffects {
               })
             ])
           ),
-          !store.states.stateMap
-            ? this.stateService.getStates(collectionId).pipe(
-                map((states) =>
-                  StateActions.setStates({
-                    states
-                  })
-                ),
-                catchError((error: Error) => [
-                  StateActions.fetchStatesFailure({
-                    error
-                  })
-                ])
-              )
-            : EMPTY
+          this.stateEffects.loadStates(collectionId, store.states.stateMap)
         );
 
         return concat(data, of(LayoutActions.isLoading({ isLoading: false })));
@@ -243,7 +229,7 @@ export class GroupEffects {
     private groupService: GroupService,
     private informationTypeService: InformationTypeService,
     private router: Router,
-    private stateService: StateService,
+    private stateEffects: StateEffects,
     private store: Store<AppState>
   ) {}
 
