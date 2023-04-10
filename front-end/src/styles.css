@@ -13,11 +13,11 @@ Table of Contents
 1. Layout
 **************/
 
-html,
-body,
-main {
-  height: 100%;
-}
+/*html,*/
+/*body,*/
+/*main {*/
+/*  height: 100%;*/
+/*}*/
 
 html {
   box-sizing: border-box;
@@ -35,6 +35,12 @@ body {
 
 .hidden {
   display: none !important;
+}
+
+.toolbar,
+.page-toolbar{
+  position: sticky;
+  width: 100%;
 }
 
 /**************
@@ -67,15 +73,16 @@ body {
 
 /* Global Styles */
 .content {
-  flex-basis: 0;
-  flex-grow: 999;
-  min-inline-size: 78%;
+  flex: 1;
+  overflow: hidden;
+  /*Height of page minus 2 toolbars*/
+  height: calc(100vh - 96px);
 }
 
 .content-container {
   display: flex;
   flex-flow: row nowrap;
-  height: 100%;
+  overflow: hidden;
 }
 
 .form-input {
@@ -98,7 +105,7 @@ body {
 
 table {
   background-color: white;
-  width: 100%;
+  overflow-x: auto;
 }
 
 table tbody tr {
@@ -133,8 +140,10 @@ th.expand {
 **************/
 
 .sidenav {
-  flex-basis: 20%;
-  flex-grow: 1;
+  flex: 0 0 370px;
+  overflow: auto;
+  /*Height of page minus 2 toolbars*/
+  height: calc(100vh - 96px);
 }
 
 .sidenav-container {
@@ -176,11 +185,21 @@ th.expand {
 .sidenav-footer {
   align-items: center;
   background-color: var(--st-gray-10);
-  border-bottom: 1px solid var(--st-gray-20);
   display: flex;
   height: 2.75em;
   justify-content: space-between;
   padding: 0em 1em;
+  position: sticky;
+}
+
+.sidenav-header{
+  top:0;
+  box-shadow: 0 3px 0px rgba(0,0,0,.03);
+  border-bottom: 1px solid var(--st-gray-20);
+}
+
+.sidenav-footer{
+  bottom: 0;
 }
 
 .sidenav-header button {
