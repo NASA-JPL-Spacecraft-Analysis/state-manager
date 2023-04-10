@@ -64,10 +64,11 @@ tr:hover {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+  padding: 8px;
 }
 
 .pagination > * {
-  margin-right: 64px;
+  margin-right: 24px;
 }
 
 .pagination-navigation > * {

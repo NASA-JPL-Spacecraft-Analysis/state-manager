@@ -39,9 +39,9 @@
     </table>
 
     <div class="pagination st-typography-bold">
-      <span>Items per page: {{ paginatedRows.length }}</span>
+      <span>{{ paginatedRows.length }} rows per page</span>
 
-      <span>{{ page }} of {{ maxPages }}</span>
+      <span>Page {{ page }} of {{ maxPages }}</span>
 
       <div class="pagination-navigation">
         <button class="st-button icon tertiary" (click)="pageChange(1, filteredRows)">
