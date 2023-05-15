@@ -270,23 +270,23 @@ export class StateResolver implements ResolverInterface<State> {
         collectionId
       }
     });
-    var states_str = "channelId,dataType,description,displayName,editable,externalLink,id,identifier,restricted,source,subsystem,type,units,version"
+    var states_str = "channelId,dataType,description,displayName,editable,externalLink,id,identifier,restricted,source,subsystem,type,units,version\n"
     var states_return = states.then((result => {
       for (var i in result) {
-        states_str += `${result[i].channelId},
-                        ${result[i].dataType},
-                        ${result[i].description},
-                        ${result[i].displayName},
-                        ${result[i].editable},
-                        ${result[i].externalLink},
-                        ${result[i].id},
-                        ${result[i].identifier},
-                        ${result[i].restricted},
-                        ${result[i].source},
-                        ${result[i].subsystem},
-                        ${result[i].type},
-                        ${result[i].units},
-                        ${result[i].version}\n`
+        states_str += `${result[i].channelId},`+
+                        `${result[i].dataType},`+
+                        `${result[i].description},`+
+                        `${result[i].displayName},`+
+                        `${result[i].editable},`+
+                        `${result[i].externalLink},`+
+                        `${result[i].id},`+
+                        `${result[i].identifier},`+
+                        `${result[i].restricted},`+
+                        `${result[i].source},`+
+                        `${result[i].subsystem},`+
+                        `${result[i].type},`+
+                        `${result[i].units},`+
+                        `${result[i].version}\n`
       }
       var states_promise = new Promise<string[]>((resolve) => resolve([states_str]))
       return states_promise
