@@ -264,6 +264,34 @@ export class StateResolver implements ResolverInterface<State> {
   }
 
   @Query(() => [String])
+  public async statesCsv(@Args() { collectionId }: CollectionIdArgs): Promise<string[]> {
+    var states = await State.find({
+      where: {
+        collectionId
+      }
+    });
+    var states_str = "channelId,dataType,description,displayName,editable,externalLink,id,identifier,restricted,source,subsystem,type,units,version\n"
+    for (var i in states) {
+      states_str += `${states[i].channelId},`+
+                    `${states[i].dataType},`+
+                    `${states[i].description},`+
+                    `${states[i].displayName},`+
+                    `${states[i].editable},`+
+                    `${states[i].externalLink},`+
+                    `${states[i].id},`+
+                    `${states[i].identifier},`+
+                    `${states[i].restricted},`+
+                    `${states[i].source},`+
+                    `${states[i].subsystem},`+
+                    `${states[i].type},`+
+                    `${states[i].units},`+
+                    `${states[i].version}\n`
+      }
+    var states_promise = new Promise<string[]>((resolve) => resolve([states_str]))
+    return states_promise
+  }
+
+  @Query(() => [String])
   public async stateTypes(): Promise<string[]> {
     return [...(await this.dataTypesService.getDataType('state'))] as string[];
   }
