@@ -170,7 +170,7 @@ export class ConstraintEffects {
     constraintMap: Record<string, Constraint>
   ): Observable<Action> {
     if (!constraintMap) {
-      this.constraintService.getConstraints(collectionId).pipe(
+      return this.constraintService.getConstraints(collectionId).pipe(
         map((constraints) =>
           ConstraintActions.setConstraints({
             constraints
