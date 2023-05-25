@@ -142,7 +142,7 @@ export class CommandEffects {
     commandMap: Record<string, Command>
   ): Observable<Action> {
     if (!commandMap) {
-      this.commandService.getCommands(collectionId).pipe(
+      return this.commandService.getCommands(collectionId).pipe(
         map((commands) =>
           CommandActions.setCommands({
             commands

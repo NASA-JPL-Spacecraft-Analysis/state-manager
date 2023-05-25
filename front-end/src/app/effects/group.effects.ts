@@ -6,9 +6,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable, EMPTY, merge, of, forkJoin, concat } from 'rxjs';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
-import { GroupActions, InformationTypeActions, LayoutActions, ToastActions } from '../actions';
+import { GroupActions, LayoutActions, ToastActions } from '../actions';
 import { mapToParam, ofRoute } from '../functions/router';
-import { GroupService, InformationTypeService } from '../services';
+import { GroupService } from '../services';
 import { GroupResponse, Response } from '../models';
 import { ConfirmationDialogComponent } from '../components';
 import { AppState } from '../app-store';
@@ -16,6 +16,7 @@ import { StateEffects } from './state.effects';
 import { EventEffects } from './event.effects';
 import { ConstraintEffects } from './constraint.effects';
 import { CommandEffects } from './command.effects';
+import { InformationTypeEffects } from './information-types.effects';
 
 @Injectable()
 export class GroupEffects {
@@ -124,18 +125,23 @@ export class GroupEffects {
           this.constraintEffects.loadConstraints(collectionId, store.constraints.constraintMap),
           this.commandEffects.loadCommands(collectionId, store.commands.commandMap),
           this.eventEffects.loadEvents(collectionId, store.events.eventMap),
-          this.getGroupsAndMappings(collectionId),
-          this.informationTypeService.getInformationTypes(collectionId).pipe(
-            map((informationTypes) =>
-              InformationTypeActions.setInformationTypes({
-                informationTypes
-              })
-            ),
-            catchError((error: Error) => [
-              InformationTypeActions.fetchInformationTypesFailure({
-                error
-              })
-            ])
+          store.groups.groups.length === 0
+            ? this.groupService.getGroupsAndMappings(collectionId).pipe(
+                map((groups) =>
+                  GroupActions.setGroups({
+                    groups
+                  })
+                ),
+                catchError((error: Error) => [
+                  GroupActions.fetchGroupsFailure({
+                    error
+                  })
+                ])
+              )
+            : EMPTY,
+          this.informationTypeEffects.loadInformationTypes(
+            collectionId,
+            store.informationTypes.informationTypeMap
           ),
           this.stateEffects.loadStates(collectionId, store.states.stateMap)
         );
@@ -183,32 +189,9 @@ export class GroupEffects {
     private dialog: MatDialog,
     private eventEffects: EventEffects,
     private groupService: GroupService,
-    private informationTypeService: InformationTypeService,
+    private informationTypeEffects: InformationTypeEffects,
     private router: Router,
     private stateEffects: StateEffects,
     private store: Store<AppState>
   ) {}
-
-  private getGroupsAndMappings(collectionId: string): Observable<Action> {
-    const url = this.router.routerState.snapshot.url.split('/').pop();
-
-    if (url === 'groups') {
-      return concat(
-        this.groupService.getGroupsAndMappings(collectionId).pipe(
-          map((groups) =>
-            GroupActions.setGroups({
-              groups
-            })
-          ),
-          catchError((error: Error) => [
-            GroupActions.fetchGroupsFailure({
-              error
-            })
-          ])
-        )
-      );
-    }
-
-    return EMPTY;
-  }
 }
