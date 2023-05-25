@@ -3,22 +3,18 @@ import { Router } from '@angular/router';
 import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
-import { Observable, merge, of, concat } from 'rxjs';
+import { Observable, merge, of, concat, EMPTY } from 'rxjs';
 
-import { InformationTypeService, RelationshipService } from '../services';
-import {
-  ToastActions,
-  RelationshipActions,
-  LayoutActions,
-  InformationTypeActions
-} from '../actions';
+import { RelationshipService } from '../services';
+import { ToastActions, RelationshipActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { RelationshipResponse } from '../models';
+import { RelationshipMap, RelationshipResponse } from '../models';
 import { StateEffects } from './state.effects';
 import { AppState } from '../app-store';
 import { EventEffects } from './event.effects';
 import { ConstraintEffects } from './constraint.effects';
 import { CommandEffects } from './command.effects';
+import { InformationTypeEffects } from './information-types.effects';
 
 @Injectable()
 export class RelationshipEffects {
@@ -58,15 +54,13 @@ export class RelationshipEffects {
       ofRoute([
         'collection/:collectionId/relationships',
         'collection/:collectionId/relationships/',
-        'collection/:collectionId/relationships/:id',
-        'collection/:collectionId/relationship-history'
+        'collection/:collectionId/relationships/:id'
       ]),
       mapToParam<string>('collectionId'),
       withLatestFrom(this.store),
       map(([collectionId, store]) => ({ collectionId, store })),
       switchMap(({ collectionId, store }) => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
-        const history = url === 'relationship-history';
 
         const data = merge(
           of(
@@ -82,23 +76,65 @@ export class RelationshipEffects {
           this.constraintEffects.loadConstraints(collectionId, store.constraints.constraintMap),
           this.commandEffects.loadCommands(collectionId, store.commands.commandMap),
           this.eventEffects.loadEvents(collectionId, store.events.eventMap),
-          this.informationTypesService.getInformationTypes(collectionId).pipe(
-            map((informationTypes) =>
-              InformationTypeActions.setInformationTypes({
-                informationTypes
-              })
-            ),
-            catchError((error: Error) => [
-              InformationTypeActions.fetchInformationTypesFailure({
-                error
-              })
-            ])
+          this.informationTypeEffects.loadInformationTypes(
+            collectionId,
+            store.informationTypes.informationTypeMap
           ),
           this.stateEffects.loadStates(collectionId, store.states.stateMap),
-          this.getRelationships(collectionId, history)
+          this.loadRelationships(collectionId, store.relationships.relationships)
         );
 
         return concat(data, of(LayoutActions.isLoading({ isLoading: false })));
+      })
+    )
+  );
+
+  public navRelationshipHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/relationship-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          )
+        );
+
+        if (!store.relationships.relationshipHistory) {
+          return merge(
+            actions,
+            this.relationshipService.getRelationshipHistory(collectionId).pipe(
+              map((relationshipHistory) =>
+                RelationshipActions.setRelationshipHistory({
+                  relationshipHistory
+                })
+              ),
+              catchError((error: Error) => [
+                RelationshipActions.fetchRelationshipHistoryFailure({
+                  error
+                })
+              ])
+            )
+          );
+        }
+
+        return merge(
+          actions,
+          of(
+            LayoutActions.isLoading({
+              isLoading: false
+            })
+          )
+        );
       })
     )
   );
@@ -139,19 +175,22 @@ export class RelationshipEffects {
     private commandEffects: CommandEffects,
     private constraintEffects: ConstraintEffects,
     private eventEffects: EventEffects,
-    private informationTypesService: InformationTypeService,
+    private informationTypeEffects: InformationTypeEffects,
     private stateEffects: StateEffects,
     private relationshipService: RelationshipService,
     private router: Router,
     private store: Store<AppState>
   ) {}
 
-  private getRelationships(collectionId: string, history: boolean): Observable<Action> {
-    if (!history) {
+  private loadRelationships(
+    collectionId: string,
+    relationships: RelationshipMap
+  ): Observable<Action> {
+    if (!relationships) {
       return this.relationshipService.getRelationships(collectionId).pipe(
-        map((relationships) =>
+        map((loadedRelationships) =>
           RelationshipActions.setRelationships({
-            relationships
+            relationships: loadedRelationships
           })
         ),
         catchError((error: Error) => [
@@ -160,19 +199,8 @@ export class RelationshipEffects {
           })
         ])
       );
-    } else {
-      return this.relationshipService.getRelationshipHistory(collectionId).pipe(
-        map((relationshipHistory) =>
-          RelationshipActions.setRelationshipHistory({
-            relationshipHistory
-          })
-        ),
-        catchError((error: Error) => [
-          RelationshipActions.fetchRelationshipHistoryFailure({
-            error
-          })
-        ])
-      );
     }
+
+    return EMPTY;
   }
 }
