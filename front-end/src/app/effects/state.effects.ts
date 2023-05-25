@@ -7,7 +7,7 @@ import { Observable, merge, of, concat, EMPTY } from 'rxjs';
 import { StateService } from '../services';
 import { ToastActions, StateActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { State, StateResponse } from '../models';
+import { State, StateEnumerationMap, StateResponse } from '../models';
 import { AppState } from '../app-store';
 
 @Injectable()
@@ -95,18 +95,7 @@ export class StateEffects {
           actions,
           concat(
             this.loadStates(collectionId, store.states.stateMap),
-            this.stateService.getStateEnumerations(collectionId).pipe(
-              map((stateEnumerations) =>
-                StateActions.setStateEnumerations({
-                  stateEnumerations
-                })
-              ),
-              catchError((error: Error) => [
-                StateActions.fetchStateEnumerationsFailure({
-                  error
-                })
-              ])
-            ),
+            this.loadStateEnumerations(collectionId, store.states.stateEnumerationMap),
             this.stateService.getStateTypes().pipe(
               map((stateTypes) =>
                 StateActions.setStateTypes({
@@ -265,6 +254,28 @@ export class StateEffects {
         ),
         catchError((error: Error) => [
           StateActions.fetchStatesFailure({
+            error
+          })
+        ])
+      );
+    }
+
+    return EMPTY;
+  }
+
+  public loadStateEnumerations(
+    collectionId: string,
+    stateEnumerationMap: StateEnumerationMap
+  ): Observable<Action> {
+    if (!stateEnumerationMap) {
+      return this.stateService.getStateEnumerations(collectionId).pipe(
+        map((stateEnumerations) =>
+          StateActions.setStateEnumerations({
+            stateEnumerations
+          })
+        ),
+        catchError((error: Error) => [
+          StateActions.fetchStateEnumerationsFailure({
             error
           })
         ])
