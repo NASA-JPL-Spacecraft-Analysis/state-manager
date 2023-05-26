@@ -3,6 +3,8 @@ import {
   Component,
   ChangeDetectionStrategy,
   OnDestroy,
+  Output,
+  EventEmitter,
   ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
@@ -37,6 +39,9 @@ import { LoadingModule } from '../../components/loading/loading.component';
   templateUrl: 'states.component.html'
 })
 export class StatesComponent implements OnDestroy {
+  @Output() public jsonExport: EventEmitter<State>;
+  @Output() public csvExport: EventEmitter<State>;
+
   public collectionId: string;
   public isLoading: boolean;
   public isSaving: boolean;
@@ -46,6 +51,7 @@ export class StatesComponent implements OnDestroy {
   public stateEnumerations: StateEnumeration[];
   public stateIdentifierMap: IdentifierMap;
   public stateTypes: string[];
+  public currentFilteredStates: State[];
 
   private stateId: string;
   private subscriptions = new SubSink();
@@ -58,6 +64,8 @@ export class StatesComponent implements OnDestroy {
     private router: Router,
     private store: Store<AppState>
   ) {
+    this.currentFilteredStates = [];
+
     this.subscriptions.add(
       this.store.pipe(select(getSelectedCollectionId)).subscribe((collectionId) => {
         this.collectionId = collectionId;
@@ -202,7 +210,76 @@ export class StatesComponent implements OnDestroy {
       })
     );
   }
+
+  public onStateJsonDownload(): void {
+    this.store.dispatch(
+      ToastActions.showToast({
+        message: 'No download yet',
+        toastType: 'error'
+      })
+    );
+    const outputData = 'data';
+
+    const blob = new Blob([outputData], { type: `application/json;charset=utf-8;` });
+    const link = document.createElement('a');
+    if (link.download !== undefined) { 
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `test.json`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+  }
+
+  public onStateCsvDownload(): void {
+    this.store.dispatch(
+      ToastActions.showToast({
+        message: 'No download yet',
+        toastType: 'error'
+      })
+    );
+    let outputData = 'channelId,dataType,description,displayName,editable,externalLink,id,identifier,restricted,source,subsystem,type,units,version\n';
+
+    for (var i in this.currentFilteredStates) {
+      outputData += `${this.currentFilteredStates[i].channelId},`+
+                    `${this.currentFilteredStates[i].dataType},`+
+                    `${this.currentFilteredStates[i].description},`+
+                    `${this.currentFilteredStates[i].displayName},`+
+                    `${this.currentFilteredStates[i].editable},`+
+                    `${this.currentFilteredStates[i].externalLink},`+
+                    `${this.currentFilteredStates[i].id},`+
+                    `${this.currentFilteredStates[i].identifier},`+
+                    `${this.currentFilteredStates[i].restricted},`+
+                    `${this.currentFilteredStates[i].source},`+
+                    `${this.currentFilteredStates[i].subsystem},`+
+                    `${this.currentFilteredStates[i].type},`+
+                    `${this.currentFilteredStates[i].units},`+
+                    `${this.currentFilteredStates[i].version}\n`
+    }
+
+    const blob = new Blob([outputData], { type: `text/csv;charset=utf-8;` });
+    const link = document.createElement('a');
+    if (link.download !== undefined) { 
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `states.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+  }
+
+  public onFilterUpdate(states: State[]): void {
+    this.currentFilteredStates = states;
+    //TODO: check filtered states list looks how it wants, onchange may not happen as frequently as expected
+  }
+
 }
+
+
 
 @NgModule({
   declarations: [StatesComponent],
