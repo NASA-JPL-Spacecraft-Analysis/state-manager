@@ -214,18 +214,18 @@ export class StatesComponent implements OnDestroy {
   public onStateJsonDownload(): void {
     this.store.dispatch(
       ToastActions.showToast({
-        message: 'No download yet',
+        message: 'Downloading States JSON',
         toastType: 'error'
       })
     );
-    const outputData = 'data';
+    const outputData = JSON.stringify(this.currentFilteredStates);
 
     const blob = new Blob([outputData], { type: `application/json;charset=utf-8;` });
     const link = document.createElement('a');
     if (link.download !== undefined) { 
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `test.json`);
+      link.setAttribute('download', `states.json`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
