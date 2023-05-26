@@ -236,7 +236,7 @@ export class StatesComponent implements OnDestroy {
   public onStateCsvDownload(): void {
     this.store.dispatch(
       ToastActions.showToast({
-        message: 'No download yet',
+        message: 'Downloading States CSV',
         toastType: 'error'
       })
     );
