@@ -264,13 +264,14 @@ export class StateResolver implements ResolverInterface<State> {
   }
 
   @Query(() => [String])
-  public async statesCsv(@Args() { collectionId }: CollectionIdArgs): Promise<string[]> {
-    var states = await State.find({
+  public async statesCsv(@Args() { collectionId }: CollectionIdArgs): Promise<string> {
+    const states = await State.find({
       where: {
         collectionId
       }
     });
-    var states_str = "channelId,dataType,description,displayName,editable,externalLink,id,identifier,restricted,source,subsystem,type,units,version\n"
+    let states_str =
+      'channelId,dataType,description,displayName,editable,externalLink,id,identifier,restricted,source,subsystem,type,units,version\n';
     for (var i in states) {
       states_str += `${states[i].channelId},`+
                     `${states[i].dataType},`+
@@ -287,8 +288,7 @@ export class StateResolver implements ResolverInterface<State> {
                     `${states[i].units},`+
                     `${states[i].version}\n`
       }
-    var states_promise = new Promise<string[]>((resolve) => resolve([states_str]))
-    return states_promise
+    return states_str
   }
 
   @Query(() => [String])

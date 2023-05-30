@@ -24,12 +24,16 @@ export class StateTableComponent extends TableComponent<State> implements OnChan
   @Input() public history: boolean;
 
   @Output() public stateSelected: EventEmitter<State>;
+  @Output() public tableFiltered: EventEmitter<State[]>;
 
   constructor() {
     super();
 
     this.stateSelected = new EventEmitter<State>();
+    this.tableFiltered = new EventEmitter<State[]>();
   }
+
+
 
   public ngOnInit(): void {
     this.columns.push(
@@ -58,11 +62,13 @@ export class StateTableComponent extends TableComponent<State> implements OnChan
     this.convertMappedData(this.stateMap);
 
     super.ngOnChanges();
+    this.tableFiltered.emit(this.filteredRows);
   }
 
   public onRowClick(state: State): void {
     this.stateSelected.emit(state);
   }
+
 }
 
 @NgModule({
