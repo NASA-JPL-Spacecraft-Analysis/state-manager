@@ -2,6 +2,8 @@ import { createAction, props } from '@ngrx/store';
 
 import { Command, CommandArgument, CommandArgumentHistory, CommandHistory } from '../models';
 
+export const clearCommands = createAction('[command] clearCommands');
+
 export const fetchCommandArgumentHistoryFailure = createAction(
   '[command] fetchCommandArgumentHistoryFailure',
   props<{ error: Error }>()
@@ -37,10 +39,7 @@ export const setCommandHistory = createAction(
   props<{ commandHistory: CommandHistory[] }>()
 );
 
-export const setCommands = createAction(
-  '[command] setCommands',
-  props<{ commands: Command[] }>()
-);
+export const setCommands = createAction('[command] setCommands', props<{ commands: Command[] }>());
 
 export const setCommandTypes = createAction(
   '[command] setCommandTypes',

@@ -1,16 +1,10 @@
 import { createAction, props } from '@ngrx/store';
 
-import {
-  State,
-  StateEnumeration,
-  StateEnumerationHistory,
-  StateHistory
-} from '../models';
+import { State, StateEnumeration, StateEnumerationHistory, StateHistory } from '../models';
 
-export const createState = createAction(
-  '[state] createState',
-  props<{ state: State }>()
-);
+export const clearStates = createAction('[state] clearStates');
+
+export const createState = createAction('[state] createState', props<{ state: State }>());
 
 export const createStateFailure = createAction(
   '[state] createStateFailure',
@@ -87,25 +81,16 @@ export const setStateHistory = createAction(
   props<{ stateHistory: StateHistory[] }>()
 );
 
-export const setStates = createAction(
-  '[state] setStates',
-  props<{ states: State[] }>()
-);
+export const setStates = createAction('[state] setStates', props<{ states: State[] }>());
 
 export const setStateTypes = createAction(
   '[state] setStatesTypes',
   props<{ stateTypes: string[] }>()
 );
 
-export const setSelectedState = createAction(
-  '[state] setSelectedState',
-  props<{ id: string }>()
-);
+export const setSelectedState = createAction('[state] setSelectedState', props<{ id: string }>());
 
-export const updateState = createAction(
-  '[state] updateState',
-  props<{ state: State }>()
-);
+export const updateState = createAction('[state] updateState', props<{ state: State }>());
 
 export const updateStateFailure = createAction(
   '[state] updateStateFailure',

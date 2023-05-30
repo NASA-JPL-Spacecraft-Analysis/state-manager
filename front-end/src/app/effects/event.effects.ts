@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Observable, merge, of, concat } from 'rxjs';
-import { switchMap, catchError, map } from 'rxjs/operators';
+import { Observable, merge, of, concat, EMPTY } from 'rxjs';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 
 import { EventActions, LayoutActions, ToastActions } from '../actions';
 import { EventService } from '../services';
 import { mapToParam, ofRoute } from '../functions/router';
-import { EventResponse } from '../models';
+import { Event, EventMap, EventResponse } from '../models';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class EventEffects {
@@ -45,35 +45,78 @@ export class EventEffects {
 
   public navEvents = createEffect(() =>
     this.actions.pipe(
-      ofRoute([
-        'collection/:collectionId/events',
-        'collection/:collectionId/events/',
-        'collection/:collectionId/events/:id',
-        'collection/:collectionId/event-history'
-      ]),
+      ofRoute(['collection/:collectionId/events/', 'collection/:collectionId/events/:id']),
       mapToParam<string>('collectionId'),
-      switchMap((collectionId) => {
-        const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = false;
-
-        if (url === 'event-history') {
-          history = true;
-        }
-
-        return merge(
-          of(
-            LayoutActions.isLoading({
-              isLoading: true
-            })
-          ),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) =>
+        merge(
           of(
             LayoutActions.toggleSidenav({
               showSidenav: false
             })
           ),
-          this.getEvents(collectionId, history)
-        );
-      })
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
+          concat(
+            this.loadEvents(collectionId, store.events.eventMap),
+            this.eventService.getEventTypes().pipe(
+              map((eventTypes) =>
+                EventActions.setEventTypes({
+                  eventTypes
+                })
+              ),
+              catchError((error: Error) => [
+                EventActions.fetchEventTypesFailure({
+                  error
+                })
+              ])
+            ),
+            of(LayoutActions.isLoading({ isLoading: false }))
+          )
+        )
+      )
+    )
+  );
+
+  public navEventHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/event-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) =>
+        merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          ),
+          store.events.eventHistoryMap
+            ? this.eventService.getEventHistory(collectionId).pipe(
+                map((eventHistory) =>
+                  EventActions.setEventHistory({
+                    eventHistory
+                  })
+                ),
+                catchError((error: Error) => [
+                  EventActions.fetchEventHistoryMapFailure({
+                    error
+                  })
+                ])
+              )
+            : EMPTY,
+          of(LayoutActions.isLoading({ isLoading: false }))
+        )
+      )
     )
   );
 
@@ -110,55 +153,26 @@ export class EventEffects {
 
   constructor(
     private actions: Actions,
-    private router: Router,
-    private eventService: EventService
+    private eventService: EventService,
+    private store: Store<AppState>
   ) {}
 
-  public getEvents(collectionId: string, history: boolean): Observable<Action> {
-    if (!history) {
-      return concat(
-        this.eventService.getEvents(collectionId).pipe(
-          map((events) =>
-            EventActions.setEvents({
-              events
-            })
-          ),
-          catchError((error: Error) => [
-            EventActions.fetchEventsFailure({
-              error
-            })
-          ])
+  public loadEvents(collectionId: string, eventMap: Record<string, Event>): Observable<Action> {
+    if (!eventMap) {
+      return this.eventService.getEvents(collectionId).pipe(
+        map((events) =>
+          EventActions.setEvents({
+            events
+          })
         ),
-        this.eventService.getEventTypes().pipe(
-          map((eventTypes) =>
-            EventActions.setEventTypes({
-              eventTypes
-            })
-          ),
-          catchError((error: Error) => [
-            EventActions.fetchEventTypesFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
-      );
-    } else {
-      return concat(
-        this.eventService.getEventHistory(collectionId).pipe(
-          map((eventHistory) =>
-            EventActions.setEventHistory({
-              eventHistory
-            })
-          ),
-          catchError((error: Error) => [
-            EventActions.fetchEventHistoryMapFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
+        catchError((error: Error) => [
+          EventActions.fetchEventsFailure({
+            error
+          })
+        ])
       );
     }
+
+    return EMPTY;
   }
 }

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, of, concat } from 'rxjs';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { Observable, merge, of, concat, EMPTY } from 'rxjs';
 
 import { StateService } from '../services';
 import { ToastActions, StateActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { StateResponse } from '../models';
+import { State, StateEnumerationMap, StateResponse } from '../models';
+import { AppState } from '../app-store';
 
 @Injectable()
 export class StateEffects {
@@ -73,39 +73,12 @@ export class StateEffects {
 
   public navStates = createEffect(() =>
     this.actions.pipe(
-      ofRoute([
-        'collection/:collectionId/state-enumeration-history',
-        'collection/:collectionId/states',
-        'collection/:collectionId/states/',
-        'collection/:collectionId/states/:id',
-        'collection/:collectionId/state-history'
-      ]),
+      ofRoute(['collection/:collectionId/states', 'collection/:collectionId/states/:id']),
       mapToParam<string>('collectionId'),
-      switchMap((collectionId) => {
-        const url = this.router.routerState.snapshot.url.split('/').pop();
-        let history = false;
-
-        if (url === 'state-enumeration-history') {
-          return merge(
-            of(
-              LayoutActions.toggleSidenav({
-                showSidenav: false
-              })
-            ),
-            of(
-              LayoutActions.isLoading({
-                isLoading: true
-              })
-            ),
-            this.getStateEnumerationHistory(collectionId)
-          );
-        }
-
-        if (url === 'state-history') {
-          history = true;
-        }
-
-        return merge(
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
           of(
             LayoutActions.toggleSidenav({
               showSidenav: false
@@ -115,8 +88,120 @@ export class StateEffects {
             LayoutActions.isLoading({
               isLoading: true
             })
+          )
+        );
+
+        return merge(
+          actions,
+          concat(
+            this.loadStates(collectionId, store.states.stateMap),
+            this.loadStateEnumerations(collectionId, store.states.stateEnumerationMap),
+            this.stateService.getStateTypes().pipe(
+              map((stateTypes) =>
+                StateActions.setStateTypes({
+                  stateTypes
+                })
+              ),
+              catchError((error: Error) => [
+                StateActions.fetchStateTypesFailure({
+                  error
+                })
+              ])
+            ),
+            of(LayoutActions.isLoading({ isLoading: false }))
+          )
+        );
+      })
+    )
+  );
+
+  public navStateEnumerationHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/state-enumeration-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          )
+        );
+
+        if (!store.states.stateEnumerationHistory) {
+          return merge(
+            actions,
+            of(
+              LayoutActions.isLoading({
+                isLoading: true
+              })
+            ),
+            this.getStateEnumerationHistory(collectionId)
+          );
+        }
+
+        return merge(
+          actions,
+          of(
+            LayoutActions.isLoading({
+              isLoading: false
+            })
+          )
+        );
+      })
+    )
+  );
+
+  public navStateHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/state-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
           ),
-          this.getStates(collectionId, history)
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          )
+        );
+
+        if (!store.states.stateHistoryMap) {
+          return merge(
+            actions,
+            concat(
+              this.stateService.getStateHistory(collectionId).pipe(
+                map((stateHistory) =>
+                  StateActions.setStateHistory({
+                    stateHistory
+                  })
+                ),
+                catchError((error: Error) => [
+                  StateActions.fetchStateHistoryFailure({
+                    error
+                  })
+                ])
+              ),
+              of(LayoutActions.isLoading({ isLoading: false }))
+            )
+          );
+        }
+
+        return merge(
+          actions,
+          of(
+            LayoutActions.isLoading({
+              isLoading: false
+            })
+          )
         );
       })
     )
@@ -155,71 +240,52 @@ export class StateEffects {
 
   constructor(
     private actions: Actions,
-    private router: Router,
-    private stateService: StateService
+    private stateService: StateService,
+    private store: Store<AppState>
   ) {}
 
-  public getStates(collectionId: string, history: boolean): Observable<Action> {
-    if (!history) {
-      return concat(
-        this.stateService.getStateEnumerations(collectionId).pipe(
-          map((stateEnumerations) =>
-            StateActions.setStateEnumerations({
-              stateEnumerations
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStateEnumerationsFailure({
-              error
-            })
-          ])
+  public loadStates(collectionId: string, stateMap: Record<string, State>): Observable<Action> {
+    if (!stateMap) {
+      return this.stateService.getStates(collectionId).pipe(
+        map((states) =>
+          StateActions.setStates({
+            states
+          })
         ),
-        this.stateService.getStates(collectionId).pipe(
-          map((states) =>
-            StateActions.setStates({
-              states
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStatesFailure({
-              error
-            })
-          ])
-        ),
-        this.stateService.getStateTypes().pipe(
-          map((stateTypes) =>
-            StateActions.setStateTypes({
-              stateTypes
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStateTypesFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
-      );
-    } else {
-      return concat(
-        this.stateService.getStateHistory(collectionId).pipe(
-          map((stateHistory) =>
-            StateActions.setStateHistory({
-              stateHistory
-            })
-          ),
-          catchError((error: Error) => [
-            StateActions.fetchStateHistoryFailure({
-              error
-            })
-          ])
-        ),
-        of(LayoutActions.isLoading({ isLoading: false }))
+        catchError((error: Error) => [
+          StateActions.fetchStatesFailure({
+            error
+          })
+        ])
       );
     }
+
+    return EMPTY;
   }
 
-  public getStateEnumerationHistory(collectionId: string): Observable<Action> {
+  public loadStateEnumerations(
+    collectionId: string,
+    stateEnumerationMap: StateEnumerationMap
+  ): Observable<Action> {
+    if (!stateEnumerationMap) {
+      return this.stateService.getStateEnumerations(collectionId).pipe(
+        map((stateEnumerations) =>
+          StateActions.setStateEnumerations({
+            stateEnumerations
+          })
+        ),
+        catchError((error: Error) => [
+          StateActions.fetchStateEnumerationsFailure({
+            error
+          })
+        ])
+      );
+    }
+
+    return EMPTY;
+  }
+
+  private getStateEnumerationHistory(collectionId: string): Observable<Action> {
     return concat(
       this.stateService.getStateEnumerationHistory(collectionId).pipe(
         map((stateEnumerationHistory) =>

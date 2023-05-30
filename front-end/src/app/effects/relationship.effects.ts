@@ -1,36 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map } from 'rxjs/operators';
-import { Observable, merge, of, concat } from 'rxjs';
+import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
+import { Observable, merge, of, concat, EMPTY } from 'rxjs';
 
-import {
-  CommandService,
-  ConstraintService,
-  EventService,
-  InformationTypeService,
-  MockInformationTypesService,
-  RelationshipService,
-  StateService
-} from '../services';
-import {
-  ToastActions,
-  RelationshipActions,
-  LayoutActions,
-  StateActions,
-  InformationTypeActions,
-  EventActions,
-  CommandActions,
-  ConstraintActions
-} from '../actions';
+import { RelationshipService } from '../services';
+import { ToastActions, RelationshipActions, LayoutActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
-import { RelationshipResponse } from '../models';
-import { InformationTypeEffects } from './information-types.effects';
-import { EventEffects } from './event.effects';
+import { RelationshipMap, RelationshipResponse } from '../models';
 import { StateEffects } from './state.effects';
-import { CommandEffects } from './command.effects';
+import { AppState } from '../app-store';
+import { EventEffects } from './event.effects';
 import { ConstraintEffects } from './constraint.effects';
+import { CommandEffects } from './command.effects';
+import { InformationTypeEffects } from './information-types.effects';
 
 @Injectable()
 export class RelationshipEffects {
@@ -70,13 +54,13 @@ export class RelationshipEffects {
       ofRoute([
         'collection/:collectionId/relationships',
         'collection/:collectionId/relationships/',
-        'collection/:collectionId/relationships/:id',
-        'collection/:collectionId/relationship-history'
+        'collection/:collectionId/relationships/:id'
       ]),
       mapToParam<string>('collectionId'),
-      switchMap((collectionId) => {
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
         const url = this.router.routerState.snapshot.url.split('/').pop();
-        const history = url === 'relationship-history';
 
         const data = merge(
           of(
@@ -89,70 +73,68 @@ export class RelationshipEffects {
               showSidenav: false
             })
           ),
-          this.constraintService.getConstraints(collectionId).pipe(
-            map((constraints) =>
-              ConstraintActions.setConstraints({
-                constraints
-              })
-            ),
-            catchError((error: Error) => [
-              ConstraintActions.fetchConstraintsFailure({
-                error
-              })
-            ])
+          this.constraintEffects.loadConstraints(collectionId, store.constraints.constraintMap),
+          this.commandEffects.loadCommands(collectionId, store.commands.commandMap),
+          this.eventEffects.loadEvents(collectionId, store.events.eventMap),
+          this.informationTypeEffects.loadInformationTypes(
+            collectionId,
+            store.informationTypes.informationTypeMap
           ),
-          this.commandService.getCommands(collectionId).pipe(
-            map((commands) =>
-              CommandActions.setCommands({
-                commands
-              })
-            ),
-            catchError((error: Error) => [
-              CommandActions.fetchCommandsFailure({
-                error
-              })
-            ])
-          ),
-          this.eventService.getEvents(collectionId).pipe(
-            map((events) =>
-              EventActions.setEvents({
-                events
-              })
-            ),
-            catchError((error: Error) => [
-              EventActions.fetchEventsFailure({
-                error
-              })
-            ])
-          ),
-          this.informationTypesService.getInformationTypes(collectionId).pipe(
-            map((informationTypes) =>
-              InformationTypeActions.setInformationTypes({
-                informationTypes
-              })
-            ),
-            catchError((error: Error) => [
-              InformationTypeActions.fetchInformationTypesFailure({
-                error
-              })
-            ])
-          ),
-          this.stateService.getStates(collectionId).pipe(
-            map((states) =>
-              StateActions.setStates({
-                states
-              })
-            ),
-            catchError((error: Error) => [
-              StateActions.fetchStatesFailure({
-                error
-              })
-            ])
-          ),
-          this.getRelationships(collectionId, history)
+          this.stateEffects.loadStates(collectionId, store.states.stateMap),
+          this.loadRelationships(collectionId, store.relationships.relationships)
         );
 
         return concat(data, of(LayoutActions.isLoading({ isLoading: false })));
+      })
+    )
+  );
+
+  public navRelationshipHistory = createEffect(() =>
+    this.actions.pipe(
+      ofRoute(['collection/:collectionId/relationship-history']),
+      mapToParam<string>('collectionId'),
+      withLatestFrom(this.store),
+      map(([collectionId, store]) => ({ collectionId, store })),
+      switchMap(({ collectionId, store }) => {
+        const actions = merge(
+          of(
+            LayoutActions.toggleSidenav({
+              showSidenav: false
+            })
+          ),
+          of(
+            LayoutActions.isLoading({
+              isLoading: true
+            })
+          )
+        );
+
+        if (!store.relationships.relationshipHistory) {
+          return merge(
+            actions,
+            this.relationshipService.getRelationshipHistory(collectionId).pipe(
+              map((relationshipHistory) =>
+                RelationshipActions.setRelationshipHistory({
+                  relationshipHistory
+                })
+              ),
+              catchError((error: Error) => [
+                RelationshipActions.fetchRelationshipHistoryFailure({
+                  error
+                })
+              ])
+            )
+          );
+        }
+
+        return merge(
+          actions,
+          of(
+            LayoutActions.isLoading({
+              isLoading: false
+            })
+          )
+        );
       })
     )
   );
@@ -190,21 +172,25 @@ export class RelationshipEffects {
 
   constructor(
     private actions: Actions,
-    private commandService: CommandService,
-    private constraintService: ConstraintService,
-    private eventService: EventService,
-    private informationTypesService: InformationTypeService,
-    private stateService: StateService,
+    private commandEffects: CommandEffects,
+    private constraintEffects: ConstraintEffects,
+    private eventEffects: EventEffects,
+    private informationTypeEffects: InformationTypeEffects,
+    private stateEffects: StateEffects,
     private relationshipService: RelationshipService,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
   ) {}
 
-  private getRelationships(collectionId: string, history: boolean): Observable<Action> {
-    if (!history) {
+  private loadRelationships(
+    collectionId: string,
+    relationships: RelationshipMap
+  ): Observable<Action> {
+    if (!relationships) {
       return this.relationshipService.getRelationships(collectionId).pipe(
-        map((relationships) =>
+        map((loadedRelationships) =>
           RelationshipActions.setRelationships({
-            relationships
+            relationships: loadedRelationships
           })
         ),
         catchError((error: Error) => [
@@ -213,19 +199,8 @@ export class RelationshipEffects {
           })
         ])
       );
-    } else {
-      return this.relationshipService.getRelationshipHistory(collectionId).pipe(
-        map((relationshipHistory) =>
-          RelationshipActions.setRelationshipHistory({
-            relationshipHistory
-          })
-        ),
-        catchError((error: Error) => [
-          RelationshipActions.fetchRelationshipHistoryFailure({
-            error
-          })
-        ])
-      );
     }
+
+    return EMPTY;
   }
 }

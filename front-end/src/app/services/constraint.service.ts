@@ -11,9 +11,7 @@ import * as gql from './gql/constraints';
   providedIn: 'root'
 })
 export class ConstraintService {
-  constructor(
-    private apollo: Apollo
-  ) {}
+  constructor(private apollo: Apollo) {}
 
   public createConstraint(constraint: Constraint): Observable<ConstraintResponse> {
     return this.apollo
@@ -31,32 +29,39 @@ export class ConstraintService {
           version: constraint.version
         }
       })
-      .pipe(map(({ data: { createConstraint }}) => {
-        if (!createConstraint.success) {
-          throw new Error(createConstraint.message);
-        }
+      .pipe(
+        map(({ data: { createConstraint } }) => {
+          if (!createConstraint.success) {
+            throw new Error(createConstraint.message);
+          }
 
-        return createConstraint;
-      }));
+          return createConstraint;
+        })
+      );
   }
 
-  public createConstraints(collectionId: string, constraints: Constraint[]): Observable<ConstraintsResponse> {
+  public createConstraints(
+    collectionId: string,
+    constraints: Constraint[]
+  ): Observable<ConstraintsResponse> {
     return this.apollo
       .mutate<{ createConstraints: ConstraintsResponse }>({
         fetchPolicy: 'no-cache',
         mutation: gql.CREATE_CONSTRAINTS,
         variables: {
           collectionId,
-          constraints 
+          constraints
         }
       })
-      .pipe(map(({ data: { createConstraints }}) => {
-        if (!createConstraints.success) {
-          throw new Error(createConstraints.message);
-        }
+      .pipe(
+        map(({ data: { createConstraints } }) => {
+          if (!createConstraints.success) {
+            throw new Error(createConstraints.message);
+          }
 
-        return createConstraints;
-      }));
+          return createConstraints;
+        })
+      );
   }
 
   public getConstraintHistory(collectionId: string): Observable<Constraint[]> {
@@ -109,12 +114,14 @@ export class ConstraintService {
           version: constraint.version
         }
       })
-      .pipe(map(({ data: { updateConstraint }}) => {
-        if (!updateConstraint.success) {
-          throw new Error(updateConstraint.message);
-        }
+      .pipe(
+        map(({ data: { updateConstraint } }) => {
+          if (!updateConstraint.success) {
+            throw new Error(updateConstraint.message);
+          }
 
-        return updateConstraint;
-      }));
+          return updateConstraint;
+        })
+      );
   }
 }

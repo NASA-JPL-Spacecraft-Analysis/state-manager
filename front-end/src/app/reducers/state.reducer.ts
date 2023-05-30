@@ -33,6 +33,9 @@ export const initialState: StateState = {
 
 export const reducer = createReducer(
   initialState,
+  on(StateActions.clearStates, ({}) => ({
+    ...initialState
+  })),
   on(StateActions.createStateSuccess, (stateState, { state }) => modifyState(stateState, state)),
   on(StateActions.deleteEnumerationsSuccess, (state, { deletedEnumerationIds }) => {
     const stateEnumerationMap = {
@@ -40,8 +43,9 @@ export const reducer = createReducer(
     };
 
     for (const stateId of Object.keys(stateEnumerationMap)) {
-      stateEnumerationMap[stateId] =
-        stateEnumerationMap[stateId].filter((enumeration) => !deletedEnumerationIds.includes(enumeration.id));
+      stateEnumerationMap[stateId] = stateEnumerationMap[stateId].filter(
+        (enumeration) => !deletedEnumerationIds.includes(enumeration.id)
+      );
     }
 
     return {
@@ -53,7 +57,7 @@ export const reducer = createReducer(
     ...stateState,
     stateMap: {
       ...stateState.stateMap,
-      ...mapItems(states) as StateMap
+      ...(mapItems(states) as StateMap)
     },
     stateIdentifierMap: {
       ...stateState.stateIdentifierMap,
@@ -121,14 +125,12 @@ export const reducer = createReducer(
       ...mapIdentifiers(states)
     },
     stateMap: {
-      ...mapItems(states) as StateMap
+      ...(mapItems(states) as StateMap)
     }
   })),
   on(StateActions.setStateTypes, (stateState, { stateTypes }) => ({
     ...stateState,
-    stateTypes: [
-      ...stateTypes
-    ]
+    stateTypes: [...stateTypes]
   })),
   on(StateActions.updateStateSuccess, (stateState, { state }) => modifyState(stateState, state))
 );
@@ -155,8 +157,9 @@ const modifyState = (stateState: StateState, state: State): StateState => {
     }
   }
 
-  const currentIdentifierMap =
-        stateIdentifierMap[state.identifier] ? stateIdentifierMap[state.identifier] : [];
+  const currentIdentifierMap = stateIdentifierMap[state.identifier]
+    ? stateIdentifierMap[state.identifier]
+    : [];
 
   return {
     ...stateState,
