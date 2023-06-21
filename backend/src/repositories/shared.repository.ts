@@ -40,6 +40,10 @@ export class SharedRepository<T extends IdentifierType> extends Repository<T> {
         }
       });
 
+      if (items.length === 0) {
+        throw new UserInputError(`There are no valid ${this.entity.name}s for collection ${collectionId}. Please provide a valid collectionId.`);
+      }
+
       const deletedIds = await this.deleteItems(items, collectionId);
 
       return {
