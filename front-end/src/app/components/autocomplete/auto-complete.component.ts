@@ -117,6 +117,10 @@ export class AutoCompleteComponent implements OnChanges {
           // Name is a property of a Command Expansion.
           searchContext += item.name.toLowerCase();
         } else if ('identifier' in item) {
+          if ('channelId' in item) {
+            searchContext += item.channelId?.toLowerCase();
+          }
+
           // Identifier is a property of everything else.
           searchContext += item.identifier.toLowerCase();
         }
