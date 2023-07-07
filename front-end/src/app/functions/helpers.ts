@@ -144,6 +144,11 @@ export const getItemNameOrIdentifier = (
           value += item.type + ' - ';
         }
 
+        // If it has a channel id, it's a state and we may need to append the channel id.
+        if ('channelId' in item) {
+          return (value += item.identifier + ' - ' + item.channelId);
+        }
+
         return (value += item.identifier);
       } else {
         // If there isn't a type, it's a group.
