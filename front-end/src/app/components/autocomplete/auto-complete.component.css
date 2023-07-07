@@ -12,6 +12,7 @@ input {
   border: 1px solid var(--st-gray-20);
   border-radius: 4px;
   width: 325px;
+  z-index: 1;
 }
 
 .autocomplete-item {
