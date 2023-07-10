@@ -165,7 +165,7 @@ export class TableComponent<T> implements OnChanges {
       // If we're looking at a number, just do an equality check. On strings check for indexOf.
       if (
         (typeof item[col] === 'number' && item[col] !== this.columnFilters.get(col)) ||
-        item[col].indexOf(this.columnFilters.get(col)) === -1
+        item[col].toLowerCase().indexOf(this.columnFilters.get(col).toLowerCase()) === -1
       ) {
         return false;
       }
