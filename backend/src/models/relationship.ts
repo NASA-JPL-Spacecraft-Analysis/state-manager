@@ -14,6 +14,10 @@ export class Relationship extends Node {
 
   @Column({ default: null, nullable: true })
   @Field({ nullable: true })
+  public description?: string;
+
+  @Column({ default: null, nullable: true })
+  @Field({ nullable: true })
   public displayName?: string;
 
   @Field(() => Models.AllTypesUnion, { nullable: true })

@@ -126,6 +126,7 @@ export class UploadConstants {
   public static relationshipCsvUploadFormat = `
     displayName,description,subjectType,subjectIdentifier,targetType,targetIdentifier
     Test upload relationship 1,test json relationship 1,Command,TEST_COMMAND,State,STATE_IDENTIFIER_1
+    Test upload relationship 2,test json relationship 2,Command Argument Enumeration,TEST_COMMAND | Arg 1 | Enumeration 123,State,STATE_IDENTIFIER_1
   `;
 
   public static relationshipJsonUploadFormat = `

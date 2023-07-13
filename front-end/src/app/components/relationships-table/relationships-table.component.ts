@@ -18,12 +18,7 @@ import {
   EventMap,
   RelationshipTypeEnum,
   CommandMap,
-  ConstraintMap,
-  CommandArgumentMap,
-  StringTMap,
-  StateEnumerationMap,
-  CommandArgumentEnumeration,
-  CommandArgument
+  ConstraintMap
 } from 'src/app/models';
 import { MaterialModule } from 'src/app/material';
 
@@ -40,13 +35,11 @@ export class RelationshipsTableComponent
   implements OnInit, OnChanges
 {
   @Input() public commandMap: CommandMap;
-  @Input() public commandArgumentEnumerationMap: Record<string, CommandArgumentEnumeration>;
   @Input() public constraintMap: ConstraintMap;
   @Input() public eventMap: EventMap;
   @Input() public history: boolean;
   @Input() public informationTypeMap: InformationTypeMap;
   @Input() public relationshipMap: RelationshipMap;
-  @Input() public stateEnumerationMap: StateEnumerationMap;
   @Input() public stateMap: StateMap;
 
   @Output() public relationshipSelected: EventEmitter<Relationship>;
@@ -55,7 +48,7 @@ export class RelationshipsTableComponent
   public commandArguments: Record<string, string>;
   public commandArgumentEnumerations: Record<string, string>;
   // Keep a map of state enumerations so we don't have to loop over the list each time.
-  public stateEnumerations: StringTMap<string>;
+  public stateEnumerations: Record<string, string>;
 
   constructor() {
     super();
@@ -88,6 +81,9 @@ export class RelationshipsTableComponent
     this.stateEnumerations = {};
 
     if (this.relationshipMap) {
+      this.mapCommandArguments();
+      this.mapStateEnumerations();
+
       for (const key of Object.keys(this.relationshipMap)) {
         this.relationshipsList.push(this.relationshipMap[key]);
       }
@@ -123,11 +119,6 @@ export class RelationshipsTableComponent
 
         break;
       case RelationshipTypeEnum['Command Argument']:
-        // If this is the first time we've seen a command argument, memoize them and their enumerations.
-        if (Object.keys(this.commandArguments).length === 0) {
-          this.mapCommandArguments();
-        }
-
         if (this.commandArguments && this.commandArguments[id]) {
           return this.commandArguments[id];
         }
@@ -158,11 +149,6 @@ export class RelationshipsTableComponent
 
         break;
       case RelationshipTypeEnum['State Enumeration']:
-        // If this is the first time we've seen a state enumeration, memoize them.
-        if (Object.keys(this.stateEnumerations).length === 0) {
-          this.mapStateEnumerations();
-        }
-
         if (this.stateEnumerations && this.stateEnumerations[id]) {
           return this.stateEnumerations[id];
         }
@@ -184,12 +170,14 @@ export class RelationshipsTableComponent
   private mapCommandArguments() {
     if (this.commandMap) {
       for (const command of Object.values(this.commandMap)) {
-        for (const commandArgument of command.arguments) {
-          this.commandArguments[commandArgument.id] = commandArgument.name;
+        if (command.arguments) {
+          for (const commandArgument of command.arguments) {
+            this.commandArguments[commandArgument.id] = commandArgument.name;
 
-          for (const commandArgumentEnumeration of commandArgument.enumerations) {
-            this.commandArgumentEnumerations[commandArgumentEnumeration.id] =
-              commandArgumentEnumeration.label;
+            for (const commandArgumentEnumeration of commandArgument.enumerations) {
+              this.commandArgumentEnumerations[commandArgumentEnumeration.id] =
+                commandArgumentEnumeration.label;
+            }
           }
         }
       }
@@ -197,9 +185,13 @@ export class RelationshipsTableComponent
   }
 
   private mapStateEnumerations() {
-    for (const key of Object.keys(this.stateEnumerationMap)) {
-      for (const stateEnumeration of this.stateEnumerationMap[key]) {
-        this.stateEnumerations[stateEnumeration.id] = stateEnumeration.label;
+    if (this.stateMap) {
+      for (const state of Object.values(this.stateMap)) {
+        if (state.enumerations) {
+          for (const stateEnumeration of state.enumerations) {
+            this.stateEnumerations[stateEnumeration.id] = stateEnumeration.label;
+          }
+        }
       }
     }
   }
