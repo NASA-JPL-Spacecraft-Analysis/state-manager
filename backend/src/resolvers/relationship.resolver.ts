@@ -1,10 +1,28 @@
-import { Resolver, Query, ResolverInterface, FieldResolver, Root, Args, Mutation, Arg } from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  ResolverInterface,
+  FieldResolver,
+  Root,
+  Args,
+  Mutation,
+  Arg
+} from 'type-graphql';
 import { UserInputError } from 'apollo-server';
 
 import { CollectionIdArgs, IdArgs, IdentifierArgs } from '../args';
-import { CreateRelationshipInput, CreateRelationshipsInput, UpdateRelationshipInput } from '../inputs';
-import { Relationship, RelationshipHistory, } from '../models';
-import { DeleteItemResponse, DeleteItemsResponse, RelationshipResponse, RelationshipsResponse } from '../responses';
+import {
+  CreateRelationshipInput,
+  CreateRelationshipsInput,
+  UpdateRelationshipInput
+} from '../inputs';
+import { Relationship, RelationshipHistory } from '../models';
+import {
+  DeleteItemResponse,
+  DeleteItemsResponse,
+  RelationshipResponse,
+  RelationshipsResponse
+} from '../responses';
 import { ErrorConstants, RelationshipConstants } from '../constants';
 import { HelperService, ValidationService } from '../service';
 import { AllTypesUnion } from '../models/all-types-union';
@@ -14,10 +32,12 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   constructor(
     private readonly helperService: HelperService,
     private readonly validationService: ValidationService
-  ) { }
+  ) {}
 
   @Mutation(() => RelationshipResponse)
-  public async createRelationship(@Arg('data') data: CreateRelationshipInput): Promise<RelationshipResponse> {
+  public async createRelationship(
+    @Arg('data') data: CreateRelationshipInput
+  ): Promise<RelationshipResponse> {
     try {
       const relationship: Relationship = Relationship.create(data);
       await relationship.save();
@@ -38,22 +58,36 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   @Mutation(() => RelationshipsResponse)
-  public async createRelationships(@Arg('data') data: CreateRelationshipsInput): Promise<RelationshipsResponse> {
+  public async createRelationships(
+    @Arg('data') data: CreateRelationshipsInput
+  ): Promise<RelationshipsResponse> {
     try {
       for (const relationship of data.relationships) {
         relationship.collectionId = data.collectionId;
 
-        const subject =
-          await this.helperService.findItemByType(data.collectionId, relationship.subjectType, undefined, relationship.subjectIdentifier);
-        const target =
-          await this.helperService.findItemByType(data.collectionId, relationship.targetType, undefined, relationship.targetIdentifier);
+        const subject = await this.helperService.findItemByType(
+          data.collectionId,
+          relationship.subjectType,
+          undefined,
+          relationship.subjectIdentifier
+        );
+        const target = await this.helperService.findItemByType(
+          data.collectionId,
+          relationship.targetType,
+          undefined,
+          relationship.targetIdentifier
+        );
 
         if (!subject) {
-          throw new UserInputError(RelationshipConstants.subjectNotFoundError(relationship.subjectIdentifier));
+          throw new UserInputError(
+            RelationshipConstants.subjectNotFoundError(relationship.subjectIdentifier)
+          );
         }
 
         if (!target) {
-          throw new UserInputError(RelationshipConstants.targetNotFoundError(relationship.targetIdentifier));
+          throw new UserInputError(
+            RelationshipConstants.targetNotFoundError(relationship.targetIdentifier)
+          );
         }
 
         relationship.subjectTypeId = subject.id;
@@ -82,7 +116,9 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   @Mutation(() => DeleteItemsResponse)
-  public async deleteAllRelationships(@Args() { collectionId }: CollectionIdArgs): Promise<DeleteItemsResponse> {
+  public async deleteAllRelationships(
+    @Args() { collectionId }: CollectionIdArgs
+  ): Promise<DeleteItemsResponse> {
     try {
       const relationships = await Relationship.find({
         where: {
@@ -134,7 +170,6 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
         message: 'Relationship deleted',
         success: true
       };
-
     } catch (error) {
       return {
         message: error,
@@ -153,7 +188,9 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   @Query(() => [RelationshipHistory])
-  public relationshipHistory(@Args() { collectionId }: CollectionIdArgs): Promise<RelationshipHistory[]> {
+  public relationshipHistory(
+    @Args() { collectionId }: CollectionIdArgs
+  ): Promise<RelationshipHistory[]> {
     return RelationshipHistory.find({
       where: {
         collectionId
@@ -171,7 +208,9 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   @FieldResolver(() => AllTypesUnion)
-  public async subject(@Root() relationship: Relationship): Promise<typeof AllTypesUnion | undefined> {
+  public async subject(
+    @Root() relationship: Relationship
+  ): Promise<typeof AllTypesUnion | undefined> {
     return this.helperService.findItemByType(
       relationship.collectionId,
       relationship.subjectType,
@@ -180,7 +219,9 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   @FieldResolver(() => AllTypesUnion)
-  public async target(@Root() relationship: Relationship): Promise<typeof AllTypesUnion | undefined> {
+  public async target(
+    @Root() relationship: Relationship
+  ): Promise<typeof AllTypesUnion | undefined> {
     return this.helperService.findItemByType(
       relationship.collectionId,
       relationship.targetType,
@@ -189,7 +230,9 @@ export class RelationshipResolver implements ResolverInterface<Relationship> {
   }
 
   @Mutation(() => RelationshipResponse)
-  public async updateRelationship(@Arg('data') data: UpdateRelationshipInput): Promise<RelationshipResponse> {
+  public async updateRelationship(
+    @Arg('data') data: UpdateRelationshipInput
+  ): Promise<RelationshipResponse> {
     try {
       const relationship = await this.relationship({ id: data.id });
 

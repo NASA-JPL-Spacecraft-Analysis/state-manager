@@ -13,8 +13,8 @@ interface FileUploadDialogData {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'file-upload-dialog',
-  styleUrls: [ 'file-upload-dialog.component.css' ],
+  selector: 'sm-file-upload-dialog',
+  styleUrls: ['file-upload-dialog.component.css'],
   templateUrl: 'file-upload-dialog.component.html'
 })
 export class FileUploadDialogComponent {
@@ -35,15 +35,8 @@ export class FileUploadDialogComponent {
 }
 
 @NgModule({
-  declarations: [
-    FileUploadDialogComponent
-  ],
-  exports: [
-    FileUploadDialogComponent
-  ],
-  imports: [
-    CommonModule,
-    MaterialModule
-  ]
+  declarations: [FileUploadDialogComponent],
+  exports: [FileUploadDialogComponent],
+  imports: [CommonModule, MaterialModule]
 })
 export class FileUploadDialogModule {}
