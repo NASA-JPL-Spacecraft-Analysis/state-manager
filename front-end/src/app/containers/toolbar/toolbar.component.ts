@@ -1,4 +1,10 @@
-import { Component, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import {
+  Component,
+  NgModule,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  OnDestroy
+} from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
@@ -13,13 +19,15 @@ import { CollectionModule } from '../collections/collections.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-toolbar',
-  styleUrls: [ 'toolbar.component.css' ],
+  selector: 'sm-toolbar',
+  styleUrls: ['toolbar.component.css'],
   templateUrl: 'toolbar.component.html'
 })
 export class ToolbarComponent implements OnDestroy {
   public route: string;
   public selectedCollectionId: string;
+
+  public versionText = 'State Manager v8.0.1a G23.1';
 
   private subscriptions = new SubSink();
 
@@ -30,15 +38,21 @@ export class ToolbarComponent implements OnDestroy {
     private router: Router,
     private store: Store<AppState>
   ) {
-    this.matIconRegistry.addSvgIcon('help', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/help.svg'));
-    this.matIconRegistry.addSvgIcon('more_vert', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/more_vert.svg'));
+    this.matIconRegistry.addSvgIcon(
+      'help',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/help.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'more_vert',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/more_vert.svg')
+    );
 
     this.subscriptions.add(
-      this.store.pipe(select(getSelectedCollectionId)).subscribe(selectedCollectionId => {
+      this.store.pipe(select(getSelectedCollectionId)).subscribe((selectedCollectionId) => {
         this.selectedCollectionId = selectedCollectionId;
         this.changeDetectorRef.markForCheck();
       }),
-      this.router.events.subscribe(event => {
+      this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {
           const splitRoute = event.url.split('/');
           this.route = splitRoute[splitRoute.length - 1];
@@ -53,17 +67,8 @@ export class ToolbarComponent implements OnDestroy {
 }
 
 @NgModule({
-  declarations: [
-    ToolbarComponent
-  ],
-  exports: [
-    ToolbarComponent
-  ],
-  imports: [
-    CollectionModule,
-    CommonModule,
-    MaterialModule,
-    RouterModule
-  ]
+  declarations: [ToolbarComponent],
+  exports: [ToolbarComponent],
+  imports: [CollectionModule, CommonModule, MaterialModule, RouterModule]
 })
 export class ToolbarModule {}
