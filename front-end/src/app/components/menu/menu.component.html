@@ -1,0 +1,9 @@
+<button class="st-button icon tertiary hamburger" (click)="onMenuClick($event)">
+  <i class="si si-hamburger"></i>
+</button>
+
+<div *ngIf="showMenu" class="menu">
+  <div class="menu-items">
+    <ng-content></ng-content>
+  </div>
+</div>

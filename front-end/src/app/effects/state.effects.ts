@@ -5,10 +5,11 @@ import { switchMap, catchError, map, withLatestFrom } from 'rxjs/operators';
 import { Observable, merge, of, concat, EMPTY } from 'rxjs';
 
 import { StateService } from '../services';
-import { ToastActions, StateActions, LayoutActions } from '../actions';
+import { ToastActions, StateActions, LayoutActions, FileExportActions } from '../actions';
 import { ofRoute, mapToParam } from '../functions/router';
 import { State, StateEnumerationMap, StateResponse } from '../models';
 import { AppState } from '../app-store';
+import { FileGenerationService } from '../services/file-generation.service';
 
 @Injectable()
 export class StateEffects {
@@ -68,6 +69,22 @@ export class StateEffects {
           ])
         )
       )
+    )
+  );
+
+  public exportStates = createEffect(() =>
+    this.actions.pipe(
+      ofType(FileExportActions.exportStates),
+      switchMap(({ states, fileType }) => {
+        this.fileGenerationService.generateFile(states, fileType, 'states');
+
+        return [
+          ToastActions.showToast({
+            message: `Generating states.${fileType} for download...`,
+            toastType: 'success'
+          })
+        ];
+      })
     )
   );
 
@@ -240,6 +257,7 @@ export class StateEffects {
 
   constructor(
     private actions: Actions,
+    private fileGenerationService: FileGenerationService<State>,
     private stateService: StateService,
     private store: Store<AppState>
   ) {}

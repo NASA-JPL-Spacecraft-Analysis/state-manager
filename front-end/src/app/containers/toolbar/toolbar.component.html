@@ -62,22 +62,16 @@
       Groups
     </button>
 
-    <button class="st-button tertiary" [matMenuTriggerFor]="versionMenu">
-      <mat-icon class="help-icon" svgIcon="help"></mat-icon>
+    <button class="st-button tertiary" [routerLink]="'/faqs'">
+      <span>FAQs</span>
     </button>
 
     <mat-menu #versionMenu="matMenu">
       <span class="version-text">{{ versionText }}</span>
     </mat-menu>
 
-    <button class="st-button tertiary" [matMenuTriggerFor]="menu">
-      <mat-icon svgIcon="more_vert"></mat-icon>
+    <button class="st-button tertiary" [matMenuTriggerFor]="versionMenu">
+      <mat-icon class="help-icon" svgIcon="help"></mat-icon>
     </button>
-
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item [routerLink]="'/faqs'" class="menu-button">
-        <span>FAQs</span>
-      </button>
-    </mat-menu>
   </div>
 </div>

@@ -15,6 +15,7 @@ import {
   informationTypes,
   MappingsUpload,
   Relationship,
+  RelationshipTypeEnum,
   State,
   StateEnumerationUpload
 } from '../models';
@@ -125,8 +126,10 @@ export class ValidationService {
     return (
       relationship.hasOwnProperty('displayName') &&
       relationship.hasOwnProperty('subjectType') &&
+      relationship.subjectType in RelationshipTypeEnum &&
       relationship.hasOwnProperty('subjectIdentifier') &&
       relationship.hasOwnProperty('targetType') &&
+      relationship.targetType in RelationshipTypeEnum &&
       relationship.hasOwnProperty('targetIdentifier')
     );
   }

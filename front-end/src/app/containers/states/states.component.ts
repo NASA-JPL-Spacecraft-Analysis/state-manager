@@ -24,13 +24,15 @@ import {
   getIsLoading,
   getIsSaving
 } from '../../selectors';
-import { StateActions, LayoutActions, ToastActions } from '../../actions';
+import { StateActions, LayoutActions, ToastActions, FileExportActions } from '../../actions';
 import { StateSidenavModule, StateTableModule } from 'src/app/components';
 import { AppState } from 'src/app/app-store';
 import { MaterialModule } from 'src/app/material';
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
 import { LoadingModule } from '../../components/loading/loading.component';
+import { FileType } from '../../constants/export.constants';
+import { MenuModule } from '../../components/menu/menu.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,6 +54,8 @@ export class StatesComponent implements OnDestroy {
   public stateIdentifierMap: IdentifierMap;
   public stateTypes: string[];
   public currentFilteredStates: State[];
+
+  public readonly FileType = FileType;
 
   private stateId: string;
   private subscriptions = new SubSink();
@@ -199,6 +203,15 @@ export class StatesComponent implements OnDestroy {
     );
   }
 
+  public onStateExport(fileType: FileType): void {
+    this.store.dispatch(
+      FileExportActions.exportStates({
+        states: this.currentFilteredStates,
+        fileType
+      })
+    );
+  }
+
   public onStateFileUpload(): void {
     this.store.dispatch(
       LayoutActions.openFileUploadDialog({
@@ -211,75 +224,11 @@ export class StatesComponent implements OnDestroy {
     );
   }
 
-  public onStateJsonDownload(): void {
-    this.store.dispatch(
-      ToastActions.showToast({
-        message: 'Downloading States JSON',
-        toastType: 'error'
-      })
-    );
-    const outputData = JSON.stringify(this.currentFilteredStates);
-
-    const blob = new Blob([outputData], { type: `application/json;charset=utf-8;` });
-    const link = document.createElement('a');
-    if (link.download !== undefined) { 
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `states.json`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
-  }
-
-  public onStateCsvDownload(): void {
-    this.store.dispatch(
-      ToastActions.showToast({
-        message: 'Downloading States CSV',
-        toastType: 'error'
-      })
-    );
-    let outputData = 'channelId,dataType,description,displayName,editable,externalLink,id,identifier,restricted,source,subsystem,type,units,version\n';
-
-    for (var i in this.currentFilteredStates) {
-      outputData += `${this.currentFilteredStates[i].channelId},`+
-                    `${this.currentFilteredStates[i].dataType},`+
-                    `${this.currentFilteredStates[i].description},`+
-                    `${this.currentFilteredStates[i].displayName},`+
-                    `${this.currentFilteredStates[i].editable},`+
-                    `${this.currentFilteredStates[i].externalLink},`+
-                    `${this.currentFilteredStates[i].id},`+
-                    `${this.currentFilteredStates[i].identifier},`+
-                    `${this.currentFilteredStates[i].restricted},`+
-                    `${this.currentFilteredStates[i].source},`+
-                    `${this.currentFilteredStates[i].subsystem},`+
-                    `${this.currentFilteredStates[i].type},`+
-                    `${this.currentFilteredStates[i].units},`+
-                    `${this.currentFilteredStates[i].version}\n`
-    }
-
-    const blob = new Blob([outputData], { type: `text/csv;charset=utf-8;` });
-    const link = document.createElement('a');
-    if (link.download !== undefined) { 
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `states.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
-  }
-
   public onFilterUpdate(states: State[]): void {
     this.currentFilteredStates = states;
     //TODO: check filtered states list looks how it wants, onchange may not happen as frequently as expected
   }
-
 }
-
-
 
 @NgModule({
   declarations: [StatesComponent],
@@ -288,6 +237,7 @@ export class StatesComponent implements OnDestroy {
     CommonModule,
     LoadingModule,
     MaterialModule,
+    MenuModule,
     RouterModule,
     StateSidenavModule,
     StateTableModule
