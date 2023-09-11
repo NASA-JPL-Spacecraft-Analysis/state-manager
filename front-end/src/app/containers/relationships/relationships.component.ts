@@ -41,6 +41,7 @@ import {
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
 import { LoadingModule } from '../../components/loading/loading.component';
+import { MenuModule } from '../../components/menu/menu.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -217,6 +218,7 @@ export class RelationshipsComponent implements OnDestroy {
   imports: [
     CommonModule,
     MaterialModule,
+    MenuModule,
     LoadingModule,
     RelationshipSidenavModule,
     RelationshipsTableModule,

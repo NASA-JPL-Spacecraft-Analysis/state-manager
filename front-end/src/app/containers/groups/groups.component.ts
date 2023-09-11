@@ -41,6 +41,7 @@ import { GroupActions, LayoutActions, ToastActions } from 'src/app/actions';
 import { UploadConstants } from 'src/app/constants';
 import { getItemNameOrIdentifier } from '../../functions/helpers';
 import { LoadingModule } from '../../components/loading/loading.component';
+import { MenuModule } from '../../components/menu/menu.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -225,6 +226,6 @@ export class GroupsComponent implements OnDestroy {
 @NgModule({
   declarations: [GroupsComponent],
   exports: [GroupsComponent],
-  imports: [CommonModule, GroupsSidenavModule, GroupsTableModule, LoadingModule]
+  imports: [CommonModule, GroupsSidenavModule, GroupsTableModule, LoadingModule, MenuModule]
 })
 export class GroupsModule {}

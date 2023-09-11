@@ -26,6 +26,7 @@ import { CommandSidenavModule, CommandTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
 import { LoadingModule } from '../../components/loading/loading.component';
+import { MenuModule } from '../../components/menu/menu.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -172,6 +173,13 @@ export class CommandsComponent implements OnDestroy {
 @NgModule({
   declarations: [CommandsComponent],
   exports: [CommandsComponent],
-  imports: [CommandSidenavModule, CommandTableModule, CommonModule, LoadingModule, RouterModule]
+  imports: [
+    CommandSidenavModule,
+    CommandTableModule,
+    CommonModule,
+    LoadingModule,
+    MenuModule,
+    RouterModule
+  ]
 })
 export class CommandsModule {}

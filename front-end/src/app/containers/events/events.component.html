@@ -5,12 +5,14 @@
     <div class="page-toolbar-buttons">
       <button class="st-button tertiary" routerLink="../../event-history">Event History</button>
 
-      <button class="st-button icon tertiary" (click)="onEventFileUpload()">
-        <i class="si-upload"></i>
-        Upload Events
-      </button>
-
       <button class="st-button primary" (click)="onModifyEvent()">Create New Event</button>
+
+      <sm-menu>
+        <button class="st-button icon tertiary" (click)="onEventFileUpload()">
+          <i class="si-upload"></i>
+          Upload Events
+        </button>
+      </sm-menu>
     </div>
   </div>
 
