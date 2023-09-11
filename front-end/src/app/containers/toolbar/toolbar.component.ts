@@ -27,7 +27,7 @@ export class ToolbarComponent implements OnDestroy {
   public route: string;
   public selectedCollectionId: string;
 
-  public versionText = 'State Manager v8.0.1a G23.1';
+  public versionText = 'State Manager v9.0.0 G23.1.1';
 
   private subscriptions = new SubSink();
 
