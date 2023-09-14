@@ -4,4 +4,4 @@ WORKDIR /server
 COPY . .
 RUN npm install
 
-CMD ["/bin/sh",  "-c",  "exec npm run start"]
+CMD ["npm", "run" "start"]
