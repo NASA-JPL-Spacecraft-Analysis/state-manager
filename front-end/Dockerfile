@@ -5,8 +5,7 @@ FROM node:16.14.2-alpine3.15 AS build
 WORKDIR /app
 COPY front-end/ .
 RUN npm install --legacy-peer-deps
-RUN npm install -g @angular/cli@11.0.3
-RUN ng build --baseHref=/state-manager/ --configuration=production --output-path=/dist
+RUN npm run build
 
 # Run stage
 FROM nginx:alpine
