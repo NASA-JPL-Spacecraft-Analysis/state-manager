@@ -30,7 +30,7 @@ CREATE TABLE `command_arguments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `command_argument_enumerations` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `commandArgumentId` varchar(36) NOT NULL,
   `label` text,
@@ -95,14 +95,14 @@ CREATE TABLE `constraints` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_types` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `name` text NOT NULL,
   `type` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `event_history` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `eventId` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE `groups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `information_types` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) DEFAULT NULL,
   `type` text NOT NULL,
   `identifier` varchar(45) NOT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE `information_types` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `relationship_history` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `relationshipId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
@@ -177,7 +177,7 @@ CREATE TABLE `relationship_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `relationships` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `displayName` text NOT NULL,
   `subjectToTargetDescription` text,
@@ -201,7 +201,7 @@ CREATE TABLE `state_enumeration_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_enumerations` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `stateId` varchar(36) NOT NULL,
   `label` text,
@@ -210,7 +210,7 @@ CREATE TABLE `state_enumerations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `state_history` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `collectionId` varchar(36) NOT NULL,
   `stateId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
@@ -231,7 +231,7 @@ CREATE TABLE `state_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `states` (
-  `id` varchar(36) NOT NULL DEFAULT 'uuid()',
+  `id` varchar(36) NOT NULL,
   `channelId` text,
   `collectionId` varchar(36) NOT NULL,
   `identifier` varchar(255) NOT NULL,
@@ -249,24 +249,24 @@ CREATE TABLE `states` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `data_types` (name, type) VALUES
-('command','command'),
-('alarm_limit','state'),
-('channel','state'),
-('fsw_parameter','state'),
-('model_input','state'),
-('predict','state'),
-('trend','state'),
-('user','state'),
-('channel_alarm','constraint'),
-('downlink_rule_check','constraint'),
-('flight_rule_check','constraint'),
-('goal','informationType'),
-('model','informationType'),
-('activity_instance','event'),
-('command_instance','event'),
-('evr','event'),
-('predicted_event','event'),
-('user','event'),
-('guideline','constraint'),
-('scheduling_constraint','constraint');
+INSERT INTO `data_types` (id, name, type) VALUES
+  (uuid(), 'command', 'command'),
+  (uuid(), 'alarm_limit', 'state'),
+  (uuid(), 'channel', 'state'),
+  (uuid(), 'fsw_parameter', 'state'),
+  (uuid(), 'model_input', 'state'),
+  (uuid(), 'predict', 'state'),
+  (uuid(), 'trend', 'state'),
+  (uuid(), 'user', 'state'),
+  (uuid(), 'channel_alarm', 'constraint'),
+  (uuid(), 'downlink_rule_check', 'constraint'),
+  (uuid(), 'flight_rule_check', 'constraint'),
+  (uuid(), 'goal', 'informationType'),
+  (uuid(), 'model', 'informationType'),
+  (uuid(), 'activity_instance', 'event'),
+  (uuid(), 'command_instance', 'event'),
+  (uuid(), 'evr', 'event'),
+  (uuid(), 'predicted_event', 'event'),
+  (uuid(), 'user', 'event'),
+  (uuid(), 'guideline', 'constraint'),
+  (uuid(), 'scheduling_constraint', 'constraint');
