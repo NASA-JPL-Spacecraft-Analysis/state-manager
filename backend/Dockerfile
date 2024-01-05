@@ -1,12 +1,8 @@
 FROM node:14-alpine
 
 WORKDIR /server
-COPY package.json package-lock.json ./
+COPY backend/package.json backend/package-lock.json ./
 RUN npm install
-COPY . .
+COPY backend/. .
 
-# Get envsubst dependency
-RUN apk add --no-cache gettext
-
-# When container starts, create a new ormconfig.json file with values from environment vars
-CMD ["/bin/sh",  "-c",  "envsubst < ormconfig_template.json > ormconfig.json && exec npm run start"]
+CMD ["npm", "start"]
