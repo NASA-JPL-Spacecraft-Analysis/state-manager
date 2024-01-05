@@ -2,7 +2,7 @@ table {
   table-layout: fixed;
 }
 
-table tbody{
+table tbody {
   /*Height of page minus 2 toolbars, table header, and footer*/
   height: calc(100vh - 210px);
 }
@@ -22,7 +22,7 @@ td {
 thead th {
   display: flex;
   flex-direction: column;
-  box-shadow: 0 3px 0px rgba(0,0,0,.03);
+  box-shadow: 0 3px 0px rgba(0, 0, 0, 0.03);
   border-bottom: 1px solid var(--st-gray-20);
 }
 
@@ -36,10 +36,10 @@ thead tr th input {
   margin-top: 4px;
 }
 
-thead{
+thead {
   position: sticky;
   width: 100%;
-  top:0;
+  top: 0;
 }
 
 tr:hover {
@@ -79,7 +79,7 @@ tr:hover {
   font-size: 12px;
 }
 
-.pagination{
+.pagination {
   position: sticky;
   bottom: 0;
 }
@@ -143,7 +143,7 @@ td.version {
 }
 
 td,
-th{
+th {
   min-width: 90px;
 }
 

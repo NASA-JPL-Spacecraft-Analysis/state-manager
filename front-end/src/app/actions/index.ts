@@ -2,6 +2,7 @@ import * as CollectionActions from './collection.actions';
 import * as CommandActions from './command.actions';
 import * as ConstraintActions from './constraint.actions';
 import * as EventActions from './event.actions';
+import * as FileExportActions from './file-export.actions';
 import * as FileUploadActions from './file-upload.actions';
 import * as GroupActions from './group.actions';
 import * as InformationTypeActions from './information-type.actions';
@@ -15,6 +16,7 @@ export {
   CommandActions,
   ConstraintActions,
   EventActions,
+  FileExportActions,
   FileUploadActions,
   GroupActions,
   InformationTypeActions,

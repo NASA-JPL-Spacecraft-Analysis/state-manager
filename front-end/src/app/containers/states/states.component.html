@@ -9,33 +9,39 @@
         State Enumeration History
       </button>
 
-      <button class="st-button icon tertiary" (click)="onStateFileUpload()">
-        <i class="si-upload"></i>
-        Upload States
-      </button>
-
-      <button class="st-button icon tertiary" (click)="onStateEnumerationFileUpload()">
-        <i class="si-upload"></i>
-        Upload Enumerations
-      </button>
-
-      <button class="st-button icon tertiary" (click)="onStateJsonDownload()">
-        <i class="si-download"></i>
-        Download States JSON
-      </button>
-
-      <button class="st-button icon tertiary" (click)="onStateCsvDownload()">
-        <i class="si-download"></i>
-        Download States CSV
-      </button>
-
       <button class="st-button primary" (click)="onModifyState()">Create New State</button>
+
+      <sm-menu>
+        <button class="st-button icon tertiary" (click)="onStateExport(FileType.JSON)">
+          <i class="si-download"></i>
+          Download States JSON
+        </button>
+
+        <button class="st-button icon tertiary" (click)="onStateExport(FileType.CSV)">
+          <i class="si-download"></i>
+          Download States CSV
+        </button>
+
+        <button class="st-button icon tertiary" (click)="onStateFileUpload()">
+          <i class="si-upload"></i>
+          Upload States
+        </button>
+
+        <button class="st-button icon tertiary" (click)="onStateEnumerationFileUpload()">
+          <i class="si-upload"></i>
+          Upload Enumerations
+        </button>
+      </sm-menu>
     </div>
   </div>
 
   <div class="content-container">
     <div class="content">
-      <sm-state-table [stateMap]="stateMap" (stateSelected)="onModifyState($event)" (tableFiltered)="onFilterUpdate($event)">
+      <sm-state-table
+        [stateMap]="stateMap"
+        (stateSelected)="onModifyState($event)"
+        (tableFiltered)="onFilterUpdate($event)"
+      >
       </sm-state-table>
     </div>
 

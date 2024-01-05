@@ -27,6 +27,7 @@ import { ConstraintActions, LayoutActions, ToastActions } from 'src/app/actions'
 import { UploadConstants } from 'src/app/constants';
 import { NavigationService } from '../../services';
 import { LoadingModule } from '../../components/loading/loading.component';
+import { MenuModule } from '../../components/menu/menu.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -184,6 +185,7 @@ export class ConstraintsComponent implements OnDestroy {
     ConstraintSidenavModule,
     ConstraintTableModule,
     LoadingModule,
+    MenuModule,
     RouterModule
   ]
 })

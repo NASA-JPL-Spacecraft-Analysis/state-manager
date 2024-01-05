@@ -5,14 +5,16 @@
     <div class="page-toolbar-buttons">
       <button class="st-button tertiary" routerLink="../../constraint-history">History</button>
 
-      <button class="st-button icon tertiary" (click)="onFileUpload()">
-        <i class="si-upload"></i>
-        Upload Constraints
-      </button>
-
       <button class="st-button primary" (click)="onModifyConstraint()">
         Create New Constraint
       </button>
+
+      <sm-menu>
+        <button class="st-button icon tertiary" (click)="onFileUpload()">
+          <i class="si-upload"></i>
+          Upload Constraints
+        </button>
+      </sm-menu>
     </div>
   </div>
 

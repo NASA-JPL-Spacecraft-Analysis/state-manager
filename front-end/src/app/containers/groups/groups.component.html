@@ -3,16 +3,23 @@
     <span class="st-typography-header">Groups</span>
 
     <div class="page-toolbar-buttons">
-      <button class="st-button tertiary" (click)="onFileUpload()">
-        <i class="si-upload"></i>
-        Upload Groups
-      </button>
-
-      <button class="st-button icon" (click)="onDeleteGroup()" title="Delete Selected Group">
-        <i class="si-trash"></i>
-      </button>
-
       <button class="st-button primary" (click)="onGroupSelected()">New Group</button>
+
+      <sm-menu>
+        <button class="st-button icon tertiary" (click)="onFileUpload()">
+          <i class="si-upload"></i>
+          Upload Groups
+        </button>
+
+        <button
+          class="st-button icon tertiary"
+          (click)="onDeleteGroup()"
+          title="Delete Selected Group"
+        >
+          <i class="si-trash"></i>
+          Delete Group
+        </button>
+      </sm-menu>
     </div>
   </div>
 

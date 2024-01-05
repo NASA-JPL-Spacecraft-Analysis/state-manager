@@ -16,6 +16,8 @@ import { LayoutActions } from 'src/app/actions';
 import { InformationTypeTableModule } from 'src/app/components';
 import { UploadConstants } from 'src/app/constants';
 import { LoadingModule } from '../../components/loading/loading.component';
+import { MenuModule } from '../../components/menu/menu.component';
+import { MaterialModule } from '../../material';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,6 +70,6 @@ export class InformationTypesComponent implements OnDestroy {
 @NgModule({
   declarations: [InformationTypesComponent],
   exports: [InformationTypesComponent],
-  imports: [CommonModule, InformationTypeTableModule, LoadingModule]
+  imports: [CommonModule, InformationTypeTableModule, LoadingModule, MaterialModule, MenuModule]
 })
 export class InformationTypesModule {}
